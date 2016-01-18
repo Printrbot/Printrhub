@@ -14,9 +14,11 @@ public:
     IdleView(const Rect& frame);
 
     RectangleLayer* getLayer();
+    RectangleLayer* getLayer2();
 
 protected:
     RectangleLayer* _layer;
+    RectangleLayer* _layer2;
 };
 
 

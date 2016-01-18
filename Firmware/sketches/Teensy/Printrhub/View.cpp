@@ -135,12 +135,10 @@ String View::getDescription()
 
 void View::display()
 {
-	LOG("Displaying Layers");
 	for (int i=0;i<_layers.count();i++)
 	{
-		LOG_VALUE("Display Layer",i);
 		Layer* layer = _layers.at(i);
-		layer->display();
+		Display.addLayer(layer);
 	}
 }
 

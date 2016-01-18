@@ -38,6 +38,9 @@ void ApplicationClass::loop()
 	//Run Animations
 	Animator.update();
 
+	//Clear the display
+	Display.clear();
+
 	//Run current controller
 	if (_scenes.count() > 0)
 	{
@@ -59,8 +62,9 @@ void ApplicationClass::loop()
 	}
 
 	//Update display
-	//display.display();
+	Display.dispatch();
 	//sendScreenshot();
+
 }
 
 void ApplicationClass::pushScene(SceneController *scene)

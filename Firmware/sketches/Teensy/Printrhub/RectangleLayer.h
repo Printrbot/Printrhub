@@ -12,7 +12,7 @@ class RectangleLayer: public Layer
 public:
     RectangleLayer(Rect frame);
 
-    virtual void display();
+    virtual void draw();
 };
 
 

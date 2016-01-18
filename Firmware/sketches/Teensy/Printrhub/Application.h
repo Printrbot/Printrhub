@@ -24,6 +24,7 @@
 #include "SceneController.h"
 #include "ColorTheme.h"
 #include "Icon.h"
+#include "PHDisplay.h"
 #include <ILI9341_t3.h>
 #include <Adafruit_FT6206.h>
 #include <font_Arial.h>
@@ -60,7 +61,7 @@ private:
 };
 
 extern ApplicationClass Application;
-extern ILI9341_t3 Display;
+extern PHDisplay Display;
 extern Adafruit_FT6206 Touch;
 
 #endif //_APPLICATION_H_

@@ -6,14 +6,18 @@
 #define TEENSYCMAKE_LAYER_H
 
 #include "UIElement.h"
+#include "StackArray.h"
 
 class Layer: public UIElement
 {
 public:
     Layer();
     Layer(const Rect& frame);
+    ~Layer();
 
-    virtual void display() = 0;
+    virtual void draw() = 0;
+
+    void display();
 
     void setBackgroundColor(const uint16_t& color);
     uint16_t getBackgroundColor() const;
@@ -24,10 +28,23 @@ public:
     void setStrokeWidth(const uint8_t strokeWidth);
     uint8_t getStrokeWidth() const;
 
+    bool isLeaf();
+
+    void splitWithRect(Rect& rect);
+
+    void addSublayer(Layer* layer);
+    StackArray<Layer*>* getSublayers();
+
+private:
+    void splitVertically(int x, Layer** left, Layer** right);
+    void splitHorizontally(int y, Layer**top, Layer**bottom);
+
 private:
     uint16_t _backgroundColor;
     uint16_t _strokeColor;
     uint8_t _strokeWidth;
+
+    StackArray<Layer*>* _sublayers;
 };
 
 

@@ -15,7 +15,7 @@
 
 
 #include <SPI.h>       // this is needed for display
-#include <ILI9341_t3.h>
+#include "PHDisplay.h"
 #include <Wire.h>      // this is needed for FT6206
 #include <Adafruit_FT6206.h>
 #include <font_Arial.h>
@@ -33,14 +33,15 @@ Adafruit_FT6206 Touch = Adafruit_FT6206();
 #define TFT_SCLK 13
 
 //ILI9341_t3::ILI9341_t3(uint8_t cs, uint8_t dc, uint8_t rst, uint8_t mosi, uint8_t sclk, uint8_t miso)
-ILI9341_t3 Display = ILI9341_t3(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
+PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
 
 //This is used all the time, so keep a global reference instead of building it again every time
 IdleSceneController* idleScene;
 
 void setup(void)
 {
-    while (!Serial);
+    //while (!Serial);
+    delay(2000);
 
     Serial.begin(115200);
     Serial.println(F("Printrhub - LCD Controller and Hub for Printrbots!"));

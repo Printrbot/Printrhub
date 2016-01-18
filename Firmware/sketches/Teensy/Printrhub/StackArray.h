@@ -86,6 +86,9 @@ class StackArray {
     // set the printer of the stack.
     void setPrinter (Print & p);
 
+    //Resets the array and resizes memory if shrink is true
+    void clear(const bool shrink=false);
+
   private:
     // resize the size of the stack.
     void resize (const int s);
@@ -153,6 +156,18 @@ void StackArray<T>::resize (const int s) {
 
   // set the new size of the stack.
   size = s;
+}
+
+// remove all items from the list. If shrink is true the StackArray is reduced to size 2
+template<typename T>
+void StackArray<T>::clear(const bool shrink) {
+    top = 0;
+    if (shrink)
+    {
+        size = initialSize;
+        resize(initialSize);
+    }
+
 }
 
 // push an item to the stack.
@@ -238,6 +253,7 @@ void StackArray<T>::setPrinter (Print & p) {
 // exit report method in case of error.
 template<typename T>
 void StackArray<T>::exit (const char * m) const {
+    Serial.println(m);
   // print the message if there is a printer.
   if (printer)
     printer->println (m);

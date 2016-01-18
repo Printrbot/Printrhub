@@ -22,6 +22,10 @@ public:
 protected:
     IdleView _view;
     uint8_t _size;
+public:
+    virtual void setup() override;
+
+    virtual void onWillAppear() override;
 };
 
 
