@@ -12,7 +12,7 @@ class Layer: public UIElement
 {
 public:
     Layer();
-    Layer(const Rect& frame);
+    Layer(Rect frame);
     virtual ~Layer();
 
     virtual void draw() = 0;

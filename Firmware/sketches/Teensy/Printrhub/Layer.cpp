@@ -15,7 +15,7 @@ _sublayers(NULL)
     ::globalLayersCreated++;
 }
 
-Layer::Layer(const Rect &frame):
+Layer::Layer(Rect frame):
 Layer()
 {
     _frame = frame;
