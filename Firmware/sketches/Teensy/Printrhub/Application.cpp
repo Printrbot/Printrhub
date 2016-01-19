@@ -65,6 +65,11 @@ void ApplicationClass::loop()
 	Display.dispatch();
 	//sendScreenshot();
 
+	Serial.print("Layers created: ");
+	Serial.print(::globalLayersCreated);
+	Serial.print(", deleted: ");
+	Serial.println(::globalLayersDeleted);
+
 }
 
 void ApplicationClass::pushScene(SceneController *scene)

@@ -12,7 +12,7 @@ _backgroundColor(ILI9341_BLACK),
 _strokeWidth(0),
 _sublayers(NULL)
 {
-
+    ::globalLayersCreated++;
 }
 
 Layer::Layer(const Rect &frame):
@@ -23,12 +23,14 @@ Layer()
 
 Layer::~Layer()
 {
-    if (_sublayers == NULL) return;
-    for (int i=0;i<_sublayers->count();i++)
-    {
-        Layer* layer = _sublayers->at(i);
-        delete layer;
-    }
+    LOG_VALUE("Layer deleted with ID",this->uniqueId);
+
+    ::globalLayersDeleted++;
+
+    removeAllSublayers();
+
+    delete _sublayers;
+    _sublayers = NULL;
 }
 
 void Layer::setBackgroundColor(const uint16_t &color)
@@ -77,9 +79,22 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
         return;
     }
 
-    //Create the top layer
-    *left = new GapLayer(Rect(_frame.x,_frame.y,x-_frame.x,_frame.bottom()));
-    *right = new GapLayer(Rect(x,_frame.y,_frame.right()-x,_frame.bottom()));
+    if (left != NULL)
+    {
+        //Create the top layer
+        Layer* leftLayer = new GapLayer(Rect(_frame.x,_frame.y,x-_frame.x,_frame.bottom()));
+        leftLayer->uniqueId = ::globalLayerId++;
+        *left = leftLayer;
+        LOG_VALUE("Layer created",leftLayer->uniqueId);
+    }
+
+    if (right != NULL)
+    {
+        Layer* rightLayer = new GapLayer(Rect(x,_frame.y,_frame.right()-x,_frame.bottom()));
+        rightLayer->uniqueId = ::globalLayerId++;
+        *right = rightLayer;
+        LOG_VALUE("Layer created",rightLayer->uniqueId);
+    }
 }
 
 /*
@@ -96,8 +111,21 @@ void Layer::splitHorizontally(int y, Layer**top, Layer**bottom)
     }
 
     //Create the top layer
-    *top = new GapLayer(Rect(_frame.x,_frame.y,_frame.width,y-_frame.y));
-    *bottom = new GapLayer(Rect(_frame.x,y,_frame.width,_frame.bottom()-y));
+    if (top != NULL)
+    {
+        Layer* topLayer = new GapLayer(Rect(_frame.x,_frame.y,_frame.width,y-_frame.y));
+        topLayer->uniqueId = ::globalLayerId++;
+        *top = topLayer;
+        LOG_VALUE("Layer created",topLayer->uniqueId);
+    }
+
+    if (bottom != NULL)
+    {
+        Layer* bottomLayer = new GapLayer(Rect(_frame.x,y,_frame.width,_frame.bottom()-y));
+        bottomLayer->uniqueId = ::globalLayerId++;
+        *bottom = bottomLayer;
+        LOG_VALUE("Layer created",bottomLayer->uniqueId);
+    }
 }
 
 void Layer::splitWithRect(Rect& rect)
@@ -167,7 +195,9 @@ void Layer::splitWithRect(Rect& rect)
             LOG("splitWithRect:011");
             splitHorizontally(rect.bottom(),&top,&bottom);
 
-            //addSublayer(top);
+            //TODO: Memory Bug!
+
+
             addSublayer(bottom);
 
             LOG("splitWithRect:012");
@@ -208,4 +238,15 @@ StackArray<Layer *> *Layer::getSublayers()
         _sublayers = new StackArray<Layer*>();
     }
     return _sublayers;
+}
+
+void Layer::removeAllSublayers()
+{
+    if (_sublayers == NULL) return;
+
+    while (_sublayers->count() > 0)
+    {
+        Layer* layer = _sublayers->pop();
+        delete layer;
+    }
 }

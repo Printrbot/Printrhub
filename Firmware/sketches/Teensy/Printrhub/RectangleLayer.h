@@ -11,6 +11,7 @@ class RectangleLayer: public Layer
 {
 public:
     RectangleLayer(Rect frame);
+    virtual ~RectangleLayer();
 
     virtual void draw();
 };

@@ -8,7 +8,7 @@ IdleSceneController::IdleSceneController():
 _view(IdleView(Rect(0,0,240,320))),
 _size(10)
 {
-
+    _velocity = 1;
 }
 
 String IdleSceneController::getName()
@@ -43,5 +43,10 @@ void IdleSceneController::loop()
 {
     _view.getLayer()->setFrame(Rect(50+_size,50+_size,20,20));
     _view.getLayer2()->setFrame(Rect(120-_size,120+_size*2,30+_size,30+_size));
-    _size += 1;
+    _size += _velocity;
+    if (_size > 20 || _size < 0)
+    {
+        _velocity = -_velocity;
+    }
+
 }

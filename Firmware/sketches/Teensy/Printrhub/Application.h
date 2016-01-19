@@ -63,5 +63,9 @@ private:
 extern ApplicationClass Application;
 extern PHDisplay Display;
 extern Adafruit_FT6206 Touch;
+extern int globalLayerId;
+
+extern int globalLayersCreated;
+extern int globalLayersDeleted;
 
 #endif //_APPLICATION_H_

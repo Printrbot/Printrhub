@@ -23,7 +23,7 @@ void PHDisplay::addLayer(Layer *layer)
 
 void PHDisplay::clear()
 {
-    _backgroundLayer->getSublayers()->clear();
+    _backgroundLayer->removeAllSublayers();
     _layers.clear(false);
 }
 

@@ -11,6 +11,11 @@ RectangleLayer::RectangleLayer(Rect frame):
 
 }
 
+RectangleLayer::~RectangleLayer()
+{
+
+}
+
 void RectangleLayer::draw()
 {
     uint16_t backgroundColor = this->getBackgroundColor();

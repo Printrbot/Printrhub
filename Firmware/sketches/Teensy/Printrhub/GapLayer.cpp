@@ -14,3 +14,8 @@ GapLayer::GapLayer(Rect frame): RectangleLayer(frame)
     this->setStrokeWidth(1);
     globR += 20;
 }
+
+GapLayer::~GapLayer()
+{
+
+}

@@ -38,6 +38,11 @@ PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_M
 //This is used all the time, so keep a global reference instead of building it again every time
 IdleSceneController* idleScene;
 
+int globalLayerId = 0;
+
+int globalLayersCreated = 0;
+int globalLayersDeleted = 0;
+
 void setup(void)
 {
     //while (!Serial);

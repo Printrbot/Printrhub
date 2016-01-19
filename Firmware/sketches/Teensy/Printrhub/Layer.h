@@ -13,7 +13,7 @@ class Layer: public UIElement
 public:
     Layer();
     Layer(const Rect& frame);
-    ~Layer();
+    virtual ~Layer();
 
     virtual void draw() = 0;
 
@@ -34,6 +34,10 @@ public:
 
     void addSublayer(Layer* layer);
     StackArray<Layer*>* getSublayers();
+
+    void removeAllSublayers();
+
+    int uniqueId;
 
 private:
     void splitVertically(int x, Layer** left, Layer** right);
