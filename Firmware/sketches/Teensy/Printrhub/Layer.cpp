@@ -193,7 +193,7 @@ void Layer::splitWithRect(Rect& rect)
         else if (_frame.containsY(rect.bottom()))
         {
             LOG("splitWithRect:011");
-            splitHorizontally(rect.bottom(),&top,&bottom);
+            splitHorizontally(rect.bottom(),NULL,&bottom);
 
             //TODO: Memory Bug!
 
@@ -201,7 +201,7 @@ void Layer::splitWithRect(Rect& rect)
             addSublayer(bottom);
 
             LOG("splitWithRect:012");
-            top->splitWithRect(rect);
+            //top->splitWithRect(rect);
         }
     }
 }
