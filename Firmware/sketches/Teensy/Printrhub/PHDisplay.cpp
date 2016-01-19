@@ -39,3 +39,14 @@ void PHDisplay::dispatch()
         layer->display();
     }
 }
+
+void PHDisplay::drawBitmap(uint16_t x, uint16_t y, const uint16_t *bitmap, uint16_t w, uint16_t h)
+{
+    for (uint16_t yb=0;yb<h;yb++)
+    {
+        for (uint16_t xb=0;xb<w;xb++)
+        {
+            drawPixel(x+xb,y+yb,bitmap[yb*w+xb]);
+        }
+    }
+}

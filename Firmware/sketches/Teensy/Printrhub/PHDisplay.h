@@ -20,6 +20,8 @@ public:
 
     virtual void dispatch();
 
+    virtual void drawBitmap(uint16_t x, uint16_t y, const uint16_t* bitmap, uint16_t w, uint16_t h);
+
 private:
     RectangleLayer* _backgroundLayer;
     StackArray<Layer*> _layers;
