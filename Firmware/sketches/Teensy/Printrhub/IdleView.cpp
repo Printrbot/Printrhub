@@ -4,6 +4,7 @@
 
 #include "IdleView.h"
 #include "Application.h"
+#include "Bitmaps.h"
 
 IdleView::IdleView(const Rect &frame):
     View(frame)
@@ -15,6 +16,10 @@ IdleView::IdleView(const Rect &frame):
     _layer2 = new RectangleLayer(frame);
     _layer2->setBackgroundColor(ILI9341_GREEN);
     _layers.push(_layer2);
+
+    _buttonLayer = new BitmapLayer(Rect(200,10,44,40));
+    _buttonLayer->setBitmap(&printerButton[0],44,40);
+    _layers.push(_buttonLayer);
 }
 
 RectangleLayer* IdleView::getLayer()

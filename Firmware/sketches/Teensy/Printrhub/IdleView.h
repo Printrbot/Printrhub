@@ -7,6 +7,7 @@
 
 #include "View.h"
 #include "RectangleLayer.h"
+#include "BitmapLayer.h"
 
 class IdleView: public View
 {
@@ -19,6 +20,7 @@ public:
 protected:
     RectangleLayer* _layer;
     RectangleLayer* _layer2;
+    BitmapLayer* _buttonLayer;
 };
 
 
