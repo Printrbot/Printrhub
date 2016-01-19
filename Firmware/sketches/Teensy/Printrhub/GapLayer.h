@@ -11,7 +11,7 @@ class GapLayer: public RectangleLayer
 {
 public:
     GapLayer(Rect frame);
-    ~GapLayer();
+    virtual ~GapLayer();
 };
 
 
