@@ -53,6 +53,9 @@ void setup(void)
 
     Display.begin();
 
+    //Rotate to landscape
+    Display.setRotation(3);
+
     if (! Touch.begin(40))
     {  // pass in 'sensitivity' coefficient
         Serial.println("Couldn't start FT6206 touchscreen controller");
@@ -70,5 +73,5 @@ void setup(void)
 void loop()
 {
     Application.loop();
-    delay(16);
+//    delay(16);
 }
