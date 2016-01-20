@@ -19,14 +19,13 @@
 #include "View.h"
 #include "Application.h"
 
-View::View()
-{
-	_opaque = false;
-	_needsDisplay = true;
-}
-
 View::~View()
 {
+	while (_layers.count() > 0)
+	{
+		Layer* layer = _layers.pop();
+		delete layer;
+	}
 }
 
 View::View(uint16_t x, uint16_t y, uint16_t width, uint16_t height)

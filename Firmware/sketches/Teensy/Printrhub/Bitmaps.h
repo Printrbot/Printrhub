@@ -12,6 +12,8 @@ extern "C" {
 #endif
 
 extern const uint16_t printerButton[];
+extern const uint16_t filamentButton[];
+extern const uint16_t settingsButton[];
 
 #ifdef __cplusplus
 } // extern "C"

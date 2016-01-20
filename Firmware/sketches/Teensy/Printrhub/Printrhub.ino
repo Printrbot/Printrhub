@@ -20,6 +20,7 @@
 #include <Adafruit_FT6206.h>
 #include <font_Arial.h>
 #include "IdleSceneController.h"
+#include "MainSceneController.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
 Adafruit_FT6206 Touch = Adafruit_FT6206();
@@ -37,6 +38,7 @@ PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_M
 
 //This is used all the time, so keep a global reference instead of building it again every time
 IdleSceneController* idleScene;
+MainSceneController* mainController;
 
 int globalLayerId = 0;
 
@@ -66,8 +68,8 @@ void setup(void)
     Display.fillScreen(ILI9341_BLACK);
 
     Serial.println("Starting MainMenu");
-    idleScene = new IdleSceneController();
-    Application.pushScene(idleScene);
+    mainController = new MainSceneController();
+    Application.pushScene(mainController);
 }
 
 void loop()
