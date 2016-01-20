@@ -18,7 +18,7 @@ String IdleSceneController::getName()
 
 void IdleSceneController::display()
 {
-    _view.display();
+
 }
 
 void IdleSceneController::setup()
@@ -36,7 +36,7 @@ void IdleSceneController::onWillAppear()
 
     _view.getLayer2()->setFrame(Rect(120,120,30,30));
 
-
+    _view.display();
 }
 
 void IdleSceneController::loop()
@@ -48,5 +48,4 @@ void IdleSceneController::loop()
     {
         _velocity = -_velocity;
     }
-
 }

@@ -206,14 +206,28 @@ void Layer::splitWithRect(Rect& rect)
     }
 }
 
-void Layer::display()
+void Layer::display(Layer* backgroundLayer)
 {
-    LOG("Sending layer");
     if (_sublayers == NULL || _sublayers->count() <= 0)
     {
-        LOG("No sublayers, just draw");
+        if (backgroundLayer == NULL)
+        {
+            LOG("No comparison layer found, just draw the layer");
+            draw();
+        }
+        else
+        {
+            if (backgroundLayer->subLayerWithRect(getFrame()) == NULL)
+            {
+                LOG("No valid comparisonlayer found, just draw");
+                draw();
+            }
+            else
+            {
+                LOG("Valid comparison layer found, skip draw");
+            }
+        }
 
-        draw();
         return;
     }
 
@@ -222,7 +236,7 @@ void Layer::display()
     {
         LOG_VALUE("Drawing sublayer at",i);
         Layer* layer = _sublayers->at(i);
-        layer->display();
+        layer->display(backgroundLayer);
     }
 }
 
@@ -249,4 +263,41 @@ void Layer::removeAllSublayers()
         Layer* layer = _sublayers->pop();
         delete layer;
     }
+}
+
+void Layer::setFrame(Rect frame)
+{
+    UIElement::setFrame(frame);
+
+    Display.setNeedsLayout();
+}
+
+Layer *Layer::subLayerWithRect(Rect frame)
+{
+    if (_sublayers == NULL) return NULL;
+
+    Layer* foundLayer = NULL;
+
+    for (int i=0;i<_sublayers->count();i++)
+    {
+        Layer* layer = _sublayers->at(i);
+        if (layer->isLeaf())
+        {
+            //Check this frame as this is a leaf layer
+            if (layer->getFrame() == frame)
+            {
+                return layer;
+            }
+        }
+        else
+        {
+            foundLayer = layer->subLayerWithRect(frame);
+            if (foundLayer != NULL)
+            {
+                return foundLayer;
+            }
+        }
+    }
+
+    return foundLayer;
 }

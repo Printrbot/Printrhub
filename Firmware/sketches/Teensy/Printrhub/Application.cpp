@@ -39,7 +39,7 @@ void ApplicationClass::loop()
 	Animator.update();
 
 	//Clear the display
-	Display.clear();
+	//Display.clear();
 
 	//Run current controller
 	if (_scenes.count() > 0)
@@ -56,10 +56,10 @@ void ApplicationClass::loop()
 
 		//Run the scenes loop function
 		sceneController->loop();
-
-		//Display to screen
-		sceneController->display();
 	}
+
+	//Relayout screen tiles
+	Display.layoutIfNeeded();
 
 	//Update display
 	Display.dispatch();

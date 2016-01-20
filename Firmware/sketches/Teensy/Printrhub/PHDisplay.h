@@ -20,12 +20,17 @@ public:
 
     virtual void dispatch();
 
+    virtual void setNeedsLayout();
+    virtual void layoutIfNeeded();
+
     virtual void drawBitmap(uint16_t x, uint16_t y, const uint16_t* bitmap, uint16_t w, uint16_t h);
 
 private:
     RectangleLayer* _backgroundLayer;
+    RectangleLayer* _foregroundLayer;
     StackArray<Layer*> _layers;
     StackArray<Layer*> _presentationLayers;
+    bool _needsLayout;
 };
 
 

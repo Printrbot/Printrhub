@@ -17,7 +17,7 @@ public:
 
     virtual void draw() = 0;
 
-    void display();
+    void display(Layer* backgroundLayer=NULL);
 
     void setBackgroundColor(const uint16_t& color);
     uint16_t getBackgroundColor() const;
@@ -37,6 +37,8 @@ public:
 
     void removeAllSublayers();
 
+    virtual Layer* subLayerWithRect(Rect frame);
+
     int uniqueId;
 
 private:
@@ -49,6 +51,8 @@ private:
     uint8_t _strokeWidth;
 
     StackArray<Layer*>* _sublayers;
+public:
+    virtual void setFrame(Rect frame) override;
 };
 
 

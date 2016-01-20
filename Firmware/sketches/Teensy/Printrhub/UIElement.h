@@ -53,6 +53,11 @@ public:
         return !(rect.left() > right() || rect.right() < left() || rect.top() > bottom() || rect.bottom() < top());
     };
 
+    bool operator==(const Rect& a) const
+    {
+        return (x == a.x && y == a.y && width == a.width && height == a.height);
+    }
+
     //Outline is not considered as "in" the rectangle
     bool containsPoint(int x, int y) {
         if (x > left() && x<right())
@@ -84,7 +89,7 @@ public:
 class UIElement
 {
 public:
-    void setFrame(Rect frame);
+    virtual void setFrame(Rect frame);
     void setFrame(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
     Rect& getFrame();
 

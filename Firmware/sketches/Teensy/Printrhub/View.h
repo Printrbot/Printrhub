@@ -73,6 +73,8 @@ protected:
 
 public:
 	virtual String getDescription() override;
+
+	virtual void setFrame(Rect frame) override;
 };
 
 #endif

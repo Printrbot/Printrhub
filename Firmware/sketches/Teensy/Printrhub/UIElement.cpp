@@ -16,5 +16,5 @@ void UIElement::setFrame(Rect frame)
 
 void UIElement::setFrame(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
 {
-    _frame = Rect(x,y,width,height);
+    setFrame(Rect(x,y,width,height));
 }

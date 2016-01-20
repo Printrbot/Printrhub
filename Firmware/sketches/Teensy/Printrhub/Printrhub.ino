@@ -45,6 +45,8 @@ int globalLayerId = 0;
 int globalLayersCreated = 0;
 int globalLayersDeleted = 0;
 
+int globR = 0;
+
 void setup(void)
 {
     //while (!Serial);
@@ -68,8 +70,10 @@ void setup(void)
     Display.fillScreen(ILI9341_BLACK);
 
     Serial.println("Starting MainMenu");
-    mainController = new MainSceneController();
-    Application.pushScene(mainController);
+/*    mainController = new MainSceneController();
+    Application.pushScene(mainController);*/
+    idleScene = new IdleSceneController();
+    Application.pushScene(idleScene);
 }
 
 void loop()

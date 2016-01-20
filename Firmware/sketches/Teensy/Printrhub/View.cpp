@@ -145,3 +145,10 @@ void View::addLayer(Layer *layer)
 {
 	_layers.push(layer);
 }
+
+void View::setFrame(Rect frame)
+{
+	UIElement::setFrame(frame);
+
+	Display.setNeedsLayout();
+}
