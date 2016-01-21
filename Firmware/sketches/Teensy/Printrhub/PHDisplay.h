@@ -23,9 +23,11 @@ public:
     virtual void setNeedsLayout();
     virtual void layoutIfNeeded();
 
-    virtual void drawBitmap(uint16_t x, uint16_t y, const uint16_t* bitmap, uint16_t w, uint16_t h, float alpha);
+    virtual void drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t* bitmap, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha);
 
 private:
+    void cropRectToScreen(Rect& rect);
+
     RectangleLayer* _backgroundLayer;
     RectangleLayer* _foregroundLayer;
     StackArray<Layer*> _layers;

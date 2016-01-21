@@ -28,7 +28,42 @@ void BitmapLayer::draw()
 {
     if (_bitmap == NULL) return;
 
-    Display.drawBitmap(_frame.x,_frame.y,_bitmap,_width,_height,1);
+    int x = _frame.x;
+    int y = _frame.y;
+    int width = _width;
+    int height = _height;
+    int imageOffset = 0;
+    int xs = 0;
+    int ys = 0;
+
+    if (_frame.y < 0)
+    {
+        y = 0;
+        height = _height + _frame.y;
+        ys = abs(_frame.y);
+    }
+
+    if (_frame.x < 0)
+    {
+        x = 0;
+        width = _width + _frame.x;
+        xs = abs(_frame.x);
+    }
+
+    if (_frame.y + _height > 239)
+    {
+        height = 239 - _frame.y;
+    }
+
+    if (_frame.x + _width > 319)
+    {
+        width = 319 - _frame.x;
+    }
+
+    if (height > 0 && width > 0)
+    {
+        Display.drawBitmap(x,y,width,height,_bitmap,xs,ys,_width,_height,1);
+    }
 
     Layer::draw();
 }

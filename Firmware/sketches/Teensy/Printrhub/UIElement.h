@@ -41,6 +41,11 @@ public:
     int bottom() { return (y + height); };
     int top() { return (y); };
 
+    void setLeft(int left) { int diff = x - left; x = left; width += diff;}
+    void setTop(int top) { int diff = y - top; y = top; height+= diff;}
+    void setRight(int r) { width += r - right();}
+    void setBottom(int b) { height += b - bottom();}
+
     Edge topEdge() { return Edge(x, y, right(), y);};
     Edge leftEdge() { return Edge(x, y, x, bottom());};
     Edge rightEdge() { return Edge(right(), y, right(), bottom());};

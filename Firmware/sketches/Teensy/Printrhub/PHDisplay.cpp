@@ -5,6 +5,7 @@
 #include "PHDisplay.h"
 #include "Application.h"
 #include <SPI.h>
+#include <Wiring.h>
 
 #define SPICLOCK 30000000
 
@@ -40,6 +41,27 @@ void PHDisplay::clear()
     _layers.clear(false);
 }
 
+
+void PHDisplay::cropRectToScreen(Rect &rect)
+{
+    if (rect.left() < 0)
+    {
+        rect.setLeft(0);
+    }
+    if (rect.top() < 0)
+    {
+        rect.setTop(0);
+    }
+    if (rect.right() > 319)
+    {
+        rect.setRight(319);
+    }
+    if (rect.bottom() > 239)
+    {
+        rect.setBottom(239);
+    }
+}
+
 void PHDisplay::layoutIfNeeded()
 {
     if (!_needsLayout) return;
@@ -56,7 +78,16 @@ void PHDisplay::layoutIfNeeded()
     for (int i=0;i<_layers.count();i++)
     {
         Layer *layer = _layers.at(i);
-        _foregroundLayer->splitWithRect(layer->getFrame());
+
+        Rect layerFrame = layer->getFrame();
+        Rect screenRect = Rect(0,0,319,239);
+        if (screenRect.intersectsRect(layerFrame))
+        {
+            //Crop Rectangle to screen
+            cropRectToScreen(layerFrame);
+
+            _foregroundLayer->splitWithRect(layerFrame);
+        }
     }
 
     _needsLayout = false;
@@ -76,7 +107,7 @@ void PHDisplay::dispatch()
     }
 }
 
-void PHDisplay::drawBitmap(uint16_t x, uint16_t y, const uint16_t *bitmap, uint16_t w, uint16_t h, float alpha)
+void PHDisplay::drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t *bitmap, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha)
 {
     SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
     setAddr(x, y, x+w-1, y+h-1);
@@ -88,12 +119,12 @@ void PHDisplay::drawBitmap(uint16_t x, uint16_t y, const uint16_t *bitmap, uint1
             if (xb == w-1 && yb == h-1)
             {
                 //Last pixel
-                writedata16_last(bitmap[yb*w+xb]);
+                writedata16_last(bitmap[(yb+ys)*ws+(xb+xs)]);
             }
             else
             {
                 //All other pixels
-                writedata16_cont(bitmap[yb*w+xb]);
+                writedata16_cont(bitmap[(yb+ys)*ws+(xb+xs)]);
             }
         }
     }

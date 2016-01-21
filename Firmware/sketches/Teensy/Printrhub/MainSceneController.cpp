@@ -39,12 +39,12 @@ void MainSceneController::loop()
 {
     if (_transition)
     {
-        _printButton->setFrame(Rect(23,90+_offset,80,80));
+        _printButton->setFrame(Rect(23+_offset,90+_offset,80,80));
         _filamentButton->setFrame(Rect(120,90+(_offset/2),80,80));
         _settingsButton->setFrame(Rect(215,90+(_offset/4),80,80));
         _offset += _velocity;
 
-        if (_offset > 50 || _offset < -50)
+        if (_offset > 200 || _offset < -200)
         {
             _velocity = -_velocity;
         }
