@@ -23,7 +23,7 @@ public:
     virtual void setNeedsLayout();
     virtual void layoutIfNeeded();
 
-    virtual void drawBitmap(uint16_t x, uint16_t y, const uint16_t* bitmap, uint16_t w, uint16_t h);
+    virtual void drawBitmap(uint16_t x, uint16_t y, const uint16_t* bitmap, uint16_t w, uint16_t h, float alpha);
 
 private:
     RectangleLayer* _backgroundLayer;

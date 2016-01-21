@@ -15,6 +15,8 @@ public:
     virtual ~BitmapButton();
 
     virtual void setBitmap(const uint16_t* bitmap, uint16_t width, uint16_t height);
+
+    virtual void setFrame(Rect frame) override;
 };
 
 

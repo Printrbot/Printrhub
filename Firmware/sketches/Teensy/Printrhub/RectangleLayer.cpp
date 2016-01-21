@@ -39,4 +39,6 @@ void RectangleLayer::draw()
     {
         Display.fillRect(_frame.x,_frame.y,_frame.width,_frame.height,backgroundColor);
     }
+
+    Layer::draw();
 }

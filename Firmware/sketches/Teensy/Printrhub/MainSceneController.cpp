@@ -27,9 +27,7 @@ MainSceneController::~MainSceneController()
 
 void MainSceneController::display()
 {
-    _printButton->display();
-    _filamentButton->display();
-    _settingsButton->display();
+
 }
 
 String MainSceneController::getName()
@@ -39,7 +37,20 @@ String MainSceneController::getName()
 
 void MainSceneController::loop()
 {
-    SceneController::loop();
+    if (_transition)
+    {
+        _printButton->setFrame(Rect(23,90+_offset,80,80));
+        _filamentButton->setFrame(Rect(120,90+(_offset/2),80,80));
+        _settingsButton->setFrame(Rect(215,90+(_offset/4),80,80));
+        _offset += _velocity;
+
+        if (_offset > 50 || _offset < -50)
+        {
+            _velocity = -_velocity;
+        }
+
+        return;
+    }
 
     if (Touch.touched())
     {
@@ -50,18 +61,21 @@ void MainSceneController::loop()
 
         point.y = 240-point.y;
 
-        LOG("Touched");
-        LOG_VALUE("X",point.x);
-        LOG_VALUE("Y",point.y);
 
         //if (_printButton->getFrame().containsPoint(point.x,point.y))
         {
-            _printButton->setFrame(Rect(23,100,80,80));
+            //_printButton->setFrame(Rect(23,93,80,80));
         }
 /*        else
         {
             _printButton->setFrame(Rect(23,90,80,80));
         }*/
+
+        _transition = true;
+    }
+    else
+    {
+       // _printButton->setFrame(Rect(23,89,80,80));
     }
 }
 
@@ -73,4 +87,8 @@ void MainSceneController::setup()
 void MainSceneController::onWillAppear()
 {
     SceneController::onWillAppear();
+
+    _printButton->display();
+    _filamentButton->display();
+    _settingsButton->display();
 }

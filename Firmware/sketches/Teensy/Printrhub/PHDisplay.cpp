@@ -11,6 +11,10 @@
 PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint8_t _SCLK, uint8_t _MISO):
         ILI9341_t3(_CS,_DC,_RST,_MOSI,_SCLK,_MISO)
 {
+    _foregroundLayer = new RectangleLayer(Rect(0,0,320,240));
+    _foregroundLayer->setBackgroundColor(ILI9341_BLACK);
+    _foregroundLayer->setStrokeWidth(0);
+
     _backgroundLayer = new RectangleLayer(Rect(0,0,320,240));
     _backgroundLayer->setBackgroundColor(ILI9341_BLACK);
     _backgroundLayer->setStrokeWidth(0);
@@ -20,6 +24,7 @@ PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint
 
 void PHDisplay::addLayer(Layer *layer)
 {
+    layer->setNeedsDisplay();
     LOG("Adding Layer");
 //    _backgroundLayer->splitWithRect(layer->getFrame());
     _layers.push(layer);
@@ -39,6 +44,10 @@ void PHDisplay::layoutIfNeeded()
 {
     if (!_needsLayout) return;
 
+    //Now delete the old background layer and swap foreground to background
+    delete _backgroundLayer;
+    _backgroundLayer = _foregroundLayer;
+
     //Create new Layer (forming the new foreground layer)
     _foregroundLayer = new RectangleLayer(Rect(0,0,320,240));
     _foregroundLayer->setBackgroundColor(ILI9341_BLACK);
@@ -55,15 +64,11 @@ void PHDisplay::layoutIfNeeded()
 
 void PHDisplay::dispatch()
 {
-    LOG("Sending background to display");
+    //LOG("Sending background to display");
 
     _foregroundLayer->display(_backgroundLayer);
 
-    //Now delete the old background layer and swap foreground to background
-    delete _backgroundLayer;
-    _backgroundLayer = _foregroundLayer;
-
-    LOG("Sending layer to display");
+    //LOG("Sending layer to display");
     for (int i=0;i<_layers.count();i++)
     {
         Layer* layer = _layers.at(i);
@@ -71,7 +76,7 @@ void PHDisplay::dispatch()
     }
 }
 
-void PHDisplay::drawBitmap(uint16_t x, uint16_t y, const uint16_t *bitmap, uint16_t w, uint16_t h)
+void PHDisplay::drawBitmap(uint16_t x, uint16_t y, const uint16_t *bitmap, uint16_t w, uint16_t h, float alpha)
 {
     SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
     setAddr(x, y, x+w-1, y+h-1);

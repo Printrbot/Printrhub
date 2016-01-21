@@ -70,10 +70,10 @@ void setup(void)
     Display.fillScreen(ILI9341_BLACK);
 
     Serial.println("Starting MainMenu");
-/*    mainController = new MainSceneController();
-    Application.pushScene(mainController);*/
-    idleScene = new IdleSceneController();
-    Application.pushScene(idleScene);
+    mainController = new MainSceneController();
+    Application.pushScene(mainController);
+    //idleScene = new IdleSceneController();
+    //Application.pushScene(idleScene);
 }
 
 void loop()

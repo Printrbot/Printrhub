@@ -10,7 +10,8 @@ Layer::Layer():
 _strokeColor(ILI9341_BLACK),
 _backgroundColor(ILI9341_BLACK),
 _strokeWidth(0),
-_sublayers(NULL)
+_sublayers(NULL),
+_needsDisplay(true)
 {
     ::globalLayersCreated++;
 }
@@ -212,29 +213,35 @@ void Layer::display(Layer* backgroundLayer)
     {
         if (backgroundLayer == NULL)
         {
-            LOG("No comparison layer found, just draw the layer");
-            draw();
+            //LOG("No comparison layer found, just draw the layer");
+            if (_needsDisplay)
+            {
+                draw();
+            }
         }
         else
         {
             if (backgroundLayer->subLayerWithRect(getFrame()) == NULL)
             {
-                LOG("No valid comparisonlayer found, just draw");
-                draw();
+                //LOG("No valid comparisonlayer found, just draw");
+                if (_needsDisplay)
+                {
+                    draw();
+                }
             }
             else
             {
-                LOG("Valid comparison layer found, skip draw");
+                //LOG("Valid comparison layer found, skip draw");
             }
         }
 
         return;
     }
 
-    LOG("Sublayers");
+    //LOG("Sublayers");
     for (int i=0;i<_sublayers->count();i++)
     {
-        LOG_VALUE("Drawing sublayer at",i);
+        //LOG_VALUE("Drawing sublayer at",i);
         Layer* layer = _sublayers->at(i);
         layer->display(backgroundLayer);
     }
@@ -269,6 +276,7 @@ void Layer::setFrame(Rect frame)
 {
     UIElement::setFrame(frame);
 
+    _needsDisplay = true;
     Display.setNeedsLayout();
 }
 
@@ -300,4 +308,14 @@ Layer *Layer::subLayerWithRect(Rect frame)
     }
 
     return foundLayer;
+}
+
+void Layer::setNeedsDisplay()
+{
+    _needsDisplay = true;
+}
+
+void Layer::draw()
+{
+    _needsDisplay = false;
 }

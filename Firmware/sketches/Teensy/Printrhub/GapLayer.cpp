@@ -11,14 +11,14 @@ GapLayer::GapLayer(Rect frame): RectangleLayer(frame)
 {
     this->setBackgroundColor(ILI9341_WHITE);
     this->setStrokeColor(ILI9341_BLACK);
-    this->setStrokeWidth(1);
+    this->setStrokeWidth(0);
 }
 
 GapLayer::~GapLayer()
 {
 
 }
-
+/*
 void GapLayer::draw()
 {
     this->setBackgroundColor(RGB565(globR,globR,globR));
@@ -26,4 +26,7 @@ void GapLayer::draw()
 
     globR++;
     if (globR > 255) globR = 0;
+
+    Layer::draw();
 }
+*/

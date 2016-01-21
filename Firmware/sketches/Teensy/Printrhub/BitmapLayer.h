@@ -21,6 +21,19 @@ private:
     const uint16_t* _bitmap;
     uint16_t _width;
     uint16_t _height;
+    float _alpha;
+
+public:
+    float getAlpha() const
+    {
+        return _alpha;
+    }
+
+    void setAlpha(float _alpha)
+    {
+        BitmapLayer::_alpha = _alpha;
+        _needsDisplay = true;
+    }
 };
 
 

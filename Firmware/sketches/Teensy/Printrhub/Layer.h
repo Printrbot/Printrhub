@@ -15,7 +15,7 @@ public:
     Layer(Rect frame);
     virtual ~Layer();
 
-    virtual void draw() = 0;
+    virtual void draw();
 
     void display(Layer* backgroundLayer=NULL);
 
@@ -39,7 +39,12 @@ public:
 
     virtual Layer* subLayerWithRect(Rect frame);
 
+    virtual void setNeedsDisplay();
+
     int uniqueId;
+
+protected:
+    bool _needsDisplay;
 
 private:
     void splitVertically(int x, Layer** left, Layer** right);
@@ -49,6 +54,7 @@ private:
     uint16_t _backgroundColor;
     uint16_t _strokeColor;
     uint8_t _strokeWidth;
+
 
     StackArray<Layer*>* _sublayers;
 public:

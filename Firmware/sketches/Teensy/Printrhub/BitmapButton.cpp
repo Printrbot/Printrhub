@@ -23,3 +23,12 @@ BitmapButton::~BitmapButton()
 {
 
 }
+
+void BitmapButton::setFrame(Rect frame)
+{
+    if (_frame == frame) return;
+
+    View::setFrame(frame);
+
+    _layers.at(0)->setFrame(frame);
+}

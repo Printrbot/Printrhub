@@ -23,6 +23,9 @@ protected:
     BitmapButton* _printButton;
     BitmapButton* _filamentButton;
     BitmapButton* _settingsButton;
+    float _offset = 0;
+    float _velocity = 4;
+    bool _transition = false;
 
 public:
     virtual void setup() override;
