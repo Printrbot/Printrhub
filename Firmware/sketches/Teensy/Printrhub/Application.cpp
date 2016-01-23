@@ -26,11 +26,61 @@ ApplicationClass::ApplicationClass()
 {
 	_firstSceneLoop = true;
 	_focusedView = NULL;
+	_touched = false;
 }
 
 ApplicationClass::~ApplicationClass()
 {
 
+}
+
+
+void ApplicationClass::handleTouches()
+{
+	//If we don't have a screen controller we don't have to handle touches
+	if (_scenes.count() <= 0) return;
+
+	//Get current scene controller
+	SceneController* sceneController = _scenes.peek();
+
+	//Touches infinite state machine
+	if (Touch.touched())
+	{
+		//Get touch point and transform due to screen rotation
+		TS_Point point = Touch.getPoint();
+		swap(point.x,point.y);
+		point.y = 240-point.y;
+
+		if (_touched)
+		{
+			if (point.x != _lastTouchPoint.x || point.y != _lastTouchPoint.y)
+			{
+				LOG("Touch Moved");
+				//Move event
+				sceneController->handleTouchMoved(point,_lastTouchPoint);
+			}
+		}
+		else
+		{
+			LOG("Touch down");
+			//Touch down event
+			sceneController->handleTouchDown(point);
+			_touched = true;
+		}
+
+		_lastTouchPoint = point;
+	}
+	else
+	{
+		if (_touched)
+		{
+			LOG("Touch up");
+			//Touch up event
+			sceneController->handleTouchUp(_lastTouchPoint);
+		}
+
+		_touched = false;
+	}
 }
 
 void ApplicationClass::loop()
@@ -54,6 +104,9 @@ void ApplicationClass::loop()
 			_firstSceneLoop = false;
 		}
 
+		//Touch handling
+		handleTouches();
+
 		//Run the scenes loop function
 		sceneController->loop();
 	}
@@ -69,6 +122,12 @@ void ApplicationClass::loop()
 //	Serial.print(::globalLayersCreated);
 //	Serial.print(", deleted: ");
 //	Serial.println(::globalLayersDeleted);
+
+	//Delay for a few ms if no animation is running
+	if (!Animator.hasActiveAnimations())
+	{
+		delay(16);
+	}
 
 }
 

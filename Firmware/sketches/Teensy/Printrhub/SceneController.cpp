@@ -21,12 +21,16 @@
 
 SceneController::SceneController()
 {
-
+	_currentTouchedView = NULL;
 }
 
 SceneController::~SceneController()
 {
-
+	while (_views.count() > 0)
+	{
+		View* view = _views.pop();
+		delete view;
+	}
 }
 
 void SceneController::setup()
@@ -58,4 +62,72 @@ String SceneController::getName()
 bool SceneController::statusBarVisible()
 {
 	return true;
+}
+
+void SceneController::handleTouchDown(TS_Point &point)
+{
+	for (int i=0;i<_views.count();i++)
+	{
+		View* view = _views.at(i);
+		View* hitView = view->hitTest(point);
+		if (hitView != NULL)
+		{
+			LOG("Touch Down in View");
+			//Break out if the view returns true, means it has handled the event
+			if (hitView->touchDown(point))
+			{
+				_currentTouchedView = hitView;
+				break;
+			}
+		}
+	}
+}
+
+void SceneController::handleTouchUp(TS_Point &point)
+{
+	for (int i=0;i<_views.count();i++)
+	{
+		View* view = _views.at(i);
+		View* hitView = view->hitTest(point);
+
+		//Only send touch up to those views that received a touch down before
+		if (hitView != NULL)
+		{
+			if (hitView == _currentTouchedView)
+			{
+				LOG("Touch Up in View");
+				//Break out if the view returns true, means it has handled the event
+				if (hitView->touchUp(point))
+				{
+					return;
+				}
+			}
+		}
+	}
+
+	//If we are here and have _currentTouchedView we have to send a cancel
+	//as the touch moved away from the control out of its boundaries
+	if (_currentTouchedView != NULL)
+	{
+		_currentTouchedView->touchCancelled();
+		_currentTouchedView = NULL;
+	}
+}
+
+void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
+{
+	for (int i=0;i<_views.count();i++)
+	{
+		View* view = _views.at(i);
+		View* hitView = view->hitTest(point);
+		if (hitView != NULL)
+		{
+			LOG("Touch Moved in View");
+			//Break out if the view returns true, means it has handled the event
+			if (hitView->touchMoved(point,oldPoint))
+			{
+				break;
+			}
+		}
+	}
 }

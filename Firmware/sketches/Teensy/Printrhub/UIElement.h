@@ -63,6 +63,8 @@ public:
         return (x == a.x && y == a.y && width == a.width && height == a.height);
     }
 
+    String toString() { return String(x) + "," + String(y) + " - " + String(width) + "," + String(height);};
+
     //Outline is not considered as "in" the rectangle
     bool containsPoint(int x, int y) {
         if (x > left() && x<right())

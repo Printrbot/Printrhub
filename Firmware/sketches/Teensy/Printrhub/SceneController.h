@@ -41,6 +41,17 @@ public:
 
 	//Display
 	virtual void display() = 0;
+
+	virtual StackArray<View*>* getViews() { return &_views; };
+	virtual void addView(View* view) { _views.push(view); };
+
+	virtual void handleTouchDown(TS_Point& point);
+	virtual void handleTouchUp(TS_Point& point);
+	virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint);
+
+private:
+	StackArray<View*> _views;
+	View* _currentTouchedView;
 };
 
 

@@ -49,6 +49,7 @@ public:
 	void reset();
 	void update();
 	void start();
+	void stop();
 
 private:
 	float _initialValue;

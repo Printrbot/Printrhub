@@ -10,19 +10,23 @@ SceneController::SceneController()
 {
     _printButton = new BitmapButton(Rect(23,90,80,80));
     _printButton->setBitmap(printerButton,80,80);
+    _printButton->setDelegate(this);
+    addView(_printButton);
 
     _filamentButton = new BitmapButton(Rect(120,90,80,80));
     _filamentButton->setBitmap(filamentButton,80,80);
+    _filamentButton->setDelegate(this);
+    addView(_filamentButton);
 
     _settingsButton = new BitmapButton(Rect(215,90,80,80));
     _settingsButton->setBitmap(settingsButton,80,80);
+    _settingsButton->setDelegate(this);
+    addView(_settingsButton);
 }
 
 MainSceneController::~MainSceneController()
 {
-    delete _printButton;
-    delete _filamentButton;
-    delete _settingsButton;
+
 }
 
 void MainSceneController::display()
@@ -37,7 +41,7 @@ String MainSceneController::getName()
 
 void MainSceneController::loop()
 {
-    if (_transition)
+ /*   if (_transition)
     {
         _printButton->setFrame(Rect(23+_offset,90+_offset,80,80));
         _filamentButton->setFrame(Rect(120,90+(_offset/2),80,80));
@@ -66,17 +70,17 @@ void MainSceneController::loop()
         {
             //_printButton->setFrame(Rect(23,93,80,80));
         }
-/*        else
-        {
-            _printButton->setFrame(Rect(23,90,80,80));
-        }*/
+//        else
+//        {
+//            _printButton->setFrame(Rect(23,90,80,80));
+//        }
 
         _transition = true;
     }
     else
     {
        // _printButton->setFrame(Rect(23,89,80,80));
-    }
+    }*/
 }
 
 void MainSceneController::setup()
@@ -91,4 +95,15 @@ void MainSceneController::onWillAppear()
     _printButton->display();
     _filamentButton->display();
     _settingsButton->display();
+}
+
+#pragma mark ButtonDelegate Implementation
+
+void MainSceneController::buttonPressed(BitmapButton *button)
+{
+    LOG("MainSceneController::buttonPressed");
+    if (button == _printButton)
+    {
+//        _printButton->setFrame(Rect(23,95,80,80));
+    }
 }

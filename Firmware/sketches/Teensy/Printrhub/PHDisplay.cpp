@@ -21,15 +21,17 @@ PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint
     _backgroundLayer->setStrokeWidth(0);
 
     _needsLayout = true;
+
+    debug = false;
 }
 
 void PHDisplay::addLayer(Layer *layer)
 {
     layer->setNeedsDisplay();
-    LOG("Adding Layer");
+    if (debug) LOG("Adding Layer");
 //    _backgroundLayer->splitWithRect(layer->getFrame());
     _layers.push(layer);
-    LOG("Adding Layers done");
+    if (debug) LOG("Adding Layers done");
 
     _needsLayout = true;
 }

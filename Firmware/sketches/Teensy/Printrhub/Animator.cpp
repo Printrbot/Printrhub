@@ -39,6 +39,20 @@ Animation* AnimatorClass::getAnimationSlot()
 	return NULL;
 }
 
+
+bool AnimatorClass::hasActiveAnimations()
+{
+	for (uint8_t i = 0; i < 10; i++)
+	{
+		if (_animationSlots[i].isActive())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void AnimatorClass::update()
 {
 	for (uint8_t i=0;i<10;i++)

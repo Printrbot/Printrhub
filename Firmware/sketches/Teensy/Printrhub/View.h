@@ -19,6 +19,7 @@
 #ifndef _VIEW_H_
 #define _VIEW_H_
 
+#include <Adafruit_FT6206.h>
 #include "Arduino.h"
 #include "Animation.h"
 #include "Object.h"
@@ -33,7 +34,7 @@
 #define MAXH (MAXY-MINY)
 #define MAXW (MAXX-MINX)
 
-class View: public UIElement,AnimatableObject, Object
+class View: public UIElement, public AnimatableObject, Object
 {
 public:
 	~View();
@@ -56,9 +57,28 @@ public:
 	//Layer handling
 	virtual void addLayer(Layer* layer);
 
+	//Touch handling
+	virtual bool touchDown(TS_Point& point);
+	virtual bool touchMoved(TS_Point& point, TS_Point& lastPoint);
+	virtual bool touchUp(TS_Point& point);
+	virtual void touchCancelled();
+
+	//Getters and Settings
+	bool isUserInteractionEnabled() const
+	{
+		return _userInteractionEnabled;
+	}
+
+	void setUserInteractionEnabled(bool userInteractionEnabled)
+	{
+		_userInteractionEnabled = userInteractionEnabled;
+	}
+
 	//Visibility
 	bool isVisible();
 	void setVisible(bool visible=true);
+
+	virtual View* hitTest(TS_Point& point);
 
 protected:
 	virtual void animationUpdated(Animation *animation, float currentValue, float timeLeft) override;
@@ -70,6 +90,7 @@ protected:
 	uint16_t _backgroundColor;
 	bool _needsDisplay;
 	StackArray<Layer*> _layers;
+	bool _userInteractionEnabled;
 
 public:
 	virtual String getDescription() override;

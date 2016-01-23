@@ -28,9 +28,14 @@
 #include <ILI9341_t3.h>
 #include <Adafruit_FT6206.h>
 #include <font_Arial.h>
+#include "Animator.h"
+
+#define STRINGIZE_DETAIL(x) #x
+#define STRINGIZE(x) STRINGIZE_DETAIL(x)
+#define logError(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg)
 
 #define LOG(m) Serial.println(m)
-#define LOG_VALUE(m,v) Serial.print(m);Serial.print(": ");Serial.println(v);
+#define LOG_VALUE(m,v) Serial.print(m);Serial.print(logError(m));Serial.println(v);
 
 class SceneController;
 class View;
@@ -49,6 +54,8 @@ public:
 	View* getFocusedView();
 	void resetFocus();
 
+	void handleTouches();
+
 	void sendScreenshot();
 
 	ColorTheme* getTheme();
@@ -58,6 +65,8 @@ private:
 	bool _firstSceneLoop;
 	View* _focusedView;
 	ColorTheme _theme;
+	bool _touched;
+	TS_Point _lastTouchPoint;
 };
 
 extern ApplicationClass Application;

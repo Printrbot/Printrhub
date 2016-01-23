@@ -27,6 +27,8 @@ public:
 	AnimatorClass();
 	Animation* getAnimationSlot();
 
+	bool hasActiveAnimations();
+
 	void update();
 
 private:

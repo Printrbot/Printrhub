@@ -24,7 +24,7 @@ Layer()
 
 Layer::~Layer()
 {
-    LOG_VALUE("Layer deleted with ID",this->uniqueId);
+    //if (Display.debug) LOG_VALUE("Layer deleted with ID",this->uniqueId);
 
     ::globalLayersDeleted++;
 
@@ -86,7 +86,7 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
         Layer* leftLayer = new GapLayer(Rect(_frame.x,_frame.y,x-_frame.x,_frame.bottom()));
         leftLayer->uniqueId = ::globalLayerId++;
         *left = leftLayer;
-        LOG_VALUE("Layer created",leftLayer->uniqueId);
+        //if (Display.debug) LOG_VALUE("Layer created",leftLayer->uniqueId);
     }
 
     if (right != NULL)
@@ -94,7 +94,7 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
         Layer* rightLayer = new GapLayer(Rect(x,_frame.y,_frame.right()-x,_frame.bottom()));
         rightLayer->uniqueId = ::globalLayerId++;
         *right = rightLayer;
-        LOG_VALUE("Layer created",rightLayer->uniqueId);
+        //if (Display.debug) LOG_VALUE("Layer created",rightLayer->uniqueId);
     }
 }
 
@@ -117,7 +117,7 @@ void Layer::splitHorizontally(int y, Layer**top, Layer**bottom)
         Layer* topLayer = new GapLayer(Rect(_frame.x,_frame.y,_frame.width,y-_frame.y));
         topLayer->uniqueId = ::globalLayerId++;
         *top = topLayer;
-        LOG_VALUE("Layer created",topLayer->uniqueId);
+        //if (Display.debug) LOG_VALUE("Layer created",topLayer->uniqueId);
     }
 
     if (bottom != NULL)
@@ -125,32 +125,32 @@ void Layer::splitHorizontally(int y, Layer**top, Layer**bottom)
         Layer* bottomLayer = new GapLayer(Rect(_frame.x,y,_frame.width,_frame.bottom()-y));
         bottomLayer->uniqueId = ::globalLayerId++;
         *bottom = bottomLayer;
-        LOG_VALUE("Layer created",bottomLayer->uniqueId);
+        //if (Display.debug) LOG_VALUE("Layer created",bottomLayer->uniqueId);
     }
 }
 
 void Layer::splitWithRect(Rect& rect)
 {
-    LOG("splitWithRect:001");
+    if (Display.debug)  LOG("splitWithRect:001");
     if (!isLeaf())
     {
-        LOG("Has Sublayer, split sublayers");
-        LOG("splitWithRect:002");
+        if (Display.debug) LOG("Has Sublayer, split sublayers");
+        if (Display.debug) LOG("splitWithRect:002");
         //This layer has sublayers, so we have to split the sublayers
         for (int i=0;i<_sublayers->count();i++)
         {
-            LOG("splitSublayer");
+            if (Display.debug) LOG("splitSublayer");
             Layer* layer = _sublayers->at(i);
             layer->splitWithRect(rect);
         }
     }
     else
     {
-        LOG("splitWithRect:003");
+        if (Display.debug) LOG("splitWithRect:003");
         //This is a leaf layer, do the actual work.
         if (!_frame.intersectsRect(rect)) return;
 
-        LOG("splitWithRect:004");
+        if (Display.debug) LOG("splitWithRect:004");
 
         //Split the left edge (contains x does not include the "outline"
         Layer* left = NULL;
@@ -159,49 +159,46 @@ void Layer::splitWithRect(Rect& rect)
         Layer* bottom = NULL;
         if (_frame.containsX(rect.left()))
         {
-            LOG("splitWithRect:005");
+            if (Display.debug) LOG("splitWithRect:005");
             splitVertically(rect.left(), &left, &right);
 
             addSublayer(left);
             addSublayer(right);
 
-            LOG("splitWithRect:006");
+            if (Display.debug) LOG("splitWithRect:006");
             right->splitWithRect(rect);
         }
         else if (_frame.containsX(rect.right()))
         {
-            LOG("splitWithRect:007");
+            if (Display.debug) LOG("splitWithRect:007");
             splitVertically(rect.right(), &left, &right);
 
             addSublayer(left);
             addSublayer(right);
 
-            LOG("splitWithRect:008");
+            if (Display.debug) LOG("splitWithRect:008");
 
             left->splitWithRect(rect);
         }
         else if (_frame.containsY(rect.top()))
         {
-            LOG("splitWithRect:009");
+            if (Display.debug) LOG("splitWithRect:009");
             splitHorizontally(rect.top(),&top,&bottom);
 
             addSublayer(top);
             addSublayer(bottom);
 
-            LOG("splitWithRect:010");
+            if (Display.debug) LOG("splitWithRect:010");
             bottom->splitWithRect(rect);
         }
         else if (_frame.containsY(rect.bottom()))
         {
-            LOG("splitWithRect:011");
+            if (Display.debug) LOG("splitWithRect:011");
             splitHorizontally(rect.bottom(),NULL,&bottom);
-
-            //TODO: Memory Bug!
-
 
             addSublayer(bottom);
 
-            LOG("splitWithRect:012");
+            if (Display.debug) LOG("splitWithRect:012");
             //top->splitWithRect(rect);
         }
     }

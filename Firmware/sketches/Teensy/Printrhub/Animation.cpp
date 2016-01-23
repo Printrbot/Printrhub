@@ -121,6 +121,12 @@ void Animation::start()
 	_animationStart = (float)(millis()/1000.0f) + _delay;
 }
 
+
+void Animation::stop()
+{
+	_animationStart = 0;
+}
+
 void Animation::update()
 {
 	if (_animationStart == 0) return;

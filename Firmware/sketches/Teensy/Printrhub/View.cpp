@@ -34,11 +34,13 @@ View::View(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
 	_opaque = false;
 	_needsDisplay = true;
 	_visible = true;
+	_userInteractionEnabled = true;
 }
 
 View::View(Rect frame)
 {
 	_frame = frame;
+	_userInteractionEnabled = true;
 }
 
 void View::draw()
@@ -151,4 +153,41 @@ void View::setFrame(Rect frame)
 	UIElement::setFrame(frame);
 
 	Display.setNeedsLayout();
+}
+
+bool View::touchDown(TS_Point &point)
+{
+	//Return false so the next view is informed (when Views overlap)
+	return false;
+}
+
+bool View::touchMoved(TS_Point &point, TS_Point &lastPoint)
+{
+	//Return false so the next view is informed (when Views overlap)
+	return false;
+}
+
+bool View::touchUp(TS_Point &point)
+{
+	//Return false so the next view is informed (when Views overlap)
+	return false;
+}
+
+void View::touchCancelled()
+{
+}
+
+View *View::hitTest(TS_Point &point)
+{
+	LOG("Hit Testing");
+	LOG_VALUE("Point-X",point.x);
+	LOG_VALUE("Point-Y",point.y);
+	LOG_VALUE("Frame",_frame.toString());
+
+	if (_frame.containsPoint(point.x,point.y))
+	{
+		return this;
+	}
+
+	return NULL;
 }

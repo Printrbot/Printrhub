@@ -8,7 +8,7 @@
 #include "SceneController.h"
 #include "BitmapButton.h"
 
-class MainSceneController: public SceneController
+class MainSceneController: public SceneController, ButtonDelegate
 {
 public:
     MainSceneController();
@@ -31,6 +31,9 @@ public:
     virtual void setup() override;
 
     virtual void onWillAppear() override;
+
+private:
+    virtual void buttonPressed(BitmapButton *button);
 };
 
 
