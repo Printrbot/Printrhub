@@ -22,6 +22,8 @@
 SceneController::SceneController()
 {
 	_currentTouchedView = NULL;
+	_scrollOffset = 0;
+
 }
 
 SceneController::~SceneController()
@@ -40,6 +42,23 @@ void SceneController::setup()
 
 void SceneController::loop()
 {
+	if (Touch.touched()) return;
+
+	if (_scrollVelocity > 0)
+	{
+		_scrollVelocity -= fabs(_scrollVelocity) * 0.1;
+		if (_scrollVelocity < 0) _scrollVelocity = 0;
+	}
+	else if (_scrollVelocity < 0)
+	{
+		_scrollVelocity += fabs(_scrollVelocity) * 0.1;
+		if (_scrollVelocity > 0) _scrollVelocity = 0;
+	}
+
+	if(_scrollVelocity != 0)
+	{
+		addScrollOffset(_scrollVelocity);
+	}
 }
 
 void SceneController::onWillAppear()
@@ -114,6 +133,25 @@ void SceneController::handleTouchUp(TS_Point &point)
 	}
 }
 
+
+void SceneController::addScrollOffset(float scrollOffset)
+{
+	if (scrollOffset == 0) return;
+
+	_scrollOffset += scrollOffset;
+
+	if (_scrollOffset < -230)
+	{
+		_scrollOffset = -230;
+	}
+	if (_scrollOffset > 0)
+	{
+		_scrollOffset = 0;
+	}
+
+	Display.setScrollOffset(_scrollOffset);
+}
+
 void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
 {
 	for (int i=0;i<_views.count();i++)
@@ -126,8 +164,14 @@ void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
 			//Break out if the view returns true, means it has handled the event
 			if (hitView->touchMoved(point,oldPoint))
 			{
-				break;
+				return;
 			}
 		}
 	}
+
+	LOG("Handle Scrolling");
+
+	//Handle Scrolling
+	_scrollVelocity = point.x - oldPoint.x;
+	addScrollOffset(_scrollVelocity);
 }

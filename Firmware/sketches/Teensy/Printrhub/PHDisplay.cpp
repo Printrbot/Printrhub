@@ -12,11 +12,11 @@
 PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint8_t _SCLK, uint8_t _MISO):
         ILI9341_t3(_CS,_DC,_RST,_MOSI,_SCLK,_MISO)
 {
-    _foregroundLayer = new RectangleLayer(Rect(0,0,320,240));
+    _foregroundLayer = new RectangleLayer(Rect(0,0,550,240));
     _foregroundLayer->setBackgroundColor(ILI9341_BLACK);
     _foregroundLayer->setStrokeWidth(0);
 
-    _backgroundLayer = new RectangleLayer(Rect(0,0,320,240));
+    _backgroundLayer = new RectangleLayer(Rect(0,0,550,240));
     _backgroundLayer->setBackgroundColor(ILI9341_BLACK);
     _backgroundLayer->setStrokeWidth(0);
 
@@ -73,7 +73,7 @@ void PHDisplay::layoutIfNeeded()
     _backgroundLayer = _foregroundLayer;
 
     //Create new Layer (forming the new foreground layer)
-    _foregroundLayer = new RectangleLayer(Rect(0,0,320,240));
+    _foregroundLayer = new RectangleLayer(Rect(0,0,550,240));
     _foregroundLayer->setBackgroundColor(ILI9341_BLACK);
     _foregroundLayer->setStrokeWidth(0);
 
@@ -83,10 +83,10 @@ void PHDisplay::layoutIfNeeded()
 
         Rect layerFrame = layer->getFrame();
         Rect screenRect = Rect(0,0,319,239);
-        if (screenRect.intersectsRect(layerFrame))
+        //if (screenRect.intersectsRect(layerFrame))
         {
             //Crop Rectangle to screen
-            cropRectToScreen(layerFrame);
+            //cropRectToScreen(layerFrame);
 
             _foregroundLayer->splitWithRect(layerFrame);
         }
@@ -136,4 +136,66 @@ void PHDisplay::drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const
 void PHDisplay::setNeedsLayout()
 {
     _needsLayout = true;
+}
+
+void PHDisplay::invalidateRect(Rect& invalidationRect, uint16_t color)
+{
+    _foregroundLayer->invalidateRect(invalidationRect);
+
+    //LOG("Sending layer to display");
+    for (int i=0;i<_layers.count();i++)
+    {
+        Layer* layer = _layers.at(i);
+        layer->invalidateRect(invalidationRect);
+    }
+
+/*    int x = invalidationRect.x;
+    if (x < 0) x += 319;
+    if (x > 319) x -= 319;
+    fillRect(x,0,invalidationRect.width,invalidationRect.height,color);*/
+}
+
+void PHDisplay::setScrollOffset(float scrollOffset)
+{
+    float diffScrollOffset = ceilf(_scrollOffset - scrollOffset);
+    LOG_VALUE("Rect-Width: ",diffScrollOffset);
+
+    //Save scroll offset
+    _scrollOffset = scrollOffset;
+
+    if (diffScrollOffset < 0)
+    {
+        //Left
+        //Invalidate Layers intersection the right rectangle
+
+        Rect invalidationRect(-_scrollOffset,0,fabsf(diffScrollOffset),240);
+        invalidateRect(invalidationRect,ILI9341_GREEN);
+    }
+    else if (diffScrollOffset > 0)
+    {
+        //Right
+        //Invalidate Layers intersecting with the right rectangle
+        Rect invalidationRect(-_scrollOffset + 319-fabsf(diffScrollOffset),0,fabsf(diffScrollOffset),240);
+        invalidateRect(invalidationRect,ILI9341_CYAN);
+    }
+    else
+    {
+        //Do nothing as nothing has changed
+        return;
+    }
+
+    //Shift display to the specific frame (this is hardware scrolling)
+/*    if (scrollOffset < 0)
+    {
+        scrollOffset = 319;
+    }
+    if (scrollOffset > 319)
+    {
+        scrollOffset = 0;
+    }*/
+
+    LOG_VALUE("Scroll Offset:",scrollOffset);
+
+    //Display.setScroll((int)scrollOffset);
+
 }

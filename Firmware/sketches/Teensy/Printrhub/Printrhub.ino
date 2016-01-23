@@ -59,6 +59,7 @@ void setup(void)
 
     //Rotate to landscape
     Display.setRotation(3);
+    Display.setScroll(0);
 
     if (! Touch.begin(40))
     {  // pass in 'sensitivity' coefficient

@@ -23,6 +23,7 @@ protected:
     BitmapButton* _printButton;
     BitmapButton* _filamentButton;
     BitmapButton* _settingsButton;
+    BitmapButton* _nextButton;
     float _offset = 0;
     float _velocity = 4;
     bool _transition = false;

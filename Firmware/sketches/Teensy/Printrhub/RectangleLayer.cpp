@@ -16,7 +16,7 @@ RectangleLayer::~RectangleLayer()
 
 }
 
-void RectangleLayer::draw()
+void RectangleLayer::draw(Rect& renderFrame)
 {
     uint16_t backgroundColor = this->getBackgroundColor();
     uint16_t strokeColor = this->getStrokeColor();
@@ -32,13 +32,13 @@ void RectangleLayer::draw()
 
     if (this->getStrokeWidth() > 0)
     {
-        Display.drawRect(_frame.x,_frame.y,_frame.width,_frame.height,strokeColor);
-        Display.fillRect(_frame.x+1,_frame.y+1,_frame.width-2,_frame.height-2,backgroundColor);
+        Display.drawRect(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,strokeColor);
+        Display.fillRect(renderFrame.x+1,renderFrame.y+1,renderFrame.width-2,renderFrame.height-2,backgroundColor);
     }
     else
     {
-        Display.fillRect(_frame.x,_frame.y,_frame.width,_frame.height,backgroundColor);
+        Display.fillRect(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,backgroundColor);
     }
 
-    Layer::draw();
+    Layer::draw(renderFrame);
 }

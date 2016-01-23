@@ -179,11 +179,6 @@ void View::touchCancelled()
 
 View *View::hitTest(TS_Point &point)
 {
-	LOG("Hit Testing");
-	LOG_VALUE("Point-X",point.x);
-	LOG_VALUE("Point-Y",point.y);
-	LOG_VALUE("Frame",_frame.toString());
-
 	if (_frame.containsPoint(point.x,point.y))
 	{
 		return this;

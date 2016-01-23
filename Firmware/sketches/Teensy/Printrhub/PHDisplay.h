@@ -25,6 +25,9 @@ public:
 
     virtual void drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t* bitmap, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha);
 
+    virtual void setScrollOffset(float scrollOffset);
+    virtual float getScrollOffset() { return _scrollOffset; };
+
     bool debug;
 
 private:
@@ -35,6 +38,11 @@ private:
     StackArray<Layer*> _layers;
     StackArray<Layer*> _presentationLayers;
     bool _needsLayout;
+    float _scrollOffset;
+
+    void invalidateRect();
+
+    void invalidateRect(Rect &invalidationRect, uint16_t color);
 };
 
 

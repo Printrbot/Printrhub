@@ -22,6 +22,11 @@ SceneController::SceneController()
     _settingsButton->setBitmap(settingsButton,80,80);
     _settingsButton->setDelegate(this);
     addView(_settingsButton);
+
+    _nextButton = new BitmapButton(Rect(400,90,80,80));
+    _nextButton->setBitmap(settingsButton,80,80);
+    _nextButton->setDelegate(this);
+    addView(_nextButton);
 }
 
 MainSceneController::~MainSceneController()
@@ -41,6 +46,8 @@ String MainSceneController::getName()
 
 void MainSceneController::loop()
 {
+    SceneController::loop();
+
  /*   if (_transition)
     {
         _printButton->setFrame(Rect(23+_offset,90+_offset,80,80));
@@ -95,6 +102,7 @@ void MainSceneController::onWillAppear()
     _printButton->display();
     _filamentButton->display();
     _settingsButton->display();
+    _nextButton->display();
 }
 
 #pragma mark ButtonDelegate Implementation

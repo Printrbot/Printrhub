@@ -15,7 +15,7 @@ public:
     Layer(Rect frame);
     virtual ~Layer();
 
-    virtual void draw();
+    virtual void draw(Rect& renderFrame);
 
     void display(Layer* backgroundLayer=NULL);
 
@@ -31,6 +31,7 @@ public:
     bool isLeaf();
 
     void splitWithRect(Rect& rect);
+    void invalidateRect(Rect& invalidationRect);
 
     void addSublayer(Layer* layer);
     StackArray<Layer*>* getSublayers();
@@ -45,6 +46,7 @@ public:
 
 protected:
     bool _needsDisplay;
+    Rect getRenderFrame();
 
 private:
     void splitVertically(int x, Layer** left, Layer** right);
@@ -56,9 +58,12 @@ private:
     uint8_t _strokeWidth;
 
 
+
     StackArray<Layer*>* _sublayers;
 public:
     virtual void setFrame(Rect frame) override;
+
+
 };
 
 

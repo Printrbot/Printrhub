@@ -50,8 +50,12 @@ public:
 	virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint);
 
 private:
+	void addScrollOffset(float scrollOffset);
+
 	StackArray<View*> _views;
 	View* _currentTouchedView;
+	float _scrollOffset;
+	float _scrollVelocity;
 };
 
 

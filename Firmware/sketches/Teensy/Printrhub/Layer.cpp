@@ -208,12 +208,13 @@ void Layer::display(Layer* backgroundLayer)
 {
     if (_sublayers == NULL || _sublayers->count() <= 0)
     {
+        Rect renderFrame = getRenderFrame();
         if (backgroundLayer == NULL)
         {
             //LOG("No comparison layer found, just draw the layer");
-            if (_needsDisplay)
+            if (true || _needsDisplay)
             {
-                draw();
+                draw(renderFrame);
             }
         }
         else
@@ -221,9 +222,9 @@ void Layer::display(Layer* backgroundLayer)
             if (backgroundLayer->subLayerWithRect(getFrame()) == NULL)
             {
                 //LOG("No valid comparisonlayer found, just draw");
-                if (_needsDisplay)
+                if (true || _needsDisplay)
                 {
-                    draw();
+                    draw(renderFrame);
                 }
             }
             else
@@ -241,6 +242,29 @@ void Layer::display(Layer* backgroundLayer)
         //LOG_VALUE("Drawing sublayer at",i);
         Layer* layer = _sublayers->at(i);
         layer->display(backgroundLayer);
+    }
+}
+
+
+void Layer::invalidateRect(Rect &invalidationRect)
+{
+    if (_sublayers == NULL || _sublayers->count() <= 0)
+    {
+        Rect renderFrame = getRenderFrame();
+        if (renderFrame.intersectsRect(invalidationRect))
+        {
+            setNeedsDisplay();
+        }
+
+        return;
+    }
+
+    //LOG("Sublayers");
+    for (int i=0;i<_sublayers->count();i++)
+    {
+        //LOG_VALUE("Drawing sublayer at",i);
+        Layer* layer = _sublayers->at(i);
+        layer->invalidateRect(invalidationRect);
     }
 }
 
@@ -312,7 +336,12 @@ void Layer::setNeedsDisplay()
     _needsDisplay = true;
 }
 
-void Layer::draw()
+void Layer::draw(Rect& renderFrame)
 {
     _needsDisplay = false;
+}
+
+Rect Layer::getRenderFrame()
+{
+    return Rect(_frame.x+Display.getScrollOffset(),_frame.y,_frame.width,_frame.height);
 }
