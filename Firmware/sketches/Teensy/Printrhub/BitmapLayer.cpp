@@ -24,10 +24,18 @@ void BitmapLayer::setBitmap(const uint16_t *bitmap, uint16_t width, uint16_t hei
     _needsDisplay = true;
 }
 
-void BitmapLayer::draw(Rect& renderFrame)
+void BitmapLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
 {
     if (_bitmap == NULL) return;
 
+    Rect renderFrame = Rect::Intersect(_frame,invalidationRect);
+
+    //Transform to screen space
+    renderFrame.x = renderFrame.x % 320;
+
+    Display.fillRect(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,ILI9341_PINK);
+    return;
+/*
     int x = renderFrame.x;
     int y = renderFrame.y;
     int width = _width;
@@ -65,6 +73,6 @@ void BitmapLayer::draw(Rect& renderFrame)
         Display.drawBitmap(x,y,width,height,_bitmap,xs,ys,_width,_height,1);
     }
 
-    Layer::draw(renderFrame);
+    Layer::draw(renderFrame);*/
 }
 

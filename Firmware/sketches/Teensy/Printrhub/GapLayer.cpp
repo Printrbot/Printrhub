@@ -18,14 +18,16 @@ GapLayer::~GapLayer()
 {
 
 }
-
+/*
 void GapLayer::draw(Rect& renderFrame)
 {
-    this->setBackgroundColor(RGB565(globR,globR,globR));
+    //this->setBackgroundColor(RGB565(globR,globR,globR));
     RectangleLayer::draw(renderFrame);
+    return;
 
     globR++;
     if (globR > 255) globR = 0;
 
     Layer::draw(renderFrame);
 }
+*/

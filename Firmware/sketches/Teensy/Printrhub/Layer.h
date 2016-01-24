@@ -15,7 +15,7 @@ public:
     Layer(Rect frame);
     virtual ~Layer();
 
-    virtual void draw(Rect& renderFrame);
+    virtual void draw(Rect& dirtyRect, Rect& invalidationRect);
 
     void display(Layer* backgroundLayer=NULL);
 
@@ -31,7 +31,7 @@ public:
     bool isLeaf();
 
     void splitWithRect(Rect& rect);
-    void invalidateRect(Rect& invalidationRect);
+    void invalidateRect(Rect& dirtyRect, Rect& invalidationRect);
 
     void addSublayer(Layer* layer);
     StackArray<Layer*>* getSublayers();

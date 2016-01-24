@@ -87,6 +87,18 @@ public:
         return false;
     }
 
+    static Rect Intersect(Rect& a, Rect& b)
+    {
+        int x = max(a.x, b.x);
+        int num1 = min(a.x + a.width, b.x + b.width);
+        int y = max(a.y, b.y);
+        int num2 = min(a.y + a.height, b.y + b.height);
+        if (num1 >= x && num2 >= y)
+            return Rect(x, y, num1 - x, num2 - y);
+        else
+            return Rect(0,0,0,0);
+    }
+
     int x;
     int y;
     int width;

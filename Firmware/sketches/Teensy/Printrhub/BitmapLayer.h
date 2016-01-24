@@ -14,7 +14,7 @@ public:
     BitmapLayer(Rect rect);
     virtual ~BitmapLayer();
 
-    virtual void draw(Rect& renderFrame) override;
+    virtual void draw(Rect& dirtyRect, Rect& invalidationRect) override;
     virtual void setBitmap(const uint16_t* bitmap, uint16_t width, uint16_t height);
 
 private:

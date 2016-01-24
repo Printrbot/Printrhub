@@ -13,7 +13,7 @@ public:
     RectangleLayer(Rect frame);
     virtual ~RectangleLayer();
 
-    virtual void draw(Rect& renderFrame) override;
+    virtual void draw(Rect& dirtyRect, Rect& invalidationRect) override;
 };
 
 

@@ -212,9 +212,11 @@ void Layer::display(Layer* backgroundLayer)
         if (backgroundLayer == NULL)
         {
             //LOG("No comparison layer found, just draw the layer");
-            if (true || _needsDisplay)
+            if (_needsDisplay)
             {
-                draw(renderFrame);
+                LOG("Drawing");
+                draw(renderFrame,_frame);
+                _needsDisplay = false;
             }
         }
         else
@@ -222,9 +224,11 @@ void Layer::display(Layer* backgroundLayer)
             if (backgroundLayer->subLayerWithRect(getFrame()) == NULL)
             {
                 //LOG("No valid comparisonlayer found, just draw");
-                if (true || _needsDisplay)
+                if (_needsDisplay)
                 {
-                    draw(renderFrame);
+                    LOG("Drawing");
+                    draw(renderFrame,_frame);
+                    _needsDisplay = false;
                 }
             }
             else
@@ -246,14 +250,15 @@ void Layer::display(Layer* backgroundLayer)
 }
 
 
-void Layer::invalidateRect(Rect &invalidationRect)
+void Layer::invalidateRect(Rect& dirtyRect, Rect &invalidationRect)
 {
     if (_sublayers == NULL || _sublayers->count() <= 0)
     {
-        Rect renderFrame = getRenderFrame();
-        if (renderFrame.intersectsRect(invalidationRect))
+        if (_frame.intersectsRect(invalidationRect))
         {
-            setNeedsDisplay();
+            LOG_VALUE("Invalidated Layer:",_frame.toString());
+
+            draw(dirtyRect, invalidationRect);
         }
 
         return;
@@ -264,7 +269,7 @@ void Layer::invalidateRect(Rect &invalidationRect)
     {
         //LOG_VALUE("Drawing sublayer at",i);
         Layer* layer = _sublayers->at(i);
-        layer->invalidateRect(invalidationRect);
+        layer->invalidateRect(dirtyRect, invalidationRect);
     }
 }
 
@@ -336,12 +341,14 @@ void Layer::setNeedsDisplay()
     _needsDisplay = true;
 }
 
-void Layer::draw(Rect& renderFrame)
+void Layer::draw(Rect& dirtyRect, Rect& invalidationRect)
 {
     _needsDisplay = false;
 }
 
 Rect Layer::getRenderFrame()
 {
-    return Rect(_frame.x+Display.getScrollOffset(),_frame.y,_frame.width,_frame.height);
+    int x = _frame.x;
+    x = x % 320;
+    return Rect(x,_frame.y,_frame.width,_frame.height);
 }

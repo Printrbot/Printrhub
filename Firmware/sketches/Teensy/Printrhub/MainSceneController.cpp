@@ -23,7 +23,7 @@ SceneController::SceneController()
     _settingsButton->setDelegate(this);
     addView(_settingsButton);
 
-    _nextButton = new BitmapButton(Rect(400,90,80,80));
+    _nextButton = new BitmapButton(Rect(400,110,80,80));
     _nextButton->setBitmap(settingsButton,80,80);
     _nextButton->setDelegate(this);
     addView(_nextButton);

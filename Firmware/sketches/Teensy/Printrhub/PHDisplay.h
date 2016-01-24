@@ -42,7 +42,7 @@ private:
 
     void invalidateRect();
 
-    void invalidateRect(Rect &invalidationRect, uint16_t color);
+    void invalidateRect(Rect &dirtyRect, Rect &invalidationRect, uint16_t color);
 };
 
 
