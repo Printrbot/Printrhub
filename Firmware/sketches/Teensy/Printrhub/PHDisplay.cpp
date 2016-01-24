@@ -142,8 +142,8 @@ void PHDisplay::invalidateRect(Rect&dirtyRect, Rect& invalidationRect, uint16_t 
 {
     //InvalidationRect is in screen shape, but we need view space
 
-    LOG_VALUE("View-Space:",invalidationRect.toString());
-    LOG_VALUE("Screen-Spcae:",dirtyRect.toString());
+    //LOG_VALUE("View-Space:",invalidationRect.toString());
+    //LOG_VALUE("Screen-Spcae:",dirtyRect.toString());
 
     _foregroundLayer->invalidateRect(dirtyRect, invalidationRect);
 
@@ -162,8 +162,8 @@ void PHDisplay::setScrollOffset(float scrollOffset)
     float diffScrollOffset = ceilf(_scrollOffset - scrollOffset);
     if (diffScrollOffset == 0) return;
 
-    LOG_VALUE("Rect-Width: ",diffScrollOffset);
-    LOG_VALUE("Scroll Offset: ",scrollOffset);
+    //LOG_VALUE("Rect-Width: ",diffScrollOffset);
+    //LOG_VALUE("Scroll Offset: ",scrollOffset);
 
     //Save scroll offset
     _scrollOffset = scrollOffset;
@@ -189,14 +189,18 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         //Invalidate Layers intersecting with the right rectangle
 
         int sx = -scrollOffset;
-        int sw = fabs(diffScrollOffset);
+        int sw = fabs(diffScrollOffset)+1;
 
         int vx = -scrollOffset;
         int vw = sw;
 
+        //LOG_VALUE("SX:",sx);
+        //LOG_VALUE("SW:",sw);
+
         Rect invalidationRect(vx,0,vw,240);
         Rect dirtyRect(sx,0,sw,240);
         invalidateRect(dirtyRect,invalidationRect,ILI9341_CYAN);
+        //fillRect(sx,0,sw,240,ILI9341_GREEN);
     }
     else
     {
@@ -207,11 +211,13 @@ void PHDisplay::setScrollOffset(float scrollOffset)
     //Shift display to the specific frame (this is hardware scrolling)
     if (scrollOffset < 0)
     {
-        scrollOffset += 319;
+        int numScreens = scrollOffset/320;
+        numScreens += 1;
+        scrollOffset += numScreens * 320;
     }
     if (scrollOffset > 319)
     {
-        scrollOffset -= 0;
+        scrollOffset -= 320;
     }
 
     LOG_VALUE("Scroll Offset:",scrollOffset);

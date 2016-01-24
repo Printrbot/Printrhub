@@ -55,6 +55,11 @@ void SceneController::loop()
 		if (_scrollVelocity > 0) _scrollVelocity = 0;
 	}
 
+	if (fabsf(_scrollVelocity) < 1)
+	{
+		_scrollVelocity = 0;
+	}
+
 	if(_scrollVelocity != 0)
 	{
 		addScrollOffset(_scrollVelocity);
