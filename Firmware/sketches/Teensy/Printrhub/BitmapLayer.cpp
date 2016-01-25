@@ -30,10 +30,20 @@ void BitmapLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
 
     Rect renderFrame = Rect::Intersect(_frame,invalidationRect);
 
+    int xs = renderFrame.left() - _frame.left();
+    int ys = renderFrame.top() - _frame.top();
+    int width = renderFrame.width;
+    int height = renderFrame.height;
+
     //Transform to screen space
     renderFrame.x = renderFrame.x % 320;
 
-    Display.fillRect(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,ILI9341_PINK);
+    if (height > 0 && width > 0)
+    {
+        Display.drawBitmap(renderFrame.x,renderFrame.y,width,height,_bitmap,xs,ys,_width,_height,1);
+    }
+
+//    Display.fillRect(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,ILI9341_PINK);
     return;
 /*
     int x = renderFrame.x;

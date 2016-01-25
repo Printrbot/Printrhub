@@ -225,3 +225,8 @@ void PHDisplay::setScrollOffset(float scrollOffset)
     Display.setScroll((int)scrollOffset);
 
 }
+
+Rect PHDisplay::visibleRect()
+{
+    return Rect(-_scrollOffset,0,320,240);
+}

@@ -214,8 +214,15 @@ void Layer::display(Layer* backgroundLayer)
             //LOG("No comparison layer found, just draw the layer");
             if (_needsDisplay)
             {
-                LOG("Drawing");
-                draw(renderFrame,_frame);
+                if (isVisible())
+                {
+                    LOG("Drawing");
+                    draw(renderFrame,_frame);
+                }
+                else
+                {
+                    LOG("Not visible");
+                }
                 _needsDisplay = false;
             }
         }
@@ -226,8 +233,15 @@ void Layer::display(Layer* backgroundLayer)
                 //LOG("No valid comparisonlayer found, just draw");
                 if (_needsDisplay)
                 {
-                    LOG("Drawing");
-                    draw(renderFrame,_frame);
+                    if (isVisible())
+                    {
+                        LOG("Drawing");
+                        draw(renderFrame, _frame);
+                    }
+                    else
+                    {
+                        LOG("Not visible");
+                    }
                     _needsDisplay = false;
                 }
             }
@@ -351,4 +365,15 @@ Rect Layer::getRenderFrame()
     int x = _frame.x;
     x = x % 320;
     return Rect(x,_frame.y,_frame.width,_frame.height);
+}
+
+bool Layer::isVisible()
+{
+    Rect visibleFrame = Display.visibleRect();
+    if (visibleFrame.intersectsRect(_frame))
+    {
+        return true;
+    }
+
+    return false;
 }

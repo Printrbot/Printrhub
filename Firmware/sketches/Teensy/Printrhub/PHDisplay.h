@@ -28,6 +28,8 @@ public:
     virtual void setScrollOffset(float scrollOffset);
     virtual float getScrollOffset() { return _scrollOffset; };
 
+    Rect visibleRect();
+
     bool debug;
 
 private:

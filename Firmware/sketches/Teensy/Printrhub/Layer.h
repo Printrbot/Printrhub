@@ -42,6 +42,8 @@ public:
 
     virtual void setNeedsDisplay();
 
+    bool isVisible();
+
     int uniqueId;
 
 protected:
