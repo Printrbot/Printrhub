@@ -49,7 +49,7 @@ void Controller::process() {
 
   if (this->cmd_buff_len < 1)
     return;
-
+  Serial.println(this->cmd_buffer[this->cmd_buff_read_idx]);
   // check if we received $command or g-code
   if (this->cmd_buffer[this->cmd_buff_read_idx][0] == '$') {
     this->runCommand();
@@ -79,7 +79,6 @@ void Controller::processChar(devBuffer &b) {
     // ignore comments
     if (b.comment_mode) {
       b.comment_mode = false;
-      return;
     }
 
     // check if line is empty

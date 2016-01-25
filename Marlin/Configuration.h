@@ -224,7 +224,7 @@ const bool E_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 
 //============================= Bed Auto Leveling ===========================
 
-//#define ENABLE_AUTO_BED_LEVELING // Delete the comment to enable (remove // at the start of the line)
+#define ENABLE_AUTO_BED_LEVELING // Delete the comment to enable (remove // at the start of the line)
 
 // these are the offsets to the prob relative to the extruder tip (Hotend - Probe)
 #define X_PROBE_OFFSET_FROM_EXTRUDER_DEFAULT 20
