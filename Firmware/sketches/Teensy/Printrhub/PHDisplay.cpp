@@ -211,7 +211,7 @@ void PHDisplay::setScrollOffset(float scrollOffset)
     //Shift display to the specific frame (this is hardware scrolling)
     if (scrollOffset < 0)
     {
-        int numScreens = scrollOffset/320;
+        int numScreens = -scrollOffset/320;
         numScreens += 1;
         scrollOffset += numScreens * 320;
     }
