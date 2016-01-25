@@ -12,11 +12,11 @@
 PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint8_t _SCLK, uint8_t _MISO):
         ILI9341_t3(_CS,_DC,_RST,_MOSI,_SCLK,_MISO)
 {
-    _foregroundLayer = new RectangleLayer(Rect(0,0,550,240));
+    _foregroundLayer = new RectangleLayer(Rect(0,0,750,240));
     _foregroundLayer->setBackgroundColor(ILI9341_BLACK);
     _foregroundLayer->setStrokeWidth(0);
 
-    _backgroundLayer = new RectangleLayer(Rect(0,0,550,240));
+    _backgroundLayer = new RectangleLayer(Rect(0,0,750,240));
     _backgroundLayer->setBackgroundColor(ILI9341_BLACK);
     _backgroundLayer->setStrokeWidth(0);
 
@@ -73,7 +73,7 @@ void PHDisplay::layoutIfNeeded()
     _backgroundLayer = _foregroundLayer;
 
     //Create new Layer (forming the new foreground layer)
-    _foregroundLayer = new RectangleLayer(Rect(0,0,550,240));
+    _foregroundLayer = new RectangleLayer(Rect(0,0,750,240));
     _foregroundLayer->setBackgroundColor(ILI9341_BLACK);
     _foregroundLayer->setStrokeWidth(0);
 

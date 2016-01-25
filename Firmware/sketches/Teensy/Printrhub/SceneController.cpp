@@ -46,19 +46,19 @@ void SceneController::loop()
 
 	if (_scrollVelocity > 0)
 	{
-		_scrollVelocity -= fabs(_scrollVelocity) * 0.1;
+		_scrollVelocity -= fabs(_scrollVelocity) * 0.1 * 0.5;
 		if (_scrollVelocity < 0) _scrollVelocity = 0;
 	}
 	else if (_scrollVelocity < 0)
 	{
-		_scrollVelocity += fabs(_scrollVelocity) * 0.1;
+		_scrollVelocity += fabs(_scrollVelocity) * 0.1 * 0.5;
 		if (_scrollVelocity > 0) _scrollVelocity = 0;
 	}
 
-	if (fabsf(_scrollVelocity) < 1)
+/*	if (fabsf(_scrollVelocity) < 1)
 	{
 		_scrollVelocity = 0;
-	}
+	}*/
 
 	if(_scrollVelocity != 0)
 	{
@@ -145,9 +145,9 @@ void SceneController::addScrollOffset(float scrollOffset)
 
 	_scrollOffset += scrollOffset;
 
-	if (_scrollOffset < -230)
+	if (_scrollOffset < -430)
 	{
-		_scrollOffset = -230;
+		_scrollOffset = -430;
 	}
 	if (_scrollOffset > 0)
 	{
