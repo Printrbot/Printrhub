@@ -32,6 +32,9 @@ SceneController::SceneController()
     _prevButton->setBitmap(settingsButton,80,80);
     _prevButton->setDelegate(this);
     addView(_prevButton);
+
+    _labelView = new LabelView("Printrbot Hub 0.1", Rect(20,20,280,40));
+    addView(_labelView);
 }
 
 MainSceneController::~MainSceneController()
@@ -119,6 +122,7 @@ void MainSceneController::onWillAppear()
     _settingsButton->display();
     _nextButton->display();
     _prevButton->display();
+    _labelView->display();
 }
 
 #pragma mark ButtonDelegate Implementation

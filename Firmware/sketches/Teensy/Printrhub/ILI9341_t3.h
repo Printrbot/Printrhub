@@ -137,10 +137,10 @@ class ILI9341_t3 : public Print
   	void sleep(bool enable);		
 	void pushColor(uint16_t color);
 	void fillScreen(uint16_t color);
-	void drawPixel(int16_t x, int16_t y, uint16_t color);
+	virtual void drawPixel(int16_t x, int16_t y, uint16_t color);
 	void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-	void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-	void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+	virtual void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+	virtual void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
 	void setRotation(uint8_t r);
 	void setScroll(uint16_t offset);
 	void invertDisplay(boolean i);
@@ -291,7 +291,7 @@ class ILI9341_t3 : public Print
 		writecommand_cont(ILI9341_RAMWR);
 		writedata16_cont(color);
 	}
-	void drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32_t y, uint32_t repeat);
+	virtual void drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32_t y, uint32_t repeat);
 };
 
 #ifndef swap

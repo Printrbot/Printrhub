@@ -1085,6 +1085,17 @@ void ILI9341_t3::drawFontChar(unsigned int c)
 
 	// TODO: compute top skip and number of lines
 	int32_t linecount = height;
+	Serial.printf("Linecount: %c %d\n",c,height);
+
+	//Fill the gap to the other char to the left
+	fillRect(cursor_x-delta,cursor_y,delta,font->cap_height,ILI9341_OLIVE);
+
+	//Fill the gap from the character to the top line
+	for (int y = cursor_y+font->cap_height-height-1; y >= cursor_y; y--)
+	{
+		drawFastHLine(origin_x,y,width,ILI9341_PINK);
+	}
+
 	//uint32_t loopcount = 0;
 	uint32_t y = origin_y;
 	while (linecount) {
@@ -1134,7 +1145,7 @@ void ILI9341_t3::drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint3
 	do {
 		uint32_t x1 = x;
 		uint32_t n = numbits;
-#if 0		
+#if 1
 		do {
 			n--;
 			if (bits & (1 << n)) {
@@ -1144,7 +1155,7 @@ void ILI9341_t3::drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint3
 			x1++;
 		} while (n > 0);
 #endif
-#if 1
+#if 0
 		int w = 0;
 		do {
 			n--;

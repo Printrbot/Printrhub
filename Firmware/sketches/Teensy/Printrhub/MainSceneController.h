@@ -7,6 +7,7 @@
 
 #include "SceneController.h"
 #include "BitmapButton.h"
+#include "LabelView.h"
 
 class MainSceneController: public SceneController, ButtonDelegate
 {
@@ -25,6 +26,7 @@ protected:
     BitmapButton* _settingsButton;
     BitmapButton* _nextButton;
     BitmapButton* _prevButton;
+    LabelView* _labelView;
     float _offset = 0;
     float _velocity = 4;
     bool _transition = false;

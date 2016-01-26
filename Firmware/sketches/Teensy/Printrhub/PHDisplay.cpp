@@ -6,6 +6,7 @@
 #include "Application.h"
 #include <SPI.h>
 #include <Wiring.h>
+#include <Arduino.h>
 
 #define SPICLOCK 30000000
 
@@ -229,4 +230,109 @@ void PHDisplay::setScrollOffset(float scrollOffset)
 Rect PHDisplay::visibleRect()
 {
     return Rect(-_scrollOffset,0,320,240);
+}
+
+
+void PHDisplay::drawPixel(int16_t x, int16_t y, uint16_t color)
+{
+    if (_clipRect == NULL)
+    {
+        ILI9341_t3::drawPixel(x, y, color);
+    }
+    else
+    {
+        if (x >= _clipRect->left() && x <= _clipRect->right())
+        {
+            if (y >= _clipRect->top() && y <= _clipRect->bottom())
+            {
+                ILI9341_t3::drawPixel(x, y, color);
+            }
+        }
+    }
+}
+
+void PHDisplay::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
+{
+    if (_clipRect == NULL)
+    {
+        ILI9341_t3::fillRect(x, y, w, h, color);
+    }
+    else
+    {
+/*        if (x < _clipRect->left()) x = _clipRect->left();
+        if (x+w > _clipRect->right()) w = x - _clipRect->right();
+        if (y < _clipRect->top()) y = _clipRect->top();
+        if (y+h > _clipRect->bottom()) h = y - _clipRect->bottom();*/
+
+        Rect frame = Rect(x,y,w,h);
+        frame = Rect::Intersect(frame,*_clipRect);
+
+        ILI9341_t3::fillRect(frame.x, frame.y, frame.width, frame.height, color);
+    }
+}
+
+void PHDisplay::drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32_t y, uint32_t repeat)
+{
+    // TODO: replace this *slow* code with something fast...
+    //Serial.printf("      %d bits at %d,%d: %X\n", numbits, x, y, bits);
+    if (bits == 0) return;
+    do {
+        uint32_t x1 = x;
+        uint32_t n = numbits;
+#if 1
+        do {
+            n--;
+            drawPixel(x1,y, ILI9341_PINK);
+            if (bits & (1 << n)) {
+                drawPixel(x1, y, textcolor);
+                //Serial.printf("        pixel at %d,%d\n", x1, y);
+            }
+            x1++;
+        } while (n > 0);
+#endif
+#if 0
+        int w = 0;
+		do {
+			n--;
+			if (bits & (1 << n)) {
+				w++;
+			}
+			else if (w > 0) {
+				drawFastHLine(x1 - w, y, w, textcolor);
+				w = 0;
+			}
+
+			x1++;
+		} while (n > 0);
+		if (w > 0) drawFastHLine(x1 - w, y, w, textcolor);
+#endif
+        y++;
+        repeat--;
+    } while (repeat);
+}
+
+void PHDisplay::drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color)
+{
+    //This function is used by a lot of draw functions
+    if (_clipRect == NULL)
+    {
+        ILI9341_t3::drawFastHLine(x, y, w, color);
+    }
+    else
+    {
+        Rect frame = Rect(x,y,w,1);
+        frame = Rect::Intersect(frame,*_clipRect);
+
+        ILI9341_t3::drawFastHLine(frame.x,frame.y,frame.width,color);
+    }
+}
+
+void PHDisplay::setClippingRect(Rect *rect)
+{
+    _clipRect = rect;
+}
+
+void PHDisplay::resetClippingRect()
+{
+    _clipRect = NULL;
 }
