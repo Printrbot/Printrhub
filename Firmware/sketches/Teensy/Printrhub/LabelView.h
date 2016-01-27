@@ -26,6 +26,8 @@
 #define TEXTALIGN_LEFT 0
 #define TEXTALIGN_CENTERED 1
 #define TEXTALIGN_RIGHT 2
+#define TEXTALIGN_TOP 0
+#define TEXTALIGN_BOTTOM 2
 
 class LabelView: public View
 {
@@ -35,13 +37,21 @@ public:
 
 	void setText(String text);
 	void setTextAlign(uint8_t textAlign);
+	void setVerticalTextAlign(uint8_t verticalTextAlign);
 	void setTextColor(uint16_t color);
-	void setFont(ILI9341_t3_font_t *font);
+	void setFont(const ILI9341_t3_font_t *font);
 
 private:
 	String _text;
 	TextLayer* _layer;
 	uint8_t _textAlign;
+	uint8_t _verticalTextAlign;
+	RectangleLayer* _backgroundLayer;
+	const ILI9341_t3_font_t* _font;
+	uint16_t _textColor;
+
+public:
+	virtual void display() override;
 };
 
 

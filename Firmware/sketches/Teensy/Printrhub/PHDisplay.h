@@ -5,7 +5,7 @@
 #ifndef TEENSYCMAKE_PHDISPLAY_H
 #define TEENSYCMAKE_PHDISPLAY_H
 
-#include <ILI9341_t3.h>
+#include "ILI9341_t3.h"
 #include "StackArray.h"
 #include "Layer.h"
 #include "RectangleLayer.h"

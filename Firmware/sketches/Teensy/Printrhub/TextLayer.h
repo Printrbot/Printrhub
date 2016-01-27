@@ -6,7 +6,7 @@
 #define TEENSYCMAKE_TEXTLAYER_H
 
 #include "Layer.h"
-#include <ILI9341_t3.h>
+#include "ILI9341_t3.h"
 
 class TextLayer: public Layer
 {

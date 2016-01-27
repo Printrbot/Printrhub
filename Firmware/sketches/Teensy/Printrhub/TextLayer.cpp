@@ -17,6 +17,9 @@ void TextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
 {
     Rect renderFrame = Rect::Intersect(_frame,invalidationRect);
 
+//    Display.fillRect(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,ILI9341_BLUE);
+//    return;
+
 /*    int xs = renderFrame.left() - _frame.left();
     int ys = renderFrame.top() - _frame.top();
     int width = renderFrame.width;
@@ -38,10 +41,12 @@ void TextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
     Display.setClippingRect(&renderFrame);
 
     Display.setFont(Arial_20);
-    Display.setTextColor(_foregroundColor);
-    Display.setBackgroundColor(_backgroundColor);
+    Display.setTextColor(_foregroundColor,_backgroundColor);
     Display.setCursor(font.x,font.y);
     Display.print(*_text);
+
+    //Fill the rest of the text layer
+    Display.fillRect(Display.getCursorX(),font.y,font.right()-Display.getCursorX(),font.height,_backgroundColor);
 
     Display.resetClippingRect();
 }

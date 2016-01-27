@@ -18,28 +18,68 @@
 
 #include "LabelView.h"
 #include "Application.h"
-#include <font_Arial.h>
+#include "ILI9341_t3.h"
 
 LabelView::LabelView(String text, uint16_t x, uint16_t y, uint16_t width, uint16_t height):
 		View(x,y,width,height)
 {
 	_textAlign = TEXTALIGN_LEFT;
+	_verticalTextAlign = TEXTALIGN_CENTERED;
 	_text = text;
-
-	_layer = new TextLayer(Rect(x,y,width,height));
-	_layer->setText(&_text);
-	addLayer(_layer);
+	_font = &Arial_20;
+	_textColor = ILI9341_BLACK;
+	_backgroundColor = ILI9341_WHITE;
 }
 
 LabelView::LabelView(String text, Rect frame):
 	View(frame)
 {
 	_textAlign = TEXTALIGN_LEFT;
+	_verticalTextAlign = TEXTALIGN_CENTERED;
 	_text = text;
+	_font = &Arial_20;
+	_textColor = ILI9341_BLACK;
+	_backgroundColor = ILI9341_WHITE;
+}
+
+void LabelView::display()
+{
+	_backgroundLayer = new RectangleLayer(_frame);
+	_backgroundLayer->setBackgroundColor(_backgroundColor);
+	addLayer(_backgroundLayer);
+
+	//Align the text layer
+	Rect frame = _frame;
+	if (_verticalTextAlign == TEXTALIGN_TOP)
+	{
+		frame.y += 1;
+	}
+	else if (_verticalTextAlign == TEXTALIGN_BOTTOM)
+	{
+		frame.y = frame.bottom()-_font->cap_height - 1;
+	}
+	else if (_verticalTextAlign == TEXTALIGN_CENTERED)
+	{
+		frame.y += (frame.height - _font->cap_height) / 2;
+	}
+	frame.height = _font->cap_height;
+
+	//TODO: Add code for horizontal alignment
+
+	//TODO: Fix this bug. If the inner layers left and right ly on the outer layers boundaries
+	//there is a strange render bug. Inseting by one pixels helps though and doesn't matter here
+	frame.x += 10;
+	frame.width -= 22;
 
 	_layer = new TextLayer(frame);
+	_layer->setForegroundColor(_textColor);
+	_layer->setBackgroundColor(_backgroundColor);
 	_layer->setText(&_text);
 	addLayer(_layer);
+
+	_backgroundLayer->splitWithRect(_layer->getFrame());
+
+	View::display();
 }
 
 void LabelView::setText(String text)
@@ -57,13 +97,21 @@ void LabelView::setTextAlign(uint8_t textAlign)
 
 void LabelView::setTextColor(uint16_t color)
 {
-	if (_layer->getForegroundColor() == color) return;
-	_layer->setForegroundColor(color);
+	if (_textColor == color) return;
+	_textColor = color;
 	setNeedsDisplay();
 }
 
-void LabelView::setFont(ILI9341_t3_font_t* font)
+void LabelView::setVerticalTextAlign(uint8_t verticalTextAlign)
 {
-	_layer->setFont(font);
+	if (_verticalTextAlign == verticalTextAlign) return;
+	_verticalTextAlign = verticalTextAlign;
+	setNeedsDisplay();
+}
+
+void LabelView::setFont(const ILI9341_t3_font_t* font)
+{
+	if (_font == font) return;
+	_font = font;
 	setNeedsDisplay();
 }

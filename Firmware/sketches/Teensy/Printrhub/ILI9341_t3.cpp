@@ -1085,15 +1085,15 @@ void ILI9341_t3::drawFontChar(unsigned int c)
 
 	// TODO: compute top skip and number of lines
 	int32_t linecount = height;
-	Serial.printf("Linecount: %c %d\n",c,height);
+	//Serial.printf("Linecount: %c %d\n",c,height);
 
 	//Fill the gap to the other char to the left
-	fillRect(cursor_x-delta,cursor_y,delta,font->cap_height,ILI9341_OLIVE);
+	fillRect(cursor_x-delta,cursor_y,delta,font->cap_height,textbgcolor);
 
 	//Fill the gap from the character to the top line
 	for (int y = cursor_y+font->cap_height-height-1; y >= cursor_y; y--)
 	{
-		drawFastHLine(origin_x,y,width,ILI9341_PINK);
+		drawFastHLine(origin_x,y,width,textbgcolor);
 	}
 
 	//uint32_t loopcount = 0;
