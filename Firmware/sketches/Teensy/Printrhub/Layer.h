@@ -44,6 +44,8 @@ public:
 
     bool isVisible();
 
+    void log();
+
     int uniqueId;
 
 protected:
