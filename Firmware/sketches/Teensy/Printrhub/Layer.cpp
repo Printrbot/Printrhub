@@ -100,6 +100,20 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
     }
 }
 
+void Layer::log()
+{
+    LOG_VALUE("Layer: ",_frame.toString());
+    if (_sublayers != NULL && _sublayers->count() > 0)
+    {
+        LOG_VALUE("Children: ",_sublayers->count());
+        for (int i=0;i<_sublayers->count();i++)
+        {
+            Layer* sublayer = _sublayers->at(i);
+            sublayer->log();
+        }
+    }
+}
+
 /*
  * receiver will receive the left layer in 0 and (if available) the right lay
  *
