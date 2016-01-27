@@ -25,9 +25,9 @@
 #include "ColorTheme.h"
 #include "Icon.h"
 #include "PHDisplay.h"
-#include <ILI9341_t3.h>
+#include "ILI9341_t3.h"
 #include <Adafruit_FT6206.h>
-#include <font_Arial.h>
+#include "font_Arial.h"
 #include "Animator.h"
 
 #define STRINGIZE_DETAIL(x) #x
@@ -48,6 +48,7 @@ public:
 
 	void loop();
 	void pushScene(SceneController* scene);
+	SceneController* currentScene() { return _scenes.peek(); };
 	void dismissScene();
 
 	void setFocusedView(View* focusView);

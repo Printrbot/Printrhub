@@ -14,11 +14,11 @@ PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint
         ILI9341_t3(_CS,_DC,_RST,_MOSI,_SCLK,_MISO)
 {
     _foregroundLayer = new RectangleLayer(Rect(0,0,750,240));
-    _foregroundLayer->setBackgroundColor(ILI9341_BLACK);
+    _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
     _foregroundLayer->setStrokeWidth(0);
 
     _backgroundLayer = new RectangleLayer(Rect(0,0,750,240));
-    _backgroundLayer->setBackgroundColor(ILI9341_BLACK);
+    _backgroundLayer->setBackgroundColor(ILI9341_WHITE);
     _backgroundLayer->setStrokeWidth(0);
 
     _needsLayout = true;
@@ -73,9 +73,37 @@ void PHDisplay::layoutIfNeeded()
     delete _backgroundLayer;
     _backgroundLayer = _foregroundLayer;
 
+    //SceneController* currentScene = Application.currentScene();
+
+    //Get Max Layer Width
+    Rect bounds = Rect(0,0,320,240);
+    for (int i=0;i<_layers.count();i++)
+    {
+        Layer *layer = _layers.at(i);
+
+        if (layer->getFrame().left() < bounds.left())
+        {
+            bounds.x = layer->getFrame().x;
+        }
+        if (layer->getFrame().right() > bounds.right())
+        {
+            bounds.width = layer->getFrame().right() - bounds.left();
+        }
+        if (layer->getFrame().top() < bounds.top())
+        {
+            bounds.y = layer->getFrame().y;
+        }
+        if (layer->getFrame().bottom() > bounds.bottom())
+        {
+            bounds.height = layer->getFrame().bottom() - bounds.top();
+        }
+    }
+
+    bounds.width += 1;
+
     //Create new Layer (forming the new foreground layer)
-    _foregroundLayer = new RectangleLayer(Rect(0,0,750,240));
-    _foregroundLayer->setBackgroundColor(ILI9341_BLACK);
+    _foregroundLayer = new RectangleLayer(bounds);
+    _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
     _foregroundLayer->setStrokeWidth(0);
 
     for (int i=0;i<_layers.count();i++)
@@ -160,6 +188,15 @@ void PHDisplay::invalidateRect(Rect&dirtyRect, Rect& invalidationRect, uint16_t 
 
 void PHDisplay::setScrollOffset(float scrollOffset)
 {
+    if (scrollOffset < -(_foregroundLayer->getFrame().width-320))
+    {
+        scrollOffset = -(_foregroundLayer->getFrame().width-320);
+    }
+    if (scrollOffset > 0)
+    {
+        scrollOffset = 0;
+    }
+
     float diffScrollOffset = ceilf(_scrollOffset - scrollOffset);
     if (diffScrollOffset == 0) return;
 

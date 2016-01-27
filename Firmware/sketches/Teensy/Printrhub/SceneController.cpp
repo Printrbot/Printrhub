@@ -145,15 +145,6 @@ void SceneController::addScrollOffset(float scrollOffset)
 
 	_scrollOffset += scrollOffset;
 
-	if (_scrollOffset < -430)
-	{
-		_scrollOffset = -430;
-	}
-	if (_scrollOffset > 0)
-	{
-		_scrollOffset = 0;
-	}
-
 	Display.setScrollOffset(_scrollOffset);
 }
 
