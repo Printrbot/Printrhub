@@ -85,6 +85,7 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
         //Create the top layer
         Layer* leftLayer = new GapLayer(Rect(_frame.x,_frame.y,x-_frame.x,_frame.height));
         leftLayer->uniqueId = ::globalLayerId++;
+        leftLayer->setBackgroundColor(_backgroundColor);
         *left = leftLayer;
         //if (Display.debug) LOG_VALUE("Layer created",leftLayer->uniqueId);
     }
@@ -93,6 +94,7 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
     {
         Layer* rightLayer = new GapLayer(Rect(x,_frame.y,_frame.right()-x,_frame.height));
         rightLayer->uniqueId = ::globalLayerId++;
+        rightLayer->setBackgroundColor(_backgroundColor);
         *right = rightLayer;
         //if (Display.debug) LOG_VALUE("Layer created",rightLayer->uniqueId);
     }
@@ -116,6 +118,7 @@ void Layer::splitHorizontally(int y, Layer**top, Layer**bottom)
     {
         Layer* topLayer = new GapLayer(Rect(_frame.x,_frame.y,_frame.width,y-_frame.y));
         topLayer->uniqueId = ::globalLayerId++;
+        topLayer->setBackgroundColor(_backgroundColor);
         *top = topLayer;
         //if (Display.debug) LOG_VALUE("Layer created",topLayer->uniqueId);
     }
@@ -124,6 +127,7 @@ void Layer::splitHorizontally(int y, Layer**top, Layer**bottom)
     {
         Layer* bottomLayer = new GapLayer(Rect(_frame.x,y,_frame.width,_frame.bottom()-y));
         bottomLayer->uniqueId = ::globalLayerId++;
+        bottomLayer->setBackgroundColor(_backgroundColor);
         *bottom = bottomLayer;
         //if (Display.debug) LOG_VALUE("Layer created",bottomLayer->uniqueId);
     }
