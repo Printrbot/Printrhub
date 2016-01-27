@@ -83,7 +83,7 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
     if (left != NULL)
     {
         //Create the top layer
-        Layer* leftLayer = new GapLayer(Rect(_frame.x,_frame.y,x-_frame.x,_frame.bottom()));
+        Layer* leftLayer = new GapLayer(Rect(_frame.x,_frame.y,x-_frame.x,_frame.height));
         leftLayer->uniqueId = ::globalLayerId++;
         *left = leftLayer;
         //if (Display.debug) LOG_VALUE("Layer created",leftLayer->uniqueId);
@@ -91,7 +91,7 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
 
     if (right != NULL)
     {
-        Layer* rightLayer = new GapLayer(Rect(x,_frame.y,_frame.right()-x,_frame.bottom()));
+        Layer* rightLayer = new GapLayer(Rect(x,_frame.y,_frame.right()-x,_frame.height));
         rightLayer->uniqueId = ::globalLayerId++;
         *right = rightLayer;
         //if (Display.debug) LOG_VALUE("Layer created",rightLayer->uniqueId);
