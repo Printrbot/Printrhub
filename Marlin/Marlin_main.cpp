@@ -62,8 +62,6 @@
 
 // M Codes
 // M17  - Enable/Power all stepper motors
-// M18  - Disable all stepper motors; same as M84
-
 // M42  - Change pin status via gcode Use M42 Px Sy to set pin x to value y, when omitting Px the onboard led will be used.
 // M82  - Set E codes absolute (default)
 // M83  - Set E codes relative while in Absolute Coordinates (G90) mode

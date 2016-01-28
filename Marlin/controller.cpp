@@ -79,6 +79,7 @@ void Controller::processChar(devBuffer &b) {
     // ignore comments
     if (b.comment_mode) {
       b.comment_mode = false;
+
     }
 
     // check if line is empty
@@ -327,6 +328,9 @@ void Controller::runMcode()
         char y[8]; PString(y, 8, Printer::current_position[1]);
         char z[8]; PString(z, 8, Printer::current_position[2]);
         char e[8]; PString(e, 8, Printer::current_position[3]);
+
+
+
         PBSerial::printf(F("{\"m\":\"m114\", \"d\": {\"x\": %s, \"y\": %s, \"z\": %s,\"e\": %s}}\n"),x,y,z,e);
       break;
 
@@ -335,6 +339,12 @@ void Controller::runMcode()
       Printer::reportEndstops();
       break;
 
+    case 120:
+      enable_endstops(false) ;
+      break;
+    case 121:
+      enable_endstops(true) ;
+      break;
 
     case 140:
       if (this->gcode.hasCode('S'))
@@ -415,6 +425,12 @@ void Controller::runMcode()
           Printer::probe_offset[i] = this->gcode.getCodeValue();
         }
       }
+
+      char ox[8]; PString(ox, 8, Printer::probe_offset[0]);
+      char oy[8]; PString(oy, 8, Printer::probe_offset[1]);
+      char oz[8]; PString(oz, 8, Printer::probe_offset[2]);
+
+      PBSerial::printf(F("{\"m\":\"m212\", \"d\": {\"x\": %s, \"y\": %s,\"z\": %s}}\n"),ox,oy,oz);
       break;
 
     case 213:
@@ -452,7 +468,7 @@ void Controller::runMcode()
       char _ki[8]; PString(_ki, 8, Ki);
       char _kd[8]; PString(_kd, 8, Kd);
       char _kc[8]; PString(_kc, 8, Kc);
-      PBSerial::printf(F("{\"m\":\"301\", \"d\": {\"p\": %s, \"i\": %s, \"d\": %s, \"c\": %s}}\n"), _kp, _ki, _kd, _kc);
+      PBSerial::printf(F("{\"m\":\"m301\", \"d\": {\"p\": %s, \"i\": %s, \"d\": %s, \"c\": %s}}\n"), _kp, _ki, _kd, _kc);
       }
       break;
 
@@ -491,7 +507,7 @@ void Controller::runMcode()
       char _kp[8]; PString(_kp, 8, bedKp);
       char _ki[8]; PString(_ki, 8, bedKi);
       char _kd[8]; PString(_kd, 8, bedKd);
-      PBSerial::printf(F("{\"m\":\"301\", \"d\": {\"p\": %s, \"i\": %s, \"d\": %s}}\n"), _kp, _ki, _kd);
+      PBSerial::printf(F("{\"m\":\"m304\", \"d\": {\"p\": %s, \"i\": %s, \"d\": %s}}\n"), _kp, _ki, _kd);
       }
       break;
     #endif //PIDTEMP

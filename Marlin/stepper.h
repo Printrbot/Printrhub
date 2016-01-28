@@ -71,8 +71,6 @@ void enable_endstops(bool check); // Enable/disable endstop checking
 
 void checkStepperErrors(); //Print errors detected by the stepper
 
-void finishAndDisableSteppers();
-
 extern block_t *current_block;  // A pointer to the block currently being traced
 
 void quickStop();
@@ -83,11 +81,5 @@ void microstep_mode(uint8_t driver, uint8_t stepping);
 void digipot_init();
 void digipot_current(uint8_t driver, int current);
 void microstep_init();
-
-#ifdef BABYSTEPPING
-  void babystep(const bool direction); // perform a short step with a single stepper motor, outside of any convention
-#endif
-
-
 
 #endif

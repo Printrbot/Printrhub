@@ -87,14 +87,13 @@ void vector_3::apply_rotation(matrix_3x3 matrix)
 
 void vector_3::debug(char* title)
 {
-	//SERIAL_PROTOCOL(title);
-	//SERIAL_PROTOCOLPGM(" x: ");
-	//SERIAL_PROTOCOL(x);
-	//SERIAL_PROTOCOLPGM(" y: ");
-	//SERIAL_PROTOCOL(y);
-	//SERIAL_PROTOCOLPGM(" z: ");
-	//SERIAL_PROTOCOL(z);
-	//SERIAL_PROTOCOLPGM("\n");
+  Serial.println(title);
+  Serial.print(" x: ");
+  Serial.println(x);
+  Serial.print(" y: ");
+  Serial.println(y);
+  Serial.print(" z: ");
+  Serial.println(z);
 }
 
 void apply_rotation_xyz(matrix_3x3 matrix, float &x, float& y, float& z)
@@ -157,20 +156,19 @@ matrix_3x3 matrix_3x3::transpose(matrix_3x3 original)
 
 void matrix_3x3::debug(char* title)
 {
-	//SERIAL_PROTOCOL(title);
-	//SERIAL_PROTOCOL("\n");
-	//int count = 0;
-	//for(int i=0; i<3; i++)
-	//{
-	//	for(int j=0; j<3; j++)
-	//	{
-	//		SERIAL_PROTOCOL(matrix[count]);
-	//		SERIAL_PROTOCOLPGM(" ");
-	//	        count++;
-	//	}
-//
-	//	SERIAL_PROTOCOLPGM("\n");
-	//}
+  Serial.println(title);
+	int count = 0;
+	for(int i=0; i<3; i++)
+	{
+		for(int j=0; j<3; j++)
+		{
+      Serial.print(matrix[count]);
+		  Serial.print(" ");
+	    count++;
+		}
+
+		Serial.print("\n");
+	}
 }
 
 #endif // #ifdef ENABLE_AUTO_BED_LEVELING

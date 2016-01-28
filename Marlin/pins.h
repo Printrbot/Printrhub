@@ -81,7 +81,7 @@
 ****************************************************************************************/
 #if MOTHERBOARD == 84
 #define KNOWN_BOARD 1
-#define AT90USB 1286  
+#define AT90USB 1286
 
 #ifndef __AVR_AT90USB1286__
 #error Oops!  Make sure you have 'Teensy++ 2.0' selected from the 'Tools -> Boards' menu.
@@ -131,9 +131,6 @@
 #define Z_MAX_PIN -1
 //#define E_MIN_PIN 28
 //#define E_MAX_PIN 29
-
-#define BABYSTEP_UP_PIN 30
-#define BABYSTEP_DOWN_PIN 31
 
 #define PBNEO_PIN 6
 

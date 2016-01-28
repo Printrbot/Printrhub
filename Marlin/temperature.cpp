@@ -68,9 +68,6 @@ float current_temperature_bed = 0.0;
 
 unsigned char soft_pwm_bed;
 
-#ifdef BABYSTEPPING
-  volatile int babystepsTodo = 0;
-#endif
 
 //===========================================================================
 //=============================private variables============================
@@ -1275,20 +1272,6 @@ ISR(TIMER0_COMPB_vect)
     }
 #endif
   }
-
-#ifdef BABYSTEPPING
-    if(babystepsTodo>0)
-    {
-      babystep(true); //forward
-      babystepsTodo--; //less to do next time
-    }
-    else
-    if(babystepsTodo<0)
-    {
-      babystep(false);
-      babystepsTodo++; //less to do next time
-    }
-#endif //BABYSTEPPING
 
 }
 

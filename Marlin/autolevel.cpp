@@ -17,6 +17,9 @@ void Autolevel::setupForEndstopMove() {
 }
 
 void Autolevel::cleanupAfterEndstopMove() {
+#ifdef ENDSTOPS_ONLY_FOR_HOMING
+    enable_endstops(false);
+#endif
   Printer::feedrate = Printer::saved_feedrate;
   Printer::feed_multiply = Printer::saved_feed_multiply;
   Printer::last_cmd_time = millis();
@@ -55,7 +58,7 @@ void Autolevel::runZProbe() {
 
   // move back down slowly to find bed
   Printer::feedrate = Printer::homing_feedrate[Z_AXIS]/4;
-  zPosition -= Z_HOME_RETRACT_MM * 2;
+  zPosition = -10;
   plan_buffer_line(Printer::current_position[X_AXIS],
                    Printer::current_position[Y_AXIS],
                    zPosition,
@@ -123,6 +126,8 @@ void Autolevel::run() {
   Autolevel::runZProbe();
   float z_at_xLeft_yBack = Printer::current_position[Z_AXIS];
 
+
+
   // prob 2
   Autolevel::doBlockingMove(Printer::current_position[X_AXIS],
                       Printer::current_position[Y_AXIS],
@@ -148,6 +153,7 @@ void Autolevel::run() {
   Autolevel::runZProbe();
   float z_at_xRight_yFront = Printer::current_position[Z_AXIS];
 
+
   Autolevel::cleanupAfterEndstopMove();
 
   Autolevel::setBedLevelEquation(z_at_xLeft_yFront, z_at_xRight_yFront, z_at_xLeft_yBack);
@@ -166,7 +172,7 @@ void Autolevel::run() {
   Printer::current_position[Z_AXIS] = z_tmp - real_z + Printer::current_position[Z_AXIS];   //The difference is added to current position and sent to planner.
 
   // temp
-  plan_bed_level_matrix.set_to_identity();
+  //plan_bed_level_matrix.set_to_identity();
 
   plan_set_position(Printer::current_position[X_AXIS],
                     Printer::current_position[Y_AXIS],
@@ -177,6 +183,8 @@ void Autolevel::run() {
   Printer::destination[Y_AXIS] = Printer::current_position[Y_AXIS];
   Printer::destination[Z_AXIS] = Printer::current_position[Z_AXIS];
   Printer::destination[E_AXIS] = Printer::current_position[E_AXIS];
+
+  st_synchronize();
 }
 
 
@@ -193,24 +201,22 @@ void Autolevel::setBedLevelEquation(float z_at_xLeft_yFront, float z_at_xRight_y
 
     //planeNormal.debug("planeNormal");
     //yPositive.debug("yPositive");
+
     plan_bed_level_matrix = matrix_3x3::create_look_at(planeNormal);
-    //bedLevel.debug("bedLevel");
 
-    //plan_bed_level_matrix.debug("bed level before");
-    //vector_3 uncorrected_position = plan_get_position_mm();
-    //uncorrected_position.debug("position before");
-
+  //  plan_bed_level_matrix.debug("bed level before");
     // and set our bed level equation to do the right thing
-    //plan_bed_level_matrix.debug("bed level after");
+//    plan_bed_level_matrix.debug("bed level after");
 
     vector_3 corrected_position = plan_get_position();
-    //corrected_position.debug("position after");
+
     Printer::current_position[X_AXIS] = corrected_position.x;
     Printer::current_position[Y_AXIS] = corrected_position.y;
     Printer::current_position[Z_AXIS] = corrected_position.z;
 
-    // but the bed at 0 so we don't go below it.
     Printer::current_position[Z_AXIS] = -Printer::probe_offset[2];
+
+    corrected_position.debug("position after");
 
     plan_set_position(Printer::current_position[X_AXIS],
                       Printer::current_position[Y_AXIS],
