@@ -31,8 +31,8 @@ void RectangleLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
     Serial.println(_frame.height);*/
 
     Rect renderFrame = Rect::Intersect(_frame,invalidationRect);
-    LOG_VALUE("Frame:",_frame.toString());
-    LOG_VALUE("renderFrame:",renderFrame.toString());
+    //LOG_VALUE("Frame:",_frame.toString());
+    //LOG_VALUE("renderFrame:",renderFrame.toString());
 
     //Transform to screen space
     renderFrame.x = renderFrame.x % 320;

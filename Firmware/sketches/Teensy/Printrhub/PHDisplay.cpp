@@ -258,7 +258,7 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         scrollOffset -= 320;
     }
 
-    LOG_VALUE("Scroll Offset:",scrollOffset);
+    //LOG_VALUE("Scroll Offset:",scrollOffset);
 
     Display.setScroll((int)scrollOffset);
 

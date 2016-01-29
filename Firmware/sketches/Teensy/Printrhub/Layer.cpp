@@ -288,7 +288,7 @@ void Layer::invalidateRect(Rect& dirtyRect, Rect &invalidationRect)
     {
         if (_frame.intersectsRect(invalidationRect))
         {
-            LOG_VALUE("Invalidated Layer:",_frame.toString());
+            //LOG_VALUE("Invalidated Layer:",_frame.toString());
 
             draw(dirtyRect, invalidationRect);
         }
