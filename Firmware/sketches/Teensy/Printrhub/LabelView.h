@@ -40,6 +40,7 @@ public:
 	void setVerticalTextAlign(uint8_t verticalTextAlign);
 	void setTextColor(uint16_t color);
 	void setFont(const ILI9341_t3_font_t *font);
+	RectangleLayer* getBackgroundLayer() { return _backgroundLayer; };
 
 private:
 	String _text;
