@@ -21,15 +21,10 @@ public:
     virtual void loop();
 
 protected:
-    BitmapButton* _printButton;
-    BitmapButton* _filamentButton;
-    BitmapButton* _settingsButton;
-    BitmapButton* _nextButton;
-    BitmapButton* _prevButton;
-    LabelView* _labelView;
-    float _offset = 0;
-    float _velocity = 4;
-    bool _transition = false;
+    LabelView* _printButton;
+    LabelView* _filamentButton;
+    LabelView* _settingsButton;
+    LabelView* _hotendButton;
 
 public:
     virtual void setup() override;

@@ -73,12 +73,12 @@ void setup(void)
     Display.fillScreen(ILI9341_BLACK);
 
     Serial.println("Starting MainMenu");
-    //mainController = new MainSceneController();
-    //Application.pushScene(mainController);
+    mainController = new MainSceneController();
+    Application.pushScene(mainController);
     //idleScene = new IdleSceneController();
     //Application.pushScene(idleScene);
-    wifiController = new WiFiSetupSceneController();
-    Application.pushScene(wifiController);
+    //wifiController = new WiFiSetupSceneController();
+    //Application.pushScene(wifiController);
 }
 
 void loop()

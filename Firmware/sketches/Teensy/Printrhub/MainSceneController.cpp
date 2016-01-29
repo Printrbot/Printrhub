@@ -8,33 +8,17 @@
 MainSceneController::MainSceneController():
 SceneController::SceneController()
 {
-    _printButton = new BitmapButton(Rect(23,90,80,80));
-    _printButton->setBitmap(printerButton,80,80);
-    _printButton->setDelegate(this);
+    _printButton = new LabelView("Print",Rect(0,0,160,119));
     addView(_printButton);
 
-    _filamentButton = new BitmapButton(Rect(120,90,80,80));
-    _filamentButton->setBitmap(filamentButton,80,80);
-    _filamentButton->setDelegate(this);
+    _hotendButton = new LabelView("Hotend",Rect(160,0,160,120));
+    addView(_hotendButton);
+
+    _filamentButton = new LabelView("Filament",Rect(0,120,160,120));
     addView(_filamentButton);
 
-    _settingsButton = new BitmapButton(Rect(215,90,80,80));
-    _settingsButton->setBitmap(settingsButton,80,80);
-    _settingsButton->setDelegate(this);
+    _settingsButton= new LabelView("Settings",Rect(160,120,160,120));
     addView(_settingsButton);
-
-    _nextButton = new BitmapButton(Rect(400,110,80,80));
-    _nextButton->setBitmap(settingsButton,80,80);
-    _nextButton->setDelegate(this);
-    addView(_nextButton);
-
-    _prevButton = new BitmapButton(Rect(650,50,80,80));
-    _prevButton->setBitmap(settingsButton,80,80);
-    _prevButton->setDelegate(this);
-    addView(_prevButton);
-
-    _labelView = new LabelView("Printrbot Hub 0.1", Rect(20,20,280,40));
-    addView(_labelView);
 }
 
 MainSceneController::~MainSceneController()
@@ -120,9 +104,7 @@ void MainSceneController::onWillAppear()
     _printButton->display();
     _filamentButton->display();
     _settingsButton->display();
-    _nextButton->display();
-    _prevButton->display();
-    _labelView->display();
+    _hotendButton->display();
 }
 
 #pragma mark ButtonDelegate Implementation
@@ -130,8 +112,5 @@ void MainSceneController::onWillAppear()
 void MainSceneController::buttonPressed(BitmapButton *button)
 {
     LOG("MainSceneController::buttonPressed");
-    if (button == _printButton)
-    {
-//        _printButton->setFrame(Rect(23,95,80,80));
-    }
+
 }
