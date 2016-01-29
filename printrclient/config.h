@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #define CONFIG_START 0
+#define FIRMWARE_VERSION 0.2
 
 struct ConfigData {
   char server[16];

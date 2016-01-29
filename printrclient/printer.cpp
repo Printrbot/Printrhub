@@ -15,6 +15,8 @@ uint8_t Printer::cmd_buff_len = 0;
 File Printer::printFile;
 
 bool Printer::printing = false;
+bool Printer::paused = false;
+
 PrintBuffer Printer::printBuffer = PrintBuffer();
 bool Printer::sendNext = true;
 
@@ -55,6 +57,7 @@ void Printer::process() {
     return;
 
   if (instr[0] != ';') {
+    Serial.println(instr);
     Printer::sendNext = false;
   } else {
     DEBUG("SKIPPING COMMENT LINE");

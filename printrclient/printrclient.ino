@@ -42,6 +42,10 @@ void setup() {
         while (1) { delay(1000); };
       }
     }
+  } else {
+    // unable to connect to wifi, reboot
+    delay(2000);
+    ESP.restart();
   }
 }
 

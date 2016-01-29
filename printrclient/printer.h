@@ -34,6 +34,7 @@ class Printer {
   public:
     static void startPrint(String file);
     static bool printing;
+    static bool paused;
     static void process();
     static void update();
     static void getInfo();

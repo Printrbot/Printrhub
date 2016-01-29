@@ -47,8 +47,8 @@ bool Net::connectServer()
 {
   DEBUG("connecting to server");
   long _port = atol(Config::data.port);
-  StaticJsonBuffer<200> jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();
+  //StaticJsonBuffer<200> jsonBuffer;
+  //JsonObject& root = jsonBuffer.createObject();
   DEBUG("server: ");
   DEBUG(Config::data.server);
   DEBUG("port: ");
@@ -59,10 +59,12 @@ bool Net::connectServer()
     return false;
   } else {
     DEBUG("connected fine, try to authenticate");
-    root["m"] = "auth";
-    root["d"] = Config::data.jwt;
-    root.printTo(client);
-    client.print('\n');
+    String response = "{\"m\":\"auth\", \"d\":\""+String(Config::data.jwt)+"\", \"v\":\""+FIRMWARE_VERSION+"\"}\n";
+    //root["m"] = "auth";
+    //root["d"] = Config::data.jwt;
+    //root.printTo(client);
+    //client.print('\n');
+    client.print(response);
     serverConnected = true;
     delay(10);
     return true;

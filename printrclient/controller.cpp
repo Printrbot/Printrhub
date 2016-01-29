@@ -4,6 +4,8 @@
 #include "net.h"
 #include "card.h"
 #include "macros.h"
+//#include <ESP8266HTTPClient.h>
+#include <ESP8266httpUpdate.h>
 
 void Controller::runJson(JsonObject * o)
 {
@@ -24,6 +26,22 @@ void Controller::runJson(JsonObject * o)
     DEBUG("dowloading gcode");
     Card::downloadFile(o->get("shortid"), o->get("gcode"));
   }
+  else if (msg == String("fwupdate")) {
+    t_httpUpdate_return ret = ESPhttpUpdate.update(o->get("d"));
+    switch(ret) {
+        case HTTP_UPDATE_FAILED:
+            Serial.printf(";HTTP_UPDATE_FAILD Error");
+            break;
+
+        case HTTP_UPDATE_NO_UPDATES:
+            DEBUG("HTTP_UPDATE_NO_UPDATES");
+            break;
+
+        case HTTP_UPDATE_OK:
+            DEBUG("HTTP_UPDATE_OK");
+            break;
+    }
+  }
   else if (msg == String("listfiles")) {
     DEBUG("listing files");
     Card::listFiles();
@@ -38,14 +56,10 @@ void Controller::runJson(JsonObject * o)
     Printer::startPrint(f);
   }
   else if (msg == String("stat")) {
-    String response = "{\"m\":\"stat\", \"d\":\"ok\"}\n";
+    String response = "{\"m\":\"stat\", \"d\": {\"printing\":\""+ String(Printer::printing)+ "\"," +
+                      "\"paused\":\""+ String(Printer::paused)+"\"}}\n";
     Net::client.print(response);
   }
-
-  // AUTH--------------------------------------------------
-
-
-  //o->printTo(Serial);
 };
 
 void Controller::fromPrinter(char * c)

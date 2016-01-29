@@ -5,6 +5,7 @@
 #include "net.h"
 #include <ESP8266HTTPClient.h>
 #include "printer.h"
+#include "macros.h"
 
 bool Card::ok = false;
 bool Card::hasKeyFile = false;
