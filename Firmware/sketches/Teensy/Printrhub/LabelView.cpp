@@ -23,7 +23,7 @@
 LabelView::LabelView(String text, uint16_t x, uint16_t y, uint16_t width, uint16_t height):
 		View(x,y,width,height)
 {
-	_textAlign = TEXTALIGN_LEFT;
+	_textAlign = TEXTALIGN_CENTERED;
 	_verticalTextAlign = TEXTALIGN_CENTERED;
 	_text = text;
 	_font = &Arial_20;
@@ -34,7 +34,7 @@ LabelView::LabelView(String text, uint16_t x, uint16_t y, uint16_t width, uint16
 LabelView::LabelView(String text, Rect frame):
 	View(frame)
 {
-	_textAlign = TEXTALIGN_LEFT;
+	_textAlign = TEXTALIGN_CENTERED;
 	_verticalTextAlign = TEXTALIGN_CENTERED;
 	_text = text;
 	_font = &Arial_20;
@@ -68,8 +68,21 @@ void LabelView::display()
 
 	//TODO: Fix this bug. If the inner layers left and right ly on the outer layers boundaries
 	//there is a strange render bug. Inseting by one pixels helps though and doesn't matter here
-	frame.x += 10;
-	frame.width -= 22;
+	frame.x += 1;
+	frame.width -= 2;
+
+	if (_textAlign == TEXTALIGN_CENTERED)
+	{
+		uint32_t width = Display.textWidth(_font, _text);
+		frame.x += (frame.width - width)/2;
+		frame.width = width;
+	}
+	else if (_textAlign == TEXTALIGN_RIGHT)
+	{
+		uint32_t width = Display.textWidth(_font, _text);
+		frame.x += (frame.width - width);
+		frame.width = width;
+	}
 
 	_layer = new TextLayer(frame);
 	_layer->setForegroundColor(_textColor);

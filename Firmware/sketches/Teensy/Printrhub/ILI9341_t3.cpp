@@ -1229,7 +1229,65 @@ void ILI9341_t3::sleep(bool enable) {
 		SPI.endTransaction();
 		delay(5);
 	}
-} 
+}
+
+uint32_t ILI9341_t3::widthOfChar(const ILI9341_t3_font_t* font, char c)
+{
+	uint32_t bitoffset;
+	const uint8_t *data;
+
+	//Serial.printf("drawFontChar %d\n", c);
+
+	if (c >= font->index1_first && c <= font->index1_last) {
+		bitoffset = c - font->index1_first;
+		bitoffset *= font->bits_index;
+	} else if (c >= font->index2_first && c <= font->index2_last) {
+		bitoffset = c - font->index2_first + font->index1_last - font->index1_first + 1;
+		bitoffset *= font->bits_index;
+	} else if (font->unicode) {
+		return 0; // TODO: implement sparse unicode
+	} else {
+		return 0;
+	}
+	//Serial.printf("  index =  %d\n", fetchbits_unsigned(font->index, bitoffset, font->bits_index));
+	data = font->data + fetchbits_unsigned(font->index, bitoffset, font->bits_index);
+
+	uint32_t encoding = fetchbits_unsigned(data, 0, 3);
+	if (encoding != 0) return 0;
+	uint32_t width = fetchbits_unsigned(data, 3, font->bits_width);
+	bitoffset = font->bits_width + 3;
+	uint32_t height = fetchbits_unsigned(data, bitoffset, font->bits_height);
+	bitoffset += font->bits_height;
+	//Serial.printf("  size =   %d,%d\n", width, height);
+
+	int32_t xoffset = fetchbits_signed(data, bitoffset, font->bits_xoffset);
+	bitoffset += font->bits_xoffset;
+	int32_t yoffset = fetchbits_signed(data, bitoffset, font->bits_yoffset);
+	bitoffset += font->bits_yoffset;
+	//Serial.printf("  offset = %d,%d\n", xoffset, yoffset);
+
+	uint32_t delta = fetchbits_unsigned(data, bitoffset, font->bits_delta);
+	bitoffset += font->bits_delta;
+
+	return delta;
+}
+
+uint32_t ILI9341_t3::textWidth(const ILI9341_t3_font_t* font, String text)
+{
+	uint32_t width = 0;
+	for (int i=0;i<text.length();i++)
+	{
+		char c = text.charAt(i);
+		width += widthOfChar(font, c);
+	}
+
+	Serial.print("Text Width:");
+	Serial.print(text);
+	Serial.print(":");
+	Serial.println(width);
+
+	return width;
+}
 
 void Adafruit_GFX_Button::initButton(ILI9341_t3 *gfx,
 	int16_t x, int16_t y, uint8_t w, uint8_t h,

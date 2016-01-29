@@ -22,6 +22,7 @@
 #ifdef __cplusplus
 #include "Arduino.h"
 #endif
+#include "Arduino.h"
 
 #define ILI9341_TFTWIDTH  240
 #define ILI9341_TFTHEIGHT 320
@@ -126,7 +127,6 @@ typedef struct {
 	unsigned char cap_height;
 } ILI9341_t3_font_t;
 
-
 #ifdef __cplusplus
 
 class ILI9341_t3 : public Print
@@ -188,6 +188,8 @@ class ILI9341_t3 : public Print
 	void setFontAdafruit(void) { font = NULL; }
 	void drawFontChar(unsigned int c);
 
+	uint32_t textWidth(const ILI9341_t3_font_t *font, String text);
+	uint32_t widthOfChar(const ILI9341_t3_font_t *font, char c);
 
  protected:
 	int16_t _width, _height; // Display w/h as modified by current rotation
@@ -291,7 +293,9 @@ class ILI9341_t3 : public Print
 		writecommand_cont(ILI9341_RAMWR);
 		writedata16_cont(color);
 	}
+
 	virtual void drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32_t y, uint32_t repeat);
+
 };
 
 #ifndef swap
