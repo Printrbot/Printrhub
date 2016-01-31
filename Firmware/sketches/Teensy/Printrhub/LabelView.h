@@ -41,6 +41,11 @@ public:
 	void setTextColor(uint16_t color);
 	void setFont(const ILI9341_t3_font_t *font);
 	RectangleLayer* getBackgroundLayer() { return _backgroundLayer; };
+	TextLayer* getTextLayer() { return _layer; };
+
+	virtual bool touchDown(TS_Point& point) { return View::touchDown(point); };
+	virtual bool touchUp(TS_Point& point) { return View::touchUp(point); };
+	virtual void touchCancelled() { View::touchCancelled(); }
 
 private:
 	String _text;
@@ -53,6 +58,8 @@ private:
 
 public:
 	virtual void display() override;
+
+	void updateLayout();
 };
 
 

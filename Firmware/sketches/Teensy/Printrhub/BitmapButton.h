@@ -13,7 +13,7 @@ class BitmapButton;
 class ButtonDelegate
 {
 public:
-    virtual void buttonPressed(BitmapButton* button) = 0;
+    virtual void buttonPressed(void* button) = 0;
 };
 
 class BitmapButton: public View

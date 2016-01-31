@@ -40,7 +40,7 @@ void TextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
 
     Display.setClippingRect(&renderFrame);
 
-    Display.setFont(Arial_20);
+    Display.setFont(*_font);
     Display.setTextColor(_foregroundColor,_backgroundColor);
     Display.setCursor(font.x,font.y);
     Display.print(*_text);

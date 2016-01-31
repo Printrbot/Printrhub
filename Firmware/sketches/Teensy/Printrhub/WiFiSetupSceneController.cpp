@@ -61,7 +61,7 @@ void WiFiSetupSceneController::onWillAppear()
 
 #pragma mark ButtonDelegate Implementation
 
-void WiFiSetupSceneController::buttonPressed(BitmapButton *button)
+void WiFiSetupSceneController::buttonPressed(void *button)
 {
     LOG("MainSceneController::buttonPressed");
 

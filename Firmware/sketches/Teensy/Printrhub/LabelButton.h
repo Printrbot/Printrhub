@@ -17,8 +17,17 @@ public:
 
     virtual void setDelegate(ButtonDelegate* delegate) { _delegate = delegate; };
 
+    virtual void setAlternateBackgroundColor(uint16_t color) { _alternateBackgroundColor = color; };
+    virtual uint16_t getAlternateBackgroundColor() { return _alternateBackgroundColor; };
+
+public:
+    virtual bool touchDown(TS_Point &point) override;
+    virtual bool touchUp(TS_Point &point) override;
+    virtual void touchCancelled() override;
+
 protected:
     ButtonDelegate* _delegate;
+    uint16_t _alternateBackgroundColor;
 };
 
 

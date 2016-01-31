@@ -39,15 +39,14 @@ public:
 
 	bool statusBarVisible();
 
-	//Display
-	virtual void display() = 0;
-
 	virtual StackArray<View*>* getViews() { return &_views; };
 	virtual void addView(View* view) { _views.push(view); };
 
 	virtual void handleTouchDown(TS_Point& point);
 	virtual void handleTouchUp(TS_Point& point);
 	virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint);
+
+	virtual uint16_t getBackgroundColor();
 
 private:
 	void addScrollOffset(float scrollOffset);

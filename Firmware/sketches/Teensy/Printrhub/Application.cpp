@@ -135,6 +135,8 @@ void ApplicationClass::pushScene(SceneController *scene)
 {
 	LOG_VALUE("Pushing scene",scene->getName());
 
+	Display.clear();
+
 	_firstSceneLoop = true;
 	_scenes.push(scene);
 }
@@ -146,6 +148,7 @@ void ApplicationClass::dismissScene()
 
 	SceneController* sceneController = _scenes.pop();
 	sceneController->onWillDisappear();
+	delete sceneController;
 
 	_firstSceneLoop = true;
 }

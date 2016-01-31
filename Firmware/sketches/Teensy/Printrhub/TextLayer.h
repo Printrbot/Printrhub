@@ -17,12 +17,12 @@ public:
 
     virtual void draw(Rect& dirtyRect, Rect& invalidationRect) override;
 
-    ILI9341_t3_font_t *getFont() const
+    const ILI9341_t3_font_t * getFont()
     {
         return _font;
     }
 
-    void setFont(ILI9341_t3_font_t *_font)
+    void setFont(const ILI9341_t3_font_t *_font)
     {
         TextLayer::_font = _font;
     }
@@ -59,7 +59,7 @@ public:
     }
 
 private:
-    ILI9341_t3_font_t* _font;
+    const ILI9341_t3_font_t* _font;
     uint16_t _foregroundColor;
     uint16_t _backgroundColor;
     String* _text;

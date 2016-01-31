@@ -101,9 +101,11 @@ void PHDisplay::layoutIfNeeded()
 
     bounds.width += 1;
 
+    uint16_t backgroundColor = Application.currentScene()->getBackgroundColor();
+
     //Create new Layer (forming the new foreground layer)
     _foregroundLayer = new RectangleLayer(bounds);
-    _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
+    _foregroundLayer->setBackgroundColor(backgroundColor);
     _foregroundLayer->setStrokeWidth(0);
 
     for (int i=0;i<_layers.count();i++)
@@ -200,11 +202,11 @@ void PHDisplay::setScrollOffset(float scrollOffset)
     float diffScrollOffset = ceilf(_scrollOffset - scrollOffset);
     if (diffScrollOffset == 0) return;
 
-    //LOG_VALUE("Rect-Width: ",diffScrollOffset);
-    //LOG_VALUE("Scroll Offset: ",scrollOffset);
-
     //Save scroll offset
     _scrollOffset = scrollOffset;
+
+    //LOG_VALUE("Rect-Width: ",diffScrollOffset);
+    //LOG_VALUE("Scroll Offset: ",scrollOffset);
 
     if (diffScrollOffset > 0)
     {

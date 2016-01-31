@@ -33,7 +33,7 @@ public:
     virtual void onWillAppear() override;
 
 private:
-    virtual void buttonPressed(BitmapButton *button);
+    virtual void buttonPressed(void *button);
 };
 
 #endif //TEENSYCMAKE_WIFISETUPSCENECONTROLLER_H

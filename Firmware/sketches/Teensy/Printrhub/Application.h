@@ -29,6 +29,8 @@
 #include <Adafruit_FT6206.h>
 #include "font_Arial.h"
 #include "Animator.h"
+#include "font_Nobile-Regular.h"
+#include "font_PT_Sans-Narrow-Web-Regular.h"
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)

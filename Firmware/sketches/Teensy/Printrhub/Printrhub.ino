@@ -22,6 +22,7 @@
 #include "IdleSceneController.h"
 #include "MainSceneController.h"
 #include "WiFiSetupSceneController.h"
+#include "ChoosePrintSceneController.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
 Adafruit_FT6206 Touch = Adafruit_FT6206();
@@ -79,6 +80,9 @@ void setup(void)
     //Application.pushScene(idleScene);
     //wifiController = new WiFiSetupSceneController();
     //Application.pushScene(wifiController);
+
+    //ChoosePrintSceneController* choosePrintSceneController = new ChoosePrintSceneController();
+    //Application.pushScene(choosePrintSceneController);
 }
 
 void loop()

@@ -8,6 +8,7 @@
 #include "SceneController.h"
 #include "BitmapButton.h"
 #include "LabelView.h"
+#include "LabelButton.h"
 
 class MainSceneController: public SceneController, ButtonDelegate
 {
@@ -21,18 +22,19 @@ public:
     virtual void loop();
 
 protected:
-    LabelView* _printButton;
-    LabelView* _filamentButton;
-    LabelView* _settingsButton;
-    LabelView* _hotendButton;
+    LabelButton* _printButton;
+    LabelButton* _filamentButton;
+    LabelButton* _settingsButton;
+    LabelButton* _hotendButton;
 
 public:
     virtual void setup() override;
 
-    virtual void onWillAppear() override;
-
 private:
-    virtual void buttonPressed(BitmapButton *button);
+    virtual void buttonPressed(void *button);
+
+public:
+    virtual uint16_t getBackgroundColor() override;
 };
 
 

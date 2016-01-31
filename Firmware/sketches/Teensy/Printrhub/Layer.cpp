@@ -36,6 +36,15 @@ Layer::~Layer()
 
 void Layer::setBackgroundColor(const uint16_t &color)
 {
+    if (_sublayers != NULL && _sublayers->count() > 0)
+    {
+        for (int i=0;i<_sublayers->count();i++)
+        {
+            Layer *sublayer = _sublayers->at(i);
+            sublayer->setBackgroundColor(color);
+        }
+    }
+
     _backgroundColor = color;
 }
 
@@ -279,6 +288,16 @@ void Layer::display(Layer* backgroundLayer)
         Layer* layer = _sublayers->at(i);
         layer->display(backgroundLayer);
     }
+
+    //If this layer has a border, draw it now
+    if (getStrokeWidth() > 0)
+    {
+        if (_needsDisplay)
+        {
+            Display.drawRect(_frame.x,_frame.y,_frame.width,_frame.height,getStrokeColor());
+            _needsDisplay = false;
+        }
+    }
 }
 
 
@@ -370,6 +389,16 @@ Layer *Layer::subLayerWithRect(Rect frame)
 
 void Layer::setNeedsDisplay()
 {
+    LOG_VALUE("NEEDS DISPLAY: ",_name);
+    if (_sublayers != NULL && _sublayers->count() > 0)
+    {
+        for (int i=0;i<_sublayers->count();i++)
+        {
+            Layer *sublayer = _sublayers->at(i);
+            sublayer->setNeedsDisplay();
+        }
+    }
+
     _needsDisplay = true;
 }
 
