@@ -24,6 +24,12 @@ private:
 
 public:
     virtual uint16_t getBackgroundColor() override;
+    String _text;
+    LabelView* _textField;
+    LabelButton* _shiftButton;
+    uint8_t _currentKeyboard;
+
+    void updateKeyboard();
 };
 
 #endif //TEENSYCMAKE_VIRTUALKEYBOARDSCENECONTROLLER_H
