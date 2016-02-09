@@ -190,9 +190,9 @@ void PHDisplay::invalidateRect(Rect&dirtyRect, Rect& invalidationRect, uint16_t 
 
 void PHDisplay::setScrollOffset(float scrollOffset)
 {
-    if (scrollOffset < -(_foregroundLayer->getFrame().width-320))
+    if (scrollOffset < -((_foregroundLayer->getFrame().width-1)-320))
     {
-        scrollOffset = -(_foregroundLayer->getFrame().width-320);
+        scrollOffset = -((_foregroundLayer->getFrame().width-1)-320);
     }
     if (scrollOffset > 0)
     {
