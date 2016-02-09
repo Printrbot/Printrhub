@@ -7,6 +7,7 @@
 #include "Bitmaps.h"
 #include "LabelButton.h"
 #include "ModelView.h"
+#include "MainSceneController.h"
 
 ChoosePrintSceneController::ChoosePrintSceneController():
         SceneController::SceneController()
@@ -30,6 +31,13 @@ ChoosePrintSceneController::ChoosePrintSceneController():
     modelView->setJobName("Something useful");
     modelView->setBitmap(feet);
     addView(modelView);
+}
+
+
+void ChoosePrintSceneController::handleTouchUp(TS_Point &point)
+{
+    MainSceneController* mainSceneController = new MainSceneController();
+    Application.pushScene(mainSceneController);
 }
 
 ChoosePrintSceneController::~ChoosePrintSceneController()

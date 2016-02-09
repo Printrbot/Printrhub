@@ -27,6 +27,8 @@ ApplicationClass::ApplicationClass()
 	_firstSceneLoop = true;
 	_focusedView = NULL;
 	_touched = false;
+	_nextScene = NULL;
+	_currentScene = NULL;
 }
 
 ApplicationClass::~ApplicationClass()
@@ -38,10 +40,10 @@ ApplicationClass::~ApplicationClass()
 void ApplicationClass::handleTouches()
 {
 	//If we don't have a screen controller we don't have to handle touches
-	if (_scenes.count() <= 0) return;
+	if (_currentScene == NULL) return;
 
 	//Get current scene controller
-	SceneController* sceneController = _scenes.peek();
+	SceneController* sceneController = _currentScene;
 
 	//Touches infinite state machine
 	if (Touch.touched())
@@ -91,17 +93,37 @@ void ApplicationClass::loop()
 	//Clear the display
 	//Display.clear();
 
-	//Run current controller
-	if (_scenes.count() > 0)
+	if (_nextScene != NULL)
 	{
-		SceneController* sceneController = _scenes.peek();
+		Display.clear();
+
+		if (_currentScene != NULL)
+		{
+			delete _currentScene;
+		}
+
+		_currentScene = _nextScene;
+		_nextScene = NULL;
+		_firstSceneLoop = true;
+	}
+
+	//Run current controller
+	if (_currentScene != NULL)
+	{
+		LOG("Run Controller");
+		SceneController* sceneController = _currentScene;
 
 		//Call onWillAppear event handler if this is the first time the loop function is called by the scene
 		//The default implementation will clear the display!
 		if (_firstSceneLoop)
 		{
+			LOG("First loop");
+			Display.clear();
+
+			LOG_VALUE("Appearing scene", sceneController->getName());
 			sceneController->onWillAppear();
 			_firstSceneLoop = false;
+			LOG("Scene appeared");
 		}
 
 		//Touch handling
@@ -109,13 +131,15 @@ void ApplicationClass::loop()
 
 		//Run the scenes loop function
 		sceneController->loop();
+
+		//Relayout screen tiles
+		Display.layoutIfNeeded();
+
+		//Update display
+		Display.dispatch();
 	}
 
-	//Relayout screen tiles
-	Display.layoutIfNeeded();
 
-	//Update display
-	Display.dispatch();
 	//sendScreenshot();
 
 //	Serial.print("Layers created: ");
@@ -135,38 +159,7 @@ void ApplicationClass::pushScene(SceneController *scene)
 {
 	LOG_VALUE("Pushing scene",scene->getName());
 
-	Display.clear();
-
-	_firstSceneLoop = true;
-	_scenes.push(scene);
-}
-
-void ApplicationClass::dismissScene()
-{
-	if (_scenes.count() <= 1) return;
-	LOG_VALUE("Dismissing scene", _scenes.peek()->getName());
-
-	SceneController* sceneController = _scenes.pop();
-	sceneController->onWillDisappear();
-	delete sceneController;
-
-	_firstSceneLoop = true;
-}
-
-void ApplicationClass::setFocusedView(View *focusView)
-{
-	LOG_VALUE("Setting focus to view",focusView->getDescription());
-	_focusedView = focusView;
-}
-
-View* ApplicationClass::getFocusedView()
-{
-	return _focusedView;
-}
-
-void ApplicationClass::resetFocus()
-{
-	_focusedView = NULL;
+	_nextScene = scene;
 }
 
 ColorTheme* ApplicationClass::getTheme()

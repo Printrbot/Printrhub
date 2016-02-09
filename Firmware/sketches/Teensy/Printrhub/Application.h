@@ -50,12 +50,7 @@ public:
 
 	void loop();
 	void pushScene(SceneController* scene);
-	SceneController* currentScene() { return _scenes.peek(); };
-	void dismissScene();
-
-	void setFocusedView(View* focusView);
-	View* getFocusedView();
-	void resetFocus();
+	SceneController* currentScene() { return _currentScene; };
 
 	void handleTouches();
 
@@ -64,12 +59,13 @@ public:
 	ColorTheme* getTheme();
 
 private:
-	StackArray<SceneController*> _scenes;
 	bool _firstSceneLoop;
 	View* _focusedView;
 	ColorTheme _theme;
 	bool _touched;
 	TS_Point _lastTouchPoint;
+	SceneController *_nextScene;
+	SceneController *_currentScene;
 };
 
 extern ApplicationClass Application;

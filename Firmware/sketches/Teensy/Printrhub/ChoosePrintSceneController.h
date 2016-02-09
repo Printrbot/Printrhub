@@ -33,6 +33,8 @@ private:
 
 public:
     virtual uint16_t getBackgroundColor() override;
+
+    virtual void handleTouchUp(TS_Point &point) override;
 };
 
 #endif //TEENSYCMAKE_CHOOSEPRINTSCENECONTROLLER_H
