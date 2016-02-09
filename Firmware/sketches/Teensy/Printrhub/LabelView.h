@@ -39,8 +39,10 @@ public:
 	void setTextAlign(uint8_t textAlign);
 	void setVerticalTextAlign(uint8_t verticalTextAlign);
 	void setTextColor(uint16_t color);
-	void setFont(const ILI9341_t3_font_t *font);
-	RectangleLayer* getBackgroundLayer() { return _backgroundLayer; };
+	uint16_t getTextColor() { return _textColor; };
+
+	virtual void setFont(const ILI9341_t3_font_t *font);
+	const ILI9341_t3_font_t* getFont();
 	TextLayer* getTextLayer() { return _layer; };
 
 	virtual bool touchDown(TS_Point& point) { return View::touchDown(point); };
@@ -52,7 +54,6 @@ private:
 	TextLayer* _layer;
 	uint8_t _textAlign;
 	uint8_t _verticalTextAlign;
-	RectangleLayer* _backgroundLayer;
 	const ILI9341_t3_font_t* _font;
 	uint16_t _textColor;
 

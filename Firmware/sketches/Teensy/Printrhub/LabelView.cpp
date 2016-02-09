@@ -31,7 +31,6 @@ LabelView::LabelView(String text, uint16_t x, uint16_t y, uint16_t width, uint16
 	_backgroundColor = ILI9341_WHITE;
 	_name = "LabelView";
 	_layer = NULL;
-	_backgroundLayer = NULL;
 }
 
 LabelView::LabelView(String text, Rect frame):
@@ -45,103 +44,18 @@ LabelView::LabelView(String text, Rect frame):
 	_backgroundColor = ILI9341_WHITE;
 	_name = "LabelView";
 	_layer = NULL;
-	_backgroundLayer = NULL;
-}
-
-void LabelView::updateLayout()
-{
-	//Align the text layer
-	Rect frame = _frame;
-	if (_verticalTextAlign == TEXTALIGN_TOP)
-	{
-		frame.y += 1;
-	}
-	else if (_verticalTextAlign == TEXTALIGN_BOTTOM)
-	{
-		frame.y = frame.bottom()-_font->cap_height - 1;
-	}
-	else if (_verticalTextAlign == TEXTALIGN_CENTERED)
-	{
-		frame.y += (frame.height - _font->cap_height) / 2;
-	}
-	frame.height = _font->cap_height;
-
-	frame.x += 1;
-	frame.width -= 2;
-
-	if (_textAlign == TEXTALIGN_CENTERED)
-	{
-		uint32_t width = Display.textWidth(_font, _text);
-		frame.x += (frame.width - width)/2;
-		frame.width = width;
-	}
-	else if (_textAlign == TEXTALIGN_RIGHT)
-	{
-		uint32_t width = Display.textWidth(_font, _text);
-		frame.x += (frame.width - width);
-		frame.width = width;
-	}
-
-	_layer->setFrame(frame);
-
-	_backgroundLayer->removeAllSublayers();
-	_backgroundLayer->splitWithRect(frame);
-
-	setNeedsDisplay();
 }
 
 void LabelView::display()
 {
-	_backgroundLayer = new RectangleLayer(_frame);
-	_backgroundLayer->setBackgroundColor(_backgroundColor);
-	_backgroundLayer->setStrokeColor(_borderColor);
-	_backgroundLayer->setStrokeWidth(_borderWidth);
-	addLayer(_backgroundLayer);
-
-	//Align the text layer
-	Rect frame = _frame;
-	if (_verticalTextAlign == TEXTALIGN_TOP)
-	{
-		frame.y += 1;
-	}
-	else if (_verticalTextAlign == TEXTALIGN_BOTTOM)
-	{
-		frame.y = frame.bottom()-_font->cap_height - 1;
-	}
-	else if (_verticalTextAlign == TEXTALIGN_CENTERED)
-	{
-		frame.y += (frame.height - _font->cap_height) / 2;
-	}
-	frame.height = _font->cap_height;
-
-	//TODO: Add code for horizontal alignment
-
-	//TODO: Fix this bug. If the inner layers left and right ly on the outer layers boundaries
-	//there is a strange render bug. Inseting by one pixels helps though and doesn't matter here
-	frame.x += 1;
-	frame.width -= 2;
-
-	if (_textAlign == TEXTALIGN_CENTERED)
-	{
-		uint32_t width = Display.textWidth(_font, _text);
-		frame.x += (frame.width - width)/2;
-		frame.width = width;
-	}
-	else if (_textAlign == TEXTALIGN_RIGHT)
-	{
-		uint32_t width = Display.textWidth(_font, _text);
-		frame.x += (frame.width - width);
-		frame.width = width;
-	}
-
-	_layer = new TextLayer(frame);
+	_layer = new TextLayer(_frame);
 	_layer->setForegroundColor(_textColor);
 	_layer->setBackgroundColor(_backgroundColor);
 	_layer->setText(&_text);
 	_layer->setFont(_font);
+	_layer->setTextAlign(_textAlign);
+	_layer->setVerticalTextAlign(_verticalTextAlign);
 	addLayer(_layer);
-
-	_backgroundLayer->splitWithRect(_layer->getFrame());
 
 	View::display();
 }
@@ -156,6 +70,12 @@ void LabelView::setTextAlign(uint8_t textAlign)
 {
 	if (_textAlign == textAlign) return;
 	_textAlign = textAlign;
+
+	if (_layer != NULL)
+	{
+		_layer->setTextAlign(textAlign);
+	}
+
 	setNeedsDisplay();
 }
 
@@ -176,6 +96,12 @@ void LabelView::setVerticalTextAlign(uint8_t verticalTextAlign)
 {
 	if (_verticalTextAlign == verticalTextAlign) return;
 	_verticalTextAlign = verticalTextAlign;
+
+	if (_layer != NULL)
+	{
+		_layer->setVerticalTextAlign(verticalTextAlign);
+	}
+
 	setNeedsDisplay();
 }
 
@@ -187,6 +113,12 @@ void LabelView::setFont(const ILI9341_t3_font_t* font)
 	if (_layer != NULL)
 	{
 		_layer->setFont(font);
-		updateLayout();
 	}
+
+	setNeedsDisplay();
+}
+
+const ILI9341_t3_font_t *LabelView::getFont()
+{
+	return _font;
 }

@@ -8,6 +8,12 @@
 #include "Layer.h"
 #include "ILI9341_t3.h"
 
+#define TEXTALIGN_LEFT 0
+#define TEXTALIGN_CENTERED 1
+#define TEXTALIGN_RIGHT 2
+#define TEXTALIGN_TOP 0
+#define TEXTALIGN_BOTTOM 2
+
 class TextLayer: public Layer
 {
 public:
@@ -58,11 +64,17 @@ public:
         _text = text;
     }
 
+    void setTextAlign(uint8_t textAlign);
+    void setVerticalTextAlign(uint8_t verticalTextAlign);
+
 private:
     const ILI9341_t3_font_t* _font;
     uint16_t _foregroundColor;
     uint16_t _backgroundColor;
     String* _text;
+
+    uint8_t _textAlign;
+    uint8_t _verticalTextAlign;
 };
 
 
