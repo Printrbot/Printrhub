@@ -18,7 +18,6 @@
 #include "PHDisplay.h"
 #include <Wire.h>      // this is needed for FT6206
 #include <Adafruit_FT6206.h>
-#include "font_Arial.h"
 #include "IdleSceneController.h"
 #include "MainSceneController.h"
 #include "WiFiSetupSceneController.h"

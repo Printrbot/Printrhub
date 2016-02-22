@@ -10,7 +10,7 @@ Layer(frame),
 _foregroundColor(RGB565(0,0,0)),
 _backgroundColor(RGB565(128,255,255))
 {
-    _font = (ILI9341_t3_font_t *) &Arial_20;
+    _font = (ILI9341_t3_font_t *) &PTSansNarrow_20;
 }
 
 void TextLayer::setTextAlign(uint8_t textAlign)
