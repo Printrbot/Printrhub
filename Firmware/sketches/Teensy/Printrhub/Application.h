@@ -58,7 +58,6 @@ public:
 
 private:
 	bool _firstSceneLoop;
-	View* _focusedView;
 	ColorTheme _theme;
 	bool _touched;
 	TS_Point _lastTouchPoint;

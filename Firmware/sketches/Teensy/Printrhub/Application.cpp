@@ -25,7 +25,6 @@ ApplicationClass Application;
 ApplicationClass::ApplicationClass()
 {
 	_firstSceneLoop = true;
-	_focusedView = NULL;
 	_touched = false;
 	_nextScene = NULL;
 	_currentScene = NULL;
