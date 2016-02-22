@@ -9,6 +9,7 @@
 #include "ChoosePrintSceneController.h"
 #include "WiFiSetupSceneController.h"
 #include "VirtualKeyboardSceneController.h"
+#include "MachineControlSceneController.h"
 
 MainSceneController::MainSceneController():
 SceneController::SceneController()
@@ -30,6 +31,7 @@ SceneController::SceneController()
     _hotendButton->setTextColor(Application.getTheme()->getSecondaryColor2());
     _hotendButton->setBorderWidth(0);
     _hotendButton->setName("Hotend Button");
+    _hotendButton->setDelegate(this);
     addView(_hotendButton);
 
     _filamentButton = new LabelButton("FILAMENT",Rect(0,120,159,120));
@@ -146,6 +148,16 @@ void MainSceneController::buttonPressed(void *button)
     else if (button == _settingsButton)
     {
         VirtualKeyboardSceneController* scene = new VirtualKeyboardSceneController();
+        Application.pushScene(scene);
+    }
+    else if (button == _hotendButton)
+    {
+        MachineControlSceneController* scene = new MachineControlSceneController();
+        Application.pushScene(scene);
+    }
+    else
+    {
+        MainSceneController* scene = new MainSceneController();
         Application.pushScene(scene);
     }
 }

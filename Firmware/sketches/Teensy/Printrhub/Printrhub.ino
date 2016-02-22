@@ -20,8 +20,6 @@
 #include <Adafruit_FT6206.h>
 #include "IdleSceneController.h"
 #include "MainSceneController.h"
-#include "WiFiSetupSceneController.h"
-#include "ChoosePrintSceneController.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
 Adafruit_FT6206 Touch = Adafruit_FT6206();
@@ -38,9 +36,7 @@ Adafruit_FT6206 Touch = Adafruit_FT6206();
 PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
 
 //This is used all the time, so keep a global reference instead of building it again every time
-IdleSceneController* idleScene;
 MainSceneController* mainController;
-WiFiSetupSceneController* wifiController;
 
 int globalLayerId = 0;
 
@@ -56,6 +52,8 @@ void setup(void)
 
     Serial.begin(115200);
     Serial.println(F("Printrhub - LCD Controller and Hub for Printrbots!"));
+
+    Serial1.begin(115200);
 
     Display.begin();
 
