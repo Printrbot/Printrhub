@@ -22,6 +22,7 @@ Layer::Layer(Rect frame):
 Layer()
 {
     _frame = frame;
+    _sublayers = NULL;
 }
 
 Layer::~Layer()
@@ -34,6 +35,11 @@ Layer::~Layer()
 
     delete _sublayers;
     _sublayers = NULL;
+    if (_sublayers != NULL)
+    {
+        delete _sublayers;
+        _sublayers = NULL;
+    }
 }
 
 void Layer::setBackgroundColor(const uint16_t &color)

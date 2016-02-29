@@ -9,6 +9,7 @@
 #include "StackArray.h"
 #include "Layer.h"
 #include "RectangleLayer.h"
+#include "SD.h"
 
 class PHDisplay: public ILI9341_t3
 {
@@ -24,6 +25,7 @@ public:
     virtual void layoutIfNeeded();
 
     virtual void drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t* bitmap, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha);
+    virtual void drawFileBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha);
 
     virtual void setScrollOffset(float scrollOffset);
     virtual float getScrollOffset() { return _scrollOffset; };
@@ -66,6 +68,10 @@ protected:
 
 public:
     virtual void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) override;
+
+    void setupBuffers();
+
+
 };
 
 

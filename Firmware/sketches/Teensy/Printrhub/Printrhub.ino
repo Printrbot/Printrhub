@@ -20,6 +20,7 @@
 #include <Adafruit_FT6206.h>
 #include "IdleSceneController.h"
 #include "MainSceneController.h"
+#include "SD_t3.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
 Adafruit_FT6206 Touch = Adafruit_FT6206();
@@ -61,6 +62,12 @@ void setup(void)
     Display.setRotation(3);
     Display.setScroll(0);
 
+    if (!SD.begin(15))
+    {
+        Serial.println("Couldn't start SD card");
+        while (1);
+    }
+    Serial.println("Started SD card interface");
     if (! Touch.begin(40))
     {  // pass in 'sensitivity' coefficient
         Serial.println("Couldn't start FT6206 touchscreen controller");

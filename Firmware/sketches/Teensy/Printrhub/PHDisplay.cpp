@@ -7,6 +7,7 @@
 #include <SPI.h>
 #include <Wiring.h>
 #include <Arduino.h>
+#include "SD.h"
 
 #define SPICLOCK 30000000
 
@@ -37,6 +38,17 @@ void PHDisplay::addLayer(Layer *layer)
     _needsLayout = true;
 }
 
+void PHDisplay::setupBuffers()
+{
+    _foregroundLayer = new RectangleLayer(Rect(0,0,750,240));
+    _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
+    _foregroundLayer->setStrokeWidth(0);
+
+    _backgroundLayer = new RectangleLayer(Rect(0,0,750,240));
+    _backgroundLayer->setBackgroundColor(ILI9341_WHITE);
+    _backgroundLayer->setStrokeWidth(0);
+}
+
 void PHDisplay::clear()
 {
     _backgroundLayer->removeAllSublayers();
@@ -44,7 +56,9 @@ void PHDisplay::clear()
     _layers.clear(false);
 }
 
+    _layers.clear();
 
+    _needsLayout = true;
 void PHDisplay::cropRectToScreen(Rect &rect)
 {
     if (rect.left() < 0)
@@ -162,6 +176,36 @@ void PHDisplay::drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const
         }
     }
     SPI.endTransaction();
+}
+
+void PHDisplay::drawFileBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File* file, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha)
+{
+    uint16_t buffer[320];
+    for (uint16_t yb=0;yb<h;yb++)
+    {
+        file->seek(((yb+ys)*ws)*sizeof(uint16_t));
+        file->read(buffer,sizeof(uint16_t)*ws);
+
+        SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
+        setAddr(x, y+yb, x+w-1, y+yb);
+        writecommand_cont(ILI9341_RAMWR);
+
+        for (uint16_t xb=0;xb<w;xb++)
+        {
+            if (xb == w-1)
+            {
+                //Last pixel
+                writedata16_last(buffer[xb+xs]);
+            }
+            else
+            {
+                //All other pixels
+                writedata16_cont(buffer[xb+xs]);
+            }
+            //drawPixel(x+xb,y+yb,buffer[xb+xs]);
+        }
+        SPI.endTransaction();
+    }
 }
 
 void PHDisplay::setNeedsLayout()

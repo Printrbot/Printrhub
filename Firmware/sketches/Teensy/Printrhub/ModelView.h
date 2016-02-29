@@ -9,6 +9,7 @@
 #include "TextLayer.h"
 #include "RectangleLayer.h"
 #include "BitmapLayer.h"
+#include "SDBitmapLayer.h"
 
 class ModelView: public View
 {
@@ -19,13 +20,15 @@ public:
     void setJobName(String jobName) { _jobName = jobName; };
 
     virtual void setBitmap(const uint16_t* bitmap) { _bitmap = bitmap; };
+    virtual void setImageFileName(const char* imageFileName) { _imageFileName = imageFileName;};
 
     uint16_t _width;
 
 private:
+    const char* _imageFileName;
     TextLayer* _jobNameLayer;
     //RectangleLayer* _imageLayer;
-    BitmapLayer* _imageLayer;
+    SDBitmapLayer* _imageLayer;
     const uint16_t* _bitmap;
     String _jobName;
 public:

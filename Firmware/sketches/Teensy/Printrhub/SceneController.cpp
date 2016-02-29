@@ -23,7 +23,7 @@ SceneController::SceneController()
 {
 	_currentTouchedView = NULL;
 	_scrollOffset = 0;
-
+	_dismissed = false;
 }
 
 SceneController::~SceneController()

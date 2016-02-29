@@ -5,6 +5,7 @@
 #include "ModelView.h"
 #include "Application.h"
 #include "Bitmaps.h"
+#include "SDBitmapLayer.h"
 
 ModelView::ModelView(uint16_t x, uint16_t y, uint16_t width, uint16_t height):
         View(x,y,width,height)
@@ -26,8 +27,8 @@ void ModelView::display()
     _imageLayer->setBackgroundColor(Application.getTheme()->getSecondaryColor1());
     addLayer(_imageLayer);*/
 
-    _imageLayer = new BitmapLayer(Rect(_frame.x + 70,10,180,150));
-    _imageLayer->setBitmap(_bitmap,180,150);
+    _imageLayer = new SDBitmapLayer(Rect(_frame.x + 70,10,180,150));
+    _imageLayer->setBitmap(_imageFileName,180,150);
     addLayer(_imageLayer);
 
     uint16_t x = _frame.x + 10;

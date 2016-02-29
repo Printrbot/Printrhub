@@ -48,6 +48,9 @@ public:
 
 	virtual uint16_t getBackgroundColor();
 
+	virtual void dismiss() { _dismissed = true; };
+	virtual bool isDismissed() { return _dismissed; };
+
 private:
 	void addScrollOffset(float scrollOffset);
 
@@ -55,6 +58,7 @@ private:
 	View* _currentTouchedView;
 	float _scrollOffset;
 	float _scrollVelocity;
+	bool _dismissed;
 };
 
 

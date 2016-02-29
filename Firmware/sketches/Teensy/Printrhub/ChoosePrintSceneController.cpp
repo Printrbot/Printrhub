@@ -8,36 +8,37 @@
 #include "LabelButton.h"
 #include "ModelView.h"
 #include "MainSceneController.h"
+#include "SD.h"
 
 ChoosePrintSceneController::ChoosePrintSceneController():
         SceneController::SceneController()
 {
     ModelView* modelView = new ModelView(Rect(0,0,319,239));
     modelView->setJobName("Simple Metal Feet");
-    modelView->setBitmap(feet);
+    modelView->setImageFileName("lcd2.dat");
     addView(modelView);
 
     modelView = new ModelView(Rect(320,0,319,239));
     modelView->setJobName("LCD Case 2");
-    modelView->setBitmap(feet);
+    modelView->setImageFileName("feet2.dat");
     addView(modelView);
 
     modelView = new ModelView(Rect(640,0,319,239));
     modelView->setJobName("Something useless");
-    modelView->setBitmap(feet);
+    modelView->setImageFileName("feet2.dat");
     addView(modelView);
 
     modelView = new ModelView(Rect(960,0,319,239));
     modelView->setJobName("Something useful");
-    modelView->setBitmap(feet);
+    modelView->setImageFileName("lcd2.dat");
     addView(modelView);
 }
 
 
 void ChoosePrintSceneController::handleTouchUp(TS_Point &point)
 {
-    MainSceneController* mainSceneController = new MainSceneController();
-    Application.pushScene(mainSceneController);
+//    MainSceneController* mainSceneController = new MainSceneController();
+//    Application.pushScene(mainSceneController);
 }
 
 ChoosePrintSceneController::~ChoosePrintSceneController()
