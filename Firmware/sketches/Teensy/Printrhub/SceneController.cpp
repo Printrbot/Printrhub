@@ -55,10 +55,10 @@ void SceneController::loop()
 		if (_scrollVelocity > 0) _scrollVelocity = 0;
 	}
 
-/*	if (fabsf(_scrollVelocity) < 1)
+	if (fabsf(_scrollVelocity) < 0.05)
 	{
 		_scrollVelocity = 0;
-	}*/
+	}
 
 	if(_scrollVelocity != 0)
 	{
@@ -74,14 +74,16 @@ void SceneController::onWillAppear()
 
 	for (int i=0;i<_views.count();i++)
 	{
+		LOG_VALUE("Display View: ",_views.count());
 		View *view = _views.at(i);
 		view->display();
+		LOG("View displayed");
 	}
 }
 
 void SceneController::onWillDisappear()
 {
-	Application.resetFocus();
+
 }
 
 String SceneController::getName()
