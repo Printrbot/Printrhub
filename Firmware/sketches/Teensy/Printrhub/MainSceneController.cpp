@@ -4,22 +4,50 @@
 
 #include "MainSceneController.h"
 #include "Bitmaps.h"
+#include "LabelButton.h"
+#include "Application.h"
+#include "ChoosePrintSceneController.h"
+#include "WiFiSetupSceneController.h"
+#include "VirtualKeyboardSceneController.h"
+#include "MachineControlSceneController.h"
 
 MainSceneController::MainSceneController():
 SceneController::SceneController()
 {
-    _printButton = new BitmapButton(Rect(23,90,80,80));
-    _printButton->setBitmap(printerButton,80,80);
+    _printButton = new LabelButton("PRINT",Rect(0,0,159,119));
+    _printButton->setBorderColor(Application.getTheme()->getSecondaryColor2());
+    _printButton->setBackgroundColor(Application.getTheme()->getBackgroundColor());
+    _printButton->setAlternateBackgroundColor(Application.getTheme()->getPrimaryColor());
+    _printButton->setTextColor(Application.getTheme()->getSecondaryColor2());
+    _printButton->setBorderWidth(0);
+    _printButton->setName("Print Button");
     _printButton->setDelegate(this);
     addView(_printButton);
 
-    _filamentButton = new BitmapButton(Rect(120,90,80,80));
-    _filamentButton->setBitmap(filamentButton,80,80);
-    _filamentButton->setDelegate(this);
+    _hotendButton = new LabelButton("HOTEND",Rect(160,0,159,119));
+    _hotendButton->setBorderColor(Application.getTheme()->getSecondaryColor2());
+    _hotendButton->setBackgroundColor(Application.getTheme()->getBackgroundColor());
+    _hotendButton->setAlternateBackgroundColor(Application.getTheme()->getPrimaryColor());
+    _hotendButton->setTextColor(Application.getTheme()->getSecondaryColor2());
+    _hotendButton->setBorderWidth(0);
+    _hotendButton->setName("Hotend Button");
+    _hotendButton->setDelegate(this);
+    addView(_hotendButton);
+
+    _filamentButton = new LabelButton("FILAMENT",Rect(0,120,159,120));
+    _filamentButton->setBorderColor(Application.getTheme()->getSecondaryColor2());
+    _filamentButton->setBackgroundColor(Application.getTheme()->getBackgroundColor());
+    _filamentButton->setAlternateBackgroundColor(Application.getTheme()->getPrimaryColor());
+    _filamentButton->setTextColor(Application.getTheme()->getSecondaryColor2());
+    _filamentButton->setBorderWidth(0);
     addView(_filamentButton);
 
-    _settingsButton = new BitmapButton(Rect(215,90,80,80));
-    _settingsButton->setBitmap(settingsButton,80,80);
+    _settingsButton= new LabelButton("SETTINGS",Rect(160,120,159,120));
+    _settingsButton->setBorderColor(Application.getTheme()->getSecondaryColor2());
+    _settingsButton->setBackgroundColor(Application.getTheme()->getBackgroundColor());
+    _settingsButton->setAlternateBackgroundColor(Application.getTheme()->getPrimaryColor());
+    _settingsButton->setTextColor(Application.getTheme()->getSecondaryColor2());
+    _settingsButton->setBorderWidth(0);
     _settingsButton->setDelegate(this);
     addView(_settingsButton);
 }
@@ -27,6 +55,12 @@ SceneController::SceneController()
 MainSceneController::~MainSceneController()
 {
 
+}
+
+
+uint16_t MainSceneController::getBackgroundColor()
+{
+    return Application.getTheme()->getSecondaryColor2();
 }
 
 void MainSceneController::display()
@@ -41,6 +75,18 @@ String MainSceneController::getName()
 
 void MainSceneController::loop()
 {
+    SceneController::loop();
+
+/*    _printButton->setFrame(Rect(23,90+_offset,80,80));
+    _filamentButton->setFrame(Rect(120,90+(_offset/2),80,80));
+    _settingsButton->setFrame(Rect(215,90+(_offset/4),80,80));
+    _offset += _velocity;
+
+    if (_offset > 80 || _offset < -80)
+    {
+        _velocity = -_velocity;
+    }*/
+
  /*   if (_transition)
     {
         _printButton->setFrame(Rect(23+_offset,90+_offset,80,80));
@@ -88,22 +134,31 @@ void MainSceneController::setup()
     SceneController::setup();
 }
 
-void MainSceneController::onWillAppear()
-{
-    SceneController::onWillAppear();
-
-    _printButton->display();
-    _filamentButton->display();
-    _settingsButton->display();
-}
-
 #pragma mark ButtonDelegate Implementation
 
-void MainSceneController::buttonPressed(BitmapButton *button)
+void MainSceneController::buttonPressed(void *button)
 {
     LOG("MainSceneController::buttonPressed");
+
     if (button == _printButton)
     {
-//        _printButton->setFrame(Rect(23,95,80,80));
+        ChoosePrintSceneController* choosePrintSceneController = new ChoosePrintSceneController();
+        Application.pushScene(choosePrintSceneController);
+    }
+    else if (button == _settingsButton)
+    {
+        VirtualKeyboardSceneController* scene = new VirtualKeyboardSceneController();
+        Application.pushScene(scene);
+    }
+    else if (button == _hotendButton)
+    {
+        MachineControlSceneController* scene = new MachineControlSceneController();
+        Application.pushScene(scene);
+    }
+    else
+    {
+        MainSceneController* scene = new MainSceneController();
+        Application.pushScene(scene);
     }
 }
+

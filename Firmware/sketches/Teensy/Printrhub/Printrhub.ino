@@ -18,9 +18,9 @@
 #include "PHDisplay.h"
 #include <Wire.h>      // this is needed for FT6206
 #include <Adafruit_FT6206.h>
-#include <font_Arial.h>
 #include "IdleSceneController.h"
 #include "MainSceneController.h"
+#include "SD_t3.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
 Adafruit_FT6206 Touch = Adafruit_FT6206();
@@ -37,7 +37,6 @@ Adafruit_FT6206 Touch = Adafruit_FT6206();
 PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
 
 //This is used all the time, so keep a global reference instead of building it again every time
-IdleSceneController* idleScene;
 MainSceneController* mainController;
 
 int globalLayerId = 0;
@@ -47,6 +46,46 @@ int globalLayersDeleted = 0;
 
 int globR = 0;
 
+void testImage(void)
+{
+    File file = SD.open("/feet2.dat",FILE_READ);
+
+/*    for (int x=0;x<180;x++)
+    {
+        uint16_t buffer[151];
+        file.read(buffer,sizeof(uint16_t)*150);
+
+        for (int y=0;y<150;y++)
+        {
+            Display.drawPixel(x,y,buffer[y]);
+        }
+    }*/
+
+/*    Display.fillScreen(ILI9341_BLACK);
+
+    uint16_t buffer[14800];
+
+
+    for (int y=0;y<80;y++)
+    {
+        file.read(buffer,180*sizeof(uint16_t));
+        for (int x=0;x<180;x++)
+        {
+            Display.drawPixel(x+10,y+10,buffer[x]);
+        }
+    }
+
+    while(true);
+*/
+    while(true)
+    {
+        Display.drawFileBitmap(10,10,180,150,&file,0,0,180,150,1);
+        delay(100);
+    }
+    delay(2000);
+    while(true);
+}
+
 void setup(void)
 {
     //while (!Serial);
@@ -55,10 +94,21 @@ void setup(void)
     Serial.begin(115200);
     Serial.println(F("Printrhub - LCD Controller and Hub for Printrbots!"));
 
-    Display.begin();
+    Serial1.begin(115200);
 
+    Display.begin();
     //Rotate to landscape
     Display.setRotation(3);
+    Display.setScroll(0);
+
+    if (!SD.begin(15))
+    {
+        Serial.println("Couldn't start SD card");
+        while (1);
+    }
+    Serial.println("Started SD card interface");
+
+    //testImage();
 
     if (! Touch.begin(40))
     {  // pass in 'sensitivity' coefficient
@@ -74,6 +124,11 @@ void setup(void)
     Application.pushScene(mainController);
     //idleScene = new IdleSceneController();
     //Application.pushScene(idleScene);
+    //wifiController = new WiFiSetupSceneController();
+    //Application.pushScene(wifiController);
+
+    //ChoosePrintSceneController* choosePrintSceneController = new ChoosePrintSceneController();
+    //Application.pushScene(choosePrintSceneController);
 }
 
 void loop()

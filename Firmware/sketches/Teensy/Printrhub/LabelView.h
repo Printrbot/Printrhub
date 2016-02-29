@@ -21,28 +21,46 @@
 
 #include "View.h"
 #include "Application.h"
+#include "TextLayer.h"
 
 #define TEXTALIGN_LEFT 0
 #define TEXTALIGN_CENTERED 1
 #define TEXTALIGN_RIGHT 2
+#define TEXTALIGN_TOP 0
+#define TEXTALIGN_BOTTOM 2
 
 class LabelView: public View
 {
 public:
+	LabelView(String text, Rect frame);
 	LabelView(String text, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 
 	void setText(String text);
 	void setTextAlign(uint8_t textAlign);
+	void setVerticalTextAlign(uint8_t verticalTextAlign);
 	void setTextColor(uint16_t color);
-	void setFont(const ILI9341_t3_font_t &font);
+	uint16_t getTextColor() { return _textColor; };
+
+	virtual void setFont(const ILI9341_t3_font_t *font);
+	const ILI9341_t3_font_t* getFont();
+	TextLayer* getTextLayer() { return _layer; };
+
+	virtual bool touchDown(TS_Point& point) { return View::touchDown(point); };
+	virtual bool touchUp(TS_Point& point) { return View::touchUp(point); };
+	virtual void touchCancelled() { View::touchCancelled(); }
 
 private:
 	String _text;
+	TextLayer* _layer;
 	uint8_t _textAlign;
-	const ILI9341_t3_font_t *_font;
+	uint8_t _verticalTextAlign;
+	const ILI9341_t3_font_t* _font;
 	uint16_t _textColor;
+
 public:
-	virtual void draw() override;
+	virtual void display() override;
+
+	void updateLayout();
 };
 
 

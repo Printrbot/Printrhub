@@ -13,7 +13,7 @@ public:
     GapLayer(Rect frame);
     virtual ~GapLayer();
 
-    //virtual void draw() override;
+    //virtual void draw(Rect &renderFrame) override;
 };
 
 

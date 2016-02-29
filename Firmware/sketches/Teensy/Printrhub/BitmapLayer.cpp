@@ -24,40 +24,58 @@ void BitmapLayer::setBitmap(const uint16_t *bitmap, uint16_t width, uint16_t hei
     _needsDisplay = true;
 }
 
-void BitmapLayer::draw()
+void BitmapLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
 {
     if (_bitmap == NULL) return;
 
-    int x = _frame.x;
-    int y = _frame.y;
+    Rect renderFrame = Rect::Intersect(_frame,invalidationRect);
+
+    int xs = renderFrame.left() - _frame.left();
+    int ys = renderFrame.top() - _frame.top();
+    int width = renderFrame.width;
+    int height = renderFrame.height;
+
+    //Transform to screen space
+    renderFrame.x = renderFrame.x % 320;
+
+    if (height > 0 && width > 0)
+    {
+        Display.drawBitmap(renderFrame.x,renderFrame.y,width,height,_bitmap,xs,ys,_width,_height,1);
+    }
+
+//    Display.fillRect(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,ILI9341_PINK);
+    return;
+/*
+    int x = renderFrame.x;
+    int y = renderFrame.y;
     int width = _width;
     int height = _height;
     int imageOffset = 0;
     int xs = 0;
     int ys = 0;
 
-    if (_frame.y < 0)
+    if (renderFrame.y < 0)
     {
         y = 0;
-        height = _height + _frame.y;
-        ys = abs(_frame.y);
+        height = _height + renderFrame.y;
+        ys = abs(renderFrame.y);
     }
 
-    if (_frame.x < 0)
+    if (renderFrame.x < 0)
     {
         x = 0;
-        width = _width + _frame.x;
-        xs = abs(_frame.x);
+        width = _width + renderFrame.x;
+        xs = abs(renderFrame.x);
     }
 
-    if (_frame.y + _height > 239)
+    if (renderFrame.y + _height > 239)
     {
-        height = 239 - _frame.y;
+        height = 239 - renderFrame.y;
     }
 
-    if (_frame.x + _width > 319)
+    if (renderFrame.x + _width > 319)
     {
-        width = 319 - _frame.x;
+        width = 319 - renderFrame.x;
     }
 
     if (height > 0 && width > 0)
@@ -65,6 +83,6 @@ void BitmapLayer::draw()
         Display.drawBitmap(x,y,width,height,_bitmap,xs,ys,_width,_height,1);
     }
 
-    Layer::draw();
+    Layer::draw(renderFrame);*/
 }
 

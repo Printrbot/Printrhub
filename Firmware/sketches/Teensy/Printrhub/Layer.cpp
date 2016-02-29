@@ -14,12 +14,15 @@ _sublayers(NULL),
 _needsDisplay(true)
 {
     ::globalLayersCreated++;
+
+    uniqueId = ::globalLayerId++;
 }
 
 Layer::Layer(Rect frame):
 Layer()
 {
     _frame = frame;
+    _sublayers = NULL;
 }
 
 Layer::~Layer()
@@ -32,10 +35,24 @@ Layer::~Layer()
 
     delete _sublayers;
     _sublayers = NULL;
+    if (_sublayers != NULL)
+    {
+        delete _sublayers;
+        _sublayers = NULL;
+    }
 }
 
 void Layer::setBackgroundColor(const uint16_t &color)
 {
+    if (_sublayers != NULL && _sublayers->count() > 0)
+    {
+        for (int i=0;i<_sublayers->count();i++)
+        {
+            Layer *sublayer = _sublayers->at(i);
+            sublayer->setBackgroundColor(color);
+        }
+    }
+
     _backgroundColor = color;
 }
 
@@ -83,18 +100,32 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
     if (left != NULL)
     {
         //Create the top layer
-        Layer* leftLayer = new GapLayer(Rect(_frame.x,_frame.y,x-_frame.x,_frame.bottom()));
-        leftLayer->uniqueId = ::globalLayerId++;
+        Layer* leftLayer = new GapLayer(Rect(_frame.x,_frame.y,x-_frame.x,_frame.height));
+        leftLayer->setBackgroundColor(_backgroundColor);
         *left = leftLayer;
         //if (Display.debug) LOG_VALUE("Layer created",leftLayer->uniqueId);
     }
 
     if (right != NULL)
     {
-        Layer* rightLayer = new GapLayer(Rect(x,_frame.y,_frame.right()-x,_frame.bottom()));
-        rightLayer->uniqueId = ::globalLayerId++;
+        Layer* rightLayer = new GapLayer(Rect(x,_frame.y,_frame.right()-x,_frame.height));
+        rightLayer->setBackgroundColor(_backgroundColor);
         *right = rightLayer;
         //if (Display.debug) LOG_VALUE("Layer created",rightLayer->uniqueId);
+    }
+}
+
+void Layer::log()
+{
+    LOG_VALUE("Layer: ",_frame.toString());
+    if (_sublayers != NULL && _sublayers->count() > 0)
+    {
+        LOG_VALUE("Children: ",_sublayers->count());
+        for (int i=0;i<_sublayers->count();i++)
+        {
+            Layer* sublayer = _sublayers->at(i);
+            sublayer->log();
+        }
     }
 }
 
@@ -115,7 +146,7 @@ void Layer::splitHorizontally(int y, Layer**top, Layer**bottom)
     if (top != NULL)
     {
         Layer* topLayer = new GapLayer(Rect(_frame.x,_frame.y,_frame.width,y-_frame.y));
-        topLayer->uniqueId = ::globalLayerId++;
+        topLayer->setBackgroundColor(_backgroundColor);
         *top = topLayer;
         //if (Display.debug) LOG_VALUE("Layer created",topLayer->uniqueId);
     }
@@ -123,7 +154,7 @@ void Layer::splitHorizontally(int y, Layer**top, Layer**bottom)
     if (bottom != NULL)
     {
         Layer* bottomLayer = new GapLayer(Rect(_frame.x,y,_frame.width,_frame.bottom()-y));
-        bottomLayer->uniqueId = ::globalLayerId++;
+        bottomLayer->setBackgroundColor(_backgroundColor);
         *bottom = bottomLayer;
         //if (Display.debug) LOG_VALUE("Layer created",bottomLayer->uniqueId);
     }
@@ -208,12 +239,22 @@ void Layer::display(Layer* backgroundLayer)
 {
     if (_sublayers == NULL || _sublayers->count() <= 0)
     {
+        Rect renderFrame = getRenderFrame();
         if (backgroundLayer == NULL)
         {
             //LOG("No comparison layer found, just draw the layer");
             if (_needsDisplay)
             {
-                draw();
+                if (isVisible())
+                {
+                    LOG("Drawing");
+                    draw(renderFrame,_frame);
+                }
+                else
+                {
+                    LOG("Not visible");
+                }
+                _needsDisplay = false;
             }
         }
         else
@@ -223,7 +264,16 @@ void Layer::display(Layer* backgroundLayer)
                 //LOG("No valid comparisonlayer found, just draw");
                 if (_needsDisplay)
                 {
-                    draw();
+                    if (isVisible())
+                    {
+                        LOG("Drawing");
+                        draw(renderFrame, _frame);
+                    }
+                    else
+                    {
+                        LOG("Not visible");
+                    }
+                    _needsDisplay = false;
                 }
             }
             else
@@ -241,6 +291,40 @@ void Layer::display(Layer* backgroundLayer)
         //LOG_VALUE("Drawing sublayer at",i);
         Layer* layer = _sublayers->at(i);
         layer->display(backgroundLayer);
+    }
+
+    //If this layer has a border, draw it now
+    if (getStrokeWidth() > 0)
+    {
+        if (_needsDisplay)
+        {
+            Display.drawRect(_frame.x,_frame.y,_frame.width,_frame.height,getStrokeColor());
+            _needsDisplay = false;
+        }
+    }
+}
+
+
+void Layer::invalidateRect(Rect& dirtyRect, Rect &invalidationRect)
+{
+    if (_sublayers == NULL || _sublayers->count() <= 0)
+    {
+        if (_frame.intersectsRect(invalidationRect))
+        {
+            //LOG_VALUE("Invalidated Layer:",_frame.toString());
+
+            draw(dirtyRect, invalidationRect);
+        }
+
+        return;
+    }
+
+    //LOG("Sublayers");
+    for (int i=0;i<_sublayers->count();i++)
+    {
+        //LOG_VALUE("Drawing sublayer at",i);
+        Layer* layer = _sublayers->at(i);
+        layer->invalidateRect(dirtyRect, invalidationRect);
     }
 }
 
@@ -267,6 +351,8 @@ void Layer::removeAllSublayers()
         Layer* layer = _sublayers->pop();
         delete layer;
     }
+
+    _sublayers->clear();
 }
 
 void Layer::setFrame(Rect frame)
@@ -309,10 +395,38 @@ Layer *Layer::subLayerWithRect(Rect frame)
 
 void Layer::setNeedsDisplay()
 {
+    LOG_VALUE("NEEDS DISPLAY: ",_name);
+    if (_sublayers != NULL && _sublayers->count() > 0)
+    {
+        for (int i=0;i<_sublayers->count();i++)
+        {
+            Layer *sublayer = _sublayers->at(i);
+            sublayer->setNeedsDisplay();
+        }
+    }
+
     _needsDisplay = true;
 }
 
-void Layer::draw()
+void Layer::draw(Rect& dirtyRect, Rect& invalidationRect)
 {
     _needsDisplay = false;
+}
+
+Rect Layer::getRenderFrame()
+{
+    int x = _frame.x;
+    x = x % 320;
+    return Rect(x,_frame.y,_frame.width,_frame.height);
+}
+
+bool Layer::isVisible()
+{
+    Rect visibleFrame = Display.visibleRect();
+    if (visibleFrame.intersectsRect(_frame))
+    {
+        return true;
+    }
+
+    return false;
 }

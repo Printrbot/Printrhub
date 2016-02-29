@@ -22,6 +22,8 @@
 SceneController::SceneController()
 {
 	_currentTouchedView = NULL;
+	_scrollOffset = 0;
+	_dismissed = false;
 }
 
 SceneController::~SceneController()
@@ -40,18 +42,48 @@ void SceneController::setup()
 
 void SceneController::loop()
 {
+	if (Touch.touched()) return;
+
+	if (_scrollVelocity > 0)
+	{
+		_scrollVelocity -= fabs(_scrollVelocity) * 0.1 * 0.5;
+		if (_scrollVelocity < 0) _scrollVelocity = 0;
+	}
+	else if (_scrollVelocity < 0)
+	{
+		_scrollVelocity += fabs(_scrollVelocity) * 0.1 * 0.5;
+		if (_scrollVelocity > 0) _scrollVelocity = 0;
+	}
+
+	if (fabsf(_scrollVelocity) < 0.05)
+	{
+		_scrollVelocity = 0;
+	}
+
+	if(_scrollVelocity != 0)
+	{
+		addScrollOffset(_scrollVelocity);
+	}
 }
 
 void SceneController::onWillAppear()
 {
 	//Clear display - override if you want a nice transition effect
-	uint16_t backgroundColor = Application.getTheme()->getBackgroundColor(ColorTheme::Default);
-	Display.fillScreen(backgroundColor);
+//	uint16_t backgroundColor = Application.getTheme()->getBackgroundColor(ColorTheme::Default);
+//	Display.fillScreen(backgroundColor);
+
+	for (int i=0;i<_views.count();i++)
+	{
+		LOG_VALUE("Display View: ",_views.count());
+		View *view = _views.at(i);
+		view->display();
+		LOG("View displayed");
+	}
 }
 
 void SceneController::onWillDisappear()
 {
-	Application.resetFocus();
+
 }
 
 String SceneController::getName()
@@ -72,7 +104,7 @@ void SceneController::handleTouchDown(TS_Point &point)
 		View* hitView = view->hitTest(point);
 		if (hitView != NULL)
 		{
-			LOG("Touch Down in View");
+			LOG_VALUE("Touch Down in View: ",hitView->getName());
 			//Break out if the view returns true, means it has handled the event
 			if (hitView->touchDown(point))
 			{
@@ -95,7 +127,7 @@ void SceneController::handleTouchUp(TS_Point &point)
 		{
 			if (hitView == _currentTouchedView)
 			{
-				LOG("Touch Up in View");
+				LOG_VALUE("Touch Up in View: ",hitView->getName());
 				//Break out if the view returns true, means it has handled the event
 				if (hitView->touchUp(point))
 				{
@@ -114,6 +146,17 @@ void SceneController::handleTouchUp(TS_Point &point)
 	}
 }
 
+void SceneController::addScrollOffset(float scrollOffset)
+{
+	if (scrollOffset == 0) return;
+
+	_scrollOffset += scrollOffset;
+	LOG_VALUE("_scrollOffset: ",_scrollOffset);
+
+	Display.setScrollOffset(_scrollOffset);
+	_scrollOffset = Display.getScrollOffset();
+}
+
 void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
 {
 	for (int i=0;i<_views.count();i++)
@@ -122,12 +165,27 @@ void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
 		View* hitView = view->hitTest(point);
 		if (hitView != NULL)
 		{
-			LOG("Touch Moved in View");
+			LOG_VALUE("Touch Moved in View: ",hitView->getName());
 			//Break out if the view returns true, means it has handled the event
 			if (hitView->touchMoved(point,oldPoint))
 			{
-				break;
+				return;
 			}
 		}
 	}
+
+	LOG("Handle Scrolling");
+
+	//Handle Scrolling
+	_scrollVelocity = point.x - oldPoint.x;
+
+	LOG_VALUE("Point.X: ",point.x);
+	LOG_VALUE("OldPoint.X: ",oldPoint.x);
+	LOG_VALUE("Velocity: ",_scrollVelocity);
+	addScrollOffset(_scrollVelocity);
+}
+
+uint16_t SceneController::getBackgroundColor()
+{
+	return Application.getTheme()->getBackgroundColor();
 }

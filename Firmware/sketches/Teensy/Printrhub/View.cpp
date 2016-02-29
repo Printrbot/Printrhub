@@ -35,12 +35,14 @@ View::View(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
 	_needsDisplay = true;
 	_visible = true;
 	_userInteractionEnabled = true;
+	_name = "Untitled";
 }
 
 View::View(Rect frame)
 {
 	_frame = frame;
 	_userInteractionEnabled = true;
+	_name = "Untitled";
 }
 
 void View::draw()
@@ -118,6 +120,11 @@ void View::setBackgroundColor(uint16_t backgroundColor)
 	_backgroundColor = backgroundColor;
 }
 
+uint16_t View::getBackgroundColor()
+{
+	return _backgroundColor;
+}
+
 void View::setOpaque(bool opaque)
 {
 	_opaque = opaque;
@@ -125,8 +132,11 @@ void View::setOpaque(bool opaque)
 
 void View::setNeedsDisplay()
 {
-	//LOG_VALUE("Needs display",this->getDescription());
-	this->_needsDisplay = true;
+	for (int i=0;i<_layers.count();i++)
+	{
+		Layer *layer = _layers.at(i);
+		layer->setNeedsDisplay();
+	}
 }
 
 String View::getDescription()
@@ -157,6 +167,7 @@ void View::setFrame(Rect frame)
 
 bool View::touchDown(TS_Point &point)
 {
+	LOG_VALUE("TOUCH DOWN",_name);
 	//Return false so the next view is informed (when Views overlap)
 	return false;
 }
@@ -179,12 +190,8 @@ void View::touchCancelled()
 
 View *View::hitTest(TS_Point &point)
 {
-	LOG("Hit Testing");
-	LOG_VALUE("Point-X",point.x);
-	LOG_VALUE("Point-Y",point.y);
-	LOG_VALUE("Frame",_frame.toString());
-
-	if (_frame.containsPoint(point.x,point.y))
+	//Transform point to view space as point is in screen-space (i.e. 0-320 wrapped)
+	if (_frame.containsPoint(point.x+(-Display.getScrollOffset()),point.y))
 	{
 		return this;
 	}

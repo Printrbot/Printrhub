@@ -25,10 +25,10 @@
 #include "ColorTheme.h"
 #include "Icon.h"
 #include "PHDisplay.h"
-#include <ILI9341_t3.h>
+#include "ILI9341_t3.h"
 #include <Adafruit_FT6206.h>
-#include <font_Arial.h>
 #include "Animator.h"
+#include "font_PT_Sans-Narrow-Web-Regular.h"
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
@@ -48,11 +48,7 @@ public:
 
 	void loop();
 	void pushScene(SceneController* scene);
-	void dismissScene();
-
-	void setFocusedView(View* focusView);
-	View* getFocusedView();
-	void resetFocus();
+	SceneController* currentScene() { return _currentScene; };
 
 	void handleTouches();
 
@@ -61,12 +57,12 @@ public:
 	ColorTheme* getTheme();
 
 private:
-	StackArray<SceneController*> _scenes;
 	bool _firstSceneLoop;
-	View* _focusedView;
 	ColorTheme _theme;
 	bool _touched;
 	TS_Point _lastTouchPoint;
+	SceneController *_nextScene;
+	SceneController *_currentScene;
 };
 
 extern ApplicationClass Application;

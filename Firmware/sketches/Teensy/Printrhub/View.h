@@ -48,6 +48,7 @@ public:
 	virtual void update();
 	virtual void layout();
 	void setBackgroundColor(uint16_t backgroundColor);
+	uint16_t getBackgroundColor();
 	void setOpaque(bool opaque);
 	virtual void display();
 
@@ -74,7 +75,27 @@ public:
 		_userInteractionEnabled = userInteractionEnabled;
 	}
 
-	//Visibility
+	uint16_t getBorderColor() const
+	{
+		return _borderColor;
+	}
+
+	void setBorderColor(uint16_t _borderColor)
+	{
+		View::_borderColor = _borderColor;
+	}
+
+	uint8_t getBorderWidth() const
+	{
+		return _borderWidth;
+	}
+
+	void setBorderWidth(uint8_t _borderWidth)
+	{
+		View::_borderWidth = _borderWidth;
+	}
+
+//Visibility
 	bool isVisible();
 	void setVisible(bool visible=true);
 
@@ -88,6 +109,8 @@ protected:
 	bool _visible;
 	bool _opaque;
 	uint16_t _backgroundColor;
+	uint16_t _borderColor;
+	uint8_t _borderWidth;
 	bool _needsDisplay;
 	StackArray<Layer*> _layers;
 	bool _userInteractionEnabled;
