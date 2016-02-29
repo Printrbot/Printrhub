@@ -46,6 +46,46 @@ int globalLayersDeleted = 0;
 
 int globR = 0;
 
+void testImage(void)
+{
+    File file = SD.open("/feet2.dat",FILE_READ);
+
+/*    for (int x=0;x<180;x++)
+    {
+        uint16_t buffer[151];
+        file.read(buffer,sizeof(uint16_t)*150);
+
+        for (int y=0;y<150;y++)
+        {
+            Display.drawPixel(x,y,buffer[y]);
+        }
+    }*/
+
+/*    Display.fillScreen(ILI9341_BLACK);
+
+    uint16_t buffer[14800];
+
+
+    for (int y=0;y<80;y++)
+    {
+        file.read(buffer,180*sizeof(uint16_t));
+        for (int x=0;x<180;x++)
+        {
+            Display.drawPixel(x+10,y+10,buffer[x]);
+        }
+    }
+
+    while(true);
+*/
+    while(true)
+    {
+        Display.drawFileBitmap(10,10,180,150,&file,0,0,180,150,1);
+        delay(100);
+    }
+    delay(2000);
+    while(true);
+}
+
 void setup(void)
 {
     //while (!Serial);
@@ -57,7 +97,6 @@ void setup(void)
     Serial1.begin(115200);
 
     Display.begin();
-
     //Rotate to landscape
     Display.setRotation(3);
     Display.setScroll(0);
@@ -68,6 +107,9 @@ void setup(void)
         while (1);
     }
     Serial.println("Started SD card interface");
+
+    //testImage();
+
     if (! Touch.begin(40))
     {  // pass in 'sensitivity' coefficient
         Serial.println("Couldn't start FT6206 touchscreen controller");
