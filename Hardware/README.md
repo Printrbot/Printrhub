@@ -40,10 +40,10 @@ As we don’t have very hard low power constraints (we are running a 3D printer 
 As the Printrboard only serves 300mA on it's 5V „line“ (the schematics of Rev F show the part LM2841) we cannot use that and we have to connect the Printrhub to the 12V, requiring an LDO with Vin >= 12V.
 
 Power consumption of components on Printrhub:
-**ESP8266**: 300mA
-**MK20DX256VLH7**: 40mA
-**SD Card**: 100-200mA
-**Display**: 75mA backlight, 15mA logic
+* **ESP8266**: 300mA
+* **MK20DX256VLH7**: 40mA
+* **SD Card**: 100-200mA
+* **Display**: 75mA backlight, 15mA logic
 
 As we need 1A out at 3.3V the best option is to use a SOT-223-3 footprint as there are many parts available with this footprint and it should feature a nice heat transition due to large pins distributing heat to the copper planes.
 Possible option:
