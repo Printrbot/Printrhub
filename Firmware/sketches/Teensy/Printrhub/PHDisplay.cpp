@@ -54,11 +54,9 @@ void PHDisplay::clear()
     _backgroundLayer->removeAllSublayers();
     _foregroundLayer->removeAllSublayers();
     _layers.clear(false);
+    _needsLayout = true;
 }
 
-    _layers.clear();
-
-    _needsLayout = true;
 void PHDisplay::cropRectToScreen(Rect &rect)
 {
     if (rect.left() < 0)
@@ -178,7 +176,7 @@ void PHDisplay::drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const
     SPI.endTransaction();
 }
 
-void PHDisplay::drawFileBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File* file, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha)
+void PHDisplay::drawFileBitmapByRow(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File* file, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha)
 {
     uint16_t buffer[320];
     for (uint16_t yb=0;yb<h;yb++)
@@ -201,6 +199,38 @@ void PHDisplay::drawFileBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, F
             {
                 //All other pixels
                 writedata16_cont(buffer[xb+xs]);
+            }
+            //drawPixel(x+xb,y+yb,buffer[xb+xs]);
+        }
+        SPI.endTransaction();
+    }
+}
+
+
+void PHDisplay::drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs,
+                                       uint16_t ys, uint16_t ws, uint16_t hs, float alpha)
+{
+    uint16_t buffer[320];
+    for (uint16_t xb=0;xb<w;xb++)
+    {
+        file->seek(((xb+xs)*hs)*sizeof(uint16_t));
+        file->read(buffer,sizeof(uint16_t)*hs);
+
+        SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
+        setAddr(x+xb, y, x+xb, y+h-1);
+        writecommand_cont(ILI9341_RAMWR);
+
+        for (uint16_t yb=0;yb<h;yb++)
+        {
+            if (yb == h-1)
+            {
+                //Last pixel
+                writedata16_last(buffer[yb+ys]);
+            }
+            else
+            {
+                //All other pixels
+                writedata16_cont(buffer[yb+ys]);
             }
             //drawPixel(x+xb,y+yb,buffer[xb+xs]);
         }

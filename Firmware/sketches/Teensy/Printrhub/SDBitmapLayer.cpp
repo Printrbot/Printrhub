@@ -38,7 +38,7 @@ void SDBitmapLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
     if (height > 0 && width > 0)
     {
         _file = SD.open(_filePath,FILE_READ);
-        Display.drawFileBitmap(renderFrame.x,renderFrame.y,width,height,&_file,xs,ys,_width,_height,1);
+        Display.drawFileBitmapByColumn(renderFrame.x,renderFrame.y,width,height,&_file,xs,ys,_width,_height,1);
     }
 }
 

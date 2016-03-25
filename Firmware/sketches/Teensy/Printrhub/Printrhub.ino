@@ -48,7 +48,7 @@ int globR = 0;
 
 void testImage(void)
 {
-    File file = SD.open("/feet2.dat",FILE_READ);
+    File file = SD.open("/feet.dat",FILE_READ);
 
 /*    for (int x=0;x<180;x++)
     {
@@ -79,7 +79,7 @@ void testImage(void)
 */
     while(true)
     {
-        Display.drawFileBitmap(10,10,180,150,&file,0,0,180,150,1);
+        Display.drawFileBitmapByColumn(10,10,180,150,&file,0,0,180,150,1);
         delay(100);
     }
     delay(2000);

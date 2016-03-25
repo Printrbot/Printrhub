@@ -15,22 +15,22 @@ ChoosePrintSceneController::ChoosePrintSceneController():
 {
     ModelView* modelView = new ModelView(Rect(0,0,319,239));
     modelView->setJobName("Simple Metal Feet");
-    modelView->setImageFileName("lcd2.dat");
+    modelView->setImageFileName("feet.dat");
     addView(modelView);
 
     modelView = new ModelView(Rect(320,0,319,239));
-    modelView->setJobName("LCD Case 2");
-    modelView->setImageFileName("feet2.dat");
+    modelView->setJobName("LCD Case");
+    modelView->setImageFileName("lcd.dat");
     addView(modelView);
 
     modelView = new ModelView(Rect(640,0,319,239));
-    modelView->setJobName("Something useless");
-    modelView->setImageFileName("feet2.dat");
+    modelView->setJobName("MacBook Pro Holder");
+    modelView->setImageFileName("macbook.dat");
     addView(modelView);
 
     modelView = new ModelView(Rect(960,0,319,239));
-    modelView->setJobName("Something useful");
-    modelView->setImageFileName("lcd2.dat");
+    modelView->setJobName("Cable Hook");
+    modelView->setImageFileName("hook.dat");
     addView(modelView);
 }
 
