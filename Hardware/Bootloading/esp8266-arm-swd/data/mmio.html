@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" media="all" href="/style.css" />
+    <script src="/polyfill.js" type="text/javascript"></script>
+    <script src="/script.js" type="text/javascript"></script>
+
+	<title>swd:io</title>
+</head>
+<body>
+
+<p>
+	[<a href="/">home</a>]
+</p>
+
+<p>
+	Some things to try with the
+	<a href="http://www.digikey.com/product-detail/en/FRDM-KE04Z/FRDM-KE04Z-ND/4765763">FRDM-KE04Z</a>
+	board as a debug target:
+</p>
+<ul>
+	<li>Turn the LED
+		<a is="swd-async-action" href="/api/mem/write?0x40048008=0&0x400ff014=0x00300800&0x400ff000=0x00100800">red</a>,
+		<a is="swd-async-action" href="/api/mem/write?0x40048008=0&0x400ff014=0x00300800&0x400ff000=0x00200800">green</a>,
+		<a is="swd-async-action" href="/api/mem/write?0x40048008=0&0x400ff014=0x00300800&0x400ff000=0x00300000">blue</a>,
+		<a is="swd-async-action" href="/api/mem/write?0x40048008=0&0x400ff014=0x00300800&0x400ff000=0x00200000">cyan</a>,
+		<a is="swd-async-action" href="/api/mem/write?0x40048008=0&0x400ff014=0x00300800&0x400ff000=0x00100000">pink</a>,
+		<a is="swd-async-action" href="/api/mem/write?0x40048008=0&0x400ff014=0x00300800&0x400ff000=0x00000000">whiteish</a>, or
+		<a is="swd-async-action" href="/api/mem/write?0x40048008=0&0x400ff014=0x00300800&0x400ff000=0x00300800">off</a></li>
+	<li>Now <a is="swd-async-action" href="/api/halt">halt the CPU</a> and let's have some scratch RAM:
+		<p><swd-hexedit addr="0x20000000" count="32"></swd-hexedit></p></li>
+	<li><a is="swd-async-action"
+		href="/api/mem/write?0x20000000=0x22004b0a&.=0x4a0a601a&.=0x601a4b0a&.=0x4a0b4b0a&.=0x4b0b6013&.=0x2b003b01&.=0x2380d1fc&.=0x6013035b&.=0x3b014b07&.=0xd1fc2b00&.=0x46c0e7f0&.=0x40048008&.=0x00300800&.=0x400ff014&.=0x00200800&.=0x400ff000&.=0x00123456&.=0x7fffffbc&.=0x00000001"
+		>Load a small program</a> into the scratch RAM</li>
+	<li><a is="swd-async-action" href="/api/reg/write?0x3c=0x20000000">Set the program counter</a>
+		(<span is="swd-hexword" src="/api/reg" addr="0x3c"></span>)
+		to the top of our program</li>
+    <li>The PC <i>sample</i> register (<span is="swd-hexword" addr="0xe000101c"></span>) tells you where the <i>running</i> CPU is</li>
+    <li><a is="swd-async-action" href="/api/mem/write?0xE000EDF0=0xA05F0001">Let the CPU run!</a>
+    	(or try a <a is="swd-async-action" href="/api/mem/write?0xE000EDF0=0xA05F0005">single step</a>)</li>
+    <li>While the program is running, you can modify its delay value:
+    	<span is="swd-hexword" addr="0x20000040"></span></li>
+</ul>
+<p>
+	[<a href="https://github.com/scanlime/esp8266-arm-swd/blob/master/data/mmio.html">play along</a>]
+</p>
+
+<ul>
+	<li><a is="swd-async-action" href="/api/reset">reset</a></li>
+	<li><a is="swd-async-action" href="/api/halt">debug halt</a> /
+        <a is="swd-async-action" href="/api/mem/write?0xE000EDF0=0xA05F0005">step</a> /
+        <a is="swd-async-action" href="/api/mem/write?0xE000EDF0=0xA05F0001">run</a>
+	</li>
+</ul>
+<p>
+	CPU Registers (when halted):
+</p>
+<swd-hexedit src="/api/reg" count="21"></swd-hexedit>
+
+<table>
+
+<tr><th>ARMv6M</th><th></th><th>System Control Block</th></tr>
+	<tr><td>ACTLR</td><td><swd-hexedit addr="0xe000e008" count="1"></swd-hexedit></td><td>Auxiliary Control Register</td></tr>
+	<tr><td>CPUID</td><td><swd-hexedit addr="0xe000ed00" count="1"></swd-hexedit></td><td>CPUID Base Register</td></tr>
+	<tr><td>ICSR</td><td><swd-hexedit addr="0xe000ed04" count="1"></swd-hexedit></td><td>Interrupt Control State Register</td></tr>
+	<tr><td>VTOR</td><td><swd-hexedit addr="0xe000ed08" count="1"></swd-hexedit></td><td>Vector Table Offset Register</td></tr>
+	<tr><td>AIRCR</td><td><swd-hexedit addr="0xe000ed0c" count="1"></swd-hexedit></td><td>Application Interrupt and Reset Control Register</td></tr>
+	<tr><td>SCR</td><td><swd-hexedit addr="0xe000ed10" count="1"></swd-hexedit></td><td>Optional System Control Register</td></tr>
+	<tr><td>CCR</td><td><swd-hexedit addr="0xe000ed14" count="1"></swd-hexedit></td><td>Configuration and Control Register</td></tr>
+	<tr><td>SHPR2</td><td><swd-hexedit addr="0xe000ed1c" count="1"></swd-hexedit></td><td>System Handler Priority Register 2</td></tr>
+	<tr><td>SHPR3</td><td><swd-hexedit addr="0xe000ed20" count="1"></swd-hexedit></td><td>System Handler Priority Register 3</td></tr>
+	<tr><td>SHCSR</td><td><swd-hexedit addr="0xe000ed24" count="1"></swd-hexedit></td><td>System Handler Control and State Register</td></tr>
+	<tr><td>DFSR</td><td><swd-hexedit addr="0xe000ed30" count="1"></swd-hexedit></td><td>Debug Fault Status Register</td></tr>
+
+<tr><th>ARMv6M</th><th></th><th>Debug Control Block</th></tr>
+	<tr><td>DHCSR</td><td><swd-hexedit addr="0xe000edf0" count="1"></swd-hexedit></td><td>Debug Halting Control And Status Register</td></tr>
+	<tr><td>DCRSR</td><td><swd-hexedit addr="0xe000edf4" count="1"></swd-hexedit></td><td>Debug Core Register Selector Register</td></tr>
+	<tr><td>DCRDR</td><td><swd-hexedit addr="0xe000edf8" count="1"></swd-hexedit></td><td>Debug Core Register Data Register</td></tr>
+	<tr><td>DEMCR</td><td><swd-hexedit addr="0xe000edfc" count="1"></swd-hexedit></td><td>Debug Exception and Monitor Control Register</td></tr>
+
+<tr><th>ARMv6M</th><th></th><th>Data Watchpoint and Trace</th></tr>
+	<tr><td>DWT_CTRL</td><td><swd-hexedit addr="0xe0001000" count="1"></swd-hexedit></td><td>Control register</td></tr>
+	<tr><td>DWT_PCSR</td><td><swd-hexedit addr="0xe000101c" count="1"></swd-hexedit></td><td>Program Counter Sample Register</td></tr>
+	<tr><td>DWT_COMPx</td><td><swd-hexedit addr="0xe0001020" count="1"></swd-hexedit></td><td>Comparator registers</td></tr>
+	<tr><td>DWT_MASKx</td><td><swd-hexedit addr="0xe0001024" count="1"></swd-hexedit></td><td>Comparator Mask registers</td></tr>
+	<tr><td>DWT_FUNCTIONx</td><td><swd-hexedit addr="0xe0001028" count="1"></swd-hexedit></td><td>Comparator Function registers</td></tr>
+
+<tr><th>ARMv6M</th><th></th><th>Breakpoint Unit</th></tr>
+	<tr><td>BP_CTRL</td><td><swd-hexedit addr="0xe0002000" count="1"></swd-hexedit></td><td>Breakpoint Control register</td></tr>
+	<tr><td>BP_COMPx</td><td><swd-hexedit addr="0xe0002008" count="1"></swd-hexedit></td><td>Breakpoint Comparator registers</td></tr>
+
+<tr><th>ARMv6M</th><th></th><th>System Timer</th></tr>
+	<tr><td>SYST_CSR</td><td><swd-hexedit addr="0xe000e010" count="1"></swd-hexedit></td><td>SysTick Control and Status Register</td></tr>
+	<tr><td>SYST_RVR</td><td><swd-hexedit addr="0xe000e014" count="1"></swd-hexedit></td><td>SysTick Reload Value Register</td></tr>
+	<tr><td>SYST_CVR</td><td><swd-hexedit addr="0xe000e018" count="1"></swd-hexedit></td><td>SysTick Current Value Register</td></tr>
+	<tr><td>SYST_CALIB</td><td><swd-hexedit addr="0xe000e01c" count="1"></swd-hexedit></td><td>SysTick Calibration Value Register</td></tr>
+
+<tr><th>ARMv6M</th><th></th><th>Nested Vectored Interrupt Controller</th></tr>
+	<tr><td>NVIC_ISER</td><td><swd-hexedit addr="0xe000e100" count="1"></swd-hexedit></td><td>Interrupt Set-Enable Register</td></tr>
+	<tr><td>NVIC_ICER</td><td><swd-hexedit addr="0xe000e180" count="1"></swd-hexedit></td><td>Interrupt Clear-Enable Register</td></tr>
+	<tr><td>NVIC_ISPR</td><td><swd-hexedit addr="0xe000e200" count="1"></swd-hexedit></td><td>Interrupt Set-Pending Register</td></tr>
+	<tr><td>NVIC_ICPR</td><td><swd-hexedit addr="0xe000e280" count="1"></swd-hexedit></td><td>Interrupt Clear-Pending Register</td></tr>
+	<tr><td>NVIC_IPRn</td><td><swd-hexedit addr="0xe000e01c" count="8" columns="1"></swd-hexedit></td><td>Interrupt Priority Registers</td></tr>
+
+	<tr><td>MPU_TYPE</td><td><swd-hexedit addr="0xe000ed90" count="1"></swd-hexedit></td><td>MPU Type Register</td></tr>
+	<tr><td>MPU_CTRL</td><td><swd-hexedit addr="0xe000ed94" count="1"></swd-hexedit></td><td>MPU Control Register</td></tr>
+	<tr><td>MPU_RNR</td><td><swd-hexedit addr="0xe000ed98" count="1"></swd-hexedit></td><td>MPU Region Number Register</td></tr>
+	<tr><td>MPU_RBAR</td><td><swd-hexedit addr="0xe000ed9c" count="1"></swd-hexedit></td><td>MPU Region Base Address Register</td></tr>
+	<tr><td>MPU_RASR</td><td><swd-hexedit addr="0xe000eda0" count="1"></swd-hexedit></td><td>MPU Region Attribute and Size Register</td></tr>
+
+<tr><th>Freescale KE04</th><th></th><th>System Integration Module</th></tr>
+	<tr><td>SIM_SRSID</td><td><swd-hexedit addr="0x40048000" count="1"></swd-hexedit></td><td>System Reset Status and ID Register</td></tr>
+	<tr><td>SIM_SOPT</td><td><swd-hexedit addr="0x40048004" count="1"></swd-hexedit></td><td>System Options Register</td></tr>
+	<tr><td>SIM_PINSEL</td><td><swd-hexedit addr="0x40048008" count="1"></swd-hexedit></td><td>Pin Selection Register</td></tr>
+	<tr><td>SIM_SCGC</td><td><swd-hexedit addr="0x4004800c" count="1"></swd-hexedit></td><td>System Clock Gating Control Register </td></tr>
+	<tr><td>SIM_UUIDL</td><td><swd-hexedit addr="0x40048010" count="1"></swd-hexedit></td><td>Universally Unique Identifier Low Register</td></tr>
+	<tr><td>SIM_UUIDML</td><td><swd-hexedit addr="0x40048014" count="1"></swd-hexedit></td><td>Universally Unique Identifier Middle Low Register</td></tr>
+	<tr><td>SIM_UUIDMH</td><td><swd-hexedit addr="0x40048018" count="1"></swd-hexedit></td><td>Universally Unique Identifier Middle High Register</td></tr>
+	<tr><td>SIM_CLKDIV</td><td><swd-hexedit addr="0x4004801c" count="1"></swd-hexedit></td><td>Clock Divider Register</td></tr>
+
+<tr><th>Freescale KE04</th><th></th><th>Port Control</th></tr>
+	<tr><td>PORT_IOFLT</td><td><swd-hexedit addr="0x40049000" count="1"></swd-hexedit></td><td>Port Filter Register</td></tr>
+	<tr><td>PORT_PUEL</td><td><swd-hexedit addr="0x40049004" count="1"></swd-hexedit></td><td>Port Pullup Enable Low Register</td></tr>
+	<tr><td></td><td><swd-hexedit addr="0x40049008" count="1"></swd-hexedit></td><td></td></tr>
+	<tr><td>PORT_HDRIVE</td><td><swd-hexedit addr="0x4004900c" count="1" ></swd-hexedit></td><td>Port high drive enable register</td></tr>
+
+<tr><th>Freescale KE04</th><th></th><th>General-Purpose Inout/Output</th></tr>
+	<tr><td>GPIOA_PDOR</td><td><swd-hexedit addr="0x400ff000" count="1" ></swd-hexedit></td><td>Port Data Output Register</td></tr>
+	<tr><td>GPIOA_PSOR</td><td><swd-hexedit addr="0x400ff004" count="1" ></swd-hexedit></td><td>Port Set Output Register<br/></td>
+	<tr><td>GPIOA_PCOR</td><td><swd-hexedit addr="0x400ff008" count="1" ></swd-hexedit></td><td>Port Clear Output Register<br/></td>
+	<tr><td>GPIOA_PTOR</td><td><swd-hexedit addr="0x400ff00c" count="1" ></swd-hexedit></td><td>Port Toggle Output Register<br/>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x80000000">D7</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x40000000">D6</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x20000000">D5</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x10000000">D4</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x08000000">D3</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x04000000">D2</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x02000000">D1</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x01000000">D0</a><br/>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00800000">C7</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00400000">C6</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00200000">C5</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00100000">C4</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00080000">C3</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00040000">C2</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00020000">C1</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00010000">C0</a><br/>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00008000">B7</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00004000">B6</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00002000">B5</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00001000">B4</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000800">B3</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000400">B2</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000200">B1</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000100">B0</a><br/>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000080">A7</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000040">A6</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000020">A5</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000010">A4</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000008">A3</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000004">A2</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000002">A1</a>
+		<a is="swd-async-action" href="/api/mem/write?0x400ff00c=0x00000001">A0</a>
+		</td></tr>
+	<tr><td>GPIOA_PDIR</td><td><swd-hexedit addr="0x400ff010" count="1" ></swd-hexedit></td><td>Port Data Input Register</td></tr>
+	<tr><td>GPIOA_PDDR</td><td><swd-hexedit addr="0x400ff014" count="1" ></swd-hexedit></td><td>Port Data Direction Register</td></tr>
+	<tr><td>GPIOA_PIDR</td><td><swd-hexedit addr="0x400ff018" count="1" ></swd-hexedit></td><td>Port Input Disable Register</td></tr>
+
+	<tr><td>FGPIOA_PDOR</td><td><swd-hexedit addr="0xf8000000" count="1" ></swd-hexedit></td><td>Fast Port Data Output Register</td></tr>
+	<tr><td>FGPIOA_PSOR</td><td><swd-hexedit addr="0xf8000004" count="1" ></swd-hexedit></td><td>Fast Port Set Output Register</td></tr>
+	<tr><td>FGPIOA_PCOR</td><td><swd-hexedit addr="0xf8000008" count="1" ></swd-hexedit></td><td>Fast Port Clear Output Register</td></tr>
+	<tr><td>FGPIOA_PTOR</td><td><swd-hexedit addr="0xf800000c" count="1" ></swd-hexedit></td><td>Fast Port Toggle Output Register</td></tr>
+	<tr><td>FGPIOA_PDIR</td><td><swd-hexedit addr="0xf8000010" count="1" ></swd-hexedit></td><td>Fast Port Data Input Register</td></tr>
+	<tr><td>FGPIOA_PDDR</td><td><swd-hexedit addr="0xf8000014" count="1" ></swd-hexedit></td><td>Fast Port Data Direction Register</td></tr>
+	<tr><td>FGPIOA_PIDR</td><td><swd-hexedit addr="0xf8000018" count="1" ></swd-hexedit></td><td>Fast Port Input Disable Register</td></tr>
+
+</table>
+
+</body>
+</html>
