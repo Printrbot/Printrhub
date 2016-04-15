@@ -33,6 +33,8 @@ Adafruit_FT6206 Touch = Adafruit_FT6206();
 #define TFT_MISO 12
 #define TFT_SCLK 13
 
+#define TFT_BACKLIGHT_PWM 22
+
 //ILI9341_t3::ILI9341_t3(uint8_t cs, uint8_t dc, uint8_t rst, uint8_t mosi, uint8_t sclk, uint8_t miso)
 PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
 
@@ -95,6 +97,10 @@ void setup(void)
     Serial.println(F("Printrhub - LCD Controller and Hub for Printrbots!"));
 
     Serial1.begin(115200);
+
+    //Pull backlight pin to turn on display backlight
+    pinMode(TFT_BACKLIGHT_PWM,OUTPUT);
+    digitalWrite(TFT_BACKLIGHT_PWM,HIGH);
 
     Display.begin();
     //Rotate to landscape
