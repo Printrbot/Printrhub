@@ -102,7 +102,7 @@ void setup(void)
 
     Display.begin();
     //Rotate to landscape
-    Display.setRotation(3);
+    Display.setRotation(ILI9341_ORIENTATION_LANDSCAPE_LEFT);
     Display.setScroll(0);
 
     if (!SD.begin(15))
