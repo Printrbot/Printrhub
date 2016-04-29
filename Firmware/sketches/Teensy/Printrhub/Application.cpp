@@ -94,6 +94,10 @@ void ApplicationClass::loop()
 
 	if (_nextScene != NULL)
 	{
+		//Shut down display to hide the build process of the layout (which is step by step and looks flashy)
+		digitalWrite(TFT_BACKLIGHT_PWM,LOW);
+
+		//Clear the display
 		Display.clear();
 
 		if (_currentScene != NULL)
@@ -121,7 +125,6 @@ void ApplicationClass::loop()
 
 			LOG_VALUE("Appearing scene", sceneController->getName());
 			sceneController->onWillAppear();
-			_firstSceneLoop = false;
 			LOG("Scene appeared");
 		}
 
@@ -136,15 +139,15 @@ void ApplicationClass::loop()
 
 		//Update display
 		Display.dispatch();
+
+		if (_firstSceneLoop)
+		{
+			//Set display brightness to full to show what's been built up since we shut down the display
+			digitalWrite(TFT_BACKLIGHT_PWM,HIGH);
+		}
+
+		_firstSceneLoop = false;
 	}
-
-
-	//sendScreenshot();
-
-//	Serial.print("Layers created: ");
-//	Serial.print(::globalLayersCreated);
-//	Serial.print(", deleted: ");
-//	Serial.println(::globalLayersDeleted);
 
 	//Delay for a few ms if no animation is running
 	if (!Animator.hasActiveAnimations())

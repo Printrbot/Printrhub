@@ -37,6 +37,8 @@
 #define LOG(m) Serial.println(m)
 #define LOG_VALUE(m,v) Serial.print(m);Serial.print(logError(m));Serial.println(v);
 
+#define TFT_BACKLIGHT_PWM 22
+
 class SceneController;
 class View;
 
