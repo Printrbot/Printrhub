@@ -14,11 +14,11 @@
 PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint8_t _SCLK, uint8_t _MISO):
         ILI9341_t3(_CS,_DC,_RST,_MOSI,_SCLK,_MISO)
 {
-    _foregroundLayer = new RectangleLayer(Rect(0,0,750,240));
+    _foregroundLayer = new RectangleLayer(Rect(getLayoutStart(),0,750,240));
     _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
     _foregroundLayer->setStrokeWidth(0);
 
-    _backgroundLayer = new RectangleLayer(Rect(0,0,750,240));
+    _backgroundLayer = new RectangleLayer(Rect(getLayoutStart(),0,750,240));
     _backgroundLayer->setBackgroundColor(ILI9341_WHITE);
     _backgroundLayer->setStrokeWidth(0);
 
@@ -88,7 +88,7 @@ void PHDisplay::layoutIfNeeded()
     //SceneController* currentScene = Application.currentScene();
 
     //Get Max Layer Width
-    Rect bounds = Rect(0,0,320,240);
+    Rect bounds = Rect(getLayoutStart(),0,getLayoutWidth(),240);
     for (int i=0;i<_layers.count();i++)
     {
         Layer *layer = _layers.at(i);
@@ -125,14 +125,7 @@ void PHDisplay::layoutIfNeeded()
         Layer *layer = _layers.at(i);
 
         Rect layerFrame = layer->getFrame();
-        Rect screenRect = Rect(0,0,319,239);
-        //if (screenRect.intersectsRect(layerFrame))
-        {
-            //Crop Rectangle to screen
-            //cropRectToScreen(layerFrame);
-
-            _foregroundLayer->splitWithRect(layerFrame);
-        }
+        _foregroundLayer->splitWithRect(layerFrame);
     }
 
     _needsLayout = false;
@@ -262,11 +255,44 @@ void PHDisplay::invalidateRect(Rect&dirtyRect, Rect& invalidationRect, uint16_t 
     //fillRect(dirtyRect.x,0,dirtyRect.width,dirtyRect.height,color);
 }
 
+void PHDisplay::setScrollInsets(uint16_t left, uint16_t right)
+{
+    _scrollInsetLeft = left;
+    _scrollInsetRight = right;
+
+    if (getRotation() == ILI9341_ORIENTATION_LANDSCAPE_LEFT)
+    {
+        setScrollArea(right,ILI9341_TFTHEIGHT-right-left,left);
+    }
+    else
+    {
+        setScrollArea(left,ILI9341_TFTHEIGHT-right-left,right);
+    }
+}
+
+uint16_t PHDisplay::getLayoutWidth()
+{
+    return ILI9341_TFTHEIGHT - (_scrollInsetLeft + _scrollInsetRight);
+}
+
+
+uint16_t PHDisplay::getLayoutStart()
+{
+    if (getRotation() == ILI9341_ORIENTATION_LANDSCAPE_LEFT)
+    {
+        return _scrollInsetLeft;
+    }
+    else
+    {
+        return _scrollInsetRight;
+    }
+}
+
 void PHDisplay::setScrollOffset(float scrollOffset)
 {
-    if (scrollOffset < -((_foregroundLayer->getFrame().width-1)-320))
+    if (scrollOffset < -((_foregroundLayer->getFrame().width-1)-getLayoutWidth()))
     {
-        scrollOffset = -((_foregroundLayer->getFrame().width-1)-320);
+        scrollOffset = -((_foregroundLayer->getFrame().width-1)-getLayoutWidth());
     }
     if (scrollOffset > 0)
     {
@@ -290,7 +316,7 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         int sx = -scrollOffset - fabsf(diffScrollOffset);
         int sw = fabsf(diffScrollOffset);
 
-        int vx = -scrollOffset + 320 - fabsf(diffScrollOffset);
+        int vx = -scrollOffset + getLayoutWidth() - fabsf(diffScrollOffset);
         int vw = sw;
 
         Rect invalidationRect(vx,0,vw,240);
@@ -325,24 +351,23 @@ void PHDisplay::setScrollOffset(float scrollOffset)
     //Shift display to the specific frame (this is hardware scrolling)
     if (scrollOffset < 0)
     {
-        int numScreens = -scrollOffset/320;
+        int numScreens = -scrollOffset/getLayoutWidth();
         numScreens += 1;
-        scrollOffset += numScreens * 320;
+        scrollOffset += numScreens * getLayoutWidth();
     }
-    if (scrollOffset > 319)
+    if (scrollOffset > getLayoutWidth()-1)
     {
-        scrollOffset -= 320;
+        scrollOffset -= getLayoutWidth();
     }
 
     //LOG_VALUE("Scroll Offset:",scrollOffset);
 
     Display.setScroll((int)scrollOffset);
-
 }
 
 Rect PHDisplay::visibleRect()
 {
-    return Rect(-_scrollOffset,0,320,240);
+    return Rect(-_scrollOffset,0,getLayoutWidth(),240);
 }
 
 

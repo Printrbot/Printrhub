@@ -30,6 +30,7 @@ public:
 
     virtual void setScrollOffset(float scrollOffset);
     virtual float getScrollOffset() { return _scrollOffset; };
+    virtual void setScrollInsets(uint16_t left, uint16_t right);
 
     virtual void setClippingRect(Rect* rect);
     virtual void resetClippingRect();
@@ -38,11 +39,16 @@ public:
     virtual uint16_t getBackgroundColor() { return _backgroundColor; };
 
     Rect visibleRect();
+    uint16_t getLayoutWidth();
+    uint16_t getLayoutStart();
 
     bool debug;
 
 private:
     void cropRectToScreen(Rect& rect);
+
+    uint16_t _scrollInsetLeft;
+    uint16_t _scrollInsetRight;
 
     RectangleLayer* _backgroundLayer;
     RectangleLayer* _foregroundLayer;
@@ -54,6 +60,7 @@ private:
     uint16_t _backgroundColor;
 
     void invalidateRect();
+
 
     void invalidateRect(Rect &dirtyRect, Rect &invalidationRect, uint16_t color);
 

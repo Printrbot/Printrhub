@@ -27,13 +27,13 @@ void ModelView::display()
     _imageLayer->setBackgroundColor(Application.getTheme()->getSecondaryColor1());
     addLayer(_imageLayer);*/
 
-    _imageLayer = new SDBitmapLayer(Rect(_frame.x + 70,10,180,150));
+    _imageLayer = new SDBitmapLayer(Rect(_frame.x + 45,10,180,150));
     _imageLayer->setBitmap(_imageFileName,180,150);
     addLayer(_imageLayer);
 
     uint16_t x = _frame.x + 10;
     uint16_t width = Display.textWidth(&PTSansNarrow_20,_jobName);
-    x += (300 - width) / 2;
+    x += ((270-20) - width) / 2;
 
     _jobNameLayer = new TextLayer(Rect(x,190,width,25));
     _jobNameLayer->setFont(&PTSansNarrow_20);
@@ -42,6 +42,7 @@ void ModelView::display()
     addLayer(_jobNameLayer);
 
     RectangleLayer* bottomLayer = new RectangleLayer(Rect(_frame.x,238,_frame.width,1));
+    bottomLayer->setStrokeColor(ILI9341_WHITE);
     addLayer(bottomLayer);
 
     View::display();

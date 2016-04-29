@@ -132,6 +132,16 @@ void MainSceneController::loop()
 void MainSceneController::setup()
 {
     SceneController::setup();
+
+    Display.setScrollInsets(0,0);
+}
+
+
+void MainSceneController::onWillAppear()
+{
+    SceneController::onWillAppear();
+
+    Display.setScrollInsets(0,0);
 }
 
 #pragma mark ButtonDelegate Implementation

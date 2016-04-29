@@ -83,8 +83,10 @@ void TextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
         frame.width = width;
     }
 
-    frame.x = frame.x % 320;
-    renderFrame.x = renderFrame.x % 320;
+    frame.x = frame.x % Display.getLayoutWidth();
+    frame.x += Display.getLayoutStart();
+    renderFrame.x = renderFrame.x % Display.getLayoutWidth();
+    renderFrame.x += Display.getLayoutStart();
 
     //Fill left
     if (renderFrame.left() < frame.left())

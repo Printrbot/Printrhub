@@ -33,7 +33,8 @@ void SDBitmapLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
     int height = renderFrame.height;
 
     //Transform to screen space
-    renderFrame.x = renderFrame.x % 320;
+    renderFrame.x = renderFrame.x % Display.getLayoutWidth();
+    renderFrame.x += Display.getLayoutStart();
 
     if (height > 0 && width > 0)
     {

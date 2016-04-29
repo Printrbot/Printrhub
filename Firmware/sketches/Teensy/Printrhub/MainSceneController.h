@@ -13,6 +13,8 @@
 class MainSceneController: public SceneController, ButtonDelegate
 {
 public:
+    virtual void onWillAppear() override;
+
     MainSceneController();
     virtual ~MainSceneController();
 

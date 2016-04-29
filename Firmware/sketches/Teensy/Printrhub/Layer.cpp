@@ -416,7 +416,8 @@ void Layer::draw(Rect& dirtyRect, Rect& invalidationRect)
 Rect Layer::getRenderFrame()
 {
     int x = _frame.x;
-    x = x % 320;
+    x = x % Display.getLayoutWidth();
+    x += Display.getLayoutStart();
     return Rect(x,_frame.y,_frame.width,_frame.height);
 }
 

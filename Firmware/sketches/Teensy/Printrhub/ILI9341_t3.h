@@ -61,6 +61,7 @@
 
 #define ILI9341_PTLAR    0x30
 #define ILI9341_MADCTL   0x36
+#define ILI9341_VSCRSDEF 0x33
 #define ILI9341_VSCRSADD 0x37
 #define ILI9341_PIXFMT   0x3A
 
@@ -208,6 +209,8 @@ class ILI9341_t3 : public Print
   	uint8_t _cs, _dc;
 	uint8_t pcs_data, pcs_command;
 	uint8_t _miso, _mosi, _sclk;
+
+	void setScrollArea(uint16_t start, uint16_t height, uint16_t bottom);
 
 	void setAddr(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 	  __attribute__((always_inline)) {

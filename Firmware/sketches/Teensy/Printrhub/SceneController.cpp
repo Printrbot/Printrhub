@@ -72,6 +72,8 @@ void SceneController::onWillAppear()
 //	uint16_t backgroundColor = Application.getTheme()->getBackgroundColor(ColorTheme::Default);
 //	Display.fillScreen(backgroundColor);
 
+	Display.setScrollOffset(0);
+
 	for (int i=0;i<_views.count();i++)
 	{
 		LOG_VALUE("Display View: ",_views.count());

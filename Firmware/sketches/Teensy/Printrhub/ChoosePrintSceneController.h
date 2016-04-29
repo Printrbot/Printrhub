@@ -14,6 +14,8 @@
 class ChoosePrintSceneController: public SceneController, ButtonDelegate
 {
 public:
+    virtual void onWillAppear() override;
+
     ChoosePrintSceneController();
     virtual ~ChoosePrintSceneController();
 

@@ -13,25 +13,31 @@
 ChoosePrintSceneController::ChoosePrintSceneController():
         SceneController::SceneController()
 {
-    ModelView* modelView = new ModelView(Rect(0,0,319,239));
+    ModelView* modelView = new ModelView(Rect(0,0,269,239));
     modelView->setJobName("Simple Metal Feet");
     modelView->setImageFileName("feet.dat");
     addView(modelView);
 
-    modelView = new ModelView(Rect(320,0,319,239));
+    modelView = new ModelView(Rect(270,0,269,239));
     modelView->setJobName("LCD Case");
     modelView->setImageFileName("lcd.dat");
     addView(modelView);
 
-    modelView = new ModelView(Rect(640,0,319,239));
+    modelView = new ModelView(Rect(540,0,269,239));
     modelView->setJobName("MacBook Pro Holder");
     modelView->setImageFileName("macbook.dat");
     addView(modelView);
 
-    modelView = new ModelView(Rect(960,0,319,239));
+    modelView = new ModelView(Rect(810,0,269,239));
     modelView->setJobName("Cable Hook");
     modelView->setImageFileName("hook.dat");
     addView(modelView);
+
+    /*View* menuView = new View(0,0,40,240);
+    RectangleLayer* menuRect = new RectangleLayer(Rect(0,0,50,240));
+    menuRect->setBackgroundColor(ILI9341_OLIVE);
+    menuView->addLayer(menuRect);
+    addView(menuView);*/
 }
 
 
@@ -39,6 +45,12 @@ void ChoosePrintSceneController::handleTouchUp(TS_Point &point)
 {
 //    MainSceneController* mainSceneController = new MainSceneController();
 //    Application.pushScene(mainSceneController);
+
+    if (point.x < 50)
+    {
+        MainSceneController* scene = new MainSceneController();
+        Application.pushScene(scene);
+    }
 }
 
 ChoosePrintSceneController::~ChoosePrintSceneController()
@@ -121,6 +133,14 @@ void ChoosePrintSceneController::loop()
 void ChoosePrintSceneController::setup()
 {
     SceneController::setup();
+}
+
+
+void ChoosePrintSceneController::onWillAppear()
+{
+    SceneController::onWillAppear();
+
+    Display.setScrollInsets(50,0);
 }
 
 #pragma mark ButtonDelegate Implementation

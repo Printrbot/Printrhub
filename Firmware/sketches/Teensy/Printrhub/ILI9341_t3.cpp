@@ -174,6 +174,16 @@ void ILI9341_t3::setRotation(uint8_t m)
 	cursor_y = 0;
 }
 
+void ILI9341_t3::setScrollArea(uint16_t start, uint16_t height, uint16_t bottom)
+{
+	SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
+	writecommand_cont(ILI9341_VSCRSDEF);
+	writedata16_cont(start);
+	writedata16_cont(height);
+	writedata16_last(bottom);
+	SPI.endTransaction();
+}
+
 void ILI9341_t3::setScroll(uint16_t offset)
 {
 	SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));

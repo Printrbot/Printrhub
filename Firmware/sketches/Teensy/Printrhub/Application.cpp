@@ -126,6 +126,8 @@ void ApplicationClass::loop()
 			LOG_VALUE("Appearing scene", sceneController->getName());
 			sceneController->onWillAppear();
 			LOG("Scene appeared");
+
+			Display.fillRect(0,0,50,240,Application.getTheme()->getPrimaryColor());
 		}
 
 		//Touch handling

@@ -35,7 +35,8 @@ void RectangleLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
     //LOG_VALUE("renderFrame:",renderFrame.toString());
 
     //Transform to screen space
-    renderFrame.x = renderFrame.x % 320;
+    renderFrame.x = renderFrame.x % Display.getLayoutWidth();
+    renderFrame.x += Display.getLayoutStart();
 
     if (this->getStrokeWidth() > 0)
     {
