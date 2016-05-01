@@ -180,6 +180,9 @@ class ILI9341_t3 : public Print
 	void setTextColor(uint16_t c, uint16_t bg);
 	void setTextSize(uint8_t s);
 	uint8_t getTextSize();
+	void setTextRotation(uint16_t r);
+	uint16_t getTextRotation();
+
 	void setTextWrap(boolean w);
 	boolean getTextWrap();
 	virtual size_t write(uint8_t);
@@ -193,11 +196,13 @@ class ILI9341_t3 : public Print
 	void setFont(const ILI9341_t3_font_t &f) { font = &f; }
 	void setFontAdafruit(void) { font = NULL; }
 	void drawFontChar(unsigned int c);
+	void drawVerticalFontChar(unsigned int c);
 
 	uint32_t textWidth(const ILI9341_t3_font_t *font, String text);
 	uint32_t widthOfChar(const ILI9341_t3_font_t *font, char c);
 
  protected:
+	uint16_t _textRotation;
 	int16_t _width, _height; // Display w/h as modified by current rotation
 	int16_t  cursor_x, cursor_y;
 	uint16_t textcolor, textbgcolor;
@@ -304,6 +309,8 @@ class ILI9341_t3 : public Print
 
 	virtual void drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32_t y, uint32_t repeat);
 
+	void drawFontBits(uint32_t bits, uint32_t numbits, uint32_t origin_x, uint32_t origin_y, uint32_t x, uint32_t y,
+                      uint32_t repeat);
 };
 
 #ifndef swap

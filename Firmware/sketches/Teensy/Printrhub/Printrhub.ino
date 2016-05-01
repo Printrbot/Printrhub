@@ -86,6 +86,29 @@ void testImage(void)
     while(true);
 }
 
+void testFont()
+{
+    Display.fillScreen(ILI9341_WHITE);
+
+/*    Display.setFont(PTSansNarrow_20);
+    Display.setTextColor(ILI9341_BLACK,ILI9341_WHITE);
+    Display.setCursor(160,120);
+    Display.setTextRotation(270);
+    Display.print("PROJECTS");
+
+    Display.setTextRotation(0);
+    Display.print("PROJECTS");*/
+
+    Display.fillRect(0,0,50,240,Application.getTheme()->getPrimaryColor());
+    Display.setTextRotation(270);
+    Display.setCursor(13,130);
+    Display.setTextColor(ILI9341_WHITE);
+    Display.setFont(PTSansNarrow_24);
+    Display.print("PROJECTS");
+
+    while(true);
+}
+
 void setup(void)
 {
     //while (!Serial);
@@ -99,6 +122,9 @@ void setup(void)
     //Pull backlight pin to turn on display backlight
     pinMode(TFT_BACKLIGHT_PWM,OUTPUT);
     digitalWrite(TFT_BACKLIGHT_PWM,HIGH);
+
+    pinMode(7,INPUT);
+    pinMode(8,INPUT);
 
     Display.begin();
     //Rotate to landscape
@@ -122,6 +148,11 @@ void setup(void)
     Serial.println("Capacitive touchscreen started");
 
     Display.fillScreen(ILI9341_BLACK);
+
+    //testFont();
+
+    //Display.setScrollArea(0,270,50);
+    //Display.setScrollInsets(50,0);
 
     Serial.println("Starting MainMenu");
     mainController = new MainSceneController();

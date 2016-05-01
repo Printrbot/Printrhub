@@ -44,6 +44,7 @@ ILI9341_t3::ILI9341_t3(uint8_t cs, uint8_t dc, uint8_t rst, uint8_t mosi, uint8_
 	textcolor = textbgcolor = 0xFFFF;
 	wrap      = true;
 	font      = NULL;
+	_textRotation = 0;
 }
 
 void ILI9341_t3::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
@@ -841,6 +842,18 @@ void ILI9341_t3::drawBitmap(int16_t x, int16_t y,
   }
 }
 
+
+void ILI9341_t3::setTextRotation(uint16_t r)
+{
+	_textRotation = r;
+}
+
+uint16_t ILI9341_t3::getTextRotation()
+{
+	return _textRotation;
+}
+
+
 size_t ILI9341_t3::write(uint8_t c)
 {
 	if (font) {
@@ -848,7 +861,14 @@ size_t ILI9341_t3::write(uint8_t c)
 			//cursor_y += ??
 			cursor_x = 0;
 		} else {
-			drawFontChar(c);
+			if (_textRotation == 90 || _textRotation == 270)
+			{
+				drawVerticalFontChar(c);
+			}
+			else
+			{
+				drawFontChar(c);
+			}
 		}
 	} else {
 		if (c == '\n') {
@@ -1027,6 +1047,194 @@ static uint32_t fetchbits_signed(const uint8_t *p, uint32_t index, uint32_t requ
 	return (int32_t)val;
 }
 
+void ILI9341_t3::drawVerticalFontChar(unsigned int c)
+{
+	uint32_t bitoffset;
+	const uint8_t *data;
+
+	//Serial.printf("drawFontChar %d\n", c);
+
+	if (c >= font->index1_first && c <= font->index1_last) {
+		bitoffset = c - font->index1_first;
+		bitoffset *= font->bits_index;
+	} else if (c >= font->index2_first && c <= font->index2_last) {
+		bitoffset = c - font->index2_first + font->index1_last - font->index1_first + 1;
+		bitoffset *= font->bits_index;
+	} else if (font->unicode) {
+		return; // TODO: implement sparse unicode
+	} else {
+		return;
+	}
+	//Serial.printf("  index =  %d\n", fetchbits_unsigned(font->index, bitoffset, font->bits_index));
+	data = font->data + fetchbits_unsigned(font->index, bitoffset, font->bits_index);
+
+	uint32_t encoding = fetchbits_unsigned(data, 0, 3);
+	if (encoding != 0) return;
+	uint32_t width = fetchbits_unsigned(data, 3, font->bits_width);
+	bitoffset = font->bits_width + 3;
+	uint32_t height = fetchbits_unsigned(data, bitoffset, font->bits_height);
+	bitoffset += font->bits_height;
+	//Serial.printf("  size =   %d,%d\n", width, height);
+
+	int32_t xoffset = fetchbits_signed(data, bitoffset, font->bits_xoffset);
+	bitoffset += font->bits_xoffset;
+	int32_t yoffset = fetchbits_signed(data, bitoffset, font->bits_yoffset);
+	bitoffset += font->bits_yoffset;
+	//Serial.printf("  offset = %d,%d\n", xoffset, yoffset);
+
+	uint32_t delta = fetchbits_unsigned(data, bitoffset, font->bits_delta);
+	bitoffset += font->bits_delta;
+	//Serial.printf("  delta =  %d\n", delta);
+
+	//Serial.printf("  cursor = %d,%d\n", cursor_x, cursor_y);
+
+	// horizontally, we draw every pixel, or none at all
+	if (cursor_x < 0) cursor_x = 0;
+	int32_t origin_y = cursor_y - xoffset;
+	if (_textRotation == 90)
+	{
+		origin_y = cursor_y + xoffset;
+	}
+	int32_t origin_x = cursor_x + font->cap_height - height - yoffset;
+	if (origin_x < 0) {
+		cursor_x -= xoffset;
+		origin_x = 0;
+	}
+	if (origin_x + (int)width > _width) {
+		if (!wrap) return;
+		origin_x = 0;
+		if (xoffset >= 0) {
+			cursor_x = 0;
+		} else {
+			cursor_x = -xoffset;
+		}
+		cursor_x += font->line_space;
+	}
+	if (cursor_y >= _height) return;
+
+	if (_textRotation == 90)
+	{
+		cursor_y += delta;
+	}
+	else if (_textRotation == 270)
+	{
+		cursor_y -= delta;
+	}
+
+
+	// vertically, the top and/or bottom can be clipped
+
+	//Serial.printf("  origin = %d,%d\n", origin_x, origin_y);
+
+	// TODO: compute top skip and number of lines
+	int32_t linecount = height;
+	//Serial.printf("Linecount: %c %d\n",c,height);
+
+	//Fill the gap to the other char to the left
+/*	fillRect(cursor_x-delta,cursor_y,delta,font->cap_height,textbgcolor);
+
+	//Fill the gap from the character to the top line
+	for (int y = cursor_y+font->cap_height-height-1; y >= cursor_y; y--)
+	{
+		drawFastHLine(origin_x,y,width,textbgcolor);
+	}*/
+
+	//uint32_t loopcount = 0;
+	uint32_t y = 0;
+	while (linecount) {
+		//Serial.printf("    linecount = %d\n", linecount);
+		uint32_t b = fetchbit(data, bitoffset++);
+		if (b == 0) {
+			//Serial.println("    single line");
+			uint32_t x = 0;
+			do {
+				uint32_t xsize = width - x;
+				if (xsize > 32) xsize = 32;
+				uint32_t bits = fetchbits_unsigned(data, bitoffset, xsize);
+				drawFontBits(bits, xsize, origin_x, origin_y, x, y, 1);
+				bitoffset += xsize;
+				x += xsize;
+			} while (x < width);
+			y++;
+			linecount--;
+		} else {
+			uint32_t n = fetchbits_unsigned(data, bitoffset, 3) + 2;
+			bitoffset += 3;
+			uint32_t x = 0;
+			do {
+				uint32_t xsize = width - x;
+				if (xsize > 32) xsize = 32;
+				//Serial.printf("    multi line %d\n", n);
+				uint32_t bits = fetchbits_unsigned(data, bitoffset, xsize);
+				drawFontBits(bits, xsize, origin_x, origin_y, x, y, n);
+				bitoffset += xsize;
+				x += xsize;
+			} while (x < width);
+			y += n;
+			linecount -= n;
+		}
+		//if (++loopcount > 100) {
+		//Serial.println("     abort draw loop");
+		//break;
+		//}
+	}
+}
+
+void ILI9341_t3::drawFontBits(uint32_t bits, uint32_t numbits, uint32_t origin_x, uint32_t origin_y, uint32_t x, uint32_t y, uint32_t repeat)
+{
+	// TODO: replace this *slow* code with something fast...
+	//Serial.printf("      %d bits at %d,%d: %X\n", numbits, x, y, bits);
+	if (bits == 0) return;
+	do {
+		uint32_t x1 = x;
+		uint32_t n = numbits;
+#if 1
+		do {
+			n--;
+			if (bits & (1 << n)) {
+
+				//Rotate 90 degree counter clockwise (yt = x is clockwise)
+				if (_textRotation == 90)
+				{
+					uint32_t xt = -y;
+					uint32_t yt = x1;
+
+					drawPixel(origin_x + xt, origin_y + yt, textcolor);
+				}
+				else if (_textRotation == 270)
+				{
+					uint32_t xt = y;
+					uint32_t yt = -x1;
+
+					drawPixel(origin_x + xt, origin_y + yt, textcolor);
+				}
+
+
+				//Serial.printf("        pixel at %d,%d\n", x1, y);
+			}
+			x1++;
+		} while (n > 0);
+#endif
+#if 0
+		int w = 0;
+		do {
+			n--;
+			if (bits & (1 << n)) {
+				w++;
+			}
+			else if (w > 0) {
+				drawFastHLine(x1 - w, y, w, textcolor);
+				w = 0;
+			}
+
+			x1++;
+		} while (n > 0);
+		if (w > 0) drawFastHLine(x1 - w, y, w, textcolor);
+#endif
+		y++;
+		repeat--;
+	} while (repeat);
+}
 
 void ILI9341_t3::drawFontChar(unsigned int c)
 {

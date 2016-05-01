@@ -128,6 +128,13 @@ void ApplicationClass::loop()
 			LOG("Scene appeared");
 
 			Display.fillRect(0,0,50,240,Application.getTheme()->getPrimaryColor());
+			Display.setTextRotation(270);
+			Display.setCursor(13,130);
+			Display.setTextColor(ILI9341_WHITE);
+			Display.setFont(PTSansNarrow_24);
+			Display.print("PROJECTS");
+
+			Display.setTextRotation(0);
 		}
 
 		//Touch handling
