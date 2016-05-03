@@ -299,7 +299,9 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         scrollOffset = 0;
     }
 
-    float diffScrollOffset = ceilf(_scrollOffset - scrollOffset);
+    int oldScrollOffset = (int)_scrollOffset;
+    int newScrollOffset = (int)scrollOffset;
+    int diffScrollOffset = oldScrollOffset - newScrollOffset;
     if (diffScrollOffset == 0) return;
 
     //Save scroll offset
@@ -308,30 +310,48 @@ void PHDisplay::setScrollOffset(float scrollOffset)
     //LOG_VALUE("Rect-Width: ",diffScrollOffset);
     //LOG_VALUE("Scroll Offset: ",scrollOffset);
 
+    int so = newScrollOffset;
+
+    //Shift display to the specific frame (this is hardware scrolling)
+    if (so < 0)
+    {
+        int numScreens = -so/getLayoutWidth();
+        numScreens += 1;
+        so += numScreens * getLayoutWidth();
+    }
+    if (so > getLayoutWidth()-1)
+    {
+        so -= getLayoutWidth();
+    }
+
+    //LOG_VALUE("Scroll Offset:",scrollOffset);
+
+    Display.setScroll(so);
+
     if (diffScrollOffset > 0)
     {
         //Left
         //Invalidate Layers intersection the right rectangle
 
-        int sx = -scrollOffset - fabsf(diffScrollOffset);
-        int sw = fabsf(diffScrollOffset);
+        int sx = -newScrollOffset - abs(diffScrollOffset);
+        int sw = diffScrollOffset;
 
-        int vx = -scrollOffset + getLayoutWidth() - fabsf(diffScrollOffset);
+        int vx = -newScrollOffset + getLayoutWidth() - diffScrollOffset;
         int vw = sw;
 
         Rect invalidationRect(vx,0,vw,240);
         Rect dirtyRect(sx,0,sw,240);
-        invalidateRect(dirtyRect,invalidationRect,ILI9341_GREEN);
+        invalidateRect(dirtyRect,invalidationRect,ILI9341_CYAN);
     }
     else if (diffScrollOffset < 0)
     {
         //Right
         //Invalidate Layers intersecting with the right rectangle
 
-        int sx = -scrollOffset;
-        int sw = fabs(diffScrollOffset)+1;
+        int sx = -newScrollOffset;
+        int sw = abs(diffScrollOffset)+1;
 
-        int vx = -scrollOffset;
+        int vx = -newScrollOffset;
         int vw = sw;
 
         //LOG_VALUE("SX:",sx);
@@ -347,22 +367,6 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         //Do nothing as nothing has changed
         return;
     }
-
-    //Shift display to the specific frame (this is hardware scrolling)
-    if (scrollOffset < 0)
-    {
-        int numScreens = -scrollOffset/getLayoutWidth();
-        numScreens += 1;
-        scrollOffset += numScreens * getLayoutWidth();
-    }
-    if (scrollOffset > getLayoutWidth()-1)
-    {
-        scrollOffset -= getLayoutWidth();
-    }
-
-    //LOG_VALUE("Scroll Offset:",scrollOffset);
-
-    Display.setScroll((int)scrollOffset);
 }
 
 Rect PHDisplay::visibleRect()
