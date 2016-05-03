@@ -1,0 +1,77 @@
+body {
+    font-family: monospace;
+    color: black;
+    background: white;
+    margin: 1em 1em 3em 1em;
+}
+
+p {
+    margin: 1em 0;
+}
+
+table {
+    border-collapse: collapse;
+}
+td {
+    padding: 0 1.5em 0 0;
+    vertical-align: top;
+}
+th {
+    font-weight: bold;
+    text-align: left;
+    padding: 1em 0 0 0;
+}
+
+a:link {
+    text-decoration: underline;
+    color: #133077;
+}
+a:visited {
+    color: #133077;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+ul li {
+    padding: 0 0 0 2em;
+}
+ul li:before {
+    content: '*';
+    margin: 0 0.5em 0 -1em;
+}
+
+.visible {
+    visibility: visible;
+    opacity: 1;
+}
+.hidden {
+    opacity: 0;
+    visibiliy: hidden;
+    transition: visibility 0s, opacity 1s ease;
+}
+
+.result {
+    position: absolute;
+    background: white;
+    padding: 0 1em;
+    pointer-events: none;
+}
+
+.mem-stale {
+    color: #D0D0D0;
+}
+.mem-loading {
+    background: rgba(0,0,0, 0.04);
+}
+.mem-changing {
+    font-weight: bold;
+}
+.mem-error {
+    color: rgba(190,0,0, 0.4);
+    font-weight: bold;
+}
+.mem-pending {
+    background: #ff6;
+}
