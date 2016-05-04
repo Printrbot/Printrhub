@@ -9,6 +9,7 @@
 #include "BitmapButton.h"
 #include "LabelView.h"
 #include "LabelButton.h"
+#include "NavBar.h"
 
 class MainSceneController: public SceneController, ButtonDelegate
 {
@@ -28,6 +29,7 @@ protected:
     LabelButton* _filamentButton;
     LabelButton* _settingsButton;
     LabelButton* _hotendButton;
+    NavBar* _navBar;
 
 public:
     virtual void setup() override;

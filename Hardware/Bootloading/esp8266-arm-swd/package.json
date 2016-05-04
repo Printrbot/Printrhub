@@ -1,0 +1,10 @@
+{
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scanlime/esp8266-arm-swd.git"
+  },
+  "dependencies": {
+    "open": "^0.0.5",
+    "string.prototype.endswith": "^0.2.0"
+  }
+}

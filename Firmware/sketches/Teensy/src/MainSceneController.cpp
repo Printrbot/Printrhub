@@ -6,23 +6,35 @@
 #include "Bitmaps.h"
 #include "LabelButton.h"
 #include "Application.h"
+#include "NavBar.h"
 #include "ChoosePrintSceneController.h"
 #include "WiFiSetupSceneController.h"
 #include "VirtualKeyboardSceneController.h"
 #include "MachineControlSceneController.h"
+#include "ColorTheme.h"
+#include <ArduinoJson.h>
 
 MainSceneController::MainSceneController():
 SceneController::SceneController()
 {
+  _navBar = new NavBar(0,200,320,40);
+  //_navBar->setBackgroundColor(Application.getTheme()->getPrimaryColor());
+  addView(_navBar);
+
+
+
+/*
     _printButton = new LabelButton("PRINT",Rect(0,0,159,119));
-    _printButton->setBorderColor(Application.getTheme()->getSecondaryColor2());
-    _printButton->setBackgroundColor(Application.getTheme()->getBackgroundColor());
+    //_printButton->setBorderColor(Application.getTheme()->getSecondaryColor2(Application.getTheme()->Shade::Lighter));
+    _printButton->setBackgroundColor(Application.getTheme()->getPrimaryColor(Application.getTheme()->Shade::Lighter));
     _printButton->setAlternateBackgroundColor(Application.getTheme()->getPrimaryColor());
     _printButton->setTextColor(Application.getTheme()->getSecondaryColor2());
     _printButton->setBorderWidth(0);
     _printButton->setName("Print Button");
     _printButton->setDelegate(this);
     addView(_printButton);
+
+
 
     _hotendButton = new LabelButton("HOTEND",Rect(160,0,159,119));
     _hotendButton->setBorderColor(Application.getTheme()->getSecondaryColor2());
@@ -50,6 +62,7 @@ SceneController::SceneController()
     _settingsButton->setBorderWidth(0);
     _settingsButton->setDelegate(this);
     addView(_settingsButton);
+    */
 }
 
 MainSceneController::~MainSceneController()
@@ -60,7 +73,7 @@ MainSceneController::~MainSceneController()
 
 uint16_t MainSceneController::getBackgroundColor()
 {
-    return Application.getTheme()->getSecondaryColor2();
+    return Application.getTheme()->getBackgroundColor();
 }
 
 void MainSceneController::display()
@@ -76,57 +89,6 @@ String MainSceneController::getName()
 void MainSceneController::loop()
 {
     SceneController::loop();
-
-/*    _printButton->setFrame(Rect(23,90+_offset,80,80));
-    _filamentButton->setFrame(Rect(120,90+(_offset/2),80,80));
-    _settingsButton->setFrame(Rect(215,90+(_offset/4),80,80));
-    _offset += _velocity;
-
-    if (_offset > 80 || _offset < -80)
-    {
-        _velocity = -_velocity;
-    }*/
-
- /*   if (_transition)
-    {
-        _printButton->setFrame(Rect(23+_offset,90+_offset,80,80));
-        _filamentButton->setFrame(Rect(120,90+(_offset/2),80,80));
-        _settingsButton->setFrame(Rect(215,90+(_offset/4),80,80));
-        _offset += _velocity;
-
-        if (_offset > 200 || _offset < -200)
-        {
-            _velocity = -_velocity;
-        }
-
-        return;
-    }
-
-    if (Touch.touched())
-    {
-        //Y = X;
-
-        TS_Point point = Touch.getPoint();
-        swap(point.x,point.y);
-
-        point.y = 240-point.y;
-
-
-        //if (_printButton->getFrame().containsPoint(point.x,point.y))
-        {
-            //_printButton->setFrame(Rect(23,93,80,80));
-        }
-//        else
-//        {
-//            _printButton->setFrame(Rect(23,90,80,80));
-//        }
-
-        _transition = true;
-    }
-    else
-    {
-       // _printButton->setFrame(Rect(23,89,80,80));
-    }*/
 }
 
 void MainSceneController::setup()
@@ -171,4 +133,3 @@ void MainSceneController::buttonPressed(void *button)
         Application.pushScene(scene);
     }
 }
-
