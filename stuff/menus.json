@@ -1,0 +1,21 @@
+{
+  "views":[
+    {
+      "name":"dashboard",
+      "elements":[
+        {
+          "type": "label",
+          "name": "Print",
+          "x":0,
+          "y":0,
+          "w":159,
+          "h":119,
+          "border":0
+        }
+      ]
+    }
+  ],
+  "theme":{
+
+  }
+}
