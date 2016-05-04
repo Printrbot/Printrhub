@@ -35,11 +35,6 @@ SceneController::~SceneController()
 	}
 }
 
-void SceneController::setup()
-{
-
-}
-
 void SceneController::loop()
 {
 	if (Touch.touched()) return;

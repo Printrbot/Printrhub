@@ -21,6 +21,8 @@
 #include "IdleSceneController.h"
 #include "MainSceneController.h"
 #include "SD_t3.h"
+#include "ChoosePrintSceneController.h"
+#include "LoadFilamentSceneController.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
 Adafruit_FT6206 Touch = Adafruit_FT6206();
@@ -37,7 +39,7 @@ Adafruit_FT6206 Touch = Adafruit_FT6206();
 PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
 
 //This is used all the time, so keep a global reference instead of building it again every time
-MainSceneController* mainController;
+SceneController* mainController;
 
 int globalLayerId = 0;
 
@@ -156,15 +158,15 @@ void setup(void)
     //Display.setScrollInsets(50,0);
 
     Serial.println("Starting MainMenu");
-    mainController = new MainSceneController();
-    Application.pushScene(mainController);
+    //mainController = new MainSceneController();
+    //Application.pushScene(mainController);
     //idleScene = new IdleSceneController();
     //Application.pushScene(idleScene);
     //wifiController = new WiFiSetupSceneController();
     //Application.pushScene(wifiController);
 
-    //ChoosePrintSceneController* choosePrintSceneController = new ChoosePrintSceneController();
-    //Application.pushScene(choosePrintSceneController);
+    mainController = new LoadFilamentSceneController();
+    Application.pushScene(mainController);
 }
 
 void loop()

@@ -1131,12 +1131,12 @@ void ILI9341_t3::drawVerticalFontChar(unsigned int c)
 	//Serial.printf("Linecount: %c %d\n",c,height);
 
 	//Fill the gap to the other char to the left
-/*	fillRect(cursor_x-delta,cursor_y,delta,font->cap_height,textbgcolor);
+/*	fillRect(cursor_x,cursor_y-delta,font->cap_height,delta,ILI9341_BLUE);
 
 	//Fill the gap from the character to the top line
-	for (int y = cursor_y+font->cap_height-height-1; y >= cursor_y; y--)
+	for (int x = cursor_x+font->cap_height-height-1; y >= cursor_y; y--)
 	{
-		drawFastHLine(origin_x,y,width,textbgcolor);
+		drawFastHLine(origin_x,y,width,ILI9341_DARKGREEN);
 	}*/
 
 	//uint32_t loopcount = 0;

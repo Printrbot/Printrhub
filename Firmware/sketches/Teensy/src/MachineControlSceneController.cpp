@@ -69,11 +69,6 @@ String MachineControlSceneController::getName()
     return "MachineControlSceneController";
 }
 
-void MachineControlSceneController::setup()
-{
-    SceneController::setup();
-}
-
 #pragma mark ButtonDelegate Implementation
 
 void MachineControlSceneController::buttonPressed(void *button)

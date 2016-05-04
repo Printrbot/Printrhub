@@ -28,7 +28,6 @@ public:
 	SceneController();
 	virtual ~SceneController();
 
-	virtual void setup();
 	virtual void loop();
 
 	virtual String getName() = 0;

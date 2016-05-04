@@ -26,9 +26,6 @@ protected:
     LabelButton* _moveXRightButton;
     LabelButton* _moveXLeftButton;
 
-public:
-    virtual void setup() override;
-
 private:
     virtual void buttonPressed(void *button);
 

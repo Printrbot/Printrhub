@@ -21,12 +21,6 @@ void IdleSceneController::display()
 
 }
 
-void IdleSceneController::setup()
-{
-
-}
-
-
 void IdleSceneController::onWillAppear()
 {
     SceneController::onWillAppear();

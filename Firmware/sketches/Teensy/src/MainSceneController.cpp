@@ -12,18 +12,17 @@
 #include "VirtualKeyboardSceneController.h"
 #include "MachineControlSceneController.h"
 #include "ColorTheme.h"
-#include <ArduinoJson.h>
 
 MainSceneController::MainSceneController():
 SceneController::SceneController()
 {
-  _navBar = new NavBar(0,200,320,40);
+ /* _navBar = new NavBar(0,200,320,40);
   //_navBar->setBackgroundColor(Application.getTheme()->getPrimaryColor());
   addView(_navBar);
 
+*/
 
 
-/*
     _printButton = new LabelButton("PRINT",Rect(0,0,159,119));
     //_printButton->setBorderColor(Application.getTheme()->getSecondaryColor2(Application.getTheme()->Shade::Lighter));
     _printButton->setBackgroundColor(Application.getTheme()->getPrimaryColor(Application.getTheme()->Shade::Lighter));
@@ -62,7 +61,7 @@ SceneController::SceneController()
     _settingsButton->setBorderWidth(0);
     _settingsButton->setDelegate(this);
     addView(_settingsButton);
-    */
+    
 }
 
 MainSceneController::~MainSceneController()
@@ -90,14 +89,6 @@ void MainSceneController::loop()
 {
     SceneController::loop();
 }
-
-void MainSceneController::setup()
-{
-    SceneController::setup();
-
-    Display.setScrollInsets(0,0);
-}
-
 
 void MainSceneController::onWillAppear()
 {

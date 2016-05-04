@@ -24,7 +24,6 @@ protected:
     uint8_t _size;
     uint8_t _velocity;
 public:
-    virtual void setup() override;
 
     virtual void onWillAppear() override;
 };

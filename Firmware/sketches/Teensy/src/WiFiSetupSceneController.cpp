@@ -43,11 +43,6 @@ void WiFiSetupSceneController::loop()
     SceneController::loop();
 }
 
-void WiFiSetupSceneController::setup()
-{
-    SceneController::setup();
-}
-
 void WiFiSetupSceneController::onWillAppear()
 {
     SceneController::onWillAppear();

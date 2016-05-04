@@ -27,9 +27,6 @@ protected:
     float _velocity = 4;
     bool _transition = false;
 
-public:
-    virtual void setup() override;
-
     virtual void onWillAppear() override;
 
 private:

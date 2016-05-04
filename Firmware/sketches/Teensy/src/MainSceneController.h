@@ -31,9 +31,6 @@ protected:
     LabelButton* _hotendButton;
     NavBar* _navBar;
 
-public:
-    virtual void setup() override;
-
 private:
     virtual void buttonPressed(void *button);
 

@@ -130,11 +130,6 @@ void ChoosePrintSceneController::loop()
        }*/
 }
 
-void ChoosePrintSceneController::setup()
-{
-    SceneController::setup();
-}
-
 
 void ChoosePrintSceneController::onWillAppear()
 {

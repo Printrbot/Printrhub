@@ -65,7 +65,29 @@ public:
     }
 
     void setTextAlign(uint8_t textAlign);
+
+    uint8_t getTextAlign() const
+    {
+        return _textAlign;
+    }
+
+    uint8_t getVerticalTextAlign() const
+    {
+        return _verticalTextAlign;
+    }
+
     void setVerticalTextAlign(uint8_t verticalTextAlign);
+
+
+    uint8_t getPadding() const
+    {
+        return _padding;
+    }
+
+    void setPadding(uint8_t _padding)
+    {
+        TextLayer::_padding = _padding;
+    }
 
 private:
     const ILI9341_t3_font_t* _font;
@@ -75,6 +97,7 @@ private:
 
     uint8_t _textAlign;
     uint8_t _verticalTextAlign;
+    uint8_t _padding;
 };
 
 

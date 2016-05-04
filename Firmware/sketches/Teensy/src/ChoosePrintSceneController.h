@@ -27,9 +27,6 @@ public:
 protected:
     ModelView* _modelView;
 
-public:
-    virtual void setup() override;
-
 private:
     virtual void buttonPressed(void *button);
 
