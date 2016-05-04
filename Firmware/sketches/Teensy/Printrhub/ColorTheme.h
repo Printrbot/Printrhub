@@ -44,9 +44,8 @@ public:
 	uint16_t getTextColor(Shade shade=Shade::Default);
 
 private:
-	uint16_t _colors[4][5];
+	uint16_t _colors[5][5];
 	uint16_t _textColors[5];
-	uint16_t _backgroundColor;
 };
 
 

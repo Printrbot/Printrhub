@@ -10,6 +10,7 @@
 #include "RectangleLayer.h"
 #include "BitmapLayer.h"
 #include "SDBitmapLayer.h"
+#include "LabelButton.h"
 
 class ModelView: public View
 {
@@ -27,10 +28,16 @@ public:
 private:
     const char* _imageFileName;
     TextLayer* _jobNameLayer;
+    TextLayer* _materialNameLayer;
     //RectangleLayer* _imageLayer;
     SDBitmapLayer* _imageLayer;
     const uint16_t* _bitmap;
     String _jobName;
+    String _materialName;
+    String _printButtonText;
+    String _deleteButtonText;
+    TextLayer* _printButton;
+    TextLayer* _deleteButton;
 public:
     virtual void display() override;
 };

@@ -121,7 +121,8 @@ void setup(void)
 
     //Pull backlight pin to turn on display backlight
     pinMode(TFT_BACKLIGHT_PWM,OUTPUT);
-    digitalWrite(TFT_BACKLIGHT_PWM,HIGH);
+    //digitalWrite(TFT_BACKLIGHT_PWM,HIGH);
+    analogWrite(TFT_BACKLIGHT_PWM,128);
 
     pinMode(7,INPUT);
     pinMode(8,INPUT);

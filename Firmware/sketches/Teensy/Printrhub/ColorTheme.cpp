@@ -22,13 +22,13 @@
 #include "Application.h"
 
 ColorTheme::ColorTheme():
-		_colors({{RGB565(25,194,255),RGB565(255,182,131),RGB565(255,161, 94),RGB565(255,106,0),RGB565(255,106,0)},
+		_colors({{RGB565(57,60,65),RGB565(255,182,131),RGB565(255,161, 94),RGB565(49,50,55),RGB565(255,106,0)},
 				{RGB565(131,149,149),RGB565(146,143,132),RGB565(167,159,131),RGB565(237,214,132),RGB565(254,218, 86)},
 				{RGB565(79,79,79),RGB565( 80, 65,186),RGB565(132,123,192),RGB565(114,112,133),RGB565( 83, 81,102)},
-				{RGB565(59,138,127),RGB565(135,164,160),RGB565(107,158,151),RGB565( 28,131,117),RGB565(  6,115,100)}
+				{RGB565(59,138,127),RGB565(135,164,160),RGB565(107,158,151),RGB565( 28,131,117),RGB565(  6,115,100)},
+				{RGB565(231,236,238),RGB565(255,255,255),RGB565(241,245,245),RGB565(195,195,195),RGB565(98,98,98)}
 		}),
-		_textColors({RGB565(255,255,255),RGB565(255,255,255),RGB565(240,240,240),RGB565(40,40,40),RGB565(0,0,0)}),
-		_backgroundColor(RGB565(231,236,238))
+		_textColors({RGB565(79,79,79),RGB565(255,255,255),RGB565(240,240,240),RGB565(40,40,40),RGB565(0,0,0)})
 {
 }
 
@@ -54,10 +54,11 @@ uint16_t ColorTheme::getComplementColor(ColorTheme::Shade shade)
 
 uint16_t ColorTheme::getBackgroundColor(ColorTheme::Shade shade)
 {
-	return _backgroundColor;
+	return _colors[4][shade];
 }
 
 uint16_t ColorTheme::getTextColor(ColorTheme::Shade shade)
 {
 	return _textColors[shade];
 }
+
