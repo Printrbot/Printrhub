@@ -54,19 +54,19 @@ void VerticalTextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
 
 	if (getTextAlign() == TEXTALIGN_CENTERED)
 	{
-		uint32_t width = Display.textWidth(getFont(), *getText());
+		uint32_t width = Display.textWidth(getFont(), getText());
 		frame.y += (frame.height - width)/2;
 		frame.height = width;
 	}
 	else if (getTextAlign() == TEXTALIGN_LEFT)
 	{
-		uint32_t width = Display.textWidth(getFont(), *getText());
+		uint32_t width = Display.textWidth(getFont(), getText());
 		frame.y += (frame.height - width);
 		frame.height= width;
 	}
 	else if (getTextAlign() == TEXTALIGN_RIGHT)
 	{
-		uint32_t width = Display.textWidth(getFont(), *getText());
+		uint32_t width = Display.textWidth(getFont(), getText());
 		frame.height = width;
 	}
 
@@ -105,7 +105,7 @@ void VerticalTextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
 	Display.setTextColor(getForegroundColor(),getBackgroundColor());
 	Display.setCursor(frame.x,frame.y + frame.height);
 	Display.setTextRotation(270);
-	Display.print(*getText());
+	Display.print(getText());
 
 	Display.setTextRotation(0);
 

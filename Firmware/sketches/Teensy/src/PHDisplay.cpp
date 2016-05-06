@@ -147,22 +147,73 @@ void PHDisplay::dispatch()
 
 void PHDisplay::drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t *bitmap, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha)
 {
-    SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
+/*    SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
     setAddr(x, y, x+w-1, y+h-1);
-    writecommand_cont(ILI9341_RAMWR);
-    for (uint16_t yb=0;yb<h;yb++)
+    writecommand_cont(ILI9341_RAMWR);*/
+
+    for (uint16_t xb=0;xb<w;xb++)
     {
-        for (uint16_t xb=0;xb<w;xb++)
+        SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
+        setAddr(x+xb, y, x+xb, y+h-1);
+        writecommand_cont(ILI9341_RAMWR);
+
+        for (uint16_t yb=0;yb<h;yb++)
         {
             if (xb == w-1 && yb == h-1)
             {
                 //Last pixel
-                writedata16_last(bitmap[(yb+ys)*ws+(xb+xs)]);
+                writedata16_last(bitmap[(xb+xs)*hs+(yb+ys)]);
             }
             else
             {
                 //All other pixels
-                writedata16_cont(bitmap[(yb+ys)*ws+(xb+xs)]);
+                writedata16_cont(bitmap[(xb+xs)*hs+(yb+ys)]);
+            }
+        }
+    }
+    SPI.endTransaction();
+}
+
+
+void PHDisplay::drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint8_t *bitmap, uint16_t xs,
+                                 uint16_t ys, uint16_t ws, uint16_t hs, uint16_t foregroundColor,
+                                 uint16_t backgroundColor)
+{
+    uint8_t slot = 0;
+
+    for (uint16_t xb=0;xb<w;xb++)
+    {
+        SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
+        setAddr(x+xb, y, x+xb, y+h-1);
+        writecommand_cont(ILI9341_RAMWR);
+
+        for (uint16_t yb=0;yb<h;yb++)
+        {
+            //uint8_t byte = bitmap[((yb+ys)*ws+(xb+xs))/8];
+            uint8_t byte = bitmap[((xb+xs)*hs+(yb+ys))/8];
+            bool bit = (byte >> slot) & 1;
+
+            slot++;
+            if (slot > 7)
+            {
+                slot = 0;
+            }
+
+            uint16_t color = foregroundColor;
+            if (bit)
+            {
+                color = backgroundColor;
+            }
+
+            if (xb == w-1 && yb == h-1)
+            {
+                //Last pixel
+                writedata16_last(color);
+            }
+            else
+            {
+                //All other pixels
+                writedata16_cont(color);
             }
         }
     }

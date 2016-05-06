@@ -9,6 +9,7 @@ BitmapLayer::BitmapLayer(Rect frame): Layer(frame)
 {
     _bitmap = NULL;
     _alpha = 1;
+    _color = ILI9341_PURPLE;
 }
 
 BitmapLayer::~BitmapLayer()
@@ -16,7 +17,7 @@ BitmapLayer::~BitmapLayer()
 
 }
 
-void BitmapLayer::setBitmap(const uint16_t *bitmap, uint16_t width, uint16_t height)
+void BitmapLayer::setBitmap(const uint8_t *bitmap, uint16_t width, uint16_t height)
 {
     _bitmap = bitmap;
     _width = width;
@@ -41,7 +42,7 @@ void BitmapLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
 
     if (height > 0 && width > 0)
     {
-        Display.drawBitmap(renderFrame.x,renderFrame.y,width,height,_bitmap,xs,ys,_width,_height,1);
+        Display.drawMaskedBitmap(renderFrame.x,renderFrame.y,width,height,_bitmap,xs,ys,_width,_height,getBackgroundColor(),getColor());
     }
 
 //    Display.fillRect(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,ILI9341_PINK);

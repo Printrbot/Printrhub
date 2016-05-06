@@ -54,12 +54,12 @@ public:
     }
 
 
-    const String* getText() const
+    const String getText() const
     {
         return _text;
     }
 
-    void setText(String *text)
+    void setText(String text)
     {
         _text = text;
     }
@@ -93,7 +93,7 @@ private:
     const ILI9341_t3_font_t* _font;
     uint16_t _foregroundColor;
     uint16_t _backgroundColor;
-    String* _text;
+    String _text;
 
     uint8_t _textAlign;
     uint8_t _verticalTextAlign;

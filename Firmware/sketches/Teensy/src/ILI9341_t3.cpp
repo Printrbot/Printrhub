@@ -1492,19 +1492,36 @@ uint32_t ILI9341_t3::widthOfChar(const ILI9341_t3_font_t* font, char c)
 
 uint32_t ILI9341_t3::textWidth(const ILI9341_t3_font_t* font, String text)
 {
+	uint32_t lineWidth = 0;
 	uint32_t width = 0;
 	for (int i=0;i<text.length();i++)
 	{
 		char c = text.charAt(i);
-		width += widthOfChar(font, c);
+		if (c == '\n')
+		{
+			if (width > lineWidth)
+			{
+				lineWidth = width;
+			}
+			width = 0;
+		}
+		else
+		{
+			width += widthOfChar(font, c);
+		}
+	}
+
+	if (width > lineWidth)
+	{
+		lineWidth = width;
 	}
 
 	Serial.print("Text Width:");
 	Serial.print(text);
 	Serial.print(":");
-	Serial.println(width);
+	Serial.println(lineWidth);
 
-	return width;
+	return lineWidth;
 }
 
 void Adafruit_GFX_Button::initButton(ILI9341_t3 *gfx,

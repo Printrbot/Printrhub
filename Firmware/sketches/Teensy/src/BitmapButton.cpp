@@ -10,28 +10,52 @@
 
 BitmapButton::BitmapButton(Rect frame):
 View(frame),
-_delegate(NULL),
 _originalFrame(frame),
-_touchAnimation(NULL)
-
+_touchAnimation(NULL),
+_baseLayer(NULL),
+_bitmapLayer(NULL)
 {
+    _delegate = NULL;
+
     LOG("Creating Bitmap Button");
     LOG_VALUE("Frame",frame.toString());
     LOG_VALUE("This-Frame",_frame.toString());
 }
 
-void BitmapButton::setBitmap(const uint16_t *bitmap, uint16_t width, uint16_t height)
+void BitmapButton::setBitmap(const uint8_t *bitmap, uint16_t width, uint16_t height)
 {
-    BitmapLayer* layer = new BitmapLayer(_frame);
-    layer->setBitmap(bitmap,width,height);
+    Rect bitmapFrame = _frame;
 
-    addLayer(layer);
+    //The bitmap is smaller than the frame, create a layer and place the bitmap inside it
+    if (_frame.width > width || _frame.height > height)
+    {
+        _baseLayer = new RectangleLayer(_frame);
+        _baseLayer->setBackgroundColor(getBackgroundColor());
+
+        bitmapFrame.x += (_frame.width - width)/2;
+        bitmapFrame.y += (_frame.height - height)/2;
+        bitmapFrame.width = width;
+        bitmapFrame.height = height;
+
+        //Stamp a hole in the base layer where we place the BitmapLayer
+        _baseLayer->splitWithRect(bitmapFrame);
+        addLayer(_baseLayer);
+    }
+
+    _bitmapLayer = new BitmapLayer(bitmapFrame);
+    _bitmapLayer->setBitmap(bitmap,width,height);
+    _bitmapLayer->setBackgroundColor(getBackgroundColor());
+    _bitmapLayer->setColor(getColor());
+
+    addLayer(_bitmapLayer);
 }
 
 BitmapButton::~BitmapButton()
 {
 
 }
+
+
 
 void BitmapButton::setFrame(Rect frame)
 {
@@ -43,94 +67,60 @@ void BitmapButton::setFrame(Rect frame)
     _layers.at(0)->setFrame(frame);
 }
 
+void BitmapButton::updateButton(ButtonState buttonState)
+{
+    if (buttonState == ButtonState::Off)
+    {
+        if (getBaseLayer() != NULL)
+        {
+            getBaseLayer()->setBackgroundColor(getBackgroundColor());
+        }
+
+        getBitmapLayer()->setBackgroundColor(getBackgroundColor());
+        getBitmapLayer()->setColor(getColor());
+    }
+    else if (buttonState == ButtonState::On)
+    {
+        if (getBaseLayer() != NULL)
+        {
+            getBaseLayer()->setBackgroundColor(getAlternateBackgroundColor());
+        }
+
+        getBitmapLayer()->setBackgroundColor(getAlternateBackgroundColor());
+        getBitmapLayer()->setColor(getAlternateTextColor());
+    }
+
+    setNeedsDisplay();
+}
 
 bool BitmapButton::touchDown(TS_Point &point)
 {
-    if (_touchAnimation != NULL && _touchAnimation->isActive())
-    {
-        _touchAnimation->stop();
-        _touchAnimation = NULL;
-    }
-
-    Animation* animation = Animator.getAnimationSlot();
-    if (animation)
-    {
-        animation->init("pushIn",_frame.y,_frame.y+5,0.1,0);
-        addAnimation(animation);
-        _touchAnimation = animation;
-    }
+    updateButton(ButtonState::On);
 
     return true;
 }
 
 bool BitmapButton::touchUp(TS_Point &point)
 {
-    if (_touchAnimation != NULL && _touchAnimation->isActive())
+    if (_type == ButtonType::Toggle)
     {
-        _touchAnimation->stop();
-        _touchAnimation = NULL;
-    }
-
-    Animation* animation = Animator.getAnimationSlot();
-    if (animation)
-    {
-        animation->init("pushOut",_frame.y,_originalFrame.y,0.2,0);
-        addAnimation(animation);
-        _touchAnimation = animation;
-
-        //Trigger is fired when pushOut animation finishes, see ::animationFinished implementation
-        //in this class
+        _state = (ButtonState) !_state;
+        updateButton(_state);
     }
     else
     {
-        //No animation slot available, trigger delegate immediately
-        if (_delegate != NULL)
-        {
-            _delegate->buttonPressed(this);
-        }
+        updateButton(ButtonState::Off);
+    }
+
+    if (_delegate != NULL)
+    {
+        _delegate->buttonPressed(this);
     }
 
     return true;
 }
 
-
 void BitmapButton::touchCancelled()
 {
-    if (_touchAnimation != NULL && _touchAnimation->isActive())
-    {
-        _touchAnimation->stop();
-        _touchAnimation = NULL;
-    }
-
-    Animation* animation = Animator.getAnimationSlot();
-    if (animation)
-    {
-        animation->init("pushOutCancel",_frame.y,_originalFrame.y,0.2,0);
-        addAnimation(animation);
-        _touchAnimation = animation;
-    }
-}
-
-void BitmapButton::animationUpdated(Animation *animation, float currentValue, float timeLeft)
-{
-    LOG_VALUE("Handling Animation",animation->getKey());
-    if (animation->getKey() == "pushIn" || animation->getKey() == "pushOut" || animation->getKey() == "pushOutCancel")
-    {
-        _frame.y = currentValue;
-        _layers.at(0)->setFrame(_frame);
-        Display.setNeedsLayout();
-    }
-}
-
-
-void BitmapButton::animationFinished(Animation *animation)
-{
-    if (animation->getKey() == "pushOut")
-    {
-        //Trigger delegates action message
-        if (_delegate != NULL)
-        {
-            _delegate->buttonPressed(this);
-        }
-    }
+    updateButton(ButtonState::Off);
 }

@@ -6,7 +6,8 @@
 #define TEENSYCMAKE_SIDEBARSCENECONTROLLER_H
 
 #include "SceneController.h"
-#include "Sidebar.h"
+#include "VerticalTextLayer.h"
+#include "BitmapButton.h"
 
 class SidebarSceneController: public SceneController
 {
@@ -16,15 +17,16 @@ public:
 
     //virtual void loop();
 
-	virtual String getSidebarTitle() = 0;
-	virtual String getSidebarIcon() = 0;
+	virtual String getSidebarTitle() const = 0;
+	virtual const uint8_t* getSidebarIcon() = 0;
 
 	virtual void onWillAppear() override;
 
 private:
-	Sidebar* _sidebar;
+	VerticalTextLayer* _textLayer;
+	BitmapButton* _actionButton;
 
-
+	void setupSidebar();
 };
 
 

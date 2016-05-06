@@ -17,8 +17,8 @@ IdleView::IdleView(const Rect &frame):
     _layer2->setBackgroundColor(ILI9341_GREEN);
     _layers.push(_layer2);
 
-    _buttonLayer = new BitmapLayer(Rect(200,10,44,40));
-    _buttonLayer->setBitmap(&printerButton[0],44,40);
+    _buttonLayer = new BitmapLayer(Rect(200,10,68,58));
+    _buttonLayer->setBitmap(imageOfWarningIcon_66_58,68,58);
     _layers.push(_buttonLayer);
 }
 

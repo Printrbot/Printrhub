@@ -94,12 +94,6 @@ void LabelButton::setFont(const ILI9341_t3_font_t *font)
     }
 }
 
-void LabelButton::setButtonState(ButtonState state)
-{
-    if (_state == state) return;
-    _state = state;
-}
-
 
 void LabelButton::display()
 {

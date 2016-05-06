@@ -23,6 +23,7 @@
 #include "SD_t3.h"
 #include "ChoosePrintSceneController.h"
 #include "LoadFilamentSceneController.h"
+#include "Bitmaps.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
 Adafruit_FT6206 Touch = Adafruit_FT6206();
@@ -50,42 +51,22 @@ int globR = 0;
 
 void testImage(void)
 {
-    File file = SD.open("/feet.dat",FILE_READ);
+    Display.fillScreen(ILI9341_WHITE);
 
-/*    for (int x=0;x<180;x++)
-    {
-        uint16_t buffer[151];
-        file.read(buffer,sizeof(uint16_t)*150);
+/*    Display.drawMaskedBitmap(10,10,64,64,imageOfArrowIcon_64_64,0,0,64,64,ILI9341_BLACK,ILI9341_WHITE);
+    Display.drawMaskedBitmap(10,80,32,30,imageOfCancelPrintIcon_32_30,0,0,32,30,ILI9341_BLACK,ILI9341_WHITE);
+    Display.drawMaskedBitmap(10,120,24,24,imageOfWrenchIcon_24_24,0,0,24,24,ILI9341_BLACK,ILI9341_WHITE);*/
 
-        for (int y=0;y<150;y++)
-        {
-            Display.drawPixel(x,y,buffer[y]);
-        }
-    }*/
+    Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240,1);
 
-/*    Display.fillScreen(ILI9341_BLACK);
+    while(true) {};
+}
 
-    uint16_t buffer[14800];
+void showSplashScreen()
+{
+    Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240,1);
 
-
-    for (int y=0;y<80;y++)
-    {
-        file.read(buffer,180*sizeof(uint16_t));
-        for (int x=0;x<180;x++)
-        {
-            Display.drawPixel(x+10,y+10,buffer[x]);
-        }
-    }
-
-    while(true);
-*/
-    while(true)
-    {
-        Display.drawFileBitmapByColumn(10,10,180,150,&file,0,0,180,150,1);
-        delay(100);
-    }
     delay(2000);
-    while(true);
 }
 
 void testFont()
@@ -141,7 +122,7 @@ void setup(void)
     }
     Serial.println("Started SD card interface");
 
-    //testImage();
+    showSplashScreen();
 
     if (! Touch.begin(40))
     {  // pass in 'sensitivity' coefficient

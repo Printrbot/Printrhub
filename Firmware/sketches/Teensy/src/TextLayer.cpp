@@ -79,13 +79,13 @@ void TextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
 
     if (_textAlign == TEXTALIGN_CENTERED)
     {
-        uint32_t width = Display.textWidth(_font, *_text);
+        uint32_t width = Display.textWidth(_font, _text);
         frame.x += (frame.width - width)/2;
         frame.width = width;
     }
     else if (_textAlign == TEXTALIGN_RIGHT)
     {
-        uint32_t width = Display.textWidth(_font, *_text);
+        uint32_t width = Display.textWidth(_font, _text);
         frame.x += (frame.width - width);
         frame.width = width;
     }
@@ -121,7 +121,7 @@ void TextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
     Display.setFont(*_font);
     Display.setTextColor(_foregroundColor,_backgroundColor);
     Display.setCursor(frame.x,frame.y);
-    Display.print(*_text);
+    Display.print(_text);
 
     //Fill the rest of the text layer
     Display.fillRect(Display.getCursorX(),frame.top(),frame.right()-Display.getCursorX(),frame.height,_backgroundColor);

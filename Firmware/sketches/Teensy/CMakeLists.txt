@@ -98,5 +98,6 @@ add_executable(Teensy
     src/View.cpp
     src/VirtualKeyboardSceneController.cpp
     src/WiFiSetupSceneController.cpp
-    src/Sidebar.cpp src/Sidebar.h
-    src/VerticalTextLayer.cpp src/LoadFilamentSceneController.cpp src/LoadFilamentSceneController.h)
+    src/VerticalTextLayer.cpp
+    src/LoadFilamentSceneController.cpp src/LoadFilamentSceneController.h
+    src/CleanPlasticSceneController.cpp src/CleanPlasticSceneController.h)

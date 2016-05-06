@@ -7,44 +7,52 @@
 
 #include "View.h"
 #include "BitmapLayer.h"
+#include "Button.h"
 
 class BitmapButton;
 
-class ButtonDelegate
-{
-public:
-    virtual void buttonPressed(void* button) = 0;
-};
-
-class BitmapButton: public View
+class BitmapButton: public View, public Button
 {
 public:
     BitmapButton(Rect frame);
     virtual ~BitmapButton();
 
-    virtual void setBitmap(const uint16_t* bitmap, uint16_t width, uint16_t height);
+    virtual void setBitmap(const uint8_t* bitmap, uint16_t width, uint16_t height);
 
     virtual void setFrame(Rect frame) override;
 
-    virtual void setDelegate(ButtonDelegate* delegate) { _delegate = delegate; };
+    uint16_t getColor() const { return _color; }
+    void setColor(uint16_t color) { _color = color; }
+
+    virtual void setAlternateBackgroundColor(uint16_t color) { _alternateBackgroundColor = color; };
+    virtual uint16_t getAlternateBackgroundColor() { return _alternateBackgroundColor; };;;;
+
+    void setAlternateTextColor(uint16_t color) { _alternateTextColor = color; };
+    uint16_t getAlternateTextColor() { return _alternateTextColor; };
+
+    RectangleLayer *getBaseLayer() const { return _baseLayer; }
+    void setBaseLayer(RectangleLayer *baseLayer) { _baseLayer = baseLayer; }
+
+    BitmapLayer *getBitmapLayer() const { return _bitmapLayer; }
+    void setBitmapLayer(BitmapLayer *bitmapLayer) { _bitmapLayer = bitmapLayer; }
+
+    void updateButton(ButtonState buttonState);
+
+private:
+    virtual bool touchUp(TS_Point &point) override;
+    virtual bool touchDown(TS_Point &point) override;
+    virtual void touchCancelled() override;
 
 protected:
-    ButtonDelegate* _delegate;
     Rect _originalFrame;
     Animation* _touchAnimation;
+    uint16_t _color;
 
-public:
-    virtual bool touchUp(TS_Point &point) override;
+    uint16_t _alternateBackgroundColor;
+    uint16_t _alternateTextColor;
 
-protected:
-    virtual void animationUpdated(Animation *animation, float currentValue, float timeLeft) override;
-
-public:
-    virtual void animationFinished(Animation *animation) override;
-
-    virtual bool touchDown(TS_Point &point) override;
-
-    virtual void touchCancelled() override;
+    RectangleLayer* _baseLayer;
+    BitmapLayer* _bitmapLayer;
 };
 
 

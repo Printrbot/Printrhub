@@ -28,6 +28,8 @@ public:
     virtual void drawFileBitmapByRow(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha);
     virtual void drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, float alpha);
 
+    virtual void drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint8_t* bitmap, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, uint16_t foregroundColor, uint16_t backgroundColor);
+
     virtual void setScrollOffset(float scrollOffset);
     virtual float getScrollOffset() { return _scrollOffset; };
     virtual void setScrollInsets(uint16_t left, uint16_t right);

@@ -6,24 +6,30 @@
 #define TEENSY_LOADFILAMENTSCENECONTROLLER_H
 
 #include "SidebarSceneController.h"
+#include "BitmapButton.h"
+#include "LabelButton.h"
 
-class LoadFilamentSceneController: public SidebarSceneController
+class LoadFilamentSceneController: public SidebarSceneController, public ButtonDelegate
 {
 public:
+	virtual void buttonPressed(void *button) override;
+
 	LoadFilamentSceneController();
 	virtual ~LoadFilamentSceneController();
 
+private:
+	virtual const uint8_t *getSidebarIcon() override;
+	virtual String getSidebarTitle() const override;
+
 	String getName();
 
-protected:
-	virtual String getSidebarTitle() override;
-	virtual String getSidebarIcon() override;
-
-private:
 	virtual void onWillAppear() override;
 
-public:
+protected:
 	virtual uint16_t getBackgroundColor() override;
+
+private:
+	LabelButton* _button;
 };
 
 

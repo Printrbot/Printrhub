@@ -51,7 +51,7 @@ void LabelView::display()
 	_layer = new TextLayer(_frame);
 	_layer->setForegroundColor(_textColor);
 	_layer->setBackgroundColor(_backgroundColor);
-	_layer->setText(&_text);
+	_layer->setText(_text);
 	_layer->setFont(_font);
 	_layer->setTextAlign(_textAlign);
 	_layer->setVerticalTextAlign(_verticalTextAlign);
