@@ -21,6 +21,9 @@ public:
 
     virtual void dispatch();
 
+    virtual void fadeOut();
+    virtual void fadeIn();
+
     virtual void setNeedsLayout();
     virtual void layoutIfNeeded();
 

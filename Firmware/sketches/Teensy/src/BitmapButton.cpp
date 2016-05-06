@@ -16,6 +16,10 @@ _baseLayer(NULL),
 _bitmapLayer(NULL)
 {
     _delegate = NULL;
+    _backgroundColor = Application.getTheme()->getColor(ControlBackgroundColor);
+    _color = Application.getTheme()->getColor(ControlTextColor);
+    _alternateBackgroundColor = Application.getTheme()->getColor(ControlAlternateBackgroundColor);
+    _alternateTextColor = Application.getTheme()->getColor(ControlAlternateTextColor);
 
     LOG("Creating Bitmap Button");
     LOG_VALUE("Frame",frame.toString());

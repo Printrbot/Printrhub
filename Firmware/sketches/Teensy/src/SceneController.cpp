@@ -184,5 +184,5 @@ void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
 
 uint16_t SceneController::getBackgroundColor()
 {
-	return Application.getTheme()->getBackgroundColor();
+	return Application.getTheme()->getColor(BackgroundColor);
 }

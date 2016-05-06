@@ -23,29 +23,34 @@
 
 #define RGB565(r,g,b) ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
 
+typedef enum SystemColor {
+	SpacerColor = 0,
+	BackgroundColor,
+	HighlightBackgroundColor,
+	HighlighTextColor,
+	HighlightAlternateBackgroundColor,
+	HighlightAlternateTextColor,
+	ControlBackgroundColor,
+	ControlAlternateBackgroundColor,
+	ControlTextColor,
+	ControlAlternateTextColor,
+	TextColor,
+	SuccessColor,
+	WarningColor,
+	AlertColor,
+	SidebarBackgroundColor,
+	SidebarTextColor,
+};
+
 class ColorTheme
 {
 public:
-	typedef enum Shade {
-		Default = 0,
-		Light = 1,
-		Lighter = 2,
-		Darker = 3,
-		Dark = 4
-	} Shade;
-
 	ColorTheme();
 
-	uint16_t getPrimaryColor(Shade shade=Shade::Default);
-	uint16_t getSecondaryColor1(Shade shade=Shade::Default);
-	uint16_t getSecondaryColor2(Shade shade=Shade::Default);
-	uint16_t getComplementColor(Shade shade=Shade::Default);
-	uint16_t getBackgroundColor(Shade shade=Shade::Default);
-	uint16_t getTextColor(Shade shade=Shade::Default);
+	uint16_t getColor(SystemColor color);
 
 private:
-	uint16_t _colors[5][5];
-	uint16_t _textColors[5];
+	uint16_t _colors[17];
 };
 
 

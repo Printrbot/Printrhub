@@ -66,30 +66,11 @@ void showSplashScreen()
 {
     Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240,1);
 
+    Display.fadeIn();
+
     delay(2000);
-}
 
-void testFont()
-{
-    Display.fillScreen(ILI9341_WHITE);
-
-/*    Display.setFont(PTSansNarrow_20);
-    Display.setTextColor(ILI9341_BLACK,ILI9341_WHITE);
-    Display.setCursor(160,120);
-    Display.setTextRotation(270);
-    Display.print("PROJECTS");
-
-    Display.setTextRotation(0);
-    Display.print("PROJECTS");*/
-
-    Display.fillRect(0,0,50,240,Application.getTheme()->getPrimaryColor());
-    Display.setTextRotation(270);
-    Display.setCursor(13,130);
-    Display.setTextColor(ILI9341_WHITE);
-    Display.setFont(PTSansNarrow_24);
-    Display.print("PROJECTS");
-
-    while(true);
+    Display.fadeOut();
 }
 
 void setup(void)
@@ -105,7 +86,9 @@ void setup(void)
     //Pull backlight pin to turn on display backlight
     pinMode(TFT_BACKLIGHT_PWM,OUTPUT);
     //digitalWrite(TFT_BACKLIGHT_PWM,HIGH);
-    analogWrite(TFT_BACKLIGHT_PWM,128);
+    analogWrite(TFT_BACKLIGHT_PWM,0);
+
+    delay(100);
 
     pinMode(7,INPUT);
     pinMode(8,INPUT);

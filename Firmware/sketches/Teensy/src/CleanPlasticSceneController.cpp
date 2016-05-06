@@ -19,7 +19,7 @@ CleanPlasticSceneController::~CleanPlasticSceneController()
 
 uint16_t CleanPlasticSceneController::getBackgroundColor()
 {
-    return Application.getTheme()->getBackgroundColor();
+    return Application.getTheme()->getColor(BackgroundColor);
 }
 
 String CleanPlasticSceneController::getName()
@@ -44,30 +44,22 @@ void CleanPlasticSceneController::onWillAppear()
     BitmapLayer* iconLayer = new BitmapLayer(Rect(102+50,30,66,58));
     iconLayer->setBitmap(imageOfWarningIcon_66_58,66,58);
     iconLayer->setBackgroundColor(getBackgroundColor());
-    iconLayer->setColor(Application.getTheme()->getSecondaryColor1());
+    iconLayer->setColor(Application.getTheme()->getColor(WarningColor));
     Display.addLayer(iconLayer);
 
     TextLayer* textLayer = new TextLayer(Rect(10+50,95,320-20-50,22));
     textLayer->setFont(&PTSansNarrow_18);
     textLayer->setTextAlign(TEXTALIGN_CENTERED);
     textLayer->setText("Clean plastic after test");
-    textLayer->setBackgroundColor(getBackgroundColor());
-    textLayer->setForegroundColor(Application.getTheme()->getTextColor());
     Display.addLayer(textLayer);
 
     textLayer = new TextLayer(Rect(10+50,117,320-20-50,22));
     textLayer->setFont(&PTSansNarrow_18);
     textLayer->setTextAlign(TEXTALIGN_CENTERED);
     textLayer->setText("extrusion");
-    textLayer->setBackgroundColor(getBackgroundColor());
-    textLayer->setForegroundColor(Application.getTheme()->getTextColor());
     Display.addLayer(textLayer);
 
     _button = new LabelButton("DONE",Rect(15+50,160,320-30-50,68));
-    _button->setBackgroundColor(Application.getTheme()->getBackgroundColor(ColorTheme::Shade::Lighter));
-    _button->setAlternateBackgroundColor(Application.getTheme()->getBackgroundColor(ColorTheme::Shade::Darker));
-    _button->setTextColor(Application.getTheme()->getTextColor(ColorTheme::Shade::Darker));
-    _button->setBorderWidth(0);
     _button->setName("DONE");
     _button->setDelegate(this);
     addView(_button);

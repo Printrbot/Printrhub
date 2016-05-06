@@ -19,8 +19,8 @@ void SidebarSceneController::setupSidebar()
 	Rect textLayerRect(0,0,50,190);
 	_textLayer = new VerticalTextLayer(textLayerRect);
 	_textLayer->setText(getSidebarTitle());
-	_textLayer->setForegroundColor(Application.getTheme()->getTextColor(ColorTheme::Shade::Light));
-	_textLayer->setBackgroundColor(Application.getTheme()->getPrimaryColor(ColorTheme::Shade::Default));
+	_textLayer->setForegroundColor(Application.getTheme()->getColor(SidebarTextColor));
+	_textLayer->setBackgroundColor(Application.getTheme()->getColor(SidebarBackgroundColor));
 	_textLayer->setVerticalTextAlign(TEXTALIGN_CENTERED);
 	_textLayer->setTextAlign(TEXTALIGN_RIGHT);
 	_textLayer->setFont(&PTSansNarrow_24);
@@ -29,10 +29,10 @@ void SidebarSceneController::setupSidebar()
 
 	Rect bottomButtonRect(0,190,50,50);
 	_actionButton = new BitmapButton(bottomButtonRect);
-	_actionButton->setBackgroundColor(Application.getTheme()->getPrimaryColor(ColorTheme::Shade::Darker));
-	_actionButton->setColor(Application.getTheme()->getTextColor(ColorTheme::Shade::Light));
-	_actionButton->setAlternateBackgroundColor(Application.getTheme()->getBackgroundColor(ColorTheme::Shade::Default));
-	_actionButton->setAlternateTextColor(Application.getTheme()->getTextColor(ColorTheme::Shade::Darker));
+	_actionButton->setBackgroundColor(Application.getTheme()->getColor(HighlightBackgroundColor));
+	_actionButton->setColor(Application.getTheme()->getColor(HighlighTextColor));
+	_actionButton->setAlternateBackgroundColor(Application.getTheme()->getColor(HighlightAlternateBackgroundColor));
+	_actionButton->setAlternateTextColor(Application.getTheme()->getColor(HighlightAlternateTextColor));
 	_actionButton->setBitmap(getSidebarIcon(),24,24);
 	addView(_actionButton);
 }

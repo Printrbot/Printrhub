@@ -529,3 +529,21 @@ void PHDisplay::resetClippingRect()
 {
     _clipRect = NULL;
 }
+
+void PHDisplay::fadeOut()
+{
+    for (int i=128;i>=0;i--)
+    {
+        analogWrite(TFT_BACKLIGHT_PWM,i);
+        delay(1);
+    }
+}
+
+void PHDisplay::fadeIn()
+{
+    for (int i=0;i<=128;i++)
+    {
+        analogWrite(TFT_BACKLIGHT_PWM,i);
+        delay(1);
+    }
+}

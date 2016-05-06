@@ -61,7 +61,7 @@ ChoosePrintSceneController::~ChoosePrintSceneController()
 
 uint16_t ChoosePrintSceneController::getBackgroundColor()
 {
-    return Application.getTheme()->getBackgroundColor(ColorTheme::Shade::Default);
+    return Application.getTheme()->getColor(BackgroundColor);
 }
 
 void ChoosePrintSceneController::display()

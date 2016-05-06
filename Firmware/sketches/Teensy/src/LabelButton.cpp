@@ -12,7 +12,12 @@ LabelView(text,frame)
     _state = ButtonState::Off;
     _type = ButtonType::Push;
     _alternateFont = getFont();
-    _alternateTextColor = ILI9341_WHITE;
+    _borderWidth = 0;
+
+    _backgroundColor = Application.getTheme()->getColor(ControlBackgroundColor);
+    _alternateBackgroundColor = Application.getTheme()->getColor(ControlAlternateBackgroundColor);
+    _alternateTextColor = Application.getTheme()->getColor(ControlAlternateTextColor);
+    setTextColor(Application.getTheme()->getColor(ControlTextColor));
 }
 
 LabelButton::LabelButton(String text, uint16_t x, uint16_t y, uint16_t width, uint16_t height):
@@ -23,7 +28,12 @@ LabelView(text,x,y,width,height)
     _state = ButtonState::Off;
     _type = ButtonType::Push;
     _alternateFont = getFont();
-    _alternateTextColor = ILI9341_WHITE;
+    _borderWidth = 0;
+
+    _backgroundColor = Application.getTheme()->getColor(ControlBackgroundColor);
+    _alternateBackgroundColor = Application.getTheme()->getColor(ControlAlternateBackgroundColor);
+    _alternateTextColor = Application.getTheme()->getColor(ControlAlternateTextColor);
+    setTextColor(Application.getTheme()->getColor(ControlTextColor));
 }
 
 void LabelButton::updateButton(ButtonState buttonState)

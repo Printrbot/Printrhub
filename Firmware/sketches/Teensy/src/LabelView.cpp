@@ -27,7 +27,7 @@ LabelView::LabelView(String text, uint16_t x, uint16_t y, uint16_t width, uint16
 	_verticalTextAlign = TEXTALIGN_CENTERED;
 	_text = text;
 	_font = &PTSansNarrow_20;
-	_textColor = Application.getTheme()->getSecondaryColor1();
+	_textColor = Application.getTheme()->getColor(TextColor);
 	_backgroundColor = ILI9341_WHITE;
 	_name = "LabelView";
 	_layer = NULL;
@@ -40,7 +40,7 @@ LabelView::LabelView(String text, Rect frame):
 	_verticalTextAlign = TEXTALIGN_CENTERED;
 	_text = text;
 	_font = &PTSansNarrow_20;
-	_textColor = Application.getTheme()->getSecondaryColor1();
+	_textColor = Application.getTheme()->getColor(TextColor);
 	_backgroundColor = ILI9341_WHITE;
 	_name = "LabelView";
 	_layer = NULL;

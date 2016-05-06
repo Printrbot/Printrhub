@@ -16,7 +16,7 @@ NavBar::NavBar(Rect frame):
 void NavBar::display()
 {
     RectangleLayer* bottomLayer = new RectangleLayer(Rect(_frame.x,_frame.y,_frame.width,_frame.height));
-    bottomLayer->setBackgroundColor(Application.getTheme()->getPrimaryColor());
+    bottomLayer->setBackgroundColor(Application.getTheme()->getColor(SidebarBackgroundColor));
     addLayer(bottomLayer);
     View::display();
 }

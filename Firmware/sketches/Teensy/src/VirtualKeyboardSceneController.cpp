@@ -37,11 +37,6 @@ VirtualKeyboardSceneController::VirtualKeyboardSceneController():
             Rect frame = Rect(x*40,y*40,39,39);
 
             LabelButton* button = new LabelButton(String(Keyboards[_currentKeyboard*32+i]),frame);
-            button->setBorderColor(Application.getTheme()->getSecondaryColor2());
-            button->setBackgroundColor(Application.getTheme()->getBackgroundColor());
-            button->setAlternateBackgroundColor(Application.getTheme()->getPrimaryColor());
-            button->setTextColor(Application.getTheme()->getSecondaryColor2());
-            button->setBorderWidth(0);
             button->setName(String(Keyboards[_currentKeyboard*32+i]));
             button->setDelegate(this);
             addView(button);
@@ -51,11 +46,6 @@ VirtualKeyboardSceneController::VirtualKeyboardSceneController():
     }
 
     LabelButton* button = new LabelButton(String((char)88),Rect(0,201,59,38));
-    button->setBorderColor(Application.getTheme()->getSecondaryColor2());
-    button->setBackgroundColor(Application.getTheme()->getBackgroundColor());
-    button->setAlternateBackgroundColor(Application.getTheme()->getPrimaryColor());
-    button->setTextColor(Application.getTheme()->getSecondaryColor2());
-    button->setBorderWidth(0);
     button->setName("Shift");
     button->setDelegate(this);
     button->setFont(&AwesomeF080_20);
@@ -65,11 +55,6 @@ VirtualKeyboardSceneController::VirtualKeyboardSceneController():
     _shiftButton = button;
 
     button = new LabelButton("123",Rect(60,201,59,38));
-    button->setBorderColor(Application.getTheme()->getSecondaryColor2());
-    button->setBackgroundColor(Application.getTheme()->getBackgroundColor());
-    button->setAlternateBackgroundColor(Application.getTheme()->getBackgroundColor());
-    button->setTextColor(Application.getTheme()->getSecondaryColor2());
-    button->setAlternateTextColor(Application.getTheme()->getSecondaryColor2());
     button->setBorderWidth(0);
     button->setName("123");
     button->setDelegate(this);
@@ -77,10 +62,6 @@ VirtualKeyboardSceneController::VirtualKeyboardSceneController():
     addView(button);
 
     button = new LabelButton("Space",Rect(121,201,137,38));
-    button->setBorderColor(Application.getTheme()->getSecondaryColor2());
-    button->setBackgroundColor(Application.getTheme()->getBackgroundColor());
-    button->setAlternateBackgroundColor(Application.getTheme()->getPrimaryColor());
-    button->setTextColor(Application.getTheme()->getSecondaryColor2());
     button->setBorderWidth(0);
     button->setName(" ");
     button->setDelegate(this);
@@ -88,9 +69,6 @@ VirtualKeyboardSceneController::VirtualKeyboardSceneController():
     addView(button);
 
     button = new LabelButton(String((char)12),Rect(260,201,59,38));
-    button->setBorderColor(Application.getTheme()->getSecondaryColor2());
-    button->setBackgroundColor(Application.getTheme()->getPrimaryColor());
-    button->setAlternateBackgroundColor(Application.getTheme()->getPrimaryColor());
     button->setTextColor(ILI9341_WHITE);
     button->setAlternateTextColor(ILI9341_WHITE);
     button->setBorderWidth(0);
@@ -108,14 +86,9 @@ VirtualKeyboardSceneController::VirtualKeyboardSceneController():
     _textField->setText(_text);
     //_textField->setTextColor(Application.getTheme()->getSecondaryColor2());
     _textField->setTextColor(ILI9341_WHITE);
-    _textField->setBackgroundColor(Application.getTheme()->getPrimaryColor());
     addView(_textField);
 
     button = new LabelButton(String((char)89),Rect(280,0,39,38));
-    button->setBorderColor(Application.getTheme()->getSecondaryColor2());
-    button->setBackgroundColor(Application.getTheme()->getBackgroundColor());
-    button->setAlternateBackgroundColor(Application.getTheme()->getPrimaryColor());
-    button->setTextColor(Application.getTheme()->getSecondaryColor2());
     button->setBorderWidth(0);
     button->setName("Backspace");
     button->setDelegate(this);
@@ -132,7 +105,7 @@ VirtualKeyboardSceneController::~VirtualKeyboardSceneController()
 
 uint16_t VirtualKeyboardSceneController::getBackgroundColor()
 {
-    return Application.getTheme()->getSecondaryColor2();
+    return Application.getTheme()->getColor(SpacerColor);
 }
 
 String VirtualKeyboardSceneController::getName()

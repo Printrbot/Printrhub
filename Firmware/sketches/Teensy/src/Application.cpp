@@ -95,7 +95,7 @@ void ApplicationClass::loop()
 	if (_nextScene != NULL)
 	{
 		//Shut down display to hide the build process of the layout (which is step by step and looks flashy)
-		digitalWrite(TFT_BACKLIGHT_PWM,LOW);
+		Display.fadeOut();
 
 		//Clear the display
 		Display.clear();
@@ -152,7 +152,8 @@ void ApplicationClass::loop()
 		if (_firstSceneLoop)
 		{
 			//Set display brightness to full to show what's been built up since we shut down the display
-			digitalWrite(TFT_BACKLIGHT_PWM,HIGH);
+			Display.fadeIn();
+
 		}
 
 		_firstSceneLoop = false;

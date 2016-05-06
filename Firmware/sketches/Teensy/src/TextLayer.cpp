@@ -7,12 +7,12 @@
 
 TextLayer::TextLayer(Rect frame):
 Layer(frame),
-_foregroundColor(RGB565(0,0,0)),
-_backgroundColor(RGB565(128,255,255)),
 _textAlign(TEXTALIGN_LEFT),
 _verticalTextAlign(TEXTALIGN_CENTERED),
 _padding(0)
 {
+    _backgroundColor = Application.getTheme()->getColor(BackgroundColor);
+    _foregroundColor = Application.getTheme()->getColor(TextColor);
     _font = (ILI9341_t3_font_t *) &PTSansNarrow_20;
 }
 
