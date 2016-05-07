@@ -36,74 +36,56 @@
 
 class View: public UIElement, public AnimatableObject, Object
 {
+#pragma mark Constructor
 public:
 	~View();
 	View(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 	View(Rect frame);
 
-	Rect getScreenFrame();
+#pragma mark UIElement
+	virtual String getDescription() override;
+	virtual void setFrame(Rect frame) override;
 
-	//Display
+#pragma mark Display
+	Rect getScreenFrame();
 	virtual void draw();
 	virtual void update();
 	virtual void layout();
-	void setBackgroundColor(uint16_t backgroundColor);
-	uint16_t getBackgroundColor();
-	void setOpaque(bool opaque);
 	virtual void display();
-
 	virtual void setNeedsDisplay();
 	void didDraw();
 
-	//Layer handling
+#pragma mark Getter/Setter
+	void setBackgroundColor(uint16_t backgroundColor);
+	uint16_t getBackgroundColor();
+	bool isUserInteractionEnabled() const { return _userInteractionEnabled; }
+	void setUserInteractionEnabled(bool userInteractionEnabled) { _userInteractionEnabled = userInteractionEnabled; }
+	uint16_t getBorderColor() const { return _borderColor; }
+	void setBorderColor(uint16_t _borderColor) { View::_borderColor = _borderColor; }
+	uint8_t getBorderWidth() const { return _borderWidth; }
+	void setBorderWidth(uint8_t _borderWidth) { View::_borderWidth = _borderWidth; }
+
+	void setOpaque(bool opaque);
+
+#pragma mark Layer Management
 	virtual void addLayer(Layer* layer);
 
-	//Touch handling
+#pragma mark Touch Handling
 	virtual bool touchDown(TS_Point& point);
 	virtual bool touchMoved(TS_Point& point, TS_Point& lastPoint);
 	virtual bool touchUp(TS_Point& point);
 	virtual void touchCancelled();
+	virtual View* hitTest(TS_Point& point);
 
-	//Getters and Settings
-	bool isUserInteractionEnabled() const
-	{
-		return _userInteractionEnabled;
-	}
-
-	void setUserInteractionEnabled(bool userInteractionEnabled)
-	{
-		_userInteractionEnabled = userInteractionEnabled;
-	}
-
-	uint16_t getBorderColor() const
-	{
-		return _borderColor;
-	}
-
-	void setBorderColor(uint16_t _borderColor)
-	{
-		View::_borderColor = _borderColor;
-	}
-
-	uint8_t getBorderWidth() const
-	{
-		return _borderWidth;
-	}
-
-	void setBorderWidth(uint8_t _borderWidth)
-	{
-		View::_borderWidth = _borderWidth;
-	}
-
-//Visibility
+#pragma mark Visibility
 	bool isVisible();
 	void setVisible(bool visible=true);
 
-	virtual View* hitTest(TS_Point& point);
-
+#pragma mark Animatable Object
 protected:
 	virtual void animationUpdated(Animation *animation, float currentValue, float timeLeft) override;
 
+#pragma mark Member Variables
 protected:
 	Rect _frame;
 	bool _visible;
@@ -114,11 +96,6 @@ protected:
 	bool _needsDisplay;
 	StackArray<Layer*> _layers;
 	bool _userInteractionEnabled;
-
-public:
-	virtual String getDescription() override;
-
-	virtual void setFrame(Rect frame) override;
 };
 
 #endif

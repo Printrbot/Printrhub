@@ -11,22 +11,26 @@
 
 class SidebarSceneController: public SceneController
 {
+#pragma mark Constructor
 public:
     SidebarSceneController();
     virtual ~SidebarSceneController();
 
-    //virtual void loop();
-
+#pragma mark Getter/Setter
 	virtual String getSidebarTitle() const = 0;
 	virtual const uint8_t* getSidebarIcon() = 0;
 
+#pragma mark Scene Controller
 	virtual void onWillAppear() override;
 
+#pragma mark Member Functions
+private:
+	void setupSidebar();
+
+#pragma mark Member Variables
 private:
 	VerticalTextLayer* _textLayer;
 	BitmapButton* _actionButton;
-
-	void setupSidebar();
 };
 
 

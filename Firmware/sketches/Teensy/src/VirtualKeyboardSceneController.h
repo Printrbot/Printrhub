@@ -13,23 +13,28 @@
 
 class VirtualKeyboardSceneController: public SceneController, ButtonDelegate
 {
+#pragma mark Constructor
 public:
     VirtualKeyboardSceneController();
     virtual ~VirtualKeyboardSceneController();
 
+#pragma mark Scene Controller
     String getName();
+    virtual uint16_t getBackgroundColor() override;
 
+#pragma mark Button Delegate
 private:
     virtual void buttonPressed(void *button);
 
+#pragma mark Member Functions
+    void updateKeyboard();
+
+#pragma mark Member Variables
 public:
-    virtual uint16_t getBackgroundColor() override;
     String _text;
     LabelView* _textField;
     LabelButton* _shiftButton;
     uint8_t _currentKeyboard;
-
-    void updateKeyboard();
 };
 
 #endif //TEENSYCMAKE_VIRTUALKEYBOARDSCENECONTROLLER_H

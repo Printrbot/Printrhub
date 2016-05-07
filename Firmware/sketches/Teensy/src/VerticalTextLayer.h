@@ -10,14 +10,13 @@
 
 class VerticalTextLayer : public TextLayer
 {
+#pragma mark Constructor
 public:
-	virtual void draw(Rect &dirtyRect, Rect &invalidationRect) override;
-
 	VerticalTextLayer() : TextLayer() { }
 	VerticalTextLayer(const Rect &frame) : TextLayer(frame) { }
 
-
-
+#pragma mark Layer
+	virtual void draw(Rect &dirtyRect, Rect &invalidationRect) override;
 };
 
 

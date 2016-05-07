@@ -13,27 +13,26 @@
 
 class ChoosePrintSceneController: public SceneController, ButtonDelegate
 {
+#pragma mark Constructor
 public:
-    virtual void onWillAppear() override;
-
     ChoosePrintSceneController();
     virtual ~ChoosePrintSceneController();
 
-    String getName();
+#pragma mark Scene Controller
+private:
+    virtual void onWillAppear() override;
+    virtual void handleTouchUp(TS_Point &point) override;
+    virtual uint16_t getBackgroundColor() override;
+    virtual void loop() override;
+    String getName() override;
 
-    virtual void display();
-    virtual void loop();
-
-protected:
-    ModelView* _modelView;
-
+#pragma mark Button Delegate
 private:
     virtual void buttonPressed(void *button);
 
-public:
-    virtual uint16_t getBackgroundColor() override;
-
-    virtual void handleTouchUp(TS_Point &point) override;
+#pragma mark Member Variables
+protected:
+    ModelView* _modelView;
 };
 
 #endif //TEENSYCMAKE_CHOOSEPRINTSCENECONTROLLER_H

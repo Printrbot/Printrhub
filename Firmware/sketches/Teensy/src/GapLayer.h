@@ -12,8 +12,6 @@ class GapLayer: public RectangleLayer
 public:
     GapLayer(Rect frame);
     virtual ~GapLayer();
-
-    //virtual void draw(Rect &renderFrame) override;
 };
 
 

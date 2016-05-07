@@ -64,11 +64,6 @@ uint16_t ChoosePrintSceneController::getBackgroundColor()
     return Application.getTheme()->getColor(BackgroundColor);
 }
 
-void ChoosePrintSceneController::display()
-{
-
-}
-
 String ChoosePrintSceneController::getName()
 {
     return "ChoosePrintSceneController";

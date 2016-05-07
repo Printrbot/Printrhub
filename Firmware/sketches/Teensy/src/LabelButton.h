@@ -10,11 +10,13 @@
 
 class LabelButton: public LabelView, public Button
 {
+#pragma mark Constructor
 public:
     LabelButton(String text, Rect frame);
     LabelButton(String text, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
     ~LabelButton() {};
 
+#pragma mark Getter/Setter
     virtual void setAlternateBackgroundColor(uint16_t color) { _alternateBackgroundColor = color; };
     virtual uint16_t getAlternateBackgroundColor() { return _alternateBackgroundColor; };;;;
 
@@ -24,23 +26,23 @@ public:
     void setAlternateTextColor(uint16_t color) { _alternateTextColor = color; };
     uint16_t getAlternateTextColor() { return _alternateTextColor; };
 
+#pragma mark Member Functions
+private:
+    void updateButton(ButtonState buttonState);
+
+#pragma mark View
 public:
     virtual bool touchDown(TS_Point &point) override;
     virtual bool touchUp(TS_Point &point) override;
     virtual void touchCancelled() override;
+    virtual void setFont(const ILI9341_t3_font_t *font) override;
+    virtual void display() override;
 
+#pragma mark Member Variables
 protected:
-
     uint16_t _alternateBackgroundColor;
     const ILI9341_t3_font_t* _alternateFont;
     uint16_t _alternateTextColor;
-
-    void updateButton(ButtonState buttonState);
-
-public:
-    virtual void setFont(const ILI9341_t3_font_t *font) override;
-
-    virtual void display() override;
 };
 
 

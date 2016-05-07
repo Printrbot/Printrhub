@@ -24,40 +24,40 @@
 
 class SceneController
 {
+#pragma mark Constructor
 public:
 	SceneController();
 	virtual ~SceneController();
 
+#pragma mark Application Flow
 	virtual void loop();
-
-	virtual String getName() = 0;
-
-	//Events
 	virtual void onWillAppear();
 	virtual void onWillDisappear();
 
-	bool statusBarVisible();
+#pragma mark Misc
+	virtual String getName() = 0;
 
+#pragma mark View Management
 	virtual StackArray<View*>* getViews() { return &_views; };
 	virtual void addView(View* view) { _views.push(view); };
 
+#pragma mark Touch Handling
 	virtual void handleTouchDown(TS_Point& point);
 	virtual void handleTouchUp(TS_Point& point);
 	virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint);
 
-	virtual uint16_t getBackgroundColor();
+	virtual uint16_t getBackgroundColor();;
 
-	virtual void dismiss() { _dismissed = true; };
-	virtual bool isDismissed() { return _dismissed; };
-
+#pragma mark Scrolling
 private:
 	void addScrollOffset(float scrollOffset);
 
+#pragma mark Member Variables
+private:
 	StackArray<View*> _views;
 	View* _currentTouchedView;
 	float _scrollOffset;
 	float _scrollVelocity;
-	bool _dismissed;
 };
 
 

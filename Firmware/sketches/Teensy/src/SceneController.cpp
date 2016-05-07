@@ -23,7 +23,6 @@ SceneController::SceneController()
 {
 	_currentTouchedView = NULL;
 	_scrollOffset = 0;
-	_dismissed = false;
 }
 
 SceneController::~SceneController()
@@ -86,11 +85,6 @@ void SceneController::onWillDisappear()
 String SceneController::getName()
 {
 	return "SceneController";
-}
-
-bool SceneController::statusBarVisible()
-{
-	return true;
 }
 
 void SceneController::handleTouchDown(TS_Point &point)

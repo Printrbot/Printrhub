@@ -44,20 +44,26 @@ class View;
 
 class ApplicationClass
 {
+#pragma mark Constructor
 public:
 	ApplicationClass();
 	~ApplicationClass();
 
+#pragma mark Application Flow
 	void loop();
 	void pushScene(SceneController* scene);
 	SceneController* currentScene() { return _currentScene; };
 
+#pragma mark Touch Handling
 	void handleTouches();
 
-	void sendScreenshot();
-
+#pragma mark Color Theme
 	ColorTheme* getTheme();
 
+#pragma mark Misc
+	void sendScreenshot();
+
+#pragma mark Member Variables
 private:
 	bool _firstSceneLoop;
 	ColorTheme _theme;
@@ -71,7 +77,6 @@ extern ApplicationClass Application;
 extern PHDisplay Display;
 extern Adafruit_FT6206 Touch;
 extern int globalLayerId;
-
 extern int globalLayersCreated;
 extern int globalLayersDeleted;
 

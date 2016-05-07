@@ -21,6 +21,7 @@
 
 #include "View.h"
 
+//TODO: Ported from Little Helper needs work to be functional with Printrhub Layout System
 class ProgressBar: public View
 {
 public:

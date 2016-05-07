@@ -8,7 +8,6 @@
 BitmapLayer::BitmapLayer(Rect frame): Layer(frame)
 {
     _bitmap = NULL;
-    _alpha = 1;
     _color = ILI9341_PURPLE;
 }
 

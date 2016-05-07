@@ -10,42 +10,26 @@
 
 class BitmapLayer: public Layer
 {
+#pragma mark Constrcutor
 public:
     BitmapLayer();
     BitmapLayer(Rect rect);
     virtual ~BitmapLayer();
 
+#pragma mark Layer
     virtual void draw(Rect& dirtyRect, Rect& invalidationRect) override;
     virtual void setBitmap(const uint8_t* bitmap, uint16_t width, uint16_t height);
 
-    const uint16_t &getColor() const
-    {
-        return _color;
-    }
+#pragma mark Getter/Setter
+    const uint16_t &getColor() const { return _color; }
+    void setColor(const uint16_t &color) { _color = color; }
 
-    void setColor(const uint16_t &color)
-    {
-        _color = color;
-    }
-
+#pragma mark Member Variables
 private:
     const uint8_t* _bitmap;
     uint16_t _width;
     uint16_t _height;
-    float _alpha;
     uint16_t _color;
-
-public:
-    float getAlpha() const
-    {
-        return _alpha;
-    }
-
-    void setAlpha(float _alpha)
-    {
-        BitmapLayer::_alpha = _alpha;
-        _needsDisplay = true;
-    }
 };
 
 

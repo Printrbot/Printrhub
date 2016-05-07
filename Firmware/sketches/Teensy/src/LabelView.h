@@ -31,24 +31,28 @@
 
 class LabelView: public View
 {
+#pragma mark Constructor:
 public:
 	LabelView(String text, Rect frame);
 	LabelView(String text, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 
+#pragma mark Getter/Setter
 	void setText(String text);
 	void setTextAlign(uint8_t textAlign);
 	void setVerticalTextAlign(uint8_t verticalTextAlign);
 	void setTextColor(uint16_t color);
 	uint16_t getTextColor() { return _textColor; };
-
 	virtual void setFont(const ILI9341_t3_font_t *font);
 	const ILI9341_t3_font_t* getFont();
 	TextLayer* getTextLayer() { return _layer; };
 
+#pragma mark View
 	virtual bool touchDown(TS_Point& point) { return View::touchDown(point); };
 	virtual bool touchUp(TS_Point& point) { return View::touchUp(point); };
 	virtual void touchCancelled() { View::touchCancelled(); }
+	virtual void display() override;
 
+#pragma mark Member Variables
 private:
 	String _text;
 	TextLayer* _layer;
@@ -56,11 +60,6 @@ private:
 	uint8_t _verticalTextAlign;
 	const ILI9341_t3_font_t* _font;
 	uint16_t _textColor;
-
-public:
-	virtual void display() override;
-
-	void updateLayout();
 };
 
 

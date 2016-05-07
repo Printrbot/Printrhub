@@ -9,10 +9,12 @@
 
 class RectangleLayer: public Layer
 {
+#pragma mark Constructor
 public:
     RectangleLayer(Rect frame);
     virtual ~RectangleLayer();
 
+#pragma mark Layer
     virtual void draw(Rect& dirtyRect, Rect& invalidationRect) override;
 };
 

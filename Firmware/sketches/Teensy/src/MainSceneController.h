@@ -13,29 +13,30 @@
 
 class MainSceneController: public SceneController, ButtonDelegate
 {
+#pragma mark Constructor
 public:
-    virtual void onWillAppear() override;
-
     MainSceneController();
     virtual ~MainSceneController();
 
+#pragma mark Scene Controller
+private:
+    virtual void onWillAppear() override;
     String getName();
-
     virtual void display();
     virtual void loop();
+    virtual uint16_t getBackgroundColor() override;
 
+#pragma mark Button Delegate
+private:
+    virtual void buttonPressed(void *button);
+
+#pragma mark Member Variables
 protected:
     LabelButton* _printButton;
     LabelButton* _filamentButton;
     LabelButton* _settingsButton;
     LabelButton* _hotendButton;
     NavBar* _navBar;
-
-private:
-    virtual void buttonPressed(void *button);
-
-public:
-    virtual uint16_t getBackgroundColor() override;
 };
 
 

@@ -12,25 +12,27 @@
 
 class MachineControlSceneController: public SceneController, ButtonDelegate
 {
+#pragma mark Constructor
 public:
     MachineControlSceneController();
     virtual ~MachineControlSceneController();
 
+#pragma mark SceneController
+private:
     String getName();
-
     virtual void display();
+    virtual uint16_t getBackgroundColor() override;
 
+#pragma mark Button Delegate
+private:
+    virtual void buttonPressed(void *button);
+
+#pragma mark Member Variables
 protected:
     LabelButton* _moveZUpButton;
     LabelButton* _moveZDownButton;
     LabelButton* _moveXRightButton;
     LabelButton* _moveXLeftButton;
-
-private:
-    virtual void buttonPressed(void *button);
-
-public:
-    virtual uint16_t getBackgroundColor() override;
 };
 
 #endif //TEENSYCMAKE_MACHINECONTROLSCENECONTROLLER_H

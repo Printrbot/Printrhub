@@ -57,14 +57,14 @@ void testImage(void)
     Display.drawMaskedBitmap(10,80,32,30,imageOfCancelPrintIcon_32_30,0,0,32,30,ILI9341_BLACK,ILI9341_WHITE);
     Display.drawMaskedBitmap(10,120,24,24,imageOfWrenchIcon_24_24,0,0,24,24,ILI9341_BLACK,ILI9341_WHITE);*/
 
-    Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240,1);
+    Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240);
 
     while(true) {};
 }
 
 void showSplashScreen()
 {
-    Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240,1);
+    Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240);
 
     Display.fadeIn();
 

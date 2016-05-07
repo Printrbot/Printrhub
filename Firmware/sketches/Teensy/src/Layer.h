@@ -10,15 +10,13 @@
 
 class Layer: public UIElement
 {
+#pragma mark Constructor
 public:
     Layer();
     Layer(Rect frame);
     virtual ~Layer();
 
-    virtual void draw(Rect& dirtyRect, Rect& invalidationRect);
-
-    void display(Layer* backgroundLayer=NULL);
-
+#pragma mark Getter/Setter
     void setBackgroundColor(const uint16_t& color);
     uint16_t getBackgroundColor() const;
 
@@ -28,46 +26,40 @@ public:
     void setStrokeWidth(const uint8_t strokeWidth);
     uint8_t getStrokeWidth() const;
 
-    bool isLeaf();
-
+#pragma mark Layout Management
     void splitWithRect(Rect& rect);
-    void invalidateRect(Rect& dirtyRect, Rect& invalidationRect);
-
-    void addSublayer(Layer* layer);
-    StackArray<Layer*>* getSublayers();
-
-    void removeAllSublayers();
-
-    virtual Layer* subLayerWithRect(Rect frame);
-
-    virtual void setNeedsDisplay();
-
-    bool isVisible();
-
-    void log();
-
-    int uniqueId;
-
-protected:
-    bool _needsDisplay;
-    Rect getRenderFrame();
-
-private:
     void splitVertically(int x, Layer** left, Layer** right);
     void splitHorizontally(int y, Layer**top, Layer**bottom);
+    void invalidateRect(Rect& dirtyRect, Rect& invalidationRect);
 
-private:
+#pragma mark Layer Hierarchy
+    void addSublayer(Layer* layer);
+    StackArray<Layer*>* getSublayers();
+    bool isLeaf();
+    void removeAllSublayers();
+    virtual Layer* subLayerWithRect(Rect frame);
+
+#pragma mark Draw and Display
+    virtual void setNeedsDisplay();
+    virtual void draw(Rect& dirtyRect, Rect& invalidationRect);
+    void display(Layer* backgroundLayer=NULL);
+    Rect getRenderFrame();
+    bool isVisible();
+
+#pragma mark Misc
+    void log();
+
+#pragma mark UIElements
+    virtual void setFrame(Rect frame) override;
+
+#pragma mark Member Variables
+protected:
     uint16_t _backgroundColor;
     uint16_t _strokeColor;
     uint8_t _strokeWidth;
-
-
-
+    bool _needsDisplay;
+    int uniqueId;
     StackArray<Layer*>* _sublayers;
-public:
-    virtual void setFrame(Rect frame) override;
-
-
 };
 
 

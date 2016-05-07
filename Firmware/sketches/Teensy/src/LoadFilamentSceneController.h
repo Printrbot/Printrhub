@@ -11,23 +11,27 @@
 
 class LoadFilamentSceneController: public SidebarSceneController, public ButtonDelegate
 {
+#pragma mark Constructor
 public:
-	virtual void buttonPressed(void *button) override;
-
 	LoadFilamentSceneController();
 	virtual ~LoadFilamentSceneController();
 
+#pragma mark Sidebar Scene Controller
 private:
 	virtual const uint8_t *getSidebarIcon() override;
 	virtual String getSidebarTitle() const override;
 
+#pragma mark Scene Controller
+private:
 	String getName();
-
 	virtual void onWillAppear() override;
-
-protected:
 	virtual uint16_t getBackgroundColor() override;
 
+#pragma mark Button Delegate
+private:
+	virtual void buttonPressed(void *button) override;
+
+#pragma mark Member Variables
 private:
 	LabelButton* _button;
 };
