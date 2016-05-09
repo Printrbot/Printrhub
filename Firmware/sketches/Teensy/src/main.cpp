@@ -15,7 +15,7 @@
 
 
 #include <SPI.h>       // this is needed for display
-#include "drivers/Display/PHDisplay.h"
+#include "framework/core/PHDisplay.h"
 #include <Wire.h>      // this is needed for FT6206
 #include <Adafruit_FT6206.h>
 #include "IdleSceneController.h"

@@ -76,7 +76,7 @@ add_executable(Teensy
     src/ModelView.cpp
     src/NavBar.cpp
         src/framework/core/Object.cpp
-        src/drivers/Display/PHDisplay.cpp
+        src/framework/core/PHDisplay.cpp
         src/framework/views/ProgressBar.cpp
         src/framework/layers/RectangleLayer.cpp
         src/framework/core/SceneController.cpp

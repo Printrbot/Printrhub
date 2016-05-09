@@ -24,7 +24,7 @@
 #include "SceneController.h"
 #include "ColorTheme.h"
 #include "../views/Icon.h"
-#include "../../drivers/Display/PHDisplay.h"
+#include "PHDisplay.h"
 #include "../../drivers/Display/ILI9341_t3.h"
 #include <Adafruit_FT6206.h>
 #include "../animation/Animator.h"

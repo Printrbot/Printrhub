@@ -3,11 +3,11 @@
 //
 
 #include "PHDisplay.h"
-#include "../../framework/core/Application.h"
+#include "Application.h"
 #include <SPI.h>
 #include <Wiring.h>
 #include <Arduino.h>
-#include "../SD/SD.h"
+#include "../../drivers/SD/SD.h"
 
 #define SPICLOCK 30000000
 

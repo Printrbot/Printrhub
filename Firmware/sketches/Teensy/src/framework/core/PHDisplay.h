@@ -5,11 +5,11 @@
 #ifndef TEENSYCMAKE_PHDISPLAY_H
 #define TEENSYCMAKE_PHDISPLAY_H
 
-#include "ILI9341_t3.h"
-#include "../../framework/core/StackArray.h"
-#include "../../framework/layers/Layer.h"
-#include "../../framework/layers/RectangleLayer.h"
-#include "../SD/SD.h"
+#include "../../drivers/Display/ILI9341_t3.h"
+#include "StackArray.h"
+#include "../layers/Layer.h"
+#include "../layers/RectangleLayer.h"
+#include "../../drivers/SD/SD.h"
 
 class PHDisplay: public ILI9341_t3
 {
