@@ -3,7 +3,7 @@
 //
 
 #include "IdleView.h"
-#include "Application.h"
+#include "framework/core/Application.h"
 #include "Bitmaps.h"
 
 IdleView::IdleView(const Rect &frame):

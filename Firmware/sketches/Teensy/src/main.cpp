@@ -15,12 +15,12 @@
 
 
 #include <SPI.h>       // this is needed for display
-#include "PHDisplay.h"
+#include "drivers/Display/PHDisplay.h"
 #include <Wire.h>      // this is needed for FT6206
 #include <Adafruit_FT6206.h>
 #include "IdleSceneController.h"
 #include "MainSceneController.h"
-#include "SD_t3.h"
+#include "drivers/SD/SD_t3.h"
 #include "ChoosePrintSceneController.h"
 #include "LoadFilamentSceneController.h"
 #include "Bitmaps.h"

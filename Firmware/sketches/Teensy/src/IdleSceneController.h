@@ -5,7 +5,7 @@
 #ifndef TEENSYCMAKE_IDLESCENECONTROLLER_H
 #define TEENSYCMAKE_IDLESCENECONTROLLER_H
 
-#include "SceneController.h"
+#include "framework/core/SceneController.h"
 #include "IdleView.h"
 #include "Arduino.h"
 

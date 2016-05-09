@@ -1,7 +1,7 @@
 #ifndef TEENSYCMAKE_NAVBAR_H
 #define TEENSYCMAKE_NAVBAR_H
 
-#include "View.h"
+#include "framework/views/View.h"
 
 class NavBar: public View
 {

@@ -5,9 +5,9 @@
 #ifndef TEENSYCMAKE_SIDEBARSCENECONTROLLER_H
 #define TEENSYCMAKE_SIDEBARSCENECONTROLLER_H
 
-#include "SceneController.h"
-#include "VerticalTextLayer.h"
-#include "BitmapButton.h"
+#include "framework/core/SceneController.h"
+#include "framework/layers/VerticalTextLayer.h"
+#include "framework/views/BitmapButton.h"
 
 class SidebarSceneController: public SceneController
 {

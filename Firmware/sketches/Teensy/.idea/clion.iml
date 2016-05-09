@@ -2,99 +2,101 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src/LabelView.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/LoadFilamentSceneController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/CleanPlasticSceneController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Timer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/View.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/NavBar.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Animator.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/TextLayer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/MainSceneController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Application.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/VerticalTextLayer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/RectangleLayer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SidebarSceneController.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/WiFiSetupSceneController.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/file_t3.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/CleanPlasticSceneController.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/UIElement.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/View.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Bitmaps.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/font_PT_Sans-Narrow-Web-Regular.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/dir_t3.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/BitmapLayer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/IdleSceneController.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/font_PT_Sans-Narrow-Web-Regular.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/VirtualKeyboardSceneController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Layer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/IdleView.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SdVolume.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ILI9341_t3.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/VerticalTextLayer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SD.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/BitmapButton.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/LoadFilamentSceneController.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SdFile.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/NavBar.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/glcdfont.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/File.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/LabelButton.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ColorTheme.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ModelView.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/MachineControlSceneController.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ILI9341_t3.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/GapLayer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/BitmapLayer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/font_AwesomeF080.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/IdleView.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/font_AwesomeF000.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Application.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ProgressBar.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/font_AwesomeF080.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/MachineControlSceneController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/WiFiSetupSceneController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/TextLayer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Animation.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/UIElement.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/LabelView.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Icon.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Object.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/card_t3.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Sd2Card.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/init_t3.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Object.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/cache_t3.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Bitmaps.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SceneController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ChoosePrintSceneController.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/PHDisplay.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Sd2Card.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/fat_t3.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ColorTheme.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Animation.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SDBitmapLayer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ModelView.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Animator.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/BitmapButton.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/GapLayer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/VirtualKeyboardSceneController.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Icon.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SD.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SDBitmapLayer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SceneController.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Layer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/MainSceneController.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/PHDisplay.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SidebarSceneController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ProgressBar.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/WiFiSetupSceneController.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/IdleSceneController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/font_AwesomeF000.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/SidebarSceneController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/IdleView.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ModelView.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Bitmaps.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/IdleSceneController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/CleanPlasticSceneController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/VirtualKeyboardSceneController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/NavBar.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ChoosePrintSceneController.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Timer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/RectangleLayer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/LabelButton.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/MachineControlSceneController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/fonts/font_AwesomeF080.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/fonts/font_PT_Sans-Narrow-Web-Regular.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/fonts/font_AwesomeF000.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/fonts/font_AwesomeF000.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/fonts/font_PT_Sans-Narrow-Web-Regular.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/fonts/font_AwesomeF080.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/SidebarSceneController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/LoadFilamentSceneController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/MainSceneController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/MachineControlSceneController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/CleanPlasticSceneController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Bitmaps.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/WiFiSetupSceneController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Timer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/SceneController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Application.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Application.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/ColorTheme.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Object.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/SceneController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Object.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/UIElement.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Timer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/UIElement.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/ColorTheme.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/ProgressBar.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/LabelButton.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/BitmapButton.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/BitmapButton.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/View.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/View.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/LabelView.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/LabelButton.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/Button.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/Icon.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/LabelView.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/Icon.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/ProgressBar.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/views/Button.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/animation/Animation.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/animation/Animator.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/animation/Animator.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/animation/Animation.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/RectangleLayer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/GapLayer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/BitmapLayer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/VerticalTextLayer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/SDBitmapLayer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/VerticalTextLayer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/TextLayer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/GapLayer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/Layer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/TextLayer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/Layer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/BitmapLayer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/RectangleLayer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/layers/SDBitmapLayer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/LoadFilamentSceneController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/NavBar.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/Display/PHDisplay.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/Display/ILI9341_t3.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/Display/ILI9341_t3.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/Display/PHDisplay.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/fat_t3.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/cache_t3.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/dir_t3.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/card_t3.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/SD.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/file_t3.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/SD.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/init_t3.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/utility/Sd2Card.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/utility/Sd2Card.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/utility/SdVolume.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/utility/SdFile.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/SD/File.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/drivers/glcdfont.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ModelView.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/ChoosePrintSceneController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/IdleView.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/MainSceneController.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeListsPrivate.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
     </content>
@@ -102,6 +104,37 @@
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_CC3000" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Appfruits_Debug" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/EEPROMEx" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_TFTLCD" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/RF24Mesh" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_Sensor" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/TrueRandom" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_TSL2561" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/QueueArray" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/dht" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/RF24" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/DS1302" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/parse" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_HX8357" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit-GFX" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/ILI9341_fonts" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/SoftI2CMaster" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_GFX" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_MPR121" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/RF24Network" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/MAX17043" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Appfruits_QTouch" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_ST7735" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_SSD1306" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_NeoPixel" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/ILI9341_t3" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/ArduinoJson" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/MQTTclient" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_SSD1351" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Encoder" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_FT6206" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AudioToolbox.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Carbon.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Carbon.framework/Frameworks/HIToolbox.framework/Headers" />
@@ -120,7 +153,7 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/MapKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/DirectoryService.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/ScriptingBridge.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/InstallerPlugins.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/ForceFeedback.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreWLAN.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/JavaVM.framework/Headers" />
@@ -128,7 +161,6 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/JavaVM.framework/Frameworks/JavaNativeFoundation.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/MetalKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Metal.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/SpriteKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Security.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Kerberos.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/QuartzCore.framework/Headers" />
@@ -151,8 +183,9 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/ApplicationServices.framework/Frameworks/CoreText.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/vmnet.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreMedia.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Tcl.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/GSS.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/SystemConfiguration.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Tcl.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreAudioKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Cocoa.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenCL.framework/Headers" />
@@ -207,6 +240,7 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/ImageCaptureCore.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/ImageIO.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Automator.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/InstallerPlugins.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/SecurityInterface.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Social.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreText.framework/Headers" />
@@ -216,18 +250,17 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/QuickLook.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Tk.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/JavaScriptCore.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AudioUnit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/IMServicePlugIn.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/GSS.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AudioUnit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/TWAIN.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/IOKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/IOSurface.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Hypervisor.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/QuickLookUI.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/ImageKit.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/QuartzFilters.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/QuartzComposer.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/QuartzFilters.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/ImageKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/PDFKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CloudKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/GameplayKit.framework/Headers" />
@@ -238,7 +271,7 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/DiscRecordingUI.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Collaboration.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/MediaToolbox.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/SpriteKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreTelephony.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/GLKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AGL.framework/Headers" />
@@ -275,6 +308,37 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include" />
         </CLASSES>
         <SOURCES>
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_CC3000" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Appfruits_Debug" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/EEPROMEx" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_TFTLCD" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/RF24Mesh" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_Sensor" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/TrueRandom" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_TSL2561" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/QueueArray" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/dht" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/RF24" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/DS1302" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/parse" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_HX8357" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit-GFX" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/ILI9341_fonts" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/SoftI2CMaster" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_GFX" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_MPR121" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/RF24Network" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/MAX17043" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Appfruits_QTouch" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_ST7735" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_SSD1306" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_NeoPixel" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/ILI9341_t3" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/ArduinoJson" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/MQTTclient" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_SSD1351" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Encoder" />
+          <root url="file://$MODULE_DIR$/../../../../../Arduino/libraries/Adafruit_FT6206" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AudioToolbox.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Carbon.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Carbon.framework/Frameworks/HIToolbox.framework/Headers" />
@@ -293,7 +357,7 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/MapKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/DirectoryService.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/ScriptingBridge.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/InstallerPlugins.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/ForceFeedback.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreWLAN.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/JavaVM.framework/Headers" />
@@ -301,7 +365,6 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/JavaVM.framework/Frameworks/JavaNativeFoundation.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/MetalKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Metal.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/SpriteKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Security.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Kerberos.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/QuartzCore.framework/Headers" />
@@ -324,8 +387,9 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/ApplicationServices.framework/Frameworks/CoreText.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/vmnet.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreMedia.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Tcl.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/GSS.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/SystemConfiguration.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Tcl.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreAudioKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Cocoa.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenCL.framework/Headers" />
@@ -380,6 +444,7 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/ImageCaptureCore.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/ImageIO.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Automator.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/InstallerPlugins.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/SecurityInterface.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Social.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreText.framework/Headers" />
@@ -389,18 +454,17 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/QuickLook.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Tk.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/JavaScriptCore.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AudioUnit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/IMServicePlugIn.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/GSS.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AudioUnit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/TWAIN.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/IOKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/IOSurface.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Hypervisor.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/QuickLookUI.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/ImageKit.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/QuartzFilters.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/QuartzComposer.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/QuartzFilters.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/ImageKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Quartz.framework/Frameworks/PDFKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CloudKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/GameplayKit.framework/Headers" />
@@ -411,7 +475,7 @@
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/DiscRecordingUI.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Collaboration.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/MediaToolbox.framework/Headers" />
-          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers" />
+          <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/SpriteKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreTelephony.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/GLKit.framework/Headers" />
           <root url="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AGL.framework/Headers" />

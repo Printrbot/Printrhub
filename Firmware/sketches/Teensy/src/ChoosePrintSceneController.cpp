@@ -5,10 +5,10 @@
 #include "ChoosePrintSceneController.h"
 
 #include "Bitmaps.h"
-#include "LabelButton.h"
+#include "framework/views/LabelButton.h"
 #include "ModelView.h"
 #include "MainSceneController.h"
-#include "SD.h"
+#include "drivers/SD/SD.h"
 
 ChoosePrintSceneController::ChoosePrintSceneController():
         SceneController::SceneController()

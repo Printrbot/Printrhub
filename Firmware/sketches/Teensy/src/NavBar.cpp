@@ -1,5 +1,5 @@
 #include "NavBar.h"
-#include "Application.h"
+#include "framework/core/Application.h"
 
 NavBar::NavBar(uint16_t x, uint16_t y, uint16_t width, uint16_t height):
   View(x,y,width,height)

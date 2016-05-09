@@ -6,9 +6,9 @@
 #define TEENSYCMAKE_WIFISETUPSCENECONTROLLER_H
 
 
-#include "SceneController.h"
-#include "BitmapButton.h"
-#include "LabelView.h"
+#include "framework/core/SceneController.h"
+#include "framework/views/BitmapButton.h"
+#include "framework/views/LabelView.h"
 
 class WiFiSetupSceneController: public SceneController, ButtonDelegate
 {

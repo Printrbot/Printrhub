@@ -3,9 +3,9 @@
 //
 
 #include "ModelView.h"
-#include "Application.h"
+#include "framework/core/Application.h"
 #include "Bitmaps.h"
-#include "SDBitmapLayer.h"
+#include "framework/layers/SDBitmapLayer.h"
 
 ModelView::ModelView(uint16_t x, uint16_t y, uint16_t width, uint16_t height):
         View(x,y,width,height)

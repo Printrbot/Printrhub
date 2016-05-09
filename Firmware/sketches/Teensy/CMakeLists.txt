@@ -10,7 +10,6 @@ add_definitions(-D__MK20DX256__)
 add_definitions(-DARDUINO=10600)
 add_definitions(-DTEENSYDUINO=128)
 add_definitions(-DPLATFORMIO=020901)
-add_definitions(-DKINETISK)
 
 add_custom_target(
     PLATFORMIO_BUILD ALL
@@ -49,55 +48,57 @@ add_custom_target(
 )
 
 add_executable(Teensy
-    src/Animation.cpp
-    src/Animator.cpp
-    src/Application.cpp
-    src/BitmapButton.cpp
-    src/BitmapLayer.cpp
+        src/framework/animation/Animation.cpp
+        src/framework/animation/Animator.cpp
+        src/framework/core/Application.cpp
+        src/framework/views/BitmapButton.cpp
+        src/framework/layers/BitmapLayer.cpp
     src/Bitmaps.c
-    src/cache_t3.cpp
-    src/card_t3.cpp
+        src/framework/views/Button.cpp
     src/ChoosePrintSceneController.cpp
-    src/ColorTheme.cpp
-    src/dir_t3.cpp
-    src/fat_t3.cpp
-    src/File.cpp
-    src/file_t3.cpp
-    src/font_AwesomeF000.c
-    src/font_AwesomeF080.c
-    src/font_PT_Sans-Narrow-Web-Regular.c
-    src/GapLayer.cpp
-    src/glcdfont.c
-    src/Icon.cpp
+    src/CleanPlasticSceneController.cpp
+        src/framework/core/ColorTheme.cpp
+        src/fonts/font_AwesomeF000.c
+        src/fonts/font_AwesomeF080.c
+        src/fonts/font_PT_Sans-Narrow-Web-Regular.c
+        src/framework/layers/GapLayer.cpp
+        src/framework/views/Icon.cpp
     src/IdleSceneController.cpp
     src/IdleView.cpp
-    src/ILI9341_t3.cpp
-    src/init_t3.cpp
-    src/LabelButton.cpp
-    src/LabelView.cpp
-    src/Layer.cpp
+        src/drivers/Display/ILI9341_t3.cpp
+        src/framework/views/LabelButton.cpp
+        src/framework/views/LabelView.cpp
+        src/framework/layers/Layer.cpp
+    src/LoadFilamentSceneController.cpp
     src/MachineControlSceneController.cpp
     src/main.cpp
     src/MainSceneController.cpp
     src/ModelView.cpp
     src/NavBar.cpp
-    src/Object.cpp
-    src/PHDisplay.cpp
-    src/ProgressBar.cpp
-    src/RectangleLayer.cpp
-    src/SceneController.cpp
-    src/SD.cpp
-    src/Sd2Card.cpp
-    src/SDBitmapLayer.cpp
-    src/SdFile.cpp
-    src/SdVolume.cpp
+        src/framework/core/Object.cpp
+        src/drivers/Display/PHDisplay.cpp
+        src/framework/views/ProgressBar.cpp
+        src/framework/layers/RectangleLayer.cpp
+        src/framework/core/SceneController.cpp
+        src/framework/layers/SDBitmapLayer.cpp
     src/SidebarSceneController.cpp
-    src/TextLayer.cpp
-    src/Timer.cpp
-    src/UIElement.cpp
-    src/View.cpp
+        src/framework/layers/TextLayer.cpp
+        src/framework/core/Timer.cpp
+        src/framework/core/UIElement.cpp
+        src/framework/layers/VerticalTextLayer.cpp
+        src/framework/views/View.cpp
     src/VirtualKeyboardSceneController.cpp
     src/WiFiSetupSceneController.cpp
-    src/VerticalTextLayer.cpp
-    src/LoadFilamentSceneController.cpp src/LoadFilamentSceneController.h
-    src/CleanPlasticSceneController.cpp src/CleanPlasticSceneController.h)
+    src/drivers/glcdfont.c
+    src/drivers/SD/cache_t3.cpp
+    src/drivers/SD/card_t3.cpp
+    src/drivers/SD/dir_t3.cpp
+    src/drivers/SD/fat_t3.cpp
+    src/drivers/SD/File.cpp
+    src/drivers/SD/file_t3.cpp
+    src/drivers/SD/init_t3.cpp
+    src/drivers/SD/SD.cpp
+    src/drivers/SD/utility/Sd2Card.cpp
+    src/drivers/SD/utility/SdFile.cpp
+    src/drivers/SD/utility/SdVolume.cpp
+)

@@ -4,14 +4,14 @@
 
 #include "MainSceneController.h"
 #include "Bitmaps.h"
-#include "LabelButton.h"
-#include "Application.h"
+#include "framework/views/LabelButton.h"
+#include "framework/core/Application.h"
 #include "NavBar.h"
 #include "ChoosePrintSceneController.h"
 #include "WiFiSetupSceneController.h"
 #include "VirtualKeyboardSceneController.h"
 #include "MachineControlSceneController.h"
-#include "ColorTheme.h"
+#include "framework/core/ColorTheme.h"
 
 MainSceneController::MainSceneController():
 SceneController::SceneController()

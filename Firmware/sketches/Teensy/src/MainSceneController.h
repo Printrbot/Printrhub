@@ -5,10 +5,10 @@
 #ifndef TEENSYCMAKE_MAINSCENECONTROLLER_H
 #define TEENSYCMAKE_MAINSCENECONTROLLER_H
 
-#include "SceneController.h"
-#include "BitmapButton.h"
-#include "LabelView.h"
-#include "LabelButton.h"
+#include "framework/core/SceneController.h"
+#include "framework/views/BitmapButton.h"
+#include "framework/views/LabelView.h"
+#include "framework/views/LabelButton.h"
 #include "NavBar.h"
 
 class MainSceneController: public SceneController, ButtonDelegate

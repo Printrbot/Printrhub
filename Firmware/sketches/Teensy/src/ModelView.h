@@ -5,12 +5,12 @@
 #ifndef TEENSYCMAKE_MODELVIEW_H
 #define TEENSYCMAKE_MODELVIEW_H
 
-#include "View.h"
-#include "TextLayer.h"
-#include "RectangleLayer.h"
-#include "BitmapLayer.h"
-#include "SDBitmapLayer.h"
-#include "LabelButton.h"
+#include "framework/views/View.h"
+#include "framework/layers/TextLayer.h"
+#include "framework/layers/RectangleLayer.h"
+#include "framework/layers/BitmapLayer.h"
+#include "framework/layers/SDBitmapLayer.h"
+#include "framework/views/LabelButton.h"
 
 class ModelView: public View
 {

@@ -5,9 +5,9 @@
 #ifndef TEENSYCMAKE_IDLEVIEW_H
 #define TEENSYCMAKE_IDLEVIEW_H
 
-#include "View.h"
-#include "RectangleLayer.h"
-#include "BitmapLayer.h"
+#include "framework/views/View.h"
+#include "framework/layers/RectangleLayer.h"
+#include "framework/layers/BitmapLayer.h"
 
 class IdleView: public View
 {

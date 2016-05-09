@@ -5,10 +5,10 @@
 #ifndef TEENSYCMAKE_MACHINECONTROLSCENECONTROLLER_H
 #define TEENSYCMAKE_MACHINECONTROLSCENECONTROLLER_H
 
-#include "SceneController.h"
-#include "BitmapButton.h"
-#include "LabelView.h"
-#include "LabelButton.h"
+#include "framework/core/SceneController.h"
+#include "framework/views/BitmapButton.h"
+#include "framework/views/LabelView.h"
+#include "framework/views/LabelButton.h"
 
 class MachineControlSceneController: public SceneController, ButtonDelegate
 {

@@ -6,8 +6,8 @@
 #define TEENSY_LOADFILAMENTSCENECONTROLLER_H
 
 #include "SidebarSceneController.h"
-#include "BitmapButton.h"
-#include "LabelButton.h"
+#include "framework/views/BitmapButton.h"
+#include "framework/views/LabelButton.h"
 
 class LoadFilamentSceneController: public SidebarSceneController, public ButtonDelegate
 {

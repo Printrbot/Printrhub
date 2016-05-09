@@ -6,8 +6,8 @@
 #define TEENSY_CLEANPLASTICSCENECONTROLLER_H
 
 #include "SidebarSceneController.h"
-#include "BitmapButton.h"
-#include "LabelButton.h"
+#include "framework/views/BitmapButton.h"
+#include "framework/views/LabelButton.h"
 
 class CleanPlasticSceneController: public SidebarSceneController, public ButtonDelegate
 {

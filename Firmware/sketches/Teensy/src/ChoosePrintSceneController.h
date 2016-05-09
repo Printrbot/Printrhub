@@ -5,10 +5,10 @@
 #ifndef TEENSYCMAKE_CHOOSEPRINTSCENECONTROLLER_H
 #define TEENSYCMAKE_CHOOSEPRINTSCENECONTROLLER_H
 
-#include "SceneController.h"
-#include "BitmapButton.h"
-#include "LabelView.h"
-#include "LabelButton.h"
+#include "framework/core/SceneController.h"
+#include "framework/views/BitmapButton.h"
+#include "framework/views/LabelView.h"
+#include "framework/views/LabelButton.h"
 #include "ModelView.h"
 
 class ChoosePrintSceneController: public SceneController, ButtonDelegate
