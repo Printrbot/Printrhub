@@ -179,6 +179,8 @@ void PHDisplay::drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                                  uint16_t ys, uint16_t ws, uint16_t hs, uint16_t foregroundColor,
                                  uint16_t backgroundColor)
 {
+    //TODO: This code will fail if ys > 0 and hs < h as it's not implemented correctly. As it's not needed by the current firmware I leave this comment and resolve it later
+    
     for (uint16_t xb=0;xb<w;xb++)
     {
         SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
@@ -219,6 +221,7 @@ void PHDisplay::drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
 void PHDisplay::drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs,
                                        uint16_t ys, uint16_t ws, uint16_t hs)
 {
+    //TODO: This code will fail if ys > 0 and hs < h as it's not implemented correctly. As it's not needed by the current firmware I leave this comment and resolve it later
     uint16_t buffer[320];
     for (uint16_t xb=0;xb<w;xb++)
     {
