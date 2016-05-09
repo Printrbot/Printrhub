@@ -55,7 +55,7 @@ public:
     bool containsY(int sy) { return (sy > y && sy < bottom());};
 
     bool intersectsRect(Rect& rect) {
-        return !(rect.left() > right() || rect.right() < left() || rect.top() > bottom() || rect.bottom() < top());
+            return (rect.left() < right() && rect.right() > left() && rect.top() < bottom() && rect.bottom() > top());
     };
 
     bool operator==(const Rect& a) const
