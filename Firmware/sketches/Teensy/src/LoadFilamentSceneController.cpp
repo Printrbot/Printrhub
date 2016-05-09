@@ -56,6 +56,7 @@ void LoadFilamentSceneController::onWillAppear()
 	_button = new LabelButton("DONE",Rect(15+50,160,320-30-50,68));
 	_button->setName("DONE");
 	_button->setDelegate(this);
+	_button->setIcon(imageOfAcceptIcon_32_30,Application.getTheme()->getColor(SuccessColor),32,30);
 	addView(_button);
 
 	SidebarSceneController::onWillAppear();

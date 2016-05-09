@@ -199,6 +199,7 @@ class ILI9341_t3 : public Print
 	void drawVerticalFontChar(unsigned int c);
 
 	uint32_t textWidth(const ILI9341_t3_font_t *font, String text);
+	uint32_t fontHeight(const ILI9341_t3_font_t *font);
 	uint32_t widthOfChar(const ILI9341_t3_font_t *font, char c);
 
  protected:

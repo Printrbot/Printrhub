@@ -18,6 +18,7 @@
 
 #include "ILI9341_t3.h"
 #include <SPI.h>
+#include <stdint.h>
 
 // Teensy 3.1 can only generate 30 MHz SPI when running at 120 MHz (overclock)
 // At all other speeds, SPI.beginTransaction() will use the fastest available clock
@@ -1523,6 +1524,13 @@ uint32_t ILI9341_t3::textWidth(const ILI9341_t3_font_t* font, String text)
 
 	return lineWidth;
 }
+
+
+uint32_t ILI9341_t3::fontHeight(const ILI9341_t3_font_t *font)
+{
+	return font->line_space;
+}
+
 
 void Adafruit_GFX_Button::initButton(ILI9341_t3 *gfx,
 	int16_t x, int16_t y, uint8_t w, uint8_t h,

@@ -7,6 +7,7 @@
 
 #include "LabelView.h"
 #include "Button.h"
+#include "../layers/BitmapLayer.h"
 
 class LabelButton: public LabelView, public Button
 {
@@ -26,6 +27,8 @@ public:
     void setAlternateTextColor(uint16_t color) { _alternateTextColor = color; };
     uint16_t getAlternateTextColor() { return _alternateTextColor; };
 
+    virtual void setIcon(const uint8_t* bitmap, uint16_t color, uint16_t width, uint16_t height);
+
 #pragma mark Member Functions
 private:
     void updateButton(ButtonState buttonState);
@@ -43,6 +46,12 @@ protected:
     uint16_t _alternateBackgroundColor;
     const ILI9341_t3_font_t* _alternateFont;
     uint16_t _alternateTextColor;
+    const uint8_t* _iconBitmap;
+    BitmapLayer* _iconLayer;
+    uint8_t _iconWidth;
+    uint8_t _iconHeight;
+    uint16_t _iconColor;
+    RectangleLayer* _gapLayer;
 };
 
 

@@ -29,9 +29,9 @@ ColorTheme::ColorTheme():
 				 RGB565(3,100,120),		//HighlightBackgroundColor
 				 RGB565(190,190,190),	//HighlightTextColor
 				 RGB565(255,255,255),   //ControlBackgroundColor
-				 RGB565(240,240,240),	//ControlAlternateBackgroundColor
+				 RGB565(220,220,220),	//ControlAlternateBackgroundColor
 				 RGB565(40,40,40),		//ControlTextColor
-				 RGB565(255,255,255),	//ControlAlternateTextColor
+				 RGB565(70,70,70),		//ControlAlternateTextColor
 				 RGB565(79,79,79),		//TextColor
 				 RGB565(2,224,53),		//SuccessColor
 				 RGB565(255,105,1),		//WarningColor

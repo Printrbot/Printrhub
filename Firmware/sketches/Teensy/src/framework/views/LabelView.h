@@ -38,8 +38,11 @@ public:
 
 #pragma mark Getter/Setter
 	void setText(String text);
+	String getText() const { return _text; };
 	void setTextAlign(uint8_t textAlign);
+	uint8_t getTextAlign() const { return _textAlign; };
 	void setVerticalTextAlign(uint8_t verticalTextAlign);
+	uint8_t getVerticalTextAlign() const { return _verticalTextAlign; };
 	void setTextColor(uint16_t color);
 	uint16_t getTextColor() { return _textColor; };
 	virtual void setFont(const ILI9341_t3_font_t *font);
@@ -53,9 +56,10 @@ public:
 	virtual void display() override;
 
 #pragma mark Member Variables
+protected:
+	TextLayer* _layer;
 private:
 	String _text;
-	TextLayer* _layer;
 	uint8_t _textAlign;
 	uint8_t _verticalTextAlign;
 	const ILI9341_t3_font_t* _font;
