@@ -179,8 +179,6 @@ void PHDisplay::drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                                  uint16_t ys, uint16_t ws, uint16_t hs, uint16_t foregroundColor,
                                  uint16_t backgroundColor)
 {
-    uint8_t slot = 0;
-
     for (uint16_t xb=0;xb<w;xb++)
     {
         SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
@@ -191,13 +189,9 @@ void PHDisplay::drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
         {
             //uint8_t byte = bitmap[((yb+ys)*ws+(xb+xs))/8];
             uint8_t byte = bitmap[((xb+xs)*hs+(yb+ys))/8];
-            bool bit = (byte >> slot) & 1;
+            uint8_t slot = ((xb+xs)*hs+(yb+ys)) % 8;
 
-            slot++;
-            if (slot > 7)
-            {
-                slot = 0;
-            }
+            bool bit = (byte >> slot) & 1;
 
             uint16_t color = foregroundColor;
             if (bit)
@@ -205,7 +199,7 @@ void PHDisplay::drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                 color = backgroundColor;
             }
 
-            if (xb == w-1 && yb == h-1)
+            if (yb == h-1)
             {
                 //Last pixel
                 writedata16_last(color);
@@ -216,8 +210,9 @@ void PHDisplay::drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                 writedata16_cont(color);
             }
         }
+
+        SPI.endTransaction();
     }
-    SPI.endTransaction();
 }
 
 
