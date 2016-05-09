@@ -38,6 +38,7 @@ public:
     virtual void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) override;
     virtual void drawPixel(int16_t x, int16_t y, uint16_t color) override;
     virtual void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) override;
+    virtual void debugLayer(Layer* layer,bool fill, uint16_t color, bool waitForTap=true);
 
 protected:
     virtual void drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32_t y, uint32_t repeat) override;

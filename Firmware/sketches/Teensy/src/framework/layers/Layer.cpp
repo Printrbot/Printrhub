@@ -181,6 +181,26 @@ void Layer::splitWithRect(Rect& rect)
         //This is a leaf layer, do the actual work.
         if (!_frame.intersectsRect(rect)) return;
 
+        if (Display.debug)
+        {
+            Display.fillRect(0,0,320,240,ILI9341_BLACK);
+            Display.fillRect(_frame.x,_frame.y,_frame.width,_frame.height, ILI9341_ORANGE);
+            Display.drawRect(rect.x,rect.y,rect.width,rect.height, ILI9341_GREEN);
+
+            Display.setCursor(10,10);
+            Display.println(_frame.toString());
+            Display.println(rect.toString());
+
+            while(!Touch.touched())
+            {
+                delay(10);
+            }
+            while (Touch.touched())
+            {
+                delay(10);
+            };
+        }
+
         if (Display.debug) LOG("splitWithRect:004");
 
         //Split the left edge (contains x does not include the "outline"
@@ -193,6 +213,12 @@ void Layer::splitWithRect(Rect& rect)
             if (Display.debug) LOG("splitWithRect:005");
             splitVertically(rect.left(), &left, &right);
 
+            if (Display.debug)
+            {
+                Display.debugLayer(left,true,ILI9341_RED,true);
+                Display.debugLayer(right,true,ILI9341_BLUE,true);
+            }
+
             addSublayer(left);
             addSublayer(right);
 
@@ -203,6 +229,12 @@ void Layer::splitWithRect(Rect& rect)
         {
             if (Display.debug) LOG("splitWithRect:007");
             splitVertically(rect.right(), &left, &right);
+
+            if (Display.debug)
+            {
+                Display.debugLayer(left,true,ILI9341_RED,true);
+                Display.debugLayer(right,true,ILI9341_BLUE,true);
+            }
 
             addSublayer(left);
             addSublayer(right);
@@ -216,6 +248,12 @@ void Layer::splitWithRect(Rect& rect)
             if (Display.debug) LOG("splitWithRect:009");
             splitHorizontally(rect.top(),&top,&bottom);
 
+            if (Display.debug)
+            {
+                Display.debugLayer(top,true,ILI9341_RED,true);
+                Display.debugLayer(bottom,true,ILI9341_BLUE,true);
+            }
+
             addSublayer(top);
             addSublayer(bottom);
 
@@ -226,6 +264,11 @@ void Layer::splitWithRect(Rect& rect)
         {
             if (Display.debug) LOG("splitWithRect:011");
             splitHorizontally(rect.bottom(),NULL,&bottom);
+
+            if (Display.debug)
+            {
+                Display.debugLayer(bottom,true,ILI9341_RED,true);
+            }
 
             addSublayer(bottom);
 

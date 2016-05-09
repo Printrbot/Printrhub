@@ -517,3 +517,28 @@ void PHDisplay::fadeIn()
         delay(1);
     }
 }
+
+
+void PHDisplay::debugLayer(Layer *layer, bool fill, uint16_t color, bool waitForTap)
+{
+    if (fill)
+    {
+        fillRect(layer->getFrame().x,layer->getFrame().y,layer->getFrame().width,layer->getFrame().height,color);
+    }
+    else
+    {
+        drawRect(layer->getFrame().x,layer->getFrame().y,layer->getFrame().width,layer->getFrame().height,color);
+    }
+
+    if (!waitForTap) return;
+
+    while(!Touch.touched())
+    {
+        delay(10);
+    }
+    while (Touch.touched())
+    {
+        delay(10);
+    };
+}
+
