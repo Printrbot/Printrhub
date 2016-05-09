@@ -12,7 +12,7 @@ LabelView(text,frame)
     _delegate = NULL;
     _state = ButtonState::Off;
     _type = ButtonType::Push;
-    _alternateFont = getFont();
+    _alternateFont = NULL;
     _borderWidth = 0;
     _iconBitmap = NULL;
     _gapLayer = NULL;
@@ -31,7 +31,7 @@ LabelView(text,x,y,width,height)
     _delegate = NULL;
     _state = ButtonState::Off;
     _type = ButtonType::Push;
-    _alternateFont = getFont();
+    _alternateFont = NULL;
     _borderWidth = 0;
     _iconBitmap = NULL;
     _gapLayer = NULL;
@@ -63,12 +63,15 @@ void LabelButton::updateButton(ButtonState buttonState)
         getTextLayer()->setForegroundColor(getAlternateTextColor());
         if (_type != ButtonType::Toggle)
         {
-            setFont(getAlternateFont());
+            if (getAlternateFont() != NULL)
+            {
+                getTextLayer()->setFont(getAlternateFont());
+            }
         }
         else
         {
             //Don't scale text if Button is a toogle (looks strange)
-            setFont(getFont());
+            getTextLayer()->setFont(getFont());
         }
 
         if (_gapLayer)
