@@ -139,22 +139,31 @@ void LabelButton::display()
     }
     else
     {
+        uint16_t inset = 10;    //Gap from left and right border
         uint32_t textWidth = Display.textWidth(getFont(),getText());
 
         uint32_t innerWidth = textWidth + _iconWidth + 10;  //10 Gap between icon and text
-        uint32_t paddingWidth = (_frame.width - innerWidth)/2;
         uint32_t paddingHeight = (_frame.height - Display.fontHeight(getFont()))/2;
 
-        _gapLayer = new RectangleLayer(Rect(_frame.x,_frame.y,paddingWidth + _iconWidth + 10,_frame.height));
+        //TEXTALIGN_CENTERED default
+        uint32_t paddingLeft = inset;  //Inset from the left border
+        uint32_t paddingRight = _frame.width - paddingLeft - innerWidth - inset;
+        if (getTextAlign() == TEXTALIGN_CENTERED)
+        {
+            paddingLeft = (_frame.width - innerWidth)/2;
+            paddingRight = paddingLeft;
+        }
+
+        _gapLayer = new RectangleLayer(Rect(_frame.x,_frame.y,paddingLeft + _iconWidth + 10,_frame.height));
         _gapLayer->setBackgroundColor(getBackgroundColor());
 
-        _iconLayer = new BitmapLayer(Rect(_frame.x + paddingWidth,_frame.y + paddingHeight, _iconWidth,_iconHeight));
+        _iconLayer = new BitmapLayer(Rect(_frame.x + paddingLeft,_frame.y + paddingHeight, _iconWidth,_iconHeight));
         _gapLayer->splitWithRect(_iconLayer->getFrame());
         _iconLayer->setBitmap(_iconBitmap,_iconWidth,_iconHeight);
         _iconLayer->setBackgroundColor(getBackgroundColor());
         _iconLayer->setColor(_iconColor);
 
-        _layer = new TextLayer(Rect(_frame.x+paddingWidth+_iconWidth+10,_frame.y,textWidth + paddingWidth,_frame.height));
+        _layer = new TextLayer(Rect(_frame.x+paddingLeft+_iconWidth+10,_frame.y,textWidth + paddingRight,_frame.height));
         _layer->setForegroundColor(getTextColor());
         _layer->setBackgroundColor(getBackgroundColor());
         _layer->setText(getText());
