@@ -5,6 +5,7 @@
 #include "LoadFilamentSceneController.h"
 #include "Bitmaps.h"
 #include "CleanPlasticSceneController.h"
+#include "ConfirmSceneController.h"
 
 LoadFilamentSceneController::LoadFilamentSceneController():
 SidebarSceneController::SidebarSceneController()
@@ -68,7 +69,7 @@ void LoadFilamentSceneController::buttonPressed(void *button)
 {
 	if (button == _button)
 	{
-		CleanPlasticSceneController* scene = new CleanPlasticSceneController();
+		ConfirmSceneController * scene = new ConfirmSceneController();
 		Application.pushScene(scene);
 	}
 }
