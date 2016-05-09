@@ -118,6 +118,9 @@ void SceneController::handleTouchUp(TS_Point &point)
 		{
 			if (hitView == _currentTouchedView)
 			{
+				//This delay makes sure we can see the action previously triggered by touchDown (i.e. drawing a control highlighted)
+				delay(200);
+
 				LOG_VALUE("Touch Up in View: ",hitView->getName());
 				//Break out if the view returns true, means it has handled the event
 				if (hitView->touchUp(point))
