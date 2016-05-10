@@ -341,9 +341,27 @@ boolean SDClass::begin(uint8_t csPin) {
     Return true if initialization succeeds, false otherwise.
 
    */
-  return card.init(SPI_HALF_SPEED, csPin) &&
-         volume.init(card) &&
-         root.openRoot(volume);
+
+  if (!card.init(SPI_HALF_SPEED, csPin))
+  {
+    Serial.println("Failed to init card");
+    Serial.println(card.errorCode());
+    return false;
+  }
+
+  if (!volume.init(card))
+  {
+    Serial.println("Failed to init volume");
+    return false;
+  }
+
+  if (!root.openRoot(volume))
+  {
+    Serial.println("Failed to open root folder");
+    return false;
+  }
+
+  return true;
 }
 
 
