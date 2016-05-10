@@ -73,7 +73,17 @@ void SettingsSceneController::onWillAppear()
     _changeFilamentButton->setIcon(imageOfResumeIcon_32_30,Application.getTheme()->getColor(HighlightBackgroundColor),32,30);
     setupButton(_changeFilamentButton);
 
-    SidebarSceneController::onWillAppear();
+    _aboutButton = new LabelButton("ABOUT",Rect(15+50+320,10,320-50-15-15,40));
+    _aboutButton->setName("about");
+    _aboutButton->setIcon(imageOfCardIcon_32_30,Application.getTheme()->getColor(HighlightBackgroundColor),32,30);
+    setupButton(_aboutButton);
+
+    _themeButton = new LabelButton("THEME",Rect(15+50+320,70,320-50-15-15,40));
+    _themeButton->setName("theme");
+    _themeButton->setIcon(imageOfGaugeIcon_32_30,Application.getTheme()->getColor(HighlightBackgroundColor),32,30);
+    setupButton(_themeButton);
+
+    SceneController::onWillAppear();
 }
 
 #pragma mark ButtonDelegate Implementation
