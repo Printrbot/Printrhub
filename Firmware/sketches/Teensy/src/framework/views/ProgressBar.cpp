@@ -19,24 +19,29 @@
 #include "ProgressBar.h"
 #include "../core/Application.h"
 
-ProgressBar::ProgressBar(uint16_t x, uint16_t y, uint16_t width, uint16_t height):
+ProgressBar::ProgressBar(int x, int y, int width, int height):
 	View(x,y,width,height)
 {
 	setMinValue(0);
 	setMaxValue(1);
 	_value = 0;
+
+	_backgroundColor = Application.getTheme()->getColor(ControlBackgroundColor);
+	_trackColor = Application.getTheme()->getColor(ControlAlternateBackgroundColor);
+
+	_progressLayer = new RectangleLayer(getLeftRect());
+	_progressLayer->setBackgroundColor(_backgroundColor);
+	addLayer(_progressLayer);
+
+	_trackLayer = new RectangleLayer(getRightRect());
+	_trackLayer->setBackgroundColor(_trackColor);
+	addLayer(_trackLayer);
 }
 
-void ProgressBar::draw()
+ProgressBar::ProgressBar(Rect frame):
+	ProgressBar(frame.x,frame.y,frame.width,frame.height)
 {
-//	display.drawRoundRect(_frame.x,_frame.y,_frame.width,_frame.height,3,Application.getTheme()->getPrimaryColor());
 
-	float width = (_frame.width * this->_value)-1;
-	if (width > _frame.width) width = _frame.width;
-	if (width < 6) width = 6;
-	LOG_VALUE("Progress-Bar Width",width);
-	//display.fillRoundRect(_frame.x+1,_frame.y,(uint8_t)width,_frame.height,3,Application.getTheme()->getPrimaryColor());
-	//display.fillRect(x+1,_frame.y+1,4,_frame.height-2,ST7735_CYAN);
 }
 
 String ProgressBar::getDescription()
@@ -54,9 +59,35 @@ void ProgressBar::setMaxValue(float maxValue)
 	_maxValue = maxValue;
 }
 
+float ProgressBar::getFraction()
+{
+	return (float)(_value - _minValue)/(float)(_maxValue-_minValue);
+}
+
+Rect ProgressBar::getLeftRect()
+{
+	return Rect(_frame.x,_frame.y,_frame.width*getFraction(),_frame.height);
+}
+
+Rect ProgressBar::getRightRect()
+{
+	Rect leftRect = getLeftRect();
+	return Rect(leftRect.right()+1,_frame.y,_frame.right()-leftRect.right()-1,_frame.height);
+}
+
 float ProgressBar::getValue()
 {
 	return _value;
+}
+
+void ProgressBar::setNeedsDisplay()
+{
+	if (_progressLayer == NULL || _trackLayer == NULL) return;
+
+	_progressLayer->setFrame(getLeftRect());
+	_trackLayer->setFrame(getRightRect());
+
+	View::setNeedsDisplay();
 }
 
 void ProgressBar::setValue(float value)
