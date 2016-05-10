@@ -71,6 +71,8 @@ add_executable(Teensy
         src/framework/layers/Layer.cpp
     src/LoadFilamentSceneController.cpp
     src/MachineControlSceneController.cpp
+    src/ConfirmSceneController.cpp
+    src/SettingsSceneController.cpp
     src/main.cpp
     src/MainSceneController.cpp
     src/ModelView.cpp
