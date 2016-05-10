@@ -33,6 +33,7 @@ ColorTheme::ColorTheme():
 				 RGB565(40,40,40),		//ControlTextColor
 				 RGB565(70,70,70),		//ControlAlternateTextColor
 				 RGB565(79,79,79),		//TextColor
+				 RGB565(255,255,255),	//OverlayTextColor
 				 RGB565(2,224,53),		//SuccessColor
 				 RGB565(255,105,1),		//WarningColor
 				 RGB565(255,4,0),		//AlertColor

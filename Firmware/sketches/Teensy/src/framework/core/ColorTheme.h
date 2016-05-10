@@ -35,11 +35,13 @@ typedef enum SystemColor {
 	ControlTextColor,
 	ControlAlternateTextColor,
 	TextColor,
+	OverlayTextColor,
 	SuccessColor,
 	WarningColor,
 	AlertColor,
 	SidebarBackgroundColor,
 	SidebarTextColor,
+
 };
 
 class ColorTheme
@@ -50,7 +52,7 @@ public:
 	uint16_t getColor(SystemColor color);
 
 private:
-	uint16_t _colors[17];
+	uint16_t _colors[18];
 };
 
 
