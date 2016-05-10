@@ -6,11 +6,12 @@
 #include "Bitmaps.h"
 #include "CleanPlasticSceneController.h"
 #include "ConfirmSceneController.h"
+#include "framework/views/ProgressBar.h"
 
 LoadFilamentSceneController::LoadFilamentSceneController():
 SidebarSceneController::SidebarSceneController()
 {
-
+	_step = 0.05f;
 }
 
 LoadFilamentSceneController::~LoadFilamentSceneController()
@@ -54,14 +55,38 @@ void LoadFilamentSceneController::onWillAppear()
 	textLayer->setText("Load new filament.");
 	Display.addLayer(textLayer);
 
-	_button = new LabelButton("DONE",Rect(15+50,160,320-30-50,68));
+	_button = new LabelButton("DONE",Rect(15+50,120,320-30-50,68));
 	_button->setName("DONE");
 	_button->setDelegate(this);
 	_button->setIcon(imageOfAcceptIcon_32_30,Application.getTheme()->getColor(SuccessColor),32,30);
 	addView(_button);
 
+	_progressBar = new ProgressBar(Rect(15+50,210,320-30-50,15));
+	_progressBar->setValue(0.0f);
+	addView(_progressBar);
+
 	SidebarSceneController::onWillAppear();
 }
+
+
+void LoadFilamentSceneController::loop()
+{
+	if (_progressBar != NULL)
+	{
+		_progressBar->setValue(_progressBar->getValue()+_step);
+		if (_progressBar->getValue() >= 1)
+		{
+			_step = -_step;
+		}
+		else if (_progressBar->getValue() <= 0)
+		{
+			_step = -_step;
+		}
+	}
+
+	SceneController::loop();
+}
+
 
 #pragma mark ButtonDelegate Implementation
 
