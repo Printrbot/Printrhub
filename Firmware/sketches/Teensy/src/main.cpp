@@ -101,6 +101,12 @@ void setup(void)
 
     if (!SD.begin(15))
     {
+        Display.fillRect(0,0,320,240,ILI9341_WHITE);
+        Display.setCursor(10,10);
+        Display.setTextColor(ILI9341_BLACK);
+        Display.println("Couldn't start SD card!");
+        Display.fadeIn();
+
         Serial.println("Couldn't start SD card");
         while (1);
     }
