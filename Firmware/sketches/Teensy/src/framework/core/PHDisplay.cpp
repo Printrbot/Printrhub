@@ -14,17 +14,19 @@
 PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint8_t _SCLK, uint8_t _MISO):
         ILI9341_t3(_CS,_DC,_RST,_MOSI,_SCLK,_MISO)
 {
-    _foregroundLayer = new RectangleLayer(Rect(getLayoutStart(),0,750,240));
+    _foregroundLayer = new RectangleLayer(Rect(getLayoutStart(),0,getLayoutWidth(),240));
     _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
     _foregroundLayer->setStrokeWidth(0);
 
-    _backgroundLayer = new RectangleLayer(Rect(getLayoutStart(),0,750,240));
+    _backgroundLayer = new RectangleLayer(Rect(getLayoutStart(),0,getLayoutWidth(),240));
     _backgroundLayer->setBackgroundColor(ILI9341_WHITE);
     _backgroundLayer->setStrokeWidth(0);
 
     _needsLayout = true;
+    _fixedBackgroundLayer = NULL;
 
     debug = false;
+    _transparentText = false;
 }
 
 void PHDisplay::addLayer(Layer *layer)
@@ -38,13 +40,21 @@ void PHDisplay::addLayer(Layer *layer)
     _needsLayout = true;
 }
 
+
+void PHDisplay::setFixedBackgroundLayer(Layer *layer)
+{
+    layer->setNeedsDisplay();
+    _fixedBackgroundLayer = layer;
+}
+
+
 void PHDisplay::setupBuffers()
 {
-    _foregroundLayer = new RectangleLayer(Rect(0,0,750,240));
+    _foregroundLayer = new RectangleLayer(Rect(0,0,320,240));
     _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
     _foregroundLayer->setStrokeWidth(0);
 
-    _backgroundLayer = new RectangleLayer(Rect(0,0,750,240));
+    _backgroundLayer = new RectangleLayer(Rect(0,0,320,240));
     _backgroundLayer->setBackgroundColor(ILI9341_WHITE);
     _backgroundLayer->setStrokeWidth(0);
 }
@@ -80,6 +90,7 @@ void PHDisplay::cropRectToScreen(Rect &rect)
 void PHDisplay::layoutIfNeeded()
 {
     if (!_needsLayout) return;
+    if (_fixedBackgroundLayer != NULL) return;
 
     //Now delete the old background layer and swap foreground to background
     delete _backgroundLayer;
@@ -134,8 +145,14 @@ void PHDisplay::layoutIfNeeded()
 void PHDisplay::dispatch()
 {
     //LOG("Sending background to display");
-
-    _foregroundLayer->display(_backgroundLayer);
+    if (_fixedBackgroundLayer != NULL)
+    {
+        _fixedBackgroundLayer->display();
+    }
+    else
+    {
+        _foregroundLayer->display(_backgroundLayer);
+    }
 
     //LOG("Sending layer to display");
     for (int i=0;i<_layers.count();i++)
