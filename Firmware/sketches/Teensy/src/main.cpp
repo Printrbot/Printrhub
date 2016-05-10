@@ -130,7 +130,7 @@ void setup(void)
     //wifiController = new WiFiSetupSceneController();
     //Application.pushScene(wifiController);
 
-    mainController = new SettingsSceneController();
+    mainController = new LoadFilamentSceneController();
     Application.pushScene(mainController);
 }
 

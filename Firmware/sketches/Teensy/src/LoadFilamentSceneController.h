@@ -8,11 +8,14 @@
 #include "SidebarSceneController.h"
 #include "framework/views/BitmapButton.h"
 #include "framework/views/LabelButton.h"
+#include "framework/views/ProgressBar.h"
 
 class LoadFilamentSceneController: public SidebarSceneController, public ButtonDelegate
 {
 #pragma mark Constructor
 public:
+	virtual void loop() override;
+
 	LoadFilamentSceneController();
 	virtual ~LoadFilamentSceneController();
 
@@ -34,6 +37,8 @@ private:
 #pragma mark Member Variables
 private:
 	LabelButton* _button;
+	ProgressBar* _progressBar;
+	float _step;
 };
 
 
