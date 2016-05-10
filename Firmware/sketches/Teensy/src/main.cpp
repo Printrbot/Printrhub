@@ -24,6 +24,7 @@
 #include "ChoosePrintSceneController.h"
 #include "LoadFilamentSceneController.h"
 #include "SettingsSceneController.h"
+#include "PrintStatusSceneController.h"
 #include "Bitmaps.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
@@ -136,7 +137,7 @@ void setup(void)
     //wifiController = new WiFiSetupSceneController();
     //Application.pushScene(wifiController);
 
-    mainController = new LoadFilamentSceneController();
+    mainController = new PrintStatusSceneController();
     Application.pushScene(mainController);
 }
 
