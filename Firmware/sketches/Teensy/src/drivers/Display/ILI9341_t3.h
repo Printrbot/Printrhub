@@ -201,8 +201,11 @@ class ILI9341_t3 : public Print
 	uint32_t textWidth(const ILI9341_t3_font_t *font, String text);
 	uint32_t fontHeight(const ILI9341_t3_font_t *font);
 	uint32_t widthOfChar(const ILI9341_t3_font_t *font, char c);
+	bool getTransparentText() const { return _transparentText; }
+	void setTransparentText(bool transparentText) { _transparentText = transparentText; }
 
  protected:
+	bool _transparentText;
 	uint16_t _textRotation;
 	int16_t _width, _height; // Display w/h as modified by current rotation
 	int16_t  cursor_x, cursor_y;

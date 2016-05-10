@@ -43,13 +43,14 @@ public:
 
 #pragma mark Member Variables
 private:
+    uint8_t _padding;
+protected:
+    uint16_t _backgroundColor;
     const ILI9341_t3_font_t* _font;
     uint16_t _foregroundColor;
-    uint16_t _backgroundColor;
     String _text;
     uint8_t _textAlign;
     uint8_t _verticalTextAlign;
-    uint8_t _padding;
 };
 
 

@@ -120,6 +120,7 @@ void TextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
 
     Display.setFont(*_font);
     Display.setTextColor(_foregroundColor,_backgroundColor);
+    Display.setTransparentText(false);
     Display.setCursor(frame.x,frame.y);
     Display.print(_text);
 

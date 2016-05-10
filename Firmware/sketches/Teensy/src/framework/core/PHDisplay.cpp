@@ -443,10 +443,16 @@ void PHDisplay::drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32
 #if 1
         do {
             n--;
-            drawPixel(x1,y, textbgcolor);
             if (bits & (1 << n)) {
                 drawPixel(x1, y, textcolor);
                 //Serial.printf("        pixel at %d,%d\n", x1, y);
+            }
+            else
+            {
+                if (!_transparentText)
+                {
+                    drawPixel(x1,y, textbgcolor);
+                }
             }
             x1++;
         } while (n > 0);

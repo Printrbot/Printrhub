@@ -46,6 +46,7 @@ ILI9341_t3::ILI9341_t3(uint8_t cs, uint8_t dc, uint8_t rst, uint8_t mosi, uint8_
 	wrap      = true;
 	font      = NULL;
 	_textRotation = 0;
+	_transparentText = false;
 }
 
 void ILI9341_t3::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
@@ -1306,13 +1307,16 @@ void ILI9341_t3::drawFontChar(unsigned int c)
 	int32_t linecount = height;
 	//Serial.printf("Linecount: %c %d\n",c,height);
 
-	//Fill the gap to the other char to the left
-	fillRect(cursor_x-delta,cursor_y,delta,font->cap_height,textbgcolor);
-
-	//Fill the gap from the character to the top line
-	for (int y = cursor_y+font->cap_height-height-1; y >= cursor_y; y--)
+	if (!_transparentText)
 	{
-		drawFastHLine(origin_x,y,width,textbgcolor);
+		//Fill the gap to the other char to the left
+		fillRect(cursor_x-delta,cursor_y,delta,font->cap_height,textbgcolor);
+
+		//Fill the gap from the character to the top line
+		for (int y = cursor_y+font->cap_height-height-1; y >= cursor_y; y--)
+		{
+			drawFastHLine(origin_x,y,width,textbgcolor);
+		}
 	}
 
 	//uint32_t loopcount = 0;
