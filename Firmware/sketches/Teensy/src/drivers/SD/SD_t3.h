@@ -32,7 +32,7 @@
 // it is *much* faster for reading more than 1 file at a time, especially for
 // the Teensy Audio Library to play and mix multiple sound files.
 //
-#define USE_TEENSY3_OPTIMIZED_CODE
+//#define USE_TEENSY3_OPTIMIZED_CODE
 
 /* Why reinvent the SD library wheel...
  *   1: Allow reading files from within interrupts
