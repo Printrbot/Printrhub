@@ -172,6 +172,13 @@ void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
 		}
 	}
 
+	//Current touched view does not handle move, so we are likely scrolling
+	if (_currentTouchedView)
+	{
+		_currentTouchedView->touchCancelled();
+		_currentTouchedView = NULL;
+	}
+
 	LOG("Handle Scrolling");
 
 	//Handle Scrolling
