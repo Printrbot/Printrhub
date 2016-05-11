@@ -65,7 +65,7 @@ private:
 class AnimatableObject
 {
 public:
-	virtual void animationUpdated(Animation* animation, float currentValue, float timeLeft)
+	virtual void animationUpdated(Animation *animation, float currentValue, float deltaValue, float timeLeft)
 	{
 
 	};

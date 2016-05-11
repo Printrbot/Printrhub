@@ -141,6 +141,7 @@ void Animation::update()
 		return;
 	}
 
+	float oldValue = _currentValue;
 	if (difference >= _duration)
 	{
 		_currentValue = _targetValue;
@@ -152,7 +153,7 @@ void Animation::update()
 		_currentValue = _initialValue + (factor * (_targetValue - _initialValue));
 	}
 
-	_object->animationUpdated(this,_currentValue,(_duration - difference));
+	_object->animationUpdated(this, _currentValue, _currentValue - oldValue, (_duration - difference));
 
 	//If the animation finished in this iteration
 	if (_animationStart == 0)
