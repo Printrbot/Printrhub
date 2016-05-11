@@ -338,7 +338,7 @@ void PHDisplay::setScrollOffset(float scrollOffset)
     int oldScrollOffset = (int)_scrollOffset;
     int newScrollOffset = (int)scrollOffset;
     int diffScrollOffset = oldScrollOffset - newScrollOffset;
-    if (diffScrollOffset == 0) return;
+    //if (diffScrollOffset == 0) return;
 
     //Save scroll offset
     _scrollOffset = scrollOffset;
@@ -375,8 +375,11 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         int vx = -newScrollOffset + getLayoutWidth() - diffScrollOffset;
         int vw = sw;
 
-        Rect invalidationRect(vx,0,vw,240);
-        invalidateRect(invalidationRect, ILI9341_CYAN);
+        if (vw > 0)
+        {
+            Rect invalidationRect(vx,0,vw,240);
+            invalidateRect(invalidationRect, ILI9341_CYAN);
+        }
     }
     else if (diffScrollOffset < 0)
     {
@@ -392,8 +395,11 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         //LOG_VALUE("SX:",sx);
         //LOG_VALUE("SW:",sw);
 
-        Rect invalidationRect(vx,0,vw,240);
-        invalidateRect(invalidationRect, ILI9341_CYAN);
+        if (vw > 0)
+        {
+            Rect invalidationRect(vx,0,vw,240);
+            invalidateRect(invalidationRect, ILI9341_CYAN);
+        }
         //fillRect(sx,0,sw,240,ILI9341_GREEN);
     }
     else
