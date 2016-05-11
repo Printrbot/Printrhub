@@ -23,6 +23,7 @@ SceneController::SceneController()
 {
 	_currentTouchedView = NULL;
 	_scrollOffset = 0;
+	_scrollSnap = 0;
 }
 
 SceneController::~SceneController()
@@ -38,25 +39,28 @@ void SceneController::loop()
 {
 	if (Touch.touched()) return;
 
-	if (_scrollVelocity > 0)
+	if (_scrollSnap == 0)
 	{
-		_scrollVelocity -= fabs(_scrollVelocity) * 0.1 * 0.5;
-		if (_scrollVelocity < 0) _scrollVelocity = 0;
-	}
-	else if (_scrollVelocity < 0)
-	{
-		_scrollVelocity += fabs(_scrollVelocity) * 0.1 * 0.5;
-		if (_scrollVelocity > 0) _scrollVelocity = 0;
-	}
+		if (_scrollVelocity > 0)
+		{
+			_scrollVelocity -= fabs(_scrollVelocity) * 0.1 * 0.5;
+			if (_scrollVelocity < 0) _scrollVelocity = 0;
+		}
+		else if (_scrollVelocity < 0)
+		{
+			_scrollVelocity += fabs(_scrollVelocity) * 0.1 * 0.5;
+			if (_scrollVelocity > 0) _scrollVelocity = 0;
+		}
 
-	if (fabsf(_scrollVelocity) < 0.05)
-	{
-		_scrollVelocity = 0;
-	}
+		if (fabsf(_scrollVelocity) < 0.05)
+		{
+			_scrollVelocity = 0;
+		}
 
-	if(_scrollVelocity != 0)
-	{
-		addScrollOffset(_scrollVelocity);
+		if(_scrollVelocity != 0)
+		{
+			addScrollOffset(_scrollVelocity);
+		}
 	}
 }
 
@@ -142,16 +146,28 @@ void SceneController::handleTouchUp(TS_Point &point)
 		_currentTouchedView->touchCancelled();
 		_currentTouchedView = NULL;
 	}
+
+	//Handle snapping
+	if (_scrollSnap != 0)
+	{
+		float scrollOffset = roundf(_scrollOffset / _scrollSnap) * _scrollSnap;
+		Animation* animation = Animator.getAnimationSlot();
+		animation->setTargetValue(scrollOffset);
+		animation->setDuration(0.2);
+		animation->setKey("scrollOffset");
+		animation->setInitialValue(_scrollOffset);
+		addAnimation(animation);
+	}
 }
 
 void SceneController::addScrollOffset(float scrollOffset)
 {
 	if (scrollOffset == 0) return;
 
-	_scrollOffset += scrollOffset;
-	LOG_VALUE("_scrollOffset: ",_scrollOffset);
+	//_scrollOffset += scrollOffset;
+	LOG_VALUE("_scrollOffset: ",scrollOffset + _scrollOffset);
 
-	Display.setScrollOffset(_scrollOffset);
+	Display.setScrollOffset(_scrollOffset + scrollOffset);
 	_scrollOffset = Display.getScrollOffset();
 }
 
@@ -194,3 +210,23 @@ uint16_t SceneController::getBackgroundColor()
 {
 	return Application.getTheme()->getColor(BackgroundColor);
 }
+
+#pragma mark AnimatableObject
+
+
+void SceneController::animationUpdated(Animation *animation, float currentValue, float deltaValue, float timeLeft)
+{
+	//if (animation->getKey() == "scrollOffset")
+	{
+		LOG_VALUE("Animation-Delta",deltaValue);
+		LOG_VALUE("Animation-Current",currentValue);
+
+		addScrollOffset(deltaValue);
+	}
+}
+
+void SceneController::animationFinished(Animation *animation)
+{
+	AnimatableObject::animationFinished(animation);
+}
+

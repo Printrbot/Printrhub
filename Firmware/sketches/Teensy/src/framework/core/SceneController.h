@@ -21,11 +21,16 @@
 
 #include "../views/View.h"
 #include "Application.h"
+#include "../../framework/animation/Animation.h"
 
-class SceneController
+class SceneController: public AnimatableObject
 {
 #pragma mark Constructor
 public:
+	virtual void animationUpdated(Animation *animation, float currentValue, float deltaValue, float timeLeft) override;
+
+	virtual void animationFinished(Animation *animation) override;
+
 	SceneController();
 	virtual ~SceneController();
 
@@ -47,11 +52,14 @@ public:
 	virtual void handleTouchUp(TS_Point& point);
 	virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint);
 
-	virtual uint16_t getBackgroundColor();;
+	virtual uint16_t getBackgroundColor();
 
 #pragma mark Scrolling
 private:
 	void addScrollOffset(float scrollOffset);
+public:
+	void setScrollSnap(const float scrollSnap) { _scrollSnap = scrollSnap; };
+	float getScrollSnap() const { return _scrollSnap; };
 
 #pragma mark Member Variables
 private:
@@ -59,6 +67,7 @@ private:
 	View* _currentTouchedView;
 	float _scrollOffset;
 	float _scrollVelocity;
+	float _scrollSnap;
 };
 
 

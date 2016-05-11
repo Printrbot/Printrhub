@@ -53,6 +53,8 @@ void SettingsSceneController::setupButton(LabelButton* button)
 
 void SettingsSceneController::onWillAppear()
 {
+    setScrollSnap(Display.getLayoutWidth());
+
     _wifiSettingsButton = new LabelButton("WIFI SETTINGS",Rect(15,10,Display.getLayoutWidth()-15-15,40));
     _wifiSettingsButton->setName("wifi");
     _wifiSettingsButton->setIcon(imageOfWifiIcon_32_30,Application.getTheme()->getColor(HighlightBackgroundColor),32,30);

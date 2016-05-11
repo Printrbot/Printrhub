@@ -85,7 +85,7 @@ public:
 
 #pragma mark Animatable Object
 protected:
-	virtual void animationUpdated(Animation *animation, float currentValue, float timeLeft) override;
+	virtual void animationUpdated(Animation *animation, float currentValue, float deltaValue, float timeLeft) override;
 
 #pragma mark Member Variables
 protected:

@@ -93,7 +93,7 @@ void View::setVisible(bool visible)
 	setNeedsDisplay();
 }
 
-void View::animationUpdated(Animation *animation, float currentValue, float timeLeft)
+void View::animationUpdated(Animation *animation, float currentValue, float deltaValue, float timeLeft)
 {
 	if (animation->getKey() == "frame.x")
 	{
