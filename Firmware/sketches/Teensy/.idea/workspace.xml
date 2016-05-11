@@ -20,29 +20,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ec922180-b3d3-40f1-af0b-2568113a9075" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/PrintStatusSceneController.cpp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/PrintStatusSceneController.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.cpp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../SDCard/feet.dat" afterPath="$PROJECT_DIR$/../../SDCard/feet.dat" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../SDCard/hook.dat" afterPath="$PROJECT_DIR$/../../SDCard/hook.dat" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../SDCard/lcd.dat" afterPath="$PROJECT_DIR$/../../SDCard/lcd.dat" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../SDCard/macbook.dat" afterPath="$PROJECT_DIR$/../../SDCard/macbook.dat" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/clion.iml" afterPath="$PROJECT_DIR$/.idea/clion.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/CleanPlasticSceneController.cpp" afterPath="$PROJECT_DIR$/src/CleanPlasticSceneController.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ConfirmSceneController.cpp" afterPath="$PROJECT_DIR$/src/ConfirmSceneController.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/LoadFilamentSceneController.cpp" afterPath="$PROJECT_DIR$/src/LoadFilamentSceneController.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PrintStatusSceneController.cpp" afterPath="$PROJECT_DIR$/src/PrintStatusSceneController.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/SettingsSceneController.cpp" afterPath="$PROJECT_DIR$/src/SettingsSceneController.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.cpp" afterPath="$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.h" afterPath="$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/drivers/SD/SD.cpp" afterPath="$PROJECT_DIR$/src/drivers/SD/SD.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/drivers/SD/SD_t3.h" afterPath="$PROJECT_DIR$/src/drivers/SD/SD_t3.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/core/ColorTheme.cpp" afterPath="$PROJECT_DIR$/src/framework/core/ColorTheme.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/core/ColorTheme.h" afterPath="$PROJECT_DIR$/src/framework/core/ColorTheme.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/SidebarSceneController.cpp" afterPath="$PROJECT_DIR$/src/SidebarSceneController.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/SidebarSceneController.h" afterPath="$PROJECT_DIR$/src/SidebarSceneController.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/core/Application.cpp" afterPath="$PROJECT_DIR$/src/framework/core/Application.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/core/PHDisplay.cpp" afterPath="$PROJECT_DIR$/src/framework/core/PHDisplay.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/core/PHDisplay.h" afterPath="$PROJECT_DIR$/src/framework/core/PHDisplay.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/core/SceneController.cpp" afterPath="$PROJECT_DIR$/src/framework/core/SceneController.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/core/SceneController.h" afterPath="$PROJECT_DIR$/src/framework/core/SceneController.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/core/UIElement.h" afterPath="$PROJECT_DIR$/src/framework/core/UIElement.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/BitmapLayer.cpp" afterPath="$PROJECT_DIR$/src/framework/layers/BitmapLayer.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/BitmapLayer.h" afterPath="$PROJECT_DIR$/src/framework/layers/BitmapLayer.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/Layer.cpp" afterPath="$PROJECT_DIR$/src/framework/layers/Layer.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/Layer.h" afterPath="$PROJECT_DIR$/src/framework/layers/Layer.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/RectangleLayer.cpp" afterPath="$PROJECT_DIR$/src/framework/layers/RectangleLayer.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/RectangleLayer.h" afterPath="$PROJECT_DIR$/src/framework/layers/RectangleLayer.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/SDBitmapLayer.cpp" afterPath="$PROJECT_DIR$/src/framework/layers/SDBitmapLayer.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/SDBitmapLayer.h" afterPath="$PROJECT_DIR$/src/framework/layers/SDBitmapLayer.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/TextLayer.cpp" afterPath="$PROJECT_DIR$/src/framework/layers/TextLayer.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/TextLayer.h" afterPath="$PROJECT_DIR$/src/framework/layers/TextLayer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/views/ProgressBar.cpp" afterPath="$PROJECT_DIR$/src/framework/views/ProgressBar.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.cpp" afterPath="$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.h" afterPath="$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/VerticalTextLayer.cpp" afterPath="$PROJECT_DIR$/src/framework/layers/VerticalTextLayer.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/layers/VerticalTextLayer.h" afterPath="$PROJECT_DIR$/src/framework/layers/VerticalTextLayer.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/views/BitmapButton.cpp" afterPath="$PROJECT_DIR$/src/framework/views/BitmapButton.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/views/View.cpp" afterPath="$PROJECT_DIR$/src/framework/views/View.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/views/View.h" afterPath="$PROJECT_DIR$/src/framework/views/View.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
     </list>
     <ignored path="platformio.iws" />
@@ -64,32 +74,68 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ProgressBar.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/framework/views/ProgressBar.cpp">
+      <file leaf-file-name="PHDisplay.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/framework/core/PHDisplay.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-60">
-              <caret line="29" column="62" selection-start-line="29" selection-start-column="62" selection-end-line="29" selection-end-column="62" />
-              <folding>
-                <element signature="e#632#656#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="1187">
+              <caret line="544" column="0" selection-start-line="544" selection-start-column="0" selection-end-line="544" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PrintStatusSceneController.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="View.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/framework/views/View.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="494">
+              <caret line="206" column="70" selection-start-line="206" selection-start-column="70" selection-end-line="206" selection-end-column="70" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PrintStatusSceneController.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PrintStatusSceneController.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="348">
-              <caret line="57" column="49" selection-start-line="57" selection-start-column="49" selection-end-line="57" selection-end-column="49" />
-              <folding>
-                <element signature="e#51#90#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="584">
+              <caret line="57" column="42" selection-start-line="57" selection-start-column="42" selection-end-line="57" selection-end-column="42" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ColorTheme.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/framework/core/ColorTheme.cpp">
+      <file leaf-file-name="Application.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/framework/core/Application.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="434">
+              <caret line="60" column="40" selection-start-line="60" selection-start-column="40" selection-end-line="60" selection-end-column="40" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SceneController.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/framework/core/SceneController.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="329">
+              <caret line="162" column="34" selection-start-line="162" selection-start-column="34" selection-end-line="162" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LabelButton.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/framework/views/LabelButton.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="254">
+              <caret line="86" column="18" selection-start-line="86" selection-start-column="18" selection-end-line="86" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LabelView.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/framework/views/LabelView.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -98,63 +144,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TransparentTextLayer.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.cpp">
+      <file leaf-file-name="SettingsSceneController.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/SettingsSceneController.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="595">
-              <caret line="67" column="16" selection-start-line="67" selection-start-column="16" selection-end-line="67" selection-end-column="16" />
-              <folding>
-                <element signature="e#51#84#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Print.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/.platformio/packages/framework-arduinoteensy/cores/teensy3/Print.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="243">
-              <caret line="41" column="14" selection-start-line="41" selection-start-column="14" selection-end-line="41" selection-end-column="14" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PHDisplay.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/framework/core/PHDisplay.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="456" column="1" selection-start-line="456" selection-start-column="1" selection-end-line="456" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ILI9341_t3.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-646">
-              <caret line="1318" column="9" selection-start-line="1318" selection-start-column="9" selection-end-line="1318" selection-end-column="9" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ILI9341_t3.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
-              <caret line="207" column="26" selection-start-line="207" selection-start-column="26" selection-end-line="207" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TextLayer.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/framework/layers/TextLayer.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="123">
-              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+            <state relative-caret-position="437">
+              <caret line="90" column="43" selection-start-line="90" selection-start-column="43" selection-end-line="90" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -163,9 +157,23 @@
       <file leaf-file-name="PHDisplay.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/framework/core/PHDisplay.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="771">
-              <caret line="76" column="33" selection-start-line="76" selection-start-column="33" selection-end-line="76" selection-end-column="33" />
-              <folding />
+            <state relative-caret-position="195">
+              <caret line="36" column="18" selection-start-line="36" selection-start-column="18" selection-end-line="36" selection-end-column="18" />
+              <folding>
+                <element signature="e#116#161#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="524">
+              <caret line="138" column="4" selection-start-line="138" selection-start-column="4" selection-end-line="138" selection-end-column="4" />
+              <folding>
+                <element signature="e#600#652#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -182,39 +190,51 @@
         <option value="$PROJECT_DIR$/platformio.ini" />
         <option value="$PROJECT_DIR$/src/framework/views/LabelButton.h" />
         <option value="$PROJECT_DIR$/src/ConfirmSceneController.h" />
-        <option value="$PROJECT_DIR$/src/ConfirmSceneController.cpp" />
         <option value="$PROJECT_DIR$/src/framework/views/LabelView.h" />
         <option value="$PROJECT_DIR$/src/framework/views/LabelButton.cpp" />
-        <option value="$PROJECT_DIR$/src/framework/layers/Layer.cpp" />
-        <option value="$PROJECT_DIR$/src/framework/layers/GapLayer.cpp" />
         <option value="$PROJECT_DIR$/src/framework/layers/TextLayer.h" />
         <option value="$PROJECT_DIR$/src/SettingsSceneController.h" />
-        <option value="$PROJECT_DIR$/src/SettingsSceneController.cpp" />
-        <option value="$PROJECT_DIR$/src/framework/core/SceneController.cpp" />
-        <option value="$PROJECT_DIR$/src/framework/core/UIElement.h" />
         <option value="$PROJECT_DIR$/src/framework/views/View.h" />
         <option value="$PROJECT_DIR$/src/framework/views/ProgressBar.h" />
-        <option value="$PROJECT_DIR$/src/framework/views/View.cpp" />
         <option value="$PROJECT_DIR$/src/LoadFilamentSceneController.h" />
-        <option value="$PROJECT_DIR$/src/LoadFilamentSceneController.cpp" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/src/drivers/SD/init_t3.cpp" />
         <option value="$PROJECT_DIR$/src/drivers/SD/SD.cpp" />
         <option value="$PROJECT_DIR$/src/drivers/SD/utility/Sd2Card.cpp" />
-        <option value="$PROJECT_DIR$/src/main.cpp" />
         <option value="$PROJECT_DIR$/src/drivers/SD/SD_t3.h" />
         <option value="$PROJECT_DIR$/src/PrintStatusSceneController.h" />
         <option value="$PROJECT_DIR$/src/framework/core/ColorTheme.h" />
         <option value="$PROJECT_DIR$/src/framework/core/ColorTheme.cpp" />
-        <option value="$PROJECT_DIR$/src/framework/layers/TextLayer.cpp" />
-        <option value="$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.h" />
-        <option value="$PROJECT_DIR$/src/framework/core/PHDisplay.cpp" />
-        <option value="$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.cpp" />
-        <option value="$PROJECT_DIR$/src/framework/core/PHDisplay.h" />
         <option value="$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.h" />
         <option value="$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.cpp" />
         <option value="$PROJECT_DIR$/src/framework/views/ProgressBar.cpp" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/framework/core/Application.h" />
+        <option value="$PROJECT_DIR$/src/framework/core/UIElement.h" />
+        <option value="$PROJECT_DIR$/src/CleanPlasticSceneController.cpp" />
         <option value="$PROJECT_DIR$/src/PrintStatusSceneController.cpp" />
+        <option value="$PROJECT_DIR$/src/ConfirmSceneController.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/core/SceneController.h" />
+        <option value="$PROJECT_DIR$/src/framework/core/SceneController.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/core/Application.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/views/BitmapButton.cpp" />
+        <option value="$PROJECT_DIR$/src/LoadFilamentSceneController.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/layers/VerticalTextLayer.h" />
+        <option value="$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.h" />
+        <option value="$PROJECT_DIR$/src/SidebarSceneController.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/layers/GapLayer.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/core/PHDisplay.h" />
+        <option value="$PROJECT_DIR$/src/framework/layers/Layer.h" />
+        <option value="$PROJECT_DIR$/src/framework/layers/BitmapLayer.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/layers/SDBitmapLayer.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/layers/TextLayer.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/layers/VerticalTextLayer.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/layers/Layer.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/layers/RectangleLayer.cpp" />
+        <option value="$PROJECT_DIR$/src/SettingsSceneController.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/core/PHDisplay.cpp" />
+        <option value="$PROJECT_DIR$/src/framework/views/View.cpp" />
+        <option value="$PROJECT_DIR$/src/main.cpp" />
       </list>
     </option>
   </component>
@@ -227,8 +247,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="252" />
     <option name="y" value="23" />
-    <option name="width" value="1844" />
-    <option name="height" value="1247" />
+    <option name="width" value="1811" />
+    <option name="height" value="1297" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -492,6 +512,7 @@
     <property name="FullScreen" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="js-jscs-nodeInterpreter" value="/usr/local/bin/node" />
+    <property name="SearchEverywhereHistoryKey" value="getRenderF&#9;null&#9;null" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -720,26 +741,26 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="252" y="23" width="1844" height="1247" extended-state="0" />
+    <frame x="252" y="23" width="1811" height="1297" extended-state="0" />
     <editor active="true" />
     <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19219898" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32860938" sideWeight="0.53684974" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32949513" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32824427" sideWeight="0.53684974" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32909244" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32996634" sideWeight="0.4631503" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Serial Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32949513" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22052588" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32996634" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24929339" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32996634" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19034407" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22054915" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24972253" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Serial Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32949513" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -762,271 +783,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/framework/core/Object.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/core/Application.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/layers/GapLayer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/layers/RectangleLayer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="49" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/SettingsSceneController.h" />
-    <entry file="file://$PROJECT_DIR$/src/framework/core/SceneController.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="438">
-          <caret line="121" column="27" selection-start-line="121" selection-start-column="27" selection-end-line="121" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/IdleView.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/layers/SDBitmapLayer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/core/Application.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="650">
-          <caret line="149" column="21" selection-start-line="149" selection-start-column="21" selection-end-line="149" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/layers/Layer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="280" column="12" selection-start-line="280" selection-start-column="12" selection-end-line="280" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/core/UIElement.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="34" column="12" selection-start-line="34" selection-start-column="12" selection-end-line="34" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/views/BitmapButton.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="21" column="83" selection-start-line="21" selection-start-column="4" selection-end-line="21" selection-end-column="83" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/views/BitmapButton.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/views/Button.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/views/LabelButton.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1980">
-          <caret line="132" column="5" selection-start-line="132" selection-start-column="5" selection-end-line="132" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/views/View.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="41" column="37" selection-start-line="41" selection-start-column="37" selection-end-line="41" selection-end-column="37" />
-          <folding>
-            <element signature="e#667#695#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/views/ProgressBar.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="42" column="44" selection-start-line="42" selection-start-column="44" selection-end-line="42" selection-end-column="44" />
-          <folding>
-            <element signature="e#701#718#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/views/View.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" column="40" selection-start-line="30" selection-start-column="40" selection-end-line="30" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/MachineControlSceneController.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConfirmSceneController.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="74" column="4" selection-start-line="74" selection-start-column="4" selection-end-line="74" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeListsPrivate.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="37" column="75" selection-start-line="37" selection-start-column="75" selection-end-line="37" selection-end-column="75" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/platformio.ini">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="16" selection-start-line="27" selection-start-column="16" selection-end-line="27" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/MainSceneController.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/drivers/SD/init_t3.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="700">
-          <caret line="117" column="0" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/drivers/SD/utility/Sd2Card.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
-          <caret line="72" column="14" selection-start-line="72" selection-start-column="14" selection-end-line="72" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/drivers/SD/utility/Sd2Card.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="213">
-          <caret line="388" column="61" selection-start-line="388" selection-start-column="61" selection-end-line="388" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/drivers/SD/SD.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="427" column="14" selection-start-line="427" selection-start-column="14" selection-end-line="427" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/drivers/SD/SD.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/LoadFilamentSceneController.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="70">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="41" selection-end-column="2" />
-          <folding>
-            <element signature="e#142#177#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/LoadFilamentSceneController.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="505">
-          <caret line="139" column="51" selection-start-line="139" selection-start-column="51" selection-end-line="139" selection-end-column="51" />
-          <folding>
-            <element signature="e#600#652#0" expanded="true" />
-            <marker date="1462919233000" expanded="true" signature="2217:2345" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/layers/BitmapLayer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/framework/layers/SDBitmapLayer.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
@@ -1035,21 +791,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/SettingsSceneController.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/drivers/SD/SD_t3.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
           <caret line="34" column="2" selection-start-line="34" selection-start-column="2" selection-end-line="34" selection-end-column="2" />
-          <folding>
-            <element signature="e#2250#7366#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1058,97 +803,24 @@
         <state relative-caret-position="595">
           <caret line="43" column="26" selection-start-line="43" selection-start-column="26" selection-end-line="43" selection-end-column="26" />
           <folding>
-            <element signature="e#141#176#0" expanded="true" />
+            <element signature="e#141#176#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/core/ColorTheme.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../../../Arduino/libraries/ILI9341_t3/ILI9341_t3.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1525">
-          <caret line="1184" column="17" selection-start-line="1184" selection-start-column="17" selection-end-line="1184" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/layers/TextLayer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
-          <caret line="19" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="22" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="33" selection-start-line="16" selection-start-column="33" selection-end-line="16" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/layers/TextLayer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../Arduino/libraries/ILI9341_t3/ILI9341_t3.cpp" />
     <entry file="file://$USER_HOME$/.platformio/packages/framework-arduinoteensy/cores/teensy3/Print.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
+        <state relative-caret-position="615">
           <caret line="41" column="14" selection-start-line="41" selection-start-column="14" selection-end-line="41" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="67" column="16" selection-start-line="67" selection-start-column="16" selection-end-line="67" selection-end-column="16" />
-          <folding>
-            <element signature="e#51#84#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/core/PHDisplay.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="456" column="1" selection-start-line="456" selection-start-column="1" selection-end-line="456" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/core/PHDisplay.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="771">
-          <caret line="76" column="33" selection-start-line="76" selection-start-column="33" selection-end-line="76" selection-end-column="33" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
+        <state relative-caret-position="3105">
           <caret line="207" column="26" selection-start-line="207" selection-start-column="26" selection-end-line="207" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-646">
-          <caret line="1318" column="9" selection-start-line="1318" selection-start-column="9" selection-end-line="1318" selection-end-column="9" />
           <folding />
         </state>
       </provider>
@@ -1163,7 +835,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/framework/views/ProgressBar.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-60">
+        <state relative-caret-position="435">
           <caret line="29" column="62" selection-start-line="29" selection-start-column="62" selection-end-line="29" selection-end-column="62" />
           <folding>
             <element signature="e#632#656#0" expanded="true" />
@@ -1171,12 +843,364 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="596">
+          <caret line="75" column="49" selection-start-line="75" selection-start-column="49" selection-end-line="75" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ChoosePrintSceneController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/drivers/Display/ILI9341_t3.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="107" column="17" selection-start-line="107" selection-start-column="17" selection-end-line="107" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/TextLayer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="145">
+          <caret line="19" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="22" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/core/ColorTheme.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/views/BitmapButton.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SidebarSceneController.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/core/Application.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/VirtualKeyboardSceneController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/core/UIElement.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/CleanPlasticSceneController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="61" column="74" selection-start-line="61" selection-start-column="74" selection-end-line="61" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SettingsSceneController.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/core/UIElement.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="509">
+          <caret line="122" column="17" selection-start-line="122" selection-start-column="17" selection-end-line="122" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/views/View.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="615">
+          <caret line="99" column="33" selection-start-line="99" selection-start-column="33" selection-end-line="99" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/core/SceneController.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="34" column="32" selection-start-line="34" selection-start-column="32" selection-end-line="34" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConfirmSceneController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14">
+          <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/views/BitmapButton.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="53" column="43" selection-start-line="53" selection-start-column="43" selection-end-line="53" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/LoadFilamentSceneController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="660">
+          <caret line="63" column="50" selection-start-line="63" selection-start-column="50" selection-end-line="63" selection-end-column="50" />
+          <folding>
+            <element signature="e#51#91#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/GapLayer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/RectangleLayer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="28" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/VerticalTextLayer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="22" selection-start-line="18" selection-start-column="22" selection-end-line="18" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="22" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SidebarSceneController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="51" column="4" selection-start-line="51" selection-start-column="4" selection-end-line="51" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/GapLayer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/MainSceneController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/Layer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="48" column="42" selection-start-line="48" selection-start-column="42" selection-end-line="48" selection-end-column="42" />
+          <folding>
+            <element signature="e#108#138#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/BitmapLayer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="37" column="4" selection-start-line="37" selection-start-column="4" selection-end-line="37" selection-end-column="37" />
+          <folding>
+            <element signature="e#51#75#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/TextLayer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+          <folding>
+            <element signature="e#51#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/TransparentTextLayer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="509">
+          <caret line="58" column="38" selection-start-line="58" selection-start-column="38" selection-end-line="58" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/VerticalTextLayer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="74" column="38" selection-start-line="74" selection-start-column="38" selection-end-line="74" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/Layer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4277">
+          <caret line="322" column="43" selection-start-line="322" selection-start-column="43" selection-end-line="322" selection-end-column="43" />
+          <folding>
+            <element signature="e#51#69#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/RectangleLayer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="467">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding>
+            <element signature="e#51#78#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/layers/SDBitmapLayer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding>
+            <element signature="e#51#77#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/views/LabelView.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/PrintStatusSceneController.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="57" column="49" selection-start-line="57" selection-start-column="49" selection-end-line="57" selection-end-column="49" />
+        <state relative-caret-position="584">
+          <caret line="57" column="42" selection-start-line="57" selection-start-column="42" selection-end-line="57" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SettingsSceneController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="90" column="43" selection-start-line="90" selection-start-column="43" selection-end-line="90" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/core/PHDisplay.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="36" column="18" selection-start-line="36" selection-start-column="18" selection-end-line="36" selection-end-column="18" />
           <folding>
-            <element signature="e#51#90#0" expanded="true" />
+            <element signature="e#116#161#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/views/LabelButton.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="86" column="18" selection-start-line="86" selection-start-column="18" selection-end-line="86" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/core/PHDisplay.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1187">
+          <caret line="544" column="0" selection-start-line="544" selection-start-column="0" selection-end-line="544" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/core/Application.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="434">
+          <caret line="60" column="40" selection-start-line="60" selection-start-column="40" selection-end-line="60" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/core/SceneController.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="329">
+          <caret line="162" column="34" selection-start-line="162" selection-start-column="34" selection-end-line="162" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/views/View.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="494">
+          <caret line="206" column="70" selection-start-line="206" selection-start-column="70" selection-end-line="206" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="524">
+          <caret line="138" column="4" selection-start-line="138" selection-start-column="4" selection-end-line="138" selection-end-column="4" />
+          <folding>
+            <element signature="e#600#652#0" expanded="true" />
           </folding>
         </state>
       </provider>

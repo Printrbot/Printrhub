@@ -72,6 +72,8 @@ add_executable(Teensy
     src/LoadFilamentSceneController.cpp
     src/MachineControlSceneController.cpp
     src/ConfirmSceneController.cpp
+    src/PrintStatusSceneController.cpp
+    src/framework/layers/TransparentTextLayer.cpp
     src/SettingsSceneController.cpp
     src/main.cpp
     src/MainSceneController.cpp
