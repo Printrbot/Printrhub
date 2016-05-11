@@ -35,6 +35,7 @@ void BitmapButton::setBitmap(const uint8_t *bitmap, uint16_t width, uint16_t hei
     {
         _baseLayer = new RectangleLayer(_frame);
         _baseLayer->setBackgroundColor(getBackgroundColor());
+        _baseLayer->setContext(getContext());
 
         bitmapFrame.x += (_frame.width - width)/2;
         bitmapFrame.y += (_frame.height - height)/2;
@@ -50,6 +51,7 @@ void BitmapButton::setBitmap(const uint8_t *bitmap, uint16_t width, uint16_t hei
     _bitmapLayer->setBitmap(bitmap,width,height);
     _bitmapLayer->setBackgroundColor(getBackgroundColor());
     _bitmapLayer->setColor(getColor());
+    _bitmapLayer->setContext(getContext());
 
     addLayer(_bitmapLayer);
 }

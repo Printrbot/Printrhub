@@ -13,7 +13,9 @@ class SidebarSceneController: public SceneController
 {
 #pragma mark Constructor
 public:
-    SidebarSceneController();
+	virtual void setupDisplay() override;
+
+	SidebarSceneController();
     virtual ~SidebarSceneController();
 
 #pragma mark Getter/Setter

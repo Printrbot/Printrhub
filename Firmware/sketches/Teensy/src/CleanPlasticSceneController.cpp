@@ -41,25 +41,25 @@ const uint8_t *CleanPlasticSceneController::getSidebarIcon()
 
 void CleanPlasticSceneController::onWillAppear()
 {
-    BitmapLayer* iconLayer = new BitmapLayer(Rect(102+50,30,66,58));
+    BitmapLayer* iconLayer = new BitmapLayer(Rect(102,30,66,58));
     iconLayer->setBitmap(imageOfWarningIcon_66_58,66,58);
     iconLayer->setBackgroundColor(getBackgroundColor());
     iconLayer->setColor(Application.getTheme()->getColor(WarningColor));
     Display.addLayer(iconLayer);
 
-    TextLayer* textLayer = new TextLayer(Rect(10+50,95,320-20-50,22));
+    TextLayer* textLayer = new TextLayer(Rect(10,95,Display.getLayoutWidth()-20,22));
     textLayer->setFont(&PTSansNarrow_18);
     textLayer->setTextAlign(TEXTALIGN_CENTERED);
     textLayer->setText("Clean plastic after test");
     Display.addLayer(textLayer);
 
-    textLayer = new TextLayer(Rect(10+50,117,320-20-50,22));
+    textLayer = new TextLayer(Rect(10,117,Display.getLayoutWidth()-20,22));
     textLayer->setFont(&PTSansNarrow_18);
     textLayer->setTextAlign(TEXTALIGN_CENTERED);
     textLayer->setText("extrusion");
     Display.addLayer(textLayer);
 
-    _button = new LabelButton("DONE",Rect(15+50,160,320-30-50,68));
+    _button = new LabelButton("DONE",Rect(15,160,Display.getLayoutWidth()-30,68));
     _button->setName("DONE");
     _button->setDelegate(this);
     addView(_button);

@@ -30,7 +30,8 @@ public:
     void splitWithRect(Rect& rect);
     void splitVertically(int x, Layer** left, Layer** right);
     void splitHorizontally(int y, Layer**top, Layer**bottom);
-    void invalidateRect(Rect& dirtyRect, Rect& invalidationRect);
+    void invalidateRect(Rect &invalidationRect);
+	uint16_t getOriginX();
 
 #pragma mark Layer Hierarchy
     void addSublayer(Layer* layer);
@@ -41,10 +42,11 @@ public:
 
 #pragma mark Draw and Display
     virtual void setNeedsDisplay();
-    virtual void draw(Rect& dirtyRect, Rect& invalidationRect);
+    virtual void draw(Rect &invalidationRect);
     void display(Layer* backgroundLayer=NULL);
     Rect getRenderFrame();
     bool isVisible();
+	virtual Rect prepareRenderFrame(const Rect proposedRenderFrame);
 
 #pragma mark Misc
     void log();

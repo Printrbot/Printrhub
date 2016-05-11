@@ -36,6 +36,7 @@ View::View(int x, int y, int width, int height)
 	_visible = true;
 	_userInteractionEnabled = true;
 	_name = "Untitled";
+	_context = DisplayContext::Scrolling;
 }
 
 View::View(Rect frame)
@@ -43,6 +44,7 @@ View::View(Rect frame)
 	_frame = frame;
 	_userInteractionEnabled = true;
 	_name = "Untitled";
+	_context = DisplayContext::Scrolling;
 }
 
 void View::draw()
@@ -155,6 +157,7 @@ void View::display()
 
 void View::addLayer(Layer *layer)
 {
+	layer->setContext(getContext());
 	_layers.push(layer);
 }
 
@@ -190,11 +193,37 @@ void View::touchCancelled()
 
 View *View::hitTest(TS_Point &point)
 {
-	//Transform point to view space as point is in screen-space (i.e. 0-320 wrapped)
-	if (_frame.containsPoint(point.x+(-Display.getScrollOffset()),point.y))
+	if (this->getContext() == DisplayContext::Fixed)
 	{
-		return this;
+		//Transform point to view space as point is in screen-space (i.e. 0-320 wrapped)
+		if (_frame.containsPoint(point.x,point.y))
+		{
+			return this;
+		}
+	}
+	else
+	{
+		//Transform point to view space as point is in screen-space (i.e. 0-320 wrapped)
+		if (_frame.containsPoint(point.x+(-Display.getScrollOffset())-Display.getLayoutStart(),point.y))
+		{
+			return this;
+		}
 	}
 
 	return NULL;
 }
+
+
+void View::setContext(const DisplayContext context)
+{
+	UIElement::setContext(context);
+
+	for (int i=0;i<_layers.count();i++)
+	{
+		Layer* layer = _layers.at(i);
+		layer->setContext(getContext());
+	}
+
+	setNeedsDisplay();
+}
+

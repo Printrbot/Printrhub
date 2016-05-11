@@ -123,6 +123,9 @@ void ApplicationClass::loop()
 			LOG("First loop");
 			Display.clear();
 
+			//Prepare display for this scene (i.e. setting scroll position and scroll offsets, etc)
+			sceneController->setupDisplay();
+
 			LOG_VALUE("Appearing scene", sceneController->getName());
 			sceneController->onWillAppear();
 			LOG("Scene appeared");

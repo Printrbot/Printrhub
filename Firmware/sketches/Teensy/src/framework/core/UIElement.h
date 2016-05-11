@@ -105,6 +105,11 @@ public:
     int height;
 };
 
+typedef enum DisplayContext {
+    Scrolling = 0,
+    Fixed = 1
+};
+
 class UIElement
 {
 public:
@@ -115,9 +120,13 @@ public:
     void setName(String name) { _name = name; };
     String getName() { return _name; };
 
+    virtual void setContext(const DisplayContext context) { _context = context; }
+    DisplayContext getContext() const { return _context; }
+
 protected:
     Rect _frame;
     String _name;
+    DisplayContext _context;
 };
 
 

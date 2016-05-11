@@ -23,7 +23,7 @@ void SDBitmapLayer::setBitmap(const char *filePath, uint16_t width, uint16_t hei
     _needsDisplay = true;
 }
 
-void SDBitmapLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
+void SDBitmapLayer::draw(Rect &invalidationRect)
 {
     Rect renderFrame = Rect::Intersect(_frame,invalidationRect);
 
@@ -32,9 +32,8 @@ void SDBitmapLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
     int width = renderFrame.width;
     int height = renderFrame.height;
 
-    //Transform to screen space
-    renderFrame.x = renderFrame.x % Display.getLayoutWidth();
-    renderFrame.x += Display.getLayoutStart();
+    //Map renderframe to screen space
+    renderFrame = prepareRenderFrame(renderFrame);
 
     if (height > 0 && width > 0)
     {

@@ -42,27 +42,27 @@ const uint8_t *ConfirmSceneController::getSidebarIcon()
 
 void ConfirmSceneController::onWillAppear()
 {
-    BitmapLayer* iconLayer = new BitmapLayer(Rect(102+50,30,66,58));
+    BitmapLayer* iconLayer = new BitmapLayer(Rect(102,30,66,58));
     iconLayer->setBitmap(imageOfWarningIcon_66_58,66,58);
     iconLayer->setBackgroundColor(getBackgroundColor());
     iconLayer->setColor(Application.getTheme()->getColor(WarningColor));
     Display.addLayer(iconLayer);
 
-    TextLayer* textLayer = new TextLayer(Rect(10+50,95,320-20-50,20));
+    TextLayer* textLayer = new TextLayer(Rect(10,95,Display.getLayoutWidth()-20,20));
     textLayer->setFont(&PTSansNarrow_18);
     textLayer->setTextAlign(TEXTALIGN_CENTERED);
     textLayer->setText("Are you sure");
     Display.addLayer(textLayer);
 
-    uint16_t buttonWidth = ((320-30-50)-15)/2;  //15 gap between buttons
+    uint16_t buttonWidth = ((Display.getLayoutWidth()-30)-15)/2;  //15 gap between buttons
 
-    _yesButton = new LabelButton("YES",Rect(15+50,160,buttonWidth,68));
+    _yesButton = new LabelButton("YES",Rect(15,160,buttonWidth,68));
     _yesButton->setName("YES");
     _yesButton->setDelegate(this);
     _yesButton->setIcon(imageOfAcceptIcon_32_30,Application.getTheme()->getColor(SuccessColor),32,30);
     addView(_yesButton);
 
-    _noButton = new LabelButton("NO",Rect(15+50+buttonWidth+15,160,buttonWidth,68));
+    _noButton = new LabelButton("NO",Rect(15+buttonWidth+15,160,buttonWidth,68));
     _noButton->setName("NO");
     _noButton->setDelegate(this);
     _noButton->setIcon(imageOfCancelIcon_32_30,Application.getTheme()->getColor(AlertColor),32,30);

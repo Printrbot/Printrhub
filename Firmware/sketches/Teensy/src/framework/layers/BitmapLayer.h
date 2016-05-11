@@ -17,7 +17,7 @@ public:
     virtual ~BitmapLayer();
 
 #pragma mark Layer
-    virtual void draw(Rect& dirtyRect, Rect& invalidationRect) override;
+    virtual void draw(Rect &invalidationRect) override;
     virtual void setBitmap(const uint8_t* bitmap, uint16_t width, uint16_t height);
 
 #pragma mark Getter/Setter

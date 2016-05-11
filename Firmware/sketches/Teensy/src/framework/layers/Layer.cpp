@@ -16,6 +16,8 @@ _needsDisplay(true)
     ::globalLayersCreated++;
 
     uniqueId = ::globalLayerId++;
+
+    _context = DisplayContext::Scrolling;
 }
 
 Layer::Layer(Rect frame):
@@ -102,6 +104,7 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
         //Create the top layer
         Layer* leftLayer = new GapLayer(Rect(_frame.x,_frame.y,x-_frame.x,_frame.height));
         leftLayer->setBackgroundColor(_backgroundColor);
+        leftLayer->setContext(getContext());
         *left = leftLayer;
         //if (Display.debug) LOG_VALUE("Layer created",leftLayer->uniqueId);
     }
@@ -110,6 +113,7 @@ void Layer::splitVertically(int x, Layer** left, Layer** right)
     {
         Layer* rightLayer = new GapLayer(Rect(x,_frame.y,_frame.right()-x,_frame.height));
         rightLayer->setBackgroundColor(_backgroundColor);
+        rightLayer->setContext(getContext());
         *right = rightLayer;
         //if (Display.debug) LOG_VALUE("Layer created",rightLayer->uniqueId);
     }
@@ -147,6 +151,7 @@ void Layer::splitHorizontally(int y, Layer**top, Layer**bottom)
     {
         Layer* topLayer = new GapLayer(Rect(_frame.x,_frame.y,_frame.width,y-_frame.y));
         topLayer->setBackgroundColor(_backgroundColor);
+        topLayer->setContext(getContext());
         *top = topLayer;
         //if (Display.debug) LOG_VALUE("Layer created",topLayer->uniqueId);
     }
@@ -155,6 +160,7 @@ void Layer::splitHorizontally(int y, Layer**top, Layer**bottom)
     {
         Layer* bottomLayer = new GapLayer(Rect(_frame.x,y,_frame.width,_frame.bottom()-y));
         bottomLayer->setBackgroundColor(_backgroundColor);
+        bottomLayer->setContext(getContext());
         *bottom = bottomLayer;
         //if (Display.debug) LOG_VALUE("Layer created",bottomLayer->uniqueId);
     }
@@ -184,8 +190,8 @@ void Layer::splitWithRect(Rect& rect)
         if (Display.debug)
         {
             Display.fillRect(0,0,320,240,ILI9341_BLACK);
-            Display.fillRect(_frame.x,_frame.y,_frame.width,_frame.height, ILI9341_ORANGE);
-            Display.drawRect(rect.x,rect.y,rect.width,rect.height, ILI9341_GREEN);
+            Display.fillRect(_frame.x+getOriginX(),_frame.y,_frame.width,_frame.height, ILI9341_ORANGE);
+            Display.drawRect(rect.x+getOriginX(),rect.y,rect.width,rect.height, ILI9341_GREEN);
 
             Display.setCursor(10,10);
             Display.println(_frame.toString());
@@ -290,12 +296,12 @@ void Layer::display(Layer* backgroundLayer)
             {
                 if (isVisible())
                 {
-                    LOG("Drawing");
-                    draw(renderFrame,_frame);
+                    if (Display.debug) LOG("Drawing");
+                    draw(_frame);
                 }
                 else
                 {
-                    LOG("Not visible");
+                    if (Display.debug) LOG("Not visible");
                 }
                 _needsDisplay = false;
             }
@@ -309,12 +315,12 @@ void Layer::display(Layer* backgroundLayer)
                 {
                     if (isVisible())
                     {
-                        LOG("Drawing");
-                        draw(renderFrame, _frame);
+                        if (Display.debug) LOG("Drawing");
+                        draw(_frame);
                     }
                     else
                     {
-                        LOG("Not visible");
+                        if (Display.debug) LOG("Not visible");
                     }
                     _needsDisplay = false;
                 }
@@ -335,20 +341,10 @@ void Layer::display(Layer* backgroundLayer)
         Layer* layer = _sublayers->at(i);
         layer->display(backgroundLayer);
     }
-
-    //If this layer has a border, draw it now
-    if (getStrokeWidth() > 0)
-    {
-        if (_needsDisplay)
-        {
-            Display.drawRect(_frame.x,_frame.y,_frame.width,_frame.height,getStrokeColor());
-            _needsDisplay = false;
-        }
-    }
 }
 
 
-void Layer::invalidateRect(Rect& dirtyRect, Rect &invalidationRect)
+void Layer::invalidateRect(Rect &invalidationRect)
 {
     if (_sublayers == NULL || _sublayers->count() <= 0)
     {
@@ -356,7 +352,7 @@ void Layer::invalidateRect(Rect& dirtyRect, Rect &invalidationRect)
         {
             //LOG_VALUE("Invalidated Layer:",_frame.toString());
 
-            draw(dirtyRect, invalidationRect);
+            draw(invalidationRect);
         }
 
         return;
@@ -367,7 +363,7 @@ void Layer::invalidateRect(Rect& dirtyRect, Rect &invalidationRect)
     {
         //LOG_VALUE("Drawing sublayer at",i);
         Layer* layer = _sublayers->at(i);
-        layer->invalidateRect(dirtyRect, invalidationRect);
+        layer->invalidateRect(invalidationRect);
     }
 }
 
@@ -406,6 +402,27 @@ void Layer::setFrame(Rect frame)
     Display.setNeedsLayout();
 }
 
+Rect Layer::prepareRenderFrame(const Rect proposedRenderFrame)
+{
+    Rect frame = proposedRenderFrame;
+    //Map layer frame to display space
+    if (getContext() == DisplayContext::Scrolling)
+    {
+        //Transform to screen space
+        if (frame.x > Display.getLayoutWidth())
+        {
+            frame.x = frame.x % Display.getLayoutWidth();
+            frame.x += Display.getLayoutStart();
+        }
+        else
+        {
+            frame.x += Display.getLayoutStart();
+        }
+    }
+
+    return frame;
+}
+
 Layer *Layer::subLayerWithRect(Rect frame)
 {
     if (_sublayers == NULL) return NULL;
@@ -438,7 +455,7 @@ Layer *Layer::subLayerWithRect(Rect frame)
 
 void Layer::setNeedsDisplay()
 {
-    LOG_VALUE("NEEDS DISPLAY: ",_name);
+    //LOG_VALUE("NEEDS DISPLAY: ",_name);
     if (_sublayers != NULL && _sublayers->count() > 0)
     {
         for (int i=0;i<_sublayers->count();i++)
@@ -451,7 +468,7 @@ void Layer::setNeedsDisplay()
     _needsDisplay = true;
 }
 
-void Layer::draw(Rect& dirtyRect, Rect& invalidationRect)
+void Layer::draw(Rect &invalidationRect)
 {
     _needsDisplay = false;
 }
@@ -459,8 +476,15 @@ void Layer::draw(Rect& dirtyRect, Rect& invalidationRect)
 Rect Layer::getRenderFrame()
 {
     int x = _frame.x;
-    x = x % Display.getLayoutWidth();
-    x += Display.getLayoutStart();
+
+    if (getContext() == DisplayContext::Scrolling)
+    {
+        if (x > Display.getLayoutWidth())
+        {
+            x = x % Display.getLayoutWidth();
+            x += Display.getLayoutStart();
+        }
+    }
     return Rect(x,_frame.y,_frame.width,_frame.height);
 }
 
@@ -474,3 +498,11 @@ bool Layer::isVisible()
 
     return false;
 }
+
+
+uint16_t Layer::getOriginX()
+{
+    if (getContext() == DisplayContext::Fixed) return 0;
+    return Display.getLayoutStart();
+}
+

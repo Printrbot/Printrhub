@@ -16,7 +16,7 @@ RectangleLayer::~RectangleLayer()
 
 }
 
-void RectangleLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
+void RectangleLayer::draw(Rect &invalidationRect)
 {
     uint16_t backgroundColor = this->getBackgroundColor();
     uint16_t strokeColor = this->getStrokeColor();
@@ -31,12 +31,9 @@ void RectangleLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
     Serial.println(_frame.height);*/
 
     Rect renderFrame = Rect::Intersect(_frame,invalidationRect);
-    //LOG_VALUE("Frame:",_frame.toString());
-    //LOG_VALUE("renderFrame:",renderFrame.toString());
 
-    //Transform to screen space
-    renderFrame.x = renderFrame.x % Display.getLayoutWidth();
-    renderFrame.x += Display.getLayoutStart();
+    //Map renderframe to screen space
+    renderFrame = prepareRenderFrame(renderFrame);
 
     if (this->getStrokeWidth() > 0)
     {

@@ -10,7 +10,7 @@ TextLayer(frame)
 {
 }
 
-void TransparentTextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
+void TransparentTextLayer::draw(Rect &invalidationRect)
 {
     Rect renderFrame = Rect::Intersect(_frame, invalidationRect);
 
@@ -54,10 +54,9 @@ void TransparentTextLayer::draw(Rect &dirtyRect, Rect &invalidationRect)
         frame.width = width;
     }
 
-    frame.x = frame.x % Display.getLayoutWidth();
-    frame.x += Display.getLayoutStart();
-    renderFrame.x = renderFrame.x % Display.getLayoutWidth();
-    renderFrame.x += Display.getLayoutStart();
+    //Map renderframes to screen space
+    renderFrame = prepareRenderFrame(renderFrame);
+    frame = prepareRenderFrame(frame);
 
     Display.setClippingRect(&renderFrame);
 

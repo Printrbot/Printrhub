@@ -34,11 +34,13 @@ public:
     virtual void setBackgroundColor(uint16_t backgroundColor) { _backgroundColor = backgroundColor; };
     virtual uint16_t getBackgroundColor() { return _backgroundColor; };
     void invalidateRect();
-    void invalidateRect(Rect &dirtyRect, Rect &invalidationRect, uint16_t color);
+    void invalidateRect(Rect &invalidationRect, uint16_t color);
     virtual void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) override;
     virtual void drawPixel(int16_t x, int16_t y, uint16_t color) override;
     virtual void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) override;
     virtual void debugLayer(Layer* layer,bool fill, uint16_t color, bool waitForTap=true);
+	virtual void setFixedBackgroundLayer(Layer *layer);
+	virtual void waitForTap();
 
 protected:
     virtual void drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32_t y, uint32_t repeat) override;
@@ -73,6 +75,7 @@ private:
     float _scrollOffset;
     Rect* _clipRect;
     uint16_t _backgroundColor;
+	Layer* _fixedBackgroundLayer;
 };
 
 

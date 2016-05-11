@@ -17,7 +17,7 @@ public:
     virtual ~TransparentTextLayer() {};
 
 public:
-    virtual void draw(Rect& dirtyRect, Rect& invalidationRect) override;
+    virtual void draw(Rect& invalidationRect) override;
 };
 
 

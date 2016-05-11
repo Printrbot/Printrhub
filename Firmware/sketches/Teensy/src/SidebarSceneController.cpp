@@ -25,10 +25,12 @@ void SidebarSceneController::setupSidebar()
 	_textLayer->setTextAlign(TEXTALIGN_RIGHT);
 	_textLayer->setFont(&PTSansNarrow_24);
 	_textLayer->setPadding(3);
+	_textLayer->setContext(DisplayContext::Fixed);
 	Display.addLayer(_textLayer);
 
 	Rect bottomButtonRect(0,190,50,50);
 	_actionButton = new BitmapButton(bottomButtonRect);
+	_actionButton->setContext(DisplayContext::Fixed);
 	_actionButton->setBackgroundColor(Application.getTheme()->getColor(HighlightBackgroundColor));
 	_actionButton->setColor(Application.getTheme()->getColor(HighlighTextColor));
 	_actionButton->setAlternateBackgroundColor(Application.getTheme()->getColor(HighlightAlternateBackgroundColor));
@@ -37,11 +39,17 @@ void SidebarSceneController::setupSidebar()
 	addView(_actionButton);
 }
 
+
+void SidebarSceneController::setupDisplay()
+{
+	Display.setScrollInsets(50,0);
+	Display.setScroll(0);
+}
+
+
 void SidebarSceneController::onWillAppear()
 {
 	setupSidebar();
 
 	SceneController::onWillAppear();
-
-	//Display.setScrollInsets(50,0);
 }

@@ -138,6 +138,7 @@ void setup(void)
     //Application.pushScene(wifiController);
 
     mainController = new PrintStatusSceneController();
+    mainController = new SettingsSceneController();
     Application.pushScene(mainController);
 }
 

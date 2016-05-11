@@ -24,7 +24,7 @@ void BitmapLayer::setBitmap(const uint8_t *bitmap, uint16_t width, uint16_t heig
     _needsDisplay = true;
 }
 
-void BitmapLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
+void BitmapLayer::draw(Rect &invalidationRect)
 {
     if (_bitmap == NULL) return;
 
@@ -35,9 +35,8 @@ void BitmapLayer::draw(Rect& dirtyRect, Rect& invalidationRect)
     int width = renderFrame.width;
     int height = renderFrame.height;
 
-    //Transform to screen space
-    renderFrame.x = renderFrame.x % Display.getLayoutWidth();
-    renderFrame.x += Display.getLayoutStart();
+    //Map renderframe to screen space
+    renderFrame = prepareRenderFrame(renderFrame);
 
     if (height > 0 && width > 0)
     {

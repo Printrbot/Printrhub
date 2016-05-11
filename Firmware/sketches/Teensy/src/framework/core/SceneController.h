@@ -32,6 +32,7 @@ public:
 #pragma mark Application Flow
 	virtual void loop();
 	virtual void onWillAppear();
+	virtual void setupDisplay();
 	virtual void onWillDisappear();
 
 #pragma mark Misc

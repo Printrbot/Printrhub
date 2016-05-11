@@ -23,7 +23,7 @@ public:
     virtual ~TextLayer() {};
 
 #pragma mark Layer
-    virtual void draw(Rect& dirtyRect, Rect& invalidationRect) override;
+    virtual void draw(Rect &invalidationRect) override;
 
 #pragma mark Getter/Setter
     const ILI9341_t3_font_t * getFont() { return _font; }

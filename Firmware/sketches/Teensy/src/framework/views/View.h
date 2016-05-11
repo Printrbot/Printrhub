@@ -38,6 +38,8 @@ class View: public UIElement, public AnimatableObject, Object
 {
 #pragma mark Constructor
 public:
+	virtual void setContext(const DisplayContext context) override;
+
 	~View();
 	View(int x, int y, int width, int height);
 	View(Rect frame);

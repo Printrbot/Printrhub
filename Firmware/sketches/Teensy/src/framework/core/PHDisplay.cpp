@@ -14,11 +14,11 @@
 PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint8_t _SCLK, uint8_t _MISO):
         ILI9341_t3(_CS,_DC,_RST,_MOSI,_SCLK,_MISO)
 {
-    _foregroundLayer = new RectangleLayer(Rect(getLayoutStart(),0,getLayoutWidth(),240));
+    _foregroundLayer = new RectangleLayer(Rect(0,0,650,240));
     _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
     _foregroundLayer->setStrokeWidth(0);
 
-    _backgroundLayer = new RectangleLayer(Rect(getLayoutStart(),0,getLayoutWidth(),240));
+    _backgroundLayer = new RectangleLayer(Rect(0,0,650,240));
     _backgroundLayer->setBackgroundColor(ILI9341_WHITE);
     _backgroundLayer->setStrokeWidth(0);
 
@@ -40,13 +40,11 @@ void PHDisplay::addLayer(Layer *layer)
     _needsLayout = true;
 }
 
-
 void PHDisplay::setFixedBackgroundLayer(Layer *layer)
 {
     layer->setNeedsDisplay();
     _fixedBackgroundLayer = layer;
 }
-
 
 void PHDisplay::setupBuffers()
 {
@@ -99,10 +97,11 @@ void PHDisplay::layoutIfNeeded()
     //SceneController* currentScene = Application.currentScene();
 
     //Get Max Layer Width
-    Rect bounds = Rect(getLayoutStart(),0,getLayoutWidth(),240);
+    Rect bounds = Rect(0,0,getLayoutWidth(),240);
     for (int i=0;i<_layers.count();i++)
     {
         Layer *layer = _layers.at(i);
+        if (layer->getContext() == DisplayContext::Fixed) continue;
 
         if (layer->getFrame().left() < bounds.left())
         {
@@ -134,6 +133,7 @@ void PHDisplay::layoutIfNeeded()
     for (int i=0;i<_layers.count();i++)
     {
         Layer *layer = _layers.at(i);
+        if (layer->getContext() == DisplayContext::Fixed) continue;
 
         Rect layerFrame = layer->getFrame();
         _foregroundLayer->splitWithRect(layerFrame);
@@ -272,20 +272,19 @@ void PHDisplay::setNeedsLayout()
     _needsLayout = true;
 }
 
-void PHDisplay::invalidateRect(Rect&dirtyRect, Rect& invalidationRect, uint16_t color)
+void PHDisplay::invalidateRect(Rect &invalidationRect, uint16_t color)
 {
-    //InvalidationRect is in screen shape, but we need view space
-
     //LOG_VALUE("View-Space:",invalidationRect.toString());
     //LOG_VALUE("Screen-Spcae:",dirtyRect.toString());
 
-    _foregroundLayer->invalidateRect(dirtyRect, invalidationRect);
+    _foregroundLayer->invalidateRect(invalidationRect);
 
     //LOG("Sending layer to display");
     for (int i=0;i<_layers.count();i++)
     {
         Layer* layer = _layers.at(i);
-        layer->invalidateRect(dirtyRect, invalidationRect);
+        if (layer->getContext() == DisplayContext::Fixed) continue;
+        layer->invalidateRect(invalidationRect);
     }
 
     //fillRect(dirtyRect.x,0,dirtyRect.width,dirtyRect.height,color);
@@ -326,6 +325,7 @@ uint16_t PHDisplay::getLayoutStart()
 
 void PHDisplay::setScrollOffset(float scrollOffset)
 {
+    LOG_VALUE("Layout-Width: ",(_foregroundLayer->getFrame().width-1));
     if (scrollOffset < -((_foregroundLayer->getFrame().width-1)-getLayoutWidth()))
     {
         scrollOffset = -((_foregroundLayer->getFrame().width-1)-getLayoutWidth());
@@ -376,8 +376,7 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         int vw = sw;
 
         Rect invalidationRect(vx,0,vw,240);
-        Rect dirtyRect(sx,0,sw,240);
-        invalidateRect(dirtyRect,invalidationRect,ILI9341_CYAN);
+        invalidateRect(invalidationRect, ILI9341_CYAN);
     }
     else if (diffScrollOffset < 0)
     {
@@ -394,8 +393,7 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         //LOG_VALUE("SW:",sw);
 
         Rect invalidationRect(vx,0,vw,240);
-        Rect dirtyRect(sx,0,sw,240);
-        invalidateRect(dirtyRect,invalidationRect,ILI9341_CYAN);
+        invalidateRect(invalidationRect, ILI9341_CYAN);
         //fillRect(sx,0,sw,240,ILI9341_GREEN);
     }
     else
@@ -523,6 +521,12 @@ void PHDisplay::resetClippingRect()
 
 void PHDisplay::fadeOut()
 {
+    if (debug)
+    {
+        fadeIn();
+        return;
+    }
+
     for (int i=128;i>=0;i--)
     {
         analogWrite(TFT_BACKLIGHT_PWM,i);
@@ -544,15 +548,20 @@ void PHDisplay::debugLayer(Layer *layer, bool fill, uint16_t color, bool waitFor
 {
     if (fill)
     {
-        fillRect(layer->getFrame().x,layer->getFrame().y,layer->getFrame().width,layer->getFrame().height,color);
+        fillRect(layer->getFrame().x+layer->getOriginX(),layer->getFrame().y,layer->getFrame().width,layer->getFrame().height,color);
     }
     else
     {
-        drawRect(layer->getFrame().x,layer->getFrame().y,layer->getFrame().width,layer->getFrame().height,color);
+        drawRect(layer->getFrame().x+layer->getOriginX(),layer->getFrame().y,layer->getFrame().width,layer->getFrame().height,color);
     }
 
     if (!waitForTap) return;
+    this->waitForTap();
+}
 
+
+void PHDisplay::waitForTap()
+{
     while(!Touch.touched())
     {
         delay(10);

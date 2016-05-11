@@ -17,7 +17,7 @@ public:
     virtual ~SDBitmapLayer();
 
 #pragma mark Layer
-    virtual void draw(Rect& dirtyRect, Rect& invalidationRect) override;
+    virtual void draw(Rect &invalidationRect) override;
 
 #pragma mark Getter/Setter
     virtual void setBitmap(const char *filePath, uint16_t width, uint16_t height);

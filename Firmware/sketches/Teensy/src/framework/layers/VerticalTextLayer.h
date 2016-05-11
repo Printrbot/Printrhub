@@ -16,7 +16,7 @@ public:
 	VerticalTextLayer(const Rect &frame) : TextLayer(frame) { }
 
 #pragma mark Layer
-	virtual void draw(Rect &dirtyRect, Rect &invalidationRect) override;
+	virtual void draw(Rect &invalidationRect) override;
 };
 
 
