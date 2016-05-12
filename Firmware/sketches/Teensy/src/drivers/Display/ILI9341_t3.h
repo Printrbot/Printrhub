@@ -190,7 +190,8 @@ class ILI9341_t3 : public Print
 	int16_t height(void) { return _height; }
 	uint8_t getRotation(void);
 	void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-	void drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+
+	virtual void drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
 	int16_t getCursorX(void) const { return cursor_x; }
 	int16_t getCursorY(void) const { return cursor_y; }
 	void setFont(const ILI9341_t3_font_t &f) { font = &f; }

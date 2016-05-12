@@ -168,6 +168,12 @@ void PHDisplay::drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const
     setAddr(x, y, x+w-1, y+h-1);
     writecommand_cont(ILI9341_RAMWR);*/
 
+    if (_lockBuffer != NULL)
+    {
+        _lockBuffer->drawBitmap(x,y,w,h,bitmap,xs,ys,ws,hs);
+        return;
+    }
+
     for (uint16_t xb=0;xb<w;xb++)
     {
         SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
@@ -176,7 +182,7 @@ void PHDisplay::drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const
 
         for (uint16_t yb=0;yb<h;yb++)
         {
-            if (xb == w-1 && yb == h-1)
+            if (yb == h-1)
             {
                 //Last pixel
                 writedata16_last(bitmap[(xb+xs)*hs+(yb+ys)]);
@@ -187,8 +193,8 @@ void PHDisplay::drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const
                 writedata16_cont(bitmap[(xb+xs)*hs+(yb+ys)]);
             }
         }
+        SPI.endTransaction();
     }
-    SPI.endTransaction();
 }
 
 
@@ -196,8 +202,13 @@ void PHDisplay::drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
                                  uint16_t ys, uint16_t ws, uint16_t hs, uint16_t foregroundColor,
                                  uint16_t backgroundColor)
 {
+    if (_lockBuffer != NULL)
+    {
+        _lockBuffer->drawMaskedBitmap(x,y,w,h,bitmap,xs,ys,ws,hs,foregroundColor,backgroundColor);
+        return;
+    }
+
     //TODO: This code will fail if ys > 0 and hs < h as it's not implemented correctly. As it's not needed by the current firmware I leave this comment and resolve it later
-    
     for (uint16_t xb=0;xb<w;xb++)
     {
         SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
@@ -238,6 +249,12 @@ void PHDisplay::drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
 void PHDisplay::drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs,
                                        uint16_t ys, uint16_t ws, uint16_t hs)
 {
+    if (_lockBuffer != NULL)
+    {
+        _lockBuffer->drawFileBitmapByColumn(x,y,w,h,file,xs,ys,ws,hs);
+        return;
+    }
+
     //TODO: This code will fail if ys > 0 and hs < h as it's not implemented correctly. As it's not needed by the current firmware I leave this comment and resolve it later
     uint16_t buffer[320];
     for (uint16_t xb=0;xb<w;xb++)
@@ -272,19 +289,64 @@ void PHDisplay::setNeedsLayout()
     _needsLayout = true;
 }
 
-void PHDisplay::invalidateRect(Rect &invalidationRect, uint16_t color)
+void PHDisplay::invalidateRect(Rect &invalidationRect, int scrollOffset, int deltaScrollOffset)
 {
     //LOG_VALUE("View-Space:",invalidationRect.toString());
     //LOG_VALUE("Screen-Spcae:",dirtyRect.toString());
 
-    _foregroundLayer->invalidateRect(invalidationRect);
-
-    //LOG("Sending layer to display");
-    for (int i=0;i<_layers.count();i++)
+    if (deltaScrollOffset > 0)
     {
-        Layer* layer = _layers.at(i);
-        if (layer->getContext() == DisplayContext::Fixed) continue;
-        layer->invalidateRect(invalidationRect);
+        //Create a buffer that we render in
+/*        ImageBuffer imageBuffer(invalidationRect.width,invalidationRect.height);
+        imageBuffer.setTranslation(-invalidationRect.x,-invalidationRect.y);
+        Display.lockBuffer(&imageBuffer);
+
+        //Render the layers
+        Rect subRect = invalidationRect;
+        _foregroundLayer->invalidateRect(subRect);
+
+        //LOG("Sending layer to display");
+        for (int i=0;i<_layers.count();i++)
+        {
+            Layer* layer = _layers.at(i);
+            if (layer->getContext() == DisplayContext::Fixed) continue;
+            layer->invalidateRect(subRect);
+        }
+
+        //Unlock the display
+        Display.unlock();
+
+        invalidationRect = Display.prepareRenderFrame(invalidationRect,DisplayContext::Scrolling);
+        Display.drawImageBuffer(&imageBuffer,invalidationRect);*/
+
+        int so = mapScrollOffset(scrollOffset);
+        Display.setScroll(so);
+
+        Rect subRect = invalidationRect;
+        _foregroundLayer->invalidateRect(subRect);
+
+        //LOG("Sending layer to display");
+        for (int i=0;i<_layers.count();i++)
+        {
+            Layer* layer = _layers.at(i);
+            if (layer->getContext() == DisplayContext::Fixed) continue;
+            layer->invalidateRect(subRect);
+        }
+    }
+    else
+    {
+        int so = mapScrollOffset(scrollOffset);
+        Display.setScroll(so);
+
+        _foregroundLayer->invalidateRect(invalidationRect);
+
+        //LOG("Sending layer to display");
+        for (int i=0;i<_layers.count();i++)
+        {
+            Layer* layer = _layers.at(i);
+            if (layer->getContext() == DisplayContext::Fixed) continue;
+            layer->invalidateRect(invalidationRect);
+        }
     }
 
     //fillRect(dirtyRect.x,0,dirtyRect.width,dirtyRect.height,color);
@@ -323,6 +385,23 @@ uint16_t PHDisplay::getLayoutStart()
     }
 }
 
+int PHDisplay::mapScrollOffset(int so)
+{
+    //Shift display to the specific frame (this is hardware scrolling)
+    if (so < 0)
+    {
+        int numScreens = -so/getLayoutWidth();
+        numScreens += 1;
+        so += numScreens * getLayoutWidth();
+    }
+    if (so > getLayoutWidth()-1)
+    {
+        so -= getLayoutWidth();
+    }
+
+    return so;
+}
+
 void PHDisplay::setScrollOffset(float scrollOffset)
 {
     LOG_VALUE("Layout-Width: ",(_foregroundLayer->getFrame().width-1));
@@ -346,23 +425,7 @@ void PHDisplay::setScrollOffset(float scrollOffset)
     //LOG_VALUE("Rect-Width: ",diffScrollOffset);
     //LOG_VALUE("Scroll Offset: ",scrollOffset);
 
-    int so = newScrollOffset;
-
-    //Shift display to the specific frame (this is hardware scrolling)
-    if (so < 0)
-    {
-        int numScreens = -so/getLayoutWidth();
-        numScreens += 1;
-        so += numScreens * getLayoutWidth();
-    }
-    if (so > getLayoutWidth()-1)
-    {
-        so -= getLayoutWidth();
-    }
-
     //LOG_VALUE("Scroll Offset:",scrollOffset);
-
-    Display.setScroll(so);
 
     if (diffScrollOffset > 0)
     {
@@ -378,7 +441,7 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         if (vw > 0)
         {
             Rect invalidationRect(vx,0,vw,240);
-            invalidateRect(invalidationRect, ILI9341_CYAN);
+            invalidateRect(invalidationRect, newScrollOffset, diffScrollOffset);
         }
     }
     else if (diffScrollOffset < 0)
@@ -398,7 +461,7 @@ void PHDisplay::setScrollOffset(float scrollOffset)
         if (vw > 0)
         {
             Rect invalidationRect(vx,0,vw,240);
-            invalidateRect(invalidationRect, ILI9341_CYAN);
+            invalidateRect(invalidationRect, newScrollOffset, diffScrollOffset);
         }
         //fillRect(sx,0,sw,240,ILI9341_GREEN);
     }
@@ -417,6 +480,13 @@ Rect PHDisplay::visibleRect()
 
 void PHDisplay::drawPixel(int16_t x, int16_t y, uint16_t color)
 {
+    //Locked with image buffer, draw into the buffer
+    if (_lockBuffer != NULL)
+    {
+        _lockBuffer->drawPixel(x,y,color);
+        return;
+    }
+
     if (_clipRect == NULL)
     {
         ILI9341_t3::drawPixel(x, y, color);
@@ -435,6 +505,14 @@ void PHDisplay::drawPixel(int16_t x, int16_t y, uint16_t color)
 
 void PHDisplay::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
 {
+    //Locked with image buffer, draw into the buffer
+    if (_lockBuffer != NULL)
+    {
+        LOG("fillRect on buffer");
+        _lockBuffer->fillRect(x,y,w,h,color);
+        return;
+    }
+
     if (_clipRect == NULL)
     {
         ILI9341_t3::fillRect(x, y, w, h, color);
@@ -452,6 +530,31 @@ void PHDisplay::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t co
         ILI9341_t3::fillRect(frame.x, frame.y, frame.width, frame.height, color);
     }
 }
+
+
+void PHDisplay::drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
+{
+    //Locked with image buffer, draw into the buffer
+    if (_lockBuffer != NULL)
+    {
+        LOG("drawRect on buffer");
+        _lockBuffer->drawRect(x,y,w,h,color);
+        return;
+    }
+
+    if (_clipRect == NULL)
+    {
+        ILI9341_t3::drawRect(x, y, w, h, color);
+    }
+    else
+    {
+        Rect frame = Rect(x,y,w,h);
+        frame = Rect::Intersect(frame,*_clipRect);
+
+        ILI9341_t3::drawRect(frame.x, frame.y, frame.width, frame.height, color);
+    }
+}
+
 
 void PHDisplay::drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32_t y, uint32_t repeat)
 {
@@ -501,6 +604,13 @@ void PHDisplay::drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32
 
 void PHDisplay::drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color)
 {
+    //Locked with image buffer, draw into the buffer
+    if (_lockBuffer != NULL)
+    {
+        _lockBuffer->drawFastHLine(x,y,w,color);
+        return;
+    }
+
     //This function is used by a lot of draw functions
     if (_clipRect == NULL)
     {
@@ -576,5 +686,55 @@ void PHDisplay::waitForTap()
     {
         delay(10);
     };
+}
+
+
+void PHDisplay::lockBuffer(ImageBuffer *imageBuffer)
+{
+    LOG("Locking Buffer");
+    _lockBuffer = imageBuffer;
+}
+
+void PHDisplay::unlock()
+{
+    LOG("Releasing Buffer");
+    _lockBuffer = NULL;
+}
+
+
+Rect PHDisplay::prepareRenderFrame(const Rect proposedRenderFrame, DisplayContext context)
+{
+    if (_lockBuffer != NULL) return proposedRenderFrame;
+
+    Rect frame = proposedRenderFrame;
+    //Map layer frame to display space
+    if (context == DisplayContext::Scrolling)
+    {
+        //Transform to screen space
+        if (frame.x > Display.getLayoutWidth())
+        {
+            frame.x = frame.x % Display.getLayoutWidth();
+            frame.x += Display.getLayoutStart();
+        }
+        else
+        {
+            frame.x += Display.getLayoutStart();
+        }
+    }
+
+    return frame;
+}
+
+
+void PHDisplay::invalidateRect()
+{
+
+}
+
+
+void PHDisplay::drawImageBuffer(ImageBuffer *imageBuffer, Rect renderFrame)
+{
+    drawBitmap(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,imageBuffer->getData(),0,0,imageBuffer->getWidth(),imageBuffer->getHeight());
+    //fillRect(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,ILI9341_PINK);
 }
 

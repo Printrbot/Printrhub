@@ -404,23 +404,7 @@ void Layer::setFrame(Rect frame)
 
 Rect Layer::prepareRenderFrame(const Rect proposedRenderFrame)
 {
-    Rect frame = proposedRenderFrame;
-    //Map layer frame to display space
-    if (getContext() == DisplayContext::Scrolling)
-    {
-        //Transform to screen space
-        if (frame.x > Display.getLayoutWidth())
-        {
-            frame.x = frame.x % Display.getLayoutWidth();
-            frame.x += Display.getLayoutStart();
-        }
-        else
-        {
-            frame.x += Display.getLayoutStart();
-        }
-    }
-
-    return frame;
+    return Display.prepareRenderFrame(proposedRenderFrame,getContext());
 }
 
 Layer *Layer::subLayerWithRect(Rect frame)

@@ -10,12 +10,15 @@
 #include "../layers/Layer.h"
 #include "../layers/RectangleLayer.h"
 #include "../../drivers/SD/SD.h"
+#include "../../framework/core/ImageBuffer.h"
 
 class PHDisplay: public ILI9341_t3
 {
 #pragma mark Constructor
 public:
-    PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST = 255, uint8_t _MOSI=11, uint8_t _SCLK=13, uint8_t _MISO=12);
+	virtual void drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) override;
+
+	PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST = 255, uint8_t _MOSI=11, uint8_t _SCLK=13, uint8_t _MISO=12);
 
 #pragma Layer Management
     virtual void addLayer(Layer* layer);
@@ -34,13 +37,19 @@ public:
     virtual void setBackgroundColor(uint16_t backgroundColor) { _backgroundColor = backgroundColor; };
     virtual uint16_t getBackgroundColor() { return _backgroundColor; };
     void invalidateRect();
-    void invalidateRect(Rect &invalidationRect, uint16_t color);
+    void invalidateRect(Rect &invalidationRect, int scrollOffset, int deltaScrollOffset);
     virtual void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) override;
     virtual void drawPixel(int16_t x, int16_t y, uint16_t color) override;
     virtual void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) override;
     virtual void debugLayer(Layer* layer,bool fill, uint16_t color, bool waitForTap=true);
 	virtual void setFixedBackgroundLayer(Layer *layer);
 	virtual void waitForTap();
+	virtual Rect prepareRenderFrame(const Rect proposedRenderFrame, DisplayContext context);
+	virtual void drawImageBuffer(ImageBuffer* imageBuffer, Rect renderFrame);
+
+#pragma mark Render To Buffer
+	virtual void lockBuffer(ImageBuffer* imageBuffer);
+	virtual void unlock();
 
 protected:
     virtual void drawFontBits(uint32_t bits, uint32_t numbits, uint32_t x, uint32_t y, uint32_t repeat) override;
@@ -59,6 +68,7 @@ public:
     uint16_t getLayoutWidth();
     uint16_t getLayoutStart();
     void cropRectToScreen(Rect& rect);
+	int mapScrollOffset(int scrollOffset);
 
 #pragma mark Member Variables
 public:
@@ -76,6 +86,9 @@ private:
     Rect* _clipRect;
     uint16_t _backgroundColor;
 	Layer* _fixedBackgroundLayer;
+	ImageBuffer* _lockBuffer;
+
+
 };
 
 
