@@ -5,25 +5,27 @@
 #ifndef TEENSYCMAKE_CHOOSEPRINTSCENECONTROLLER_H
 #define TEENSYCMAKE_CHOOSEPRINTSCENECONTROLLER_H
 
-#include "framework/core/SceneController.h"
+#include "SidebarSceneController.h"
 #include "framework/views/BitmapButton.h"
 #include "framework/views/LabelView.h"
 #include "framework/views/LabelButton.h"
 #include "ModelView.h"
 
-class ChoosePrintSceneController: public SceneController, ButtonDelegate
+class ChoosePrintSceneController: public SidebarSceneController, ButtonDelegate
 {
 #pragma mark Constructor
 public:
-    ChoosePrintSceneController();
+	virtual String getSidebarTitle() const override;
+
+	virtual const uint8_t *getSidebarIcon() override;
+
+	ChoosePrintSceneController();
     virtual ~ChoosePrintSceneController();
 
 #pragma mark Scene Controller
 private:
     virtual void onWillAppear() override;
-    virtual void handleTouchUp(TS_Point &point) override;
     virtual uint16_t getBackgroundColor() override;
-    virtual void loop() override;
     String getName() override;
 
 #pragma mark Button Delegate
