@@ -32,17 +32,21 @@
       <sourceFolder url="file://$MODULE_DIR$/src/PrintStatusSceneController.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/core/PHDisplay.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/core/UIElement.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Timer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/ImageBuffer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/GraphicsContext.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/ImageBuffer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/core/SceneController.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Object.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Application.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/UIElement.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Object.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/core/PHDisplay.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/GraphicsContext.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Object.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Timer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Application.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/core/ColorTheme.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Timer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/Application.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/core/SceneController.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/framework/core/UIElement.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/core/ColorTheme.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/views/ProgressBar.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/framework/views/LabelButton.h" isTestSource="false" />
