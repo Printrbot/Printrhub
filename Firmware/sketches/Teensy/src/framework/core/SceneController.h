@@ -64,12 +64,12 @@ public:
 #pragma mark Scrolling
 private:
 	void addScrollOffset(float scrollOffset);
-
 	virtual void setDecelerationRate(const float decelerationRate) { _decelerationRate = decelerationRate; };
 public:
 	virtual void setScrollSnap(const float scrollSnap, const SnapMode snapMode) { _scrollSnap = scrollSnap; _snapMode = snapMode; };
 	virtual float getScrollSnapTileSize() const { return _scrollSnap; };
 	virtual SnapMode getSnapMode() const { return _snapMode; };
+	virtual uint16_t getPageIndex();
 
 #pragma mark Member Variables
 private:

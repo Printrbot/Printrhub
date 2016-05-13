@@ -1,23 +1,23 @@
 //
-// Created by Phillip Schuster on 04.05.16.
+// Created by Phillip Schuster on 13.05.16.
 //
 
-#ifndef TEENSY_LOADFILAMENTSCENECONTROLLER_H
-#define TEENSY_LOADFILAMENTSCENECONTROLLER_H
+#ifndef TEENSY_PAUSEPRINTSCENECONTROLLER_H
+#define TEENSY_PAUSEPRINTSCENECONTROLLER_H
 
 #include "SidebarSceneController.h"
 #include "framework/views/BitmapButton.h"
 #include "framework/views/LabelButton.h"
 #include "framework/views/ProgressBar.h"
 
-class LoadFilamentSceneController: public SidebarSceneController
+class PausePrintSceneController: public SidebarSceneController
 {
 #pragma mark Constructor
 public:
 	virtual void onSidebarButtonTouchUp() override;
 
-	LoadFilamentSceneController();
-	virtual ~LoadFilamentSceneController();
+	PausePrintSceneController();
+	virtual ~PausePrintSceneController();
 
 #pragma mark Sidebar Scene Controller
 private:
@@ -36,9 +36,11 @@ private:
 
 #pragma mark Member Variables
 private:
-	LabelButton* _button;
+	LabelButton* _changeFilamentButton;
+	LabelButton* _cancelPrintButton;
+	LabelButton* _resumePrintButton;
 	float _step;
 };
 
 
-#endif //TEENSY_LOADFILAMENTSCENECONTROLLER_H
+#endif //TEENSY_PAUSEPRINTSCENECONTROLLER_H

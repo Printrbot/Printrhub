@@ -10,6 +10,8 @@
 #include "MainSceneController.h"
 #include "drivers/SD/SD.h"
 #include "SettingsSceneController.h"
+#include "ConfirmSceneController.h"
+#include "PrintStatusSceneController.h"
 
 ChoosePrintSceneController::ChoosePrintSceneController():
         SidebarSceneController::SidebarSceneController()
@@ -82,6 +84,12 @@ void ChoosePrintSceneController::onWillAppear()
     modelView->setColor(ILI9341_PURPLE);
     addView(modelView);
 
+    _printButton = new LabelButton("PRINT",Rect(50,200,170,30));
+    _printButton->setVisible(false);
+    addView(_printButton);
+
+    _printButton->log();
+
     SidebarSceneController::onWillAppear();
 }
 
@@ -92,11 +100,45 @@ void ChoosePrintSceneController::onSidebarButtonTouchUp()
     Application.pushScene(scene);
 }
 
+
+void ChoosePrintSceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
+{
+    if (_printButton != NULL)
+    {
+        _printButton->setVisible(false);
+
+        //This would immediately remove the button but it's too slow
+        //Display.invalidateRect(_printButton->getFrame());
+    }
+
+    SceneController::handleTouchMoved(point, oldPoint);
+}
+
+
+void ChoosePrintSceneController::animationFinished(Animation *animation)
+{
+    SceneController::animationFinished(animation);
+
+    //We should have stopped at a defined slot index, use that to position the button
+    int index = getPageIndex();
+    float x = Display.getLayoutWidth() * index;
+
+    _printButton->setFrame(Rect((x+50),200,170,30));
+    _printButton->setVisible(true);
+    _printButton->setDelegate(this);
+}
+
+
 #pragma mark ButtonDelegate Implementation
 
 void ChoosePrintSceneController::buttonPressed(void *button)
 {
-    LOG("ChoosePrintSceneController::buttonPressed");
+    if (button == _printButton)
+    {
+        LOG_VALUE("Printing Job-Nr",getPageIndex());
+        PrintStatusSceneController * scene = new PrintStatusSceneController();
+        Application.pushScene(scene);
+    }
 
     SidebarSceneController::buttonPressed(button);
 }

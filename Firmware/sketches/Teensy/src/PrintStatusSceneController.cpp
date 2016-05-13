@@ -10,6 +10,7 @@
 #include "framework/views/ProgressBar.h"
 #include "framework/layers/SDBitmapLayer.h"
 #include "framework/layers/TransparentTextLayer.h"
+#include "PausePrintSceneController.h"
 
 PrintStatusSceneController::PrintStatusSceneController():
         SidebarSceneController::SidebarSceneController()
@@ -41,6 +42,14 @@ const uint8_t *PrintStatusSceneController::getSidebarIcon()
 {
     return imageOfPauseIcon_24_24;
 }
+
+
+void PrintStatusSceneController::onSidebarButtonTouchUp()
+{
+    PausePrintSceneController * scene = new PausePrintSceneController();
+    Application.pushScene(scene);
+}
+
 
 void PrintStatusSceneController::onWillAppear()
 {
@@ -91,5 +100,7 @@ void PrintStatusSceneController::buttonPressed(void *button)
         ConfirmSceneController * scene = new ConfirmSceneController();
         Application.pushScene(scene);
     }
+
+    SidebarSceneController::buttonPressed(button);
 }
 

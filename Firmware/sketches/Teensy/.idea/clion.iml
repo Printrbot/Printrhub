@@ -2,6 +2,7 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/PausePrintSceneController.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/VirtualKeyboardSceneController.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/WiFiSetupSceneController.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/IdleSceneController.h" isTestSource="false" />
@@ -11,6 +12,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/Bitmaps.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/IdleSceneController.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/CleanPlasticSceneController.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/PausePrintSceneController.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/VirtualKeyboardSceneController.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/SettingsSceneController.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/ChoosePrintSceneController.h" isTestSource="false" />

@@ -7,6 +7,8 @@
 #include "CleanPlasticSceneController.h"
 #include "ConfirmSceneController.h"
 #include "framework/views/ProgressBar.h"
+#include "ChoosePrintSceneController.h"
+#include "PrintStatusSceneController.h"
 
 LoadFilamentSceneController::LoadFilamentSceneController():
 SidebarSceneController::SidebarSceneController()
@@ -55,36 +57,19 @@ void LoadFilamentSceneController::onWillAppear()
 	textLayer->setText("Load new filament.");
 	Display.addLayer(textLayer);
 
-	_button = new LabelButton("DONE",Rect(15,120,270-30,68));
+	_button = new LabelButton("DONE",Rect(15,160,270-30,68));
 	_button->setName("DONE");
 	_button->setDelegate(this);
 	_button->setIcon(imageOfAcceptIcon_32_30,Application.getTheme()->getColor(SuccessColor),32,30);
 	addView(_button);
 
-	_progressBar = new ProgressBar(Rect(15,210,270-30,15));
-	_progressBar->setValue(0.0f);
-	addView(_progressBar);
-
 	SidebarSceneController::onWillAppear();
 }
 
-
-void LoadFilamentSceneController::loop()
+void LoadFilamentSceneController::onSidebarButtonTouchUp()
 {
-	if (_progressBar != NULL)
-	{
-		_progressBar->setValue(_progressBar->getValue()+_step);
-		if (_progressBar->getValue() >= 1)
-		{
-			_step = -_step;
-		}
-		else if (_progressBar->getValue() <= 0)
-		{
-			_step = -_step;
-		}
-	}
-
-	SceneController::loop();
+	PrintStatusSceneController * scene = new PrintStatusSceneController();
+	Application.pushScene(scene);
 }
 
 
@@ -94,8 +79,10 @@ void LoadFilamentSceneController::buttonPressed(void *button)
 {
 	if (button == _button)
 	{
-		ConfirmSceneController * scene = new ConfirmSceneController();
+		PrintStatusSceneController * scene = new PrintStatusSceneController();
 		Application.pushScene(scene);
 	}
+
+	SidebarSceneController::buttonPressed(button);
 }
 

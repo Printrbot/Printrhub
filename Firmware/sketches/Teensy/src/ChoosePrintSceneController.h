@@ -11,10 +11,14 @@
 #include "framework/views/LabelButton.h"
 #include "ModelView.h"
 
-class ChoosePrintSceneController: public SidebarSceneController, ButtonDelegate
+class ChoosePrintSceneController: public SidebarSceneController
 {
 #pragma mark Constructor
 public:
+	virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint) override;
+
+	virtual void animationFinished(Animation *animation) override;
+
 	virtual void onSidebarButtonTouchUp() override;
 
 	virtual String getSidebarTitle() const override;
@@ -32,11 +36,12 @@ private:
 
 #pragma mark Button Delegate
 private:
-    virtual void buttonPressed(void *button);
+    virtual void buttonPressed(void *button) override;
 
 #pragma mark Member Variables
 protected:
     ModelView* _modelView;
+	LabelButton* _printButton;
 };
 
 #endif //TEENSYCMAKE_CHOOSEPRINTSCENECONTROLLER_H

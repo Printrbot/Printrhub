@@ -105,4 +105,4 @@ add_executable(Teensy
     src/drivers/SD/utility/Sd2Card.cpp
     src/drivers/SD/utility/SdFile.cpp
     src/drivers/SD/utility/SdVolume.cpp
-        src/framework/core/GraphicsContext.cpp src/framework/core/GraphicsContext.h src/framework/core/ImageBuffer.cpp src/framework/core/ImageBuffer.h)
+        src/framework/core/GraphicsContext.cpp src/framework/core/GraphicsContext.h src/framework/core/ImageBuffer.cpp src/framework/core/ImageBuffer.h src/PausePrintSceneController.cpp src/PausePrintSceneController.h)

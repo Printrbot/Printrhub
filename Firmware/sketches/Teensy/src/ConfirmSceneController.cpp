@@ -6,6 +6,7 @@
 
 #include "Bitmaps.h"
 #include "CleanPlasticSceneController.h"
+#include "PausePrintSceneController.h"
 
 ConfirmSceneController::ConfirmSceneController():
         SidebarSceneController::SidebarSceneController()
@@ -82,7 +83,8 @@ void ConfirmSceneController::buttonPressed(void *button)
     }
     else if (button == _noButton)
     {
-
+        PausePrintSceneController* scene = new PausePrintSceneController();
+        Application.pushScene(scene);
     }
 }
 

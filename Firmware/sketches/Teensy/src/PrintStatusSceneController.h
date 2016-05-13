@@ -16,7 +16,9 @@ class PrintStatusSceneController: public SidebarSceneController
 {
 #pragma mark Constructor
 public:
-    virtual void loop() override;
+	virtual void onSidebarButtonTouchUp() override;
+
+	virtual void loop() override;
 
     PrintStatusSceneController();
     virtual ~PrintStatusSceneController();
