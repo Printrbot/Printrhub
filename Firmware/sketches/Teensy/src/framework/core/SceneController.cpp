@@ -165,6 +165,12 @@ void SceneController::handleTouchUp(TS_Point &point)
 		_currentTouchedView = NULL;
 	}
 
+	//We don not need a finishing animation if we don't have any velocity to work with
+	if (_scrollVelocity == 0)
+	{
+		return;
+	}
+
 	//Handle snapping
 	if (_snapMode == SnapMode::OneByOne)
 	{
