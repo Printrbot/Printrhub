@@ -100,7 +100,6 @@ String SceneController::getName()
 
 void SceneController::handleTouchDown(TS_Point &point)
 {
-	LOG("Check");
 	//Stop scrolling immediately
 	_scrollVelocity = 0;
 
@@ -110,11 +109,8 @@ void SceneController::handleTouchDown(TS_Point &point)
 		_scrollAnimation = NULL;
 	}
 
-	LOG("Check");
-
 	for (int i=0;i<_views.count();i++)
 	{
-		LOG("Check");
 		View* view = _views.at(i);
 		View* hitView = view->hitTest(point);
 		if (hitView != NULL)
@@ -123,13 +119,11 @@ void SceneController::handleTouchDown(TS_Point &point)
 			//Break out if the view returns true, means it has handled the event
 			if (hitView->touchDown(point))
 			{
-				LOG("Check");
 				_currentTouchedView = hitView;
 				break;
 			}
 		}
 	}
-	LOG("Check");
 }
 
 void SceneController::handleTouchUp(TS_Point &point)
@@ -297,6 +291,15 @@ void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
 uint16_t SceneController::getBackgroundColor()
 {
 	return Application.getTheme()->getColor(BackgroundColor);
+}
+
+
+uint16_t SceneController::getPageIndex()
+{
+	if (_snapMode == SnapMode::Disabled) return 0;
+	if (_scrollSnap == 0) return 0;
+
+	return fabs(roundf(_scrollOffset / _scrollSnap));
 }
 
 #pragma mark AnimatableObject

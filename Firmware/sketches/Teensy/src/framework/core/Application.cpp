@@ -58,14 +58,14 @@ void ApplicationClass::handleTouches()
 		{
 			if (point.x != _lastTouchPoint.x || point.y != _lastTouchPoint.y)
 			{
-				LOG("Touch Moved");
+				//LOG("Touch Moved");
 				//Move event
 				sceneController->handleTouchMoved(point,_lastTouchPoint);
 			}
 		}
 		else
 		{
-			LOG("Touch down");
+			//LOG("Touch down");
 			//Touch down event
 			sceneController->handleTouchDown(point);
 			_touched = true;
@@ -77,7 +77,7 @@ void ApplicationClass::handleTouches()
 	{
 		if (_touched)
 		{
-			LOG("Touch up");
+			//LOG("Touch up");
 			//Touch up event
 			sceneController->handleTouchUp(_lastTouchPoint);
 		}
