@@ -89,7 +89,6 @@ protected:
 
 #pragma mark Member Variables
 protected:
-	Rect _frame;
 	bool _visible;
 	bool _opaque;
 	uint16_t _backgroundColor;
