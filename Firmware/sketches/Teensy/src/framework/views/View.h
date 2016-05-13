@@ -44,6 +44,8 @@ public:
 	View(int x, int y, int width, int height);
 	View(Rect frame);
 
+	void log();
+
 #pragma mark UIElement
 	virtual String getDescription() override;
 	virtual void setFrame(Rect frame) override;

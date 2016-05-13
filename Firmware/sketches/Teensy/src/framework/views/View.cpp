@@ -80,10 +80,24 @@ bool View::isVisible()
 	return _visible;
 }
 
+
+void View::log()
+{
+	LOG_VALUE("View",(int)this);
+	LOG_VALUE("Frame",_frame.toString());
+}
+
+
 void View::setVisible(bool visible)
 {
 	if (_visible == visible) return;
 	_visible = visible;
+
+	for (int i=0;i<_layers.count();i++)
+	{
+		Layer *layer = _layers.at(i);
+		layer->setVisible(visible);
+	}
 
 	if (!visible)
 	{
@@ -203,6 +217,13 @@ View *View::hitTest(TS_Point &point)
 	}
 	else
 	{
+//		LOG_VALUE("Hit testing view with rect",_frame.toString());
+//		LOG_VALUE("Point-X",point.x);
+//		LOG_VALUE("Transformed Point-X",point.x+(-Display.getScrollOffset())-Display.getLayoutStart());
+//		LOG_VALUE("Point-Y",point.y);
+//		LOG_VALUE("ScrollOffset",Display.getScrollOffset());
+//		LOG_VALUE("Display Start",Display.getLayoutStart());
+
 		//Transform point to view space as point is in screen-space (i.e. 0-320 wrapped)
 		if (_frame.containsPoint(point.x+(-Display.getScrollOffset())-Display.getLayoutStart(),point.y))
 		{
