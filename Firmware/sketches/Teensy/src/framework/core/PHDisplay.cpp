@@ -743,9 +743,22 @@ Rect PHDisplay::prepareRenderFrame(const Rect proposedRenderFrame, DisplayContex
 }
 
 
-void PHDisplay::invalidateRect()
+void PHDisplay::invalidateRect(Rect invalidationRect)
 {
+    LOG_VALUE("Invalidating Rect",invalidationRect.toString());
 
+    if (_autoLayout)
+    {
+        _foregroundLayer->invalidateRect(invalidationRect);
+    }
+
+    //LOG("Sending layer to display");
+    for (int i=0;i<_layers.count();i++)
+    {
+        Layer* layer = _layers.at(i);
+        if (layer->getContext() == DisplayContext::Fixed) continue;
+        layer->invalidateRect(invalidationRect);
+    }
 }
 
 

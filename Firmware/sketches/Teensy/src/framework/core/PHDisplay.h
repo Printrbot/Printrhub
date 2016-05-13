@@ -36,7 +36,7 @@ public:
     virtual void resetClippingRect();
     virtual void setBackgroundColor(uint16_t backgroundColor) { _backgroundColor = backgroundColor; };
     virtual uint16_t getBackgroundColor() { return _backgroundColor; };
-    void invalidateRect();
+    void invalidateRect(Rect invalidationRect);
     void invalidateRect(Rect &invalidationRect, int scrollOffset, int deltaScrollOffset);
     virtual void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) override;
     virtual void drawPixel(int16_t x, int16_t y, uint16_t color) override;

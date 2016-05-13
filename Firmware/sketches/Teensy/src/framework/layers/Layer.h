@@ -46,6 +46,7 @@ public:
     void display(Layer* backgroundLayer=NULL);
     Rect getRenderFrame();
     bool isVisible();
+	void setVisible(const bool visible);
 	virtual Rect prepareRenderFrame(const Rect proposedRenderFrame);
 
 #pragma mark Misc
@@ -62,6 +63,7 @@ protected:
     bool _needsDisplay;
     int uniqueId;
     StackArray<Layer*>* _sublayers;
+	bool _visible;
 };
 
 

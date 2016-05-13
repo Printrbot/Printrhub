@@ -45,6 +45,8 @@ View::View(Rect frame)
 	_userInteractionEnabled = true;
 	_name = "Untitled";
 	_context = DisplayContext::Scrolling;
+	_visible = true;
+	_needsDisplay = true;
 }
 
 void View::draw()
@@ -172,12 +174,16 @@ void View::display()
 void View::addLayer(Layer *layer)
 {
 	layer->setContext(getContext());
+	layer->setVisible(isVisible());
 	_layers.push(layer);
 }
 
 void View::setFrame(Rect frame)
 {
-	UIElement::setFrame(frame);
+	_frame.x = frame.x;
+	_frame.y = frame.y;
+	_frame.width = frame.width;
+	_frame.height = frame.height;
 
 	Display.setNeedsLayout();
 }

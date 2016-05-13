@@ -11,7 +11,8 @@ _strokeColor(ILI9341_BLACK),
 _backgroundColor(ILI9341_BLACK),
 _strokeWidth(0),
 _sublayers(NULL),
-_needsDisplay(true)
+_needsDisplay(true),
+_visible(true)
 {
     ::globalLayersCreated++;
 
@@ -296,7 +297,7 @@ void Layer::display(Layer* backgroundLayer)
             {
                 if (isVisible())
                 {
-                    if (Display.debug) LOG("Drawing");
+                    //if (Display.debug) LOG("Drawing");
                     draw(_frame);
                 }
                 else
@@ -315,7 +316,7 @@ void Layer::display(Layer* backgroundLayer)
                 {
                     if (isVisible())
                     {
-                        if (Display.debug) LOG("Drawing");
+                        //if (Display.debug) LOG("Drawing");
                         draw(_frame);
                     }
                     else
@@ -346,6 +347,8 @@ void Layer::display(Layer* backgroundLayer)
 
 void Layer::invalidateRect(Rect &invalidationRect)
 {
+    if (!isVisible()) return;
+
     if (_sublayers == NULL || _sublayers->count() <= 0)
     {
         if (_frame.intersectsRect(invalidationRect))
@@ -474,6 +477,8 @@ Rect Layer::getRenderFrame()
 
 bool Layer::isVisible()
 {
+    if (!_visible) return false;
+
     Rect visibleFrame = Display.visibleRect();
     if (visibleFrame.intersectsRect(_frame))
     {
@@ -481,6 +486,12 @@ bool Layer::isVisible()
     }
 
     return false;
+}
+
+
+void Layer::setVisible(const bool visible)
+{
+    _visible = visible;
 }
 
 
