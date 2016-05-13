@@ -28,6 +28,8 @@ ApplicationClass::ApplicationClass()
 	_touched = false;
 	_nextScene = NULL;
 	_currentScene = NULL;
+	_lastTime = 0;
+	_deltaTime = 0;
 }
 
 ApplicationClass::~ApplicationClass()
@@ -143,8 +145,21 @@ void ApplicationClass::loop()
 		//Touch handling
 		handleTouches();
 
+		//Calculate Delta Time
+		unsigned long currentTime = millis();
+		if (currentTime < _lastTime)
+		{
+			//millis overflowed, just set delta to 0
+			_deltaTime = 0;
+		}
+		else
+		{
+			_deltaTime = (float)(currentTime - _lastTime)/1000.0f;
+		}
+
 		//Run the scenes loop function
 		sceneController->loop();
+		_lastTime = millis();
 
 		//Relayout screen tiles
 		Display.layoutIfNeeded();
@@ -181,3 +196,16 @@ ColorTheme* ApplicationClass::getTheme()
 {
 	return &_theme;
 }
+
+
+void ApplicationClass::sendScreenshot()
+{
+
+}
+
+
+float ApplicationClass::getDeltaTime()
+{
+	return _deltaTime;
+}
+

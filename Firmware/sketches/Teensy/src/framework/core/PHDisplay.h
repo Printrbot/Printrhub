@@ -70,6 +70,7 @@ public:
     uint16_t getLayoutStart();
     void cropRectToScreen(Rect& rect);
 	int mapScrollOffset(int scrollOffset);
+	virtual float clampScrollTarget(float scrollTarget);
 
 #pragma mark Member Variables
 public:

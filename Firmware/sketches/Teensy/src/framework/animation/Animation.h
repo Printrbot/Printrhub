@@ -82,5 +82,109 @@ public:
 	};
 };
 
+//Formulas taken from http://gizma.com/easing/
+class AnimationCurve
+{
+public:
+	static float linear(float t, float b, float c, float d) {
+		return c*t/d + b;
+	}
+	static float easeInQuad(float t, float b, float c, float d) {
+			t /= d;
+			return c*t*t + b;
+	};
+	static float easeOutQuad(float t, float b, float c, float d) {
+		t /= d;
+		return -c * t*(t-2) + b;
+	};
+	static float easeInOutQuad(float t, float b, float c, float d) {
+		t /= d/2;
+		if (t < 1) return c/2*t*t + b;
+		t--;
+		return -c/2 * (t*(t-2) - 1) + b;
+	}
+	static float easeInCubic(float t, float b, float c, float d) {
+		t /= d;
+		return c*t*t*t + b;
+	};
+	static float easeOutCubic(float t, float b, float c, float d) {
+		t /= d;
+		t--;
+		return c*(t*t*t + 1) + b;
+	};
+	static float easeInOutCubic(float t, float b, float c, float d) {
+		t /= d/2;
+		if (t < 1) return c/2*t*t*t + b;
+		t -= 2;
+		return c/2*(t*t*t + 2) + b;
+	}
+	static float easeInQuart(float t, float b, float c, float d) {
+		t /= d;
+		return c*t*t*t*t + b;
+	};
+	static float easeOutQuart(float t, float b, float c, float d) {
+		t /= d;
+		t--;
+		return -c * (t*t*t*t - 1) + b;
+	};
+	static float easeInOutQuart(float t, float b, float c, float d) {
+		t /= d/2;
+		if (t < 1) return c/2*t*t*t*t + b;
+		t -= 2;
+		return -c/2 * (t*t*t*t - 2) + b;
+	}
+	static float easeInQuint(float t, float b, float c, float d) {
+		t /= d;
+		return c*t*t*t*t*t + b;
+	};
+	static float easeOutQuint(float t, float b, float c, float d) {
+		t /= d;
+		t--;
+		return c*(t*t*t*t*t + 1) + b;
+	};
+	static float easeInOutQuint(float t, float b, float c, float d) {
+		t /= d/2;
+		if (t < 1) return c/2*t*t*t*t*t + b;
+		t -= 2;
+		return c/2*(t*t*t*t*t + 2) + b;
+	}
+	static float easeInSine(float t, float b, float c, float d) {
+		return -c/2 * (cosf(M_PI*t/d) - 1) + b;
+	};
+	static float easeOutSine(float t, float b, float c, float d) {
+		return c * sinf(t/d * (M_PI/2)) + b;
+	};
+	static float easeInOutSine(float t, float b, float c, float d) {
+		return -c/2 * (cosf(M_PI*t/d) - 1) + b;
+	}
+	static float easeInExpo(float t, float b, float c, float d) {
+		return c * powf( 2, 10 * (t/d - 1) ) + b;
+	};
+	static float easeOutExpo(float t, float b, float c, float d) {
+		return c * ( -powf( 2, -10 * t/d ) + 1 ) + b;
+	};
+	static float easeInOutExpo(float t, float b, float c, float d) {
+		t /= d/2;
+		if (t < 1) return c/2 * powf( 2, 10 * (t - 1) ) + b;
+		t--;
+		return c/2 * ( -powf( 2, -10 * t) + 2 ) + b;
+	}
+	static float easeInCirc(float t, float b, float c, float d) {
+		t /= d;
+		return -c * (sqrtf(1 - t*t) - 1) + b;
+	};
+	static float easeOutCirc(float t, float b, float c, float d) {
+		t /= d;
+		t--;
+		return c * sqrtf(1 - t*t) + b;
+	};
+	static float easeInOutCirc(float t, float b, float c, float d) {
+		t /= d/2;
+		if (t < 1) return -c/2 * (sqrtf(1 - t*t) - 1) + b;
+		t -= 2;
+		return c/2 * (sqrtf(1 - t*t) + 1) + b;
+	}
+};
+
 
 #endif //_TEENSYCMAKE_ANIMATION_H_

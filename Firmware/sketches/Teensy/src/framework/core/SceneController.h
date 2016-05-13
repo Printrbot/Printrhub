@@ -23,6 +23,12 @@
 #include "Application.h"
 #include "../../framework/animation/Animation.h"
 
+typedef enum SnapMode {
+	Disabled = 0,
+	OneByOne = 1,
+	Flick = 2
+};
+
 class SceneController: public AnimatableObject
 {
 #pragma mark Constructor
@@ -52,14 +58,18 @@ public:
 	virtual void handleTouchUp(TS_Point& point);
 	virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint);
 
+#pragma mark Getter/Setter
 	virtual uint16_t getBackgroundColor();
 
 #pragma mark Scrolling
 private:
 	void addScrollOffset(float scrollOffset);
+
+	virtual void setDecelerationRate(const float decelerationRate) { _decelerationRate = decelerationRate; };
 public:
-	void setScrollSnap(const float scrollSnap) { _scrollSnap = scrollSnap; };
-	float getScrollSnap() const { return _scrollSnap; };
+	virtual void setScrollSnap(const float scrollSnap, const SnapMode snapMode) { _scrollSnap = scrollSnap; _snapMode = snapMode; };
+	virtual float getScrollSnapTileSize() const { return _scrollSnap; };
+	virtual SnapMode getSnapMode() const { return _snapMode; };
 
 #pragma mark Member Variables
 private:
@@ -68,6 +78,10 @@ private:
 	float _scrollOffset;
 	float _scrollVelocity;
 	float _scrollSnap;
+	SnapMode _snapMode;
+	float _decelerationRate;
+	float _currentDecelerationRate;
+	Animation* _scrollAnimation;
 };
 
 

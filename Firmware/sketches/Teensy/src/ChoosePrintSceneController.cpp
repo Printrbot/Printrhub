@@ -52,7 +52,7 @@ const uint8_t *ChoosePrintSceneController::getSidebarIcon()
 
 void ChoosePrintSceneController::onWillAppear()
 {
-    setScrollSnap(Display.getLayoutWidth());
+    setScrollSnap(Display.getLayoutWidth(), SnapMode::Flick);
 
     //As the model views are distributed as opaque, seamless tiles we don't need auto layout as we don't have spaces where
     //background shines through

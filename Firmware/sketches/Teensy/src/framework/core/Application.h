@@ -32,10 +32,10 @@
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
-#define logError(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg)
+#define logError(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg ": ")
 
-#define LOG(m) Serial.println(m)
-#define LOG_VALUE(m,v) Serial.print(m);Serial.print(logError(m));Serial.println(v);
+#define LOG(m) Serial.print(logError(m));Serial.println(m)
+#define LOG_VALUE(m,v) Serial.print(logError(m));Serial.println(v);
 
 #define TFT_BACKLIGHT_PWM 22
 
@@ -63,6 +63,9 @@ public:
 #pragma mark Misc
 	void sendScreenshot();
 
+#pragma mark Time Management
+	float getDeltaTime();
+
 #pragma mark Member Variables
 private:
 	bool _firstSceneLoop;
@@ -71,6 +74,8 @@ private:
 	TS_Point _lastTouchPoint;
 	SceneController *_nextScene;
 	SceneController *_currentScene;
+	unsigned long _lastTime;
+	float _deltaTime;
 };
 
 extern ApplicationClass Application;

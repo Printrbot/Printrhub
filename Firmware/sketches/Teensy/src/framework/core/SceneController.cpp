@@ -24,6 +24,8 @@ SceneController::SceneController()
 	_currentTouchedView = NULL;
 	_scrollOffset = 0;
 	_scrollSnap = 0;
+	_decelerationRate = 270.0f*7;   //Pixels per Second
+	_scrollAnimation = NULL;
 }
 
 SceneController::~SceneController()
@@ -43,12 +45,12 @@ void SceneController::loop()
 	{
 		if (_scrollVelocity > 0)
 		{
-			_scrollVelocity -= fabs(_scrollVelocity) * 0.1 * 0.5;
+			_scrollVelocity -= (_decelerationRate * Application.getDeltaTime());
 			if (_scrollVelocity < 0) _scrollVelocity = 0;
 		}
 		else if (_scrollVelocity < 0)
 		{
-			_scrollVelocity += fabs(_scrollVelocity) * 0.1 * 0.5;
+			_scrollVelocity += (_decelerationRate * Application.getDeltaTime());
 			if (_scrollVelocity > 0) _scrollVelocity = 0;
 		}
 
@@ -83,6 +85,7 @@ void SceneController::setupDisplay()
 {
 	Display.setScrollInsets(0,0);
 	Display.setScroll(0);
+	_scrollOffset = 0;
 }
 
 void SceneController::onWillDisappear()
@@ -97,8 +100,21 @@ String SceneController::getName()
 
 void SceneController::handleTouchDown(TS_Point &point)
 {
+	LOG("Check");
+	//Stop scrolling immediately
+	_scrollVelocity = 0;
+
+	if (_scrollAnimation != NULL)
+	{
+		_scrollAnimation->stop();
+		_scrollAnimation = NULL;
+	}
+
+	LOG("Check");
+
 	for (int i=0;i<_views.count();i++)
 	{
+		LOG("Check");
 		View* view = _views.at(i);
 		View* hitView = view->hitTest(point);
 		if (hitView != NULL)
@@ -107,11 +123,13 @@ void SceneController::handleTouchDown(TS_Point &point)
 			//Break out if the view returns true, means it has handled the event
 			if (hitView->touchDown(point))
 			{
+				LOG("Check");
 				_currentTouchedView = hitView;
 				break;
 			}
 		}
 	}
+	LOG("Check");
 }
 
 void SceneController::handleTouchUp(TS_Point &point)
@@ -148,15 +166,75 @@ void SceneController::handleTouchUp(TS_Point &point)
 	}
 
 	//Handle snapping
-	if (_scrollSnap != 0)
+	if (_snapMode == SnapMode::OneByOne)
 	{
+		if (_scrollAnimation != NULL)
+		{
+			_scrollAnimation->stop();
+		}
 		float scrollOffset = roundf(_scrollOffset / _scrollSnap) * _scrollSnap;
 		Animation* animation = Animator.getAnimationSlot();
-		animation->setTargetValue(scrollOffset);
-		animation->setDuration(0.2);
-		animation->setKey("scrollOffset");
-		animation->setInitialValue(_scrollOffset);
-		addAnimation(animation);
+		if (!animation != NULL)
+		{
+			animation->setTargetValue(scrollOffset);
+			animation->setDuration(0.2);
+			animation->setKey("scrollOffset");
+			animation->setInitialValue(_scrollOffset);
+			addAnimation(animation);
+			_scrollAnimation = animation;
+		}
+	}
+	else
+	{
+		//Calculate Target Offset based on current speed and decelerationRate
+		float stoppingDistance = (_scrollVelocity*_scrollVelocity)/(2*_decelerationRate);
+		float targetOffset = _scrollOffset;
+
+		//Clamp snapping distance to max 3 slots
+		float maxDistance = _scrollSnap*2;
+		if (stoppingDistance < -maxDistance)
+		{
+			stoppingDistance = -maxDistance;
+		}
+		if (stoppingDistance > maxDistance)
+		{
+			stoppingDistance = maxDistance;
+		}
+
+		if (_scrollVelocity > 0)
+		{
+			targetOffset = _scrollOffset + stoppingDistance;
+		}
+		else
+		{
+			targetOffset = _scrollOffset - stoppingDistance;
+		}
+
+		//Clamp the scroll target that it fits in the current space
+		float snapPosition = roundf(targetOffset/_scrollSnap) * _scrollSnap;
+		snapPosition = Display.clampScrollTarget(snapPosition);
+
+		LOG_VALUE("Velocity",_scrollVelocity);
+		LOG_VALUE("Stopping-Distance",stoppingDistance);
+		LOG_VALUE("Offset",_scrollOffset);
+		LOG_VALUE("Target-Offset",targetOffset);
+		LOG_VALUE("Snap-Position",snapPosition);
+
+		_scrollVelocity = 0;
+		if (_scrollAnimation != NULL)
+		{
+			_scrollAnimation->stop();
+		}
+		Animation* animation = Animator.getAnimationSlot();
+		if (animation != NULL)
+		{
+			animation->setTargetValue(snapPosition);
+			animation->setDuration(0.6);
+			animation->setKey("scrollOffset");
+			animation->setInitialValue(_scrollOffset);
+			addAnimation(animation);
+			_scrollAnimation = animation;
+		}
 	}
 }
 
@@ -165,7 +243,7 @@ void SceneController::addScrollOffset(float scrollOffset)
 	if (scrollOffset == 0) return;
 
 	//_scrollOffset += scrollOffset;
-	LOG_VALUE("_scrollOffset: ",scrollOffset + _scrollOffset);
+	//LOG_VALUE("_scrollOffset: ",scrollOffset + _scrollOffset);
 
 	Display.setScrollOffset(_scrollOffset + scrollOffset);
 	_scrollOffset = Display.getScrollOffset();
@@ -198,12 +276,16 @@ void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
 	LOG("Handle Scrolling");
 
 	//Handle Scrolling
-	_scrollVelocity = point.x - oldPoint.x;
+	_scrollVelocity = 0;
+	if (Application.getDeltaTime() > 0)
+	{
+		_scrollVelocity = (point.x - oldPoint.x)/Application.getDeltaTime();
+	}
 
 	LOG_VALUE("Point.X: ",point.x);
 	LOG_VALUE("OldPoint.X: ",oldPoint.x);
 	LOG_VALUE("Velocity: ",_scrollVelocity);
-	addScrollOffset(_scrollVelocity);
+	addScrollOffset((point.x - oldPoint.x));
 }
 
 uint16_t SceneController::getBackgroundColor()
@@ -216,10 +298,10 @@ uint16_t SceneController::getBackgroundColor()
 
 void SceneController::animationUpdated(Animation *animation, float currentValue, float deltaValue, float timeLeft)
 {
-	//if (animation->getKey() == "scrollOffset")
+	if (animation == _scrollAnimation)
 	{
-		LOG_VALUE("Animation-Delta",deltaValue);
-		LOG_VALUE("Animation-Current",currentValue);
+		//LOG_VALUE("Animation-Delta",deltaValue);
+		//LOG_VALUE("Animation-Current",currentValue);
 
 		addScrollOffset(deltaValue);
 	}
@@ -227,6 +309,12 @@ void SceneController::animationUpdated(Animation *animation, float currentValue,
 
 void SceneController::animationFinished(Animation *animation)
 {
+	if (animation == _scrollAnimation)
+	{
+		LOG("Scroll animation finished");
+		_scrollAnimation = NULL;
+	}
+
 	AnimatableObject::animationFinished(animation);
 }
 

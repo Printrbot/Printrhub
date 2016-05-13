@@ -12,15 +12,11 @@
 #define SPICLOCK 30000000
 
 PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint8_t _SCLK, uint8_t _MISO):
-        ILI9341_t3(_CS,_DC,_RST,_MOSI,_SCLK,_MISO)
+        ILI9341_t3(_CS,_DC,_RST,_MOSI,_SCLK,_MISO),
+        _foregroundLayer(NULL),
+        _backgroundLayer(NULL)
 {
-    _foregroundLayer = new RectangleLayer(Rect(0,0,650,240));
-    _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
-    _foregroundLayer->setStrokeWidth(0);
-
-    _backgroundLayer = new RectangleLayer(Rect(0,0,650,240));
-    _backgroundLayer->setBackgroundColor(ILI9341_WHITE);
-    _backgroundLayer->setStrokeWidth(0);
+    setupBuffers();
 
     _needsLayout = true;
     _fixedBackgroundLayer = NULL;
@@ -48,22 +44,34 @@ void PHDisplay::setFixedBackgroundLayer(Layer *layer)
 
 void PHDisplay::setupBuffers()
 {
-    _foregroundLayer = new RectangleLayer(Rect(0,0,320,240));
+    if (_foregroundLayer != NULL)
+    {
+        delete _foregroundLayer;
+        _foregroundLayer = NULL;
+    }
+    if (_backgroundLayer != NULL)
+    {
+        delete _backgroundLayer;
+        _backgroundLayer = NULL;
+    }
+
+    _foregroundLayer = new RectangleLayer(Rect(0,0,650,240));
     _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
     _foregroundLayer->setStrokeWidth(0);
 
-    _backgroundLayer = new RectangleLayer(Rect(0,0,320,240));
+    _backgroundLayer = new RectangleLayer(Rect(0,0,650,240));
     _backgroundLayer->setBackgroundColor(ILI9341_WHITE);
     _backgroundLayer->setStrokeWidth(0);
 }
 
 void PHDisplay::clear()
 {
-    _backgroundLayer->removeAllSublayers();
-    _foregroundLayer->removeAllSublayers();
+    setupBuffers();
     _layers.clear(false);
     _needsLayout = true;
     _autoLayout = true;
+    _fixedBackgroundLayer = NULL;
+    _scrollOffset = 0;
 }
 
 void PHDisplay::cropRectToScreen(Rect &rect)
@@ -391,9 +399,24 @@ int PHDisplay::mapScrollOffset(int so)
     return so;
 }
 
+
+float PHDisplay::clampScrollTarget(float scrollTarget)
+{
+    if (scrollTarget < -((_foregroundLayer->getFrame().width-1)-getLayoutWidth()))
+    {
+        scrollTarget = -((_foregroundLayer->getFrame().width-1)-getLayoutWidth());
+    }
+    if (scrollTarget > 0)
+    {
+        scrollTarget = 0;
+    }
+
+    return scrollTarget;
+}
+
 void PHDisplay::setScrollOffset(float scrollOffset)
 {
-    LOG_VALUE("Layout-Width: ",(_foregroundLayer->getFrame().width-1));
+   // LOG_VALUE("Layout-Width: ",(_foregroundLayer->getFrame().width-1));
     if (scrollOffset < -((_foregroundLayer->getFrame().width-1)-getLayoutWidth()))
     {
         scrollOffset = -((_foregroundLayer->getFrame().width-1)-getLayoutWidth());

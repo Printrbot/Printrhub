@@ -149,8 +149,7 @@ void Animation::update()
 	}
 	else
 	{
-		float factor = difference / _duration;
-		_currentValue = _initialValue + (factor * (_targetValue - _initialValue));
+		_currentValue = AnimationCurve::easeOutQuad(difference,_initialValue,_targetValue-_initialValue,_duration);
 	}
 
 	_object->animationUpdated(this, _currentValue, _currentValue - oldValue, (_duration - difference));

@@ -54,7 +54,7 @@ void SettingsSceneController::setupButton(LabelButton* button)
 
 void SettingsSceneController::onWillAppear()
 {
-    setScrollSnap(Display.getLayoutWidth());
+    setScrollSnap(Display.getLayoutWidth(), SnapMode::Flick);
 
     _wifiSettingsButton = new LabelButton("WIFI SETTINGS",Rect(15,10,Display.getLayoutWidth()-15-15,40));
     _wifiSettingsButton->setName("wifi");
