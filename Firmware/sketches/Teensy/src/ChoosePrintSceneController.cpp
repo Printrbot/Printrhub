@@ -53,6 +53,10 @@ void ChoosePrintSceneController::onWillAppear()
 {
     setScrollSnap(Display.getLayoutWidth());
 
+    //As the model views are distributed as opaque, seamless tiles we don't need auto layout as we don't have spaces where
+    //background shines through
+    Display.disableAutoLayout();
+
     ModelView* modelView = new ModelView(Rect(0,0,270,240));
     modelView->setJobName("Simple Metal Feet");
     modelView->setImageFileName("feet.dat");

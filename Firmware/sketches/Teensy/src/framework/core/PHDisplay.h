@@ -22,7 +22,7 @@ public:
 
 #pragma Layer Management
     virtual void addLayer(Layer* layer);
-    virtual void clear();
+    virtual void clear();   //Automatically enables auto layout. Use disableAutoLayout to disable it
     void setupBuffers();
 
 #pragma mark Draw Code and Display
@@ -46,6 +46,7 @@ public:
 	virtual void waitForTap();
 	virtual Rect prepareRenderFrame(const Rect proposedRenderFrame, DisplayContext context);
 	virtual void drawImageBuffer(ImageBuffer* imageBuffer, Rect renderFrame);
+	virtual void disableAutoLayout();   //Use clear to enable auto layout again
 
 #pragma mark Render To Buffer
 	virtual void lockBuffer(ImageBuffer* imageBuffer);
@@ -87,6 +88,7 @@ private:
     uint16_t _backgroundColor;
 	Layer* _fixedBackgroundLayer;
 	ImageBuffer* _lockBuffer;
+	bool _autoLayout;
 
 
 };

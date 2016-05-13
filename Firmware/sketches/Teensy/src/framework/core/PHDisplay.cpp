@@ -63,6 +63,7 @@ void PHDisplay::clear()
     _foregroundLayer->removeAllSublayers();
     _layers.clear(false);
     _needsLayout = true;
+    _autoLayout = true;
 }
 
 void PHDisplay::cropRectToScreen(Rect &rect)
@@ -130,6 +131,9 @@ void PHDisplay::layoutIfNeeded()
     _foregroundLayer->setBackgroundColor(backgroundColor);
     _foregroundLayer->setStrokeWidth(0);
 
+    //We have calculated the width for scrolling, if we don't use auto layout stop work now
+    if (!_autoLayout) return;
+
     for (int i=0;i<_layers.count();i++)
     {
         Layer *layer = _layers.at(i);
@@ -151,7 +155,10 @@ void PHDisplay::dispatch()
     }
     else
     {
-        _foregroundLayer->display(_backgroundLayer);
+        if (_autoLayout)
+        {
+            _foregroundLayer->display(_backgroundLayer);
+        }
     }
 
     //LOG("Sending layer to display");
@@ -296,41 +303,20 @@ void PHDisplay::invalidateRect(Rect &invalidationRect, int scrollOffset, int del
 
     if (deltaScrollOffset > 0)
     {
-        //Create a buffer that we render in
-/*        ImageBuffer imageBuffer(invalidationRect.width,invalidationRect.height);
-        imageBuffer.setTranslation(-invalidationRect.x,-invalidationRect.y);
-        Display.lockBuffer(&imageBuffer);
-
-        //Render the layers
-        Rect subRect = invalidationRect;
-        _foregroundLayer->invalidateRect(subRect);
-
-        //LOG("Sending layer to display");
-        for (int i=0;i<_layers.count();i++)
-        {
-            Layer* layer = _layers.at(i);
-            if (layer->getContext() == DisplayContext::Fixed) continue;
-            layer->invalidateRect(subRect);
-        }
-
-        //Unlock the display
-        Display.unlock();
-
-        invalidationRect = Display.prepareRenderFrame(invalidationRect,DisplayContext::Scrolling);
-        Display.drawImageBuffer(&imageBuffer,invalidationRect);*/
-
         int so = mapScrollOffset(scrollOffset);
         Display.setScroll(so);
 
-        Rect subRect = invalidationRect;
-        _foregroundLayer->invalidateRect(subRect);
+        if (_autoLayout)
+        {
+            _foregroundLayer->invalidateRect(invalidationRect);
+        }
 
         //LOG("Sending layer to display");
         for (int i=0;i<_layers.count();i++)
         {
             Layer* layer = _layers.at(i);
             if (layer->getContext() == DisplayContext::Fixed) continue;
-            layer->invalidateRect(subRect);
+            layer->invalidateRect(invalidationRect);
         }
     }
     else
@@ -338,7 +324,10 @@ void PHDisplay::invalidateRect(Rect &invalidationRect, int scrollOffset, int del
         int so = mapScrollOffset(scrollOffset);
         Display.setScroll(so);
 
-        _foregroundLayer->invalidateRect(invalidationRect);
+        if (_autoLayout)
+        {
+            _foregroundLayer->invalidateRect(invalidationRect);
+        }
 
         //LOG("Sending layer to display");
         for (int i=0;i<_layers.count();i++)
@@ -678,6 +667,11 @@ void PHDisplay::debugLayer(Layer *layer, bool fill, uint16_t color, bool waitFor
 
 void PHDisplay::waitForTap()
 {
+    while (Touch.touched())
+    {
+        delay(10);
+    };
+
     while(!Touch.touched())
     {
         delay(10);
@@ -737,4 +731,11 @@ void PHDisplay::drawImageBuffer(ImageBuffer *imageBuffer, Rect renderFrame)
     drawBitmap(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,imageBuffer->getData(),0,0,imageBuffer->getWidth(),imageBuffer->getHeight());
     //fillRect(renderFrame.x,renderFrame.y,renderFrame.width,renderFrame.height,ILI9341_PINK);
 }
+
+
+void PHDisplay::disableAutoLayout()
+{
+    _autoLayout = false;
+}
+
 
