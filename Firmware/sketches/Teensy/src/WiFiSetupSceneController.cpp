@@ -38,11 +38,6 @@ String WiFiSetupSceneController::getName()
     return "WiFiSetupSceneController";
 }
 
-void WiFiSetupSceneController::loop()
-{
-    SceneController::loop();
-}
-
 void WiFiSetupSceneController::onWillAppear()
 {
     SceneController::onWillAppear();

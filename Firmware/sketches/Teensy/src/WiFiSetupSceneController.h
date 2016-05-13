@@ -19,7 +19,6 @@ public:
     String getName();
 
     virtual void display();
-    virtual void loop();
 
 protected:
     StackArray<LabelView*> _labelViews;

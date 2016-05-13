@@ -55,11 +55,6 @@ String MainSceneController::getName()
     return "MainSceneController";
 }
 
-void MainSceneController::loop()
-{
-    SceneController::loop();
-}
-
 void MainSceneController::onWillAppear()
 {
     SceneController::onWillAppear();
