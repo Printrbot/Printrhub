@@ -9,6 +9,7 @@
 #include "ModelView.h"
 #include "MainSceneController.h"
 #include "drivers/SD/SD.h"
+#include "SettingsSceneController.h"
 
 ChoosePrintSceneController::ChoosePrintSceneController():
         SidebarSceneController::SidebarSceneController()
@@ -46,7 +47,7 @@ String ChoosePrintSceneController::getSidebarTitle() const
 
 const uint8_t *ChoosePrintSceneController::getSidebarIcon()
 {
-    return imageOfCancelIcon_24_24;
+    return imageOfWrenchIcon_24_24;
 }
 
 void ChoosePrintSceneController::onWillAppear()
