@@ -10,7 +10,7 @@
 #include "framework/views/LabelButton.h"
 #include "framework/views/ProgressBar.h"
 
-class LoadFilamentSceneController: public SidebarSceneController, public ButtonDelegate
+class LoadFilamentSceneController: public SidebarSceneController
 {
 #pragma mark Constructor
 public:

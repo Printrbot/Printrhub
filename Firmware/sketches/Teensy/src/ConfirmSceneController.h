@@ -10,7 +10,7 @@
 #include "framework/views/BitmapButton.h"
 #include "framework/views/LabelButton.h"
 
-class ConfirmSceneController: public SidebarSceneController, public ButtonDelegate
+class ConfirmSceneController: public SidebarSceneController
 {
 #pragma mark Constructor
 public:

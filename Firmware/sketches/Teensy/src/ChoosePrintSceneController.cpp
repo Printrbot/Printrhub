@@ -84,10 +84,18 @@ void ChoosePrintSceneController::onWillAppear()
     SidebarSceneController::onWillAppear();
 }
 
+
+void ChoosePrintSceneController::onSidebarButtonTouchUp()
+{
+    SettingsSceneController * scene = new SettingsSceneController();
+    Application.pushScene(scene);
+}
+
 #pragma mark ButtonDelegate Implementation
 
 void ChoosePrintSceneController::buttonPressed(void *button)
 {
     LOG("ChoosePrintSceneController::buttonPressed");
 
+    SidebarSceneController::buttonPressed(button);
 }

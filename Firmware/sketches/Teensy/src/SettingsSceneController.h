@@ -9,11 +9,13 @@
 #include "framework/views/BitmapButton.h"
 #include "framework/views/LabelButton.h"
 
-class SettingsSceneController: public SidebarSceneController, public ButtonDelegate
+class SettingsSceneController: public SidebarSceneController
 {
 #pragma mark Constructor
 public:
-    SettingsSceneController();
+	virtual void onSidebarButtonTouchUp() override;
+
+	SettingsSceneController();
     virtual ~SettingsSceneController();
 
 #pragma mark Sidebar Scene Controller

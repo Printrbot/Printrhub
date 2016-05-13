@@ -9,10 +9,12 @@
 #include "framework/layers/VerticalTextLayer.h"
 #include "framework/views/BitmapButton.h"
 
-class SidebarSceneController: public SceneController
+class SidebarSceneController: public SceneController, public ButtonDelegate
 {
 #pragma mark Constructor
 public:
+	virtual void buttonPressed(void *button) override;
+
 	virtual void setupDisplay() override;
 
 	SidebarSceneController();
@@ -21,6 +23,10 @@ public:
 #pragma mark Getter/Setter
 	virtual String getSidebarTitle() const = 0;
 	virtual const uint8_t* getSidebarIcon() = 0;
+	virtual BitmapButton* getSidebarButton() const { return _actionButton; };
+
+#pragma mark Events
+	virtual void onSidebarButtonTouchUp();
 
 #pragma mark Scene Controller
 	virtual void onWillAppear() override;

@@ -7,6 +7,7 @@
 #include "Bitmaps.h"
 #include "CleanPlasticSceneController.h"
 #include "ConfirmSceneController.h"
+#include "ChoosePrintSceneController.h"
 
 SettingsSceneController::SettingsSceneController():
         SidebarSceneController::SidebarSceneController()
@@ -93,6 +94,13 @@ void SettingsSceneController::onWillAppear()
     SidebarSceneController::onWillAppear();
 }
 
+
+void SettingsSceneController::onSidebarButtonTouchUp()
+{
+    ChoosePrintSceneController * scene = new ChoosePrintSceneController();
+    Application.pushScene(scene);
+}
+
 #pragma mark ButtonDelegate Implementation
 
 void SettingsSceneController::buttonPressed(void *button)
@@ -102,5 +110,7 @@ void SettingsSceneController::buttonPressed(void *button)
         ConfirmSceneController * scene = new ConfirmSceneController();
         Application.pushScene(scene);
     }
+
+    SidebarSceneController::buttonPressed(button);
 }
 

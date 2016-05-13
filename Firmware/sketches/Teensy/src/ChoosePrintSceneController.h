@@ -15,6 +15,8 @@ class ChoosePrintSceneController: public SidebarSceneController, ButtonDelegate
 {
 #pragma mark Constructor
 public:
+	virtual void onSidebarButtonTouchUp() override;
+
 	virtual String getSidebarTitle() const override;
 
 	virtual const uint8_t *getSidebarIcon() override;

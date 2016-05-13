@@ -12,7 +12,7 @@
 #include "framework/views/ProgressBar.h"
 #include "framework/layers/SDBitmapLayer.h"
 
-class PrintStatusSceneController: public SidebarSceneController, public ButtonDelegate
+class PrintStatusSceneController: public SidebarSceneController
 {
 #pragma mark Constructor
 public:

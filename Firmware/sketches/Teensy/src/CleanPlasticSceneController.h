@@ -9,7 +9,7 @@
 #include "framework/views/BitmapButton.h"
 #include "framework/views/LabelButton.h"
 
-class CleanPlasticSceneController: public SidebarSceneController, public ButtonDelegate
+class CleanPlasticSceneController: public SidebarSceneController
 {
 #pragma mark Constructor
 public:

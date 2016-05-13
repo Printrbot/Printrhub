@@ -36,6 +36,7 @@ void SidebarSceneController::setupSidebar()
 	_actionButton->setAlternateBackgroundColor(Application.getTheme()->getColor(HighlightAlternateBackgroundColor));
 	_actionButton->setAlternateTextColor(Application.getTheme()->getColor(HighlightAlternateTextColor));
 	_actionButton->setBitmap(getSidebarIcon(),24,24);
+	_actionButton->setDelegate(this);
 	addView(_actionButton);
 }
 
@@ -53,3 +54,20 @@ void SidebarSceneController::onWillAppear()
 
 	SceneController::onWillAppear();
 }
+
+
+void SidebarSceneController::onSidebarButtonTouchUp()
+{
+
+}
+
+#pragma mark Button Delegate
+
+void SidebarSceneController::buttonPressed(void *button)
+{
+	if (button == _actionButton)
+	{
+		onSidebarButtonTouchUp();
+	}
+}
+
