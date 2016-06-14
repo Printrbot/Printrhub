@@ -1,2 +1,3 @@
-node_modules/
-*.bin
+.pioenvs
+.clang_complete
+.gcc-flags.json

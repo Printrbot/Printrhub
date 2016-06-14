@@ -20,9 +20,9 @@
 //    SWD header      pin1 = 3.3v, pin2 = swdio, pin3 = gnd, pin4 = swdclk
 //    SWD over JTAG   TCLK = swdclk, TMS = swdio
 
-const int reset_pin = 4;
-const int swd_clock_pin = 3;
-const int swd_data_pin = 2;
+const int reset_pin = 13;
+const int swd_clock_pin = 4;
+const int swd_data_pin = 14;
 
 // Edit these in the YOUR-WIFI-CONFIG tab
 extern const char *host, *ssid, *password;
@@ -120,7 +120,7 @@ void flash()
     Serial.print("Num sectors: ");
     Serial.println(numSectors);
 
-    //delay(3000);    
+    //delay(3000);
 
     ARMKinetisDebug::FlashProgrammer programmer(target,(uint32_t*)firmware,numSectors);
     //ARMKinetisDebug::FlashProgrammer programmer(target,fw_data,fw_sectorCount);
@@ -137,16 +137,18 @@ void flash()
       }
     }*/
 
-    
+
 
     Serial.println("Resetting Chip");
     digitalWrite(reset_pin,LOW);
     delay(200);
     digitalWrite(reset_pin,HIGH);
 }
-
+/*
 void setup()
 {
+  pinMode(0,OUTPUT);
+  digitalWrite(0,HIGH);
     delay(2000);
     Serial.begin(115200);
     Serial.println("\n\n~ Starting up ~\n");
@@ -155,14 +157,14 @@ void setup()
     Serial.println("Reseting Teensy - the hard way");
     pinMode(reset_pin,OUTPUT);
     digitalWrite(reset_pin,LOW);
-    delay(1000);
+    delay(5000);
     digitalWrite(reset_pin,HIGH);
 
     Serial.println("Resetting Teensy done");
     delay(200);
 
     flash();
-    return;    
+    return;
 }
 
 void loop()
@@ -170,4 +172,19 @@ void loop()
     //server.handleClient();
     //delay(1);
     delay(10);
+}
+*/
+
+void setup() {
+  pinMode(0, OUTPUT);
+  pinMode(reset_pin,OUTPUT);
+}
+
+void loop() {
+  digitalWrite(0, HIGH);
+  delay(500);
+  digitalWrite(0,LOW);
+  delay(100);
+  digitalWrite(reset_pin,LOW);
+  delay(1000);
 }
