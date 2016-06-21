@@ -210,6 +210,8 @@ bool ARMDebug::regWrite(unsigned num, uint32_t data)
 
 bool ARMDebug::regRead(unsigned num, uint32_t& data)
 {
+  ESP.wdtFeed();
+
     num &= 0xFFFF;
     return memStore(REG_SCB_DCRSR, num)
         && regTransactionHandshake()
@@ -452,6 +454,7 @@ bool ARMDebug::dpReadPoll(unsigned addr, uint32_t &data, uint32_t mask, uint32_t
 {
     expected &= mask;
     do {
+        ESP.wdtFeed();
         if (!dpRead(addr, false, data))
             return false;
         if ((data & mask) == expected)
@@ -468,6 +471,7 @@ bool ARMDebug::apReadPoll(unsigned addr, uint32_t &data, uint32_t mask, uint32_t
 {
     expected &= mask;
     do {
+        ESP.wdtFeed();
         if (!apRead(addr, data))
             return false;
         if ((data & mask) == expected)
@@ -484,6 +488,7 @@ bool ARMDebug::memPoll(unsigned addr, uint32_t &data, uint32_t mask, uint32_t ex
 {
     expected &= mask;
     do {
+        ESP.wdtFeed();
         if (!memLoad(addr, data))
             return false;
         if ((data & mask) == expected)
@@ -500,6 +505,7 @@ bool ARMDebug::memPollByte(unsigned addr, uint8_t &data, uint8_t mask, uint8_t e
 {
     expected &= mask;
     do {
+        ESP.wdtFeed();
         if (!memLoadByte(addr, data))
             return false;
         if ((data & mask) == expected)
@@ -536,6 +542,7 @@ bool ARMDebug::dpWrite(unsigned addr, bool APnDP, uint32_t data)
     log(LOG_TRACE_DP, "DP  Write [%x:%x] %08x", addr, APnDP, data);
 
     do {
+        ESP.wdtFeed();
         wireWrite(packHeader(addr, APnDP, false), 8);
         wireReadTurnaround();
         ack = wireRead(3);
@@ -581,6 +588,7 @@ bool ARMDebug::dpRead(unsigned addr, bool APnDP, uint32_t &data)
     unsigned ack;
 
     do {
+        ESP.wdtFeed();
         wireWrite(packHeader(addr, APnDP, true), 8);
         wireReadTurnaround();
         ack = wireRead(3);

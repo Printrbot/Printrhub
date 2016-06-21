@@ -648,6 +648,7 @@
 
 // FlexRAM base address
 #define REG_FLEXRAM_BASE            0x14000000
+#define REG_APPLICATION_BASE        0x00000000
 
 // MDM-AP debug port registers
 #define REG_MDM_STATUS              0x01000000

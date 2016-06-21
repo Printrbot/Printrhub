@@ -1,19 +1,19 @@
 /*
  * Simple ARM debug interface for Arduino, using the SWD (Serial Wire Debug) port.
  * Extensions for Freescale Kinetis chips.
- * 
+ *
  * Copyright (c) 2013 Micah Elizabeth Scott
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -25,8 +25,6 @@
 #include <Arduino.h>
 #include "arm_kinetis_debug.h"
 #include "arm_kinetis_reg.h"
-
-#define FLASH_SECTOR_SIZE kFlashSectorSize
 
 ARMKinetisDebug::ARMKinetisDebug(unsigned clockPin, unsigned dataPin, LogLevel logLevel)
     : ARMDebug(clockPin, dataPin, logLevel)
@@ -61,22 +59,41 @@ bool ARMKinetisDebug::detect()
 bool ARMKinetisDebug::reset()
 {
     // System resets can be slow, give them more time than the default.
-    const unsigned resetRetries = 2000;
+    const unsigned resetRetries = 5000;
 
     // Put the control register in a known state, and make sure we aren't already in the middle of a reset
     uint32_t status;
     if (!apWrite(REG_MDM_CONTROL, REG_MDM_CONTROL_CORE_HOLD_RESET))
-        return false;
+    {
+      Serial.println("Setting REG_MDM_CONTROL_CORE_HOLD_RESET failed");
+      return false;
+    }
+
     if (!apReadPoll(REG_MDM_STATUS, status, REG_MDM_STATUS_SYS_NRESET, -1, resetRetries))
-        return false;
+    {
+      Serial.println("Reset status not verified");
+      return false;
+    }
 
     // System reset
     if (!apWrite(REG_MDM_CONTROL, REG_MDM_CONTROL_SYS_RESET_REQ))
-        return false;
+    {
+      Serial.println("Setting REG_MDM_CONTROL_SYS_RESET_REQ failed");
+      return false;
+    }
+
     if (!apReadPoll(REG_MDM_STATUS, status, REG_MDM_STATUS_SYS_NRESET, 0))
-        return false;
+    {
+      Serial.println("Verifing reset flag failed");
+      return false;
+    }
+
     if (!apWrite(REG_MDM_CONTROL, 0))
-        return false;
+    {
+      Serial.println("Resetting control register failed");
+      return false;
+    }
+
 
     // Wait until the flash controller is ready & system is out of reset.
     // Also wait for security bit to be cleared. Early in reset, the chip is determining
@@ -85,7 +102,11 @@ bool ARMKinetisDebug::reset()
             REG_MDM_STATUS_SYS_NRESET | REG_MDM_STATUS_FLASH_READY | REG_MDM_STATUS_SYS_SECURITY,
             REG_MDM_STATUS_SYS_NRESET | REG_MDM_STATUS_FLASH_READY,
             resetRetries))
-        return false;
+            {
+              Serial.println("Querying status flag for flash ready failed");
+              return false;
+            }
+
 
     return true;
 }
@@ -238,7 +259,7 @@ bool ARMKinetisDebug::flashMassErase()
     }
     if ((status & REG_MDM_STATUS_FLASH_ERASE_ACK)) {
         log(LOG_ERROR, "FLASH: Mass erase already in progress");
-        return false;
+        //return false;
     }
     if (!(status & REG_MDM_STATUS_MASS_ERASE_ENABLE)) {
         log(LOG_ERROR, "FLASH: Mass erase is disabled!");
@@ -304,7 +325,7 @@ bool ARMKinetisDebug::flashSectorBufferWrite(uint32_t bufferOffset, const uint32
 
 bool ARMKinetisDebug::flashSectorProgram(uint32_t address)
 {
-    if (address & (FLASH_SECTOR_SIZE-1)) {
+    if (address & (kFlashSectorSize-1)) {
         log(LOG_ERROR, "ARMKinetisDebug::flashSectorProgram alignment error");
         return false;
     }
@@ -328,7 +349,7 @@ bool ARMKinetisDebug::flashSectorErase(uint32_t address)
 bool ARMKinetisDebug::eraseEverything()
 {
     uint32_t status;
-    
+
     log(LOG_NORMAL, "FLASH: Beginning mass erase operation");
     if (!apWrite(REG_MDM_CONTROL, REG_MDM_CONTROL_MASS_ERASE))
         return false;
@@ -336,6 +357,13 @@ bool ARMKinetisDebug::eraseEverything()
     // Wait for the mass erase to begin (ACK bit set)
     if (!apReadPoll(REG_MDM_STATUS, status, 0, -1)) {
         log(LOG_ERROR, "FLASH: Timed out waiting for mass erase to begin");
+        return false;
+    }
+
+    // Wait for it to complete (CONTROL bit cleared)
+    uint32_t control;
+    if (!apReadPoll(REG_MDM_CONTROL, control, REG_MDM_CONTROL_MASS_ERASE, 0, 10000)) {
+        log(LOG_ERROR, "FLASH: Timed out waiting for mass erase to complete");
         return false;
     }
 
@@ -377,6 +405,8 @@ bool ARMKinetisDebug::ftfl_setFlexRAMFunction(uint8_t controlCode)
 
 bool ARMKinetisDebug::ftfl_programSection(uint32_t address, uint32_t numLWords)
 {
+    log(LOG_NORMAL,"Programming section at %08x, numWords: %08x",address,numLWords);
+
     return
         ftfl_busyWait() &&
         memStoreByte(REG_FTFL_FCCOB0, 0x0B) &&
@@ -400,8 +430,8 @@ bool ARMKinetisDebug::ftfl_programLongword(uint32_t address, const uint8_t* byte
         memStoreByte(REG_FTFL_FCCOB3, address) &&
         memStoreByte(REG_FTFL_FCCOB4, *(bytes+(3*sizeof(uint8_t)))) &&
         memStoreByte(REG_FTFL_FCCOB5, *(bytes+(2*sizeof(uint8_t)))) &&
-        memStoreByte(REG_FTFL_FCCOB6, *(bytes+(1*sizeof(uint8_t)))) &&        
-        memStoreByte(REG_FTFL_FCCOB7, *(bytes+(0*sizeof(uint8_t)))) &&        
+        memStoreByte(REG_FTFL_FCCOB6, *(bytes+(1*sizeof(uint8_t)))) &&
+        memStoreByte(REG_FTFL_FCCOB7, *(bytes+(0*sizeof(uint8_t)))) &&
         ftfl_launchCommand() &&
         ftfl_busyWait() &&
         ftfl_handleCommandStatus("FLASH: Error verifying sector! (FSTAT: %08x)");
@@ -443,6 +473,128 @@ bool ARMKinetisDebug::ftfl_handleCommandStatus(const char *cmdSpecificError)
     return true;
 }
 
+ARMKinetisDebug::Flasher::Flasher(ARMKinetisDebug &target):
+target(target)
+{
+}
+
+bool ARMKinetisDebug::Flasher::installFirmware(File *file)
+{
+    this->file = file;
+
+    Serial.println("Initialize flash process");
+    if (!begin()) return false;
+
+    Serial.println("Begin Flashing");
+    while (next())
+    {
+        address += 1024;
+    }
+
+    Serial.println("End flashing");
+    return true;
+}
+
+bool ARMKinetisDebug::Flasher::begin()
+{
+    // Use FlexRAM as normal RAM, for buffering flash sectors
+    if (!target.flashSectorBufferInit())
+    {
+        Serial.println("Failed to setup FlexRAM");
+        return false;
+    }
+
+    address = 0;
+
+    return true;
+}
+
+bool ARMKinetisDebug::Flasher::next()
+{
+/*    target.log(LOG_NORMAL, "FLASH: flashSectorErase");
+    if (!target.flashSectorErase(address+REG_APPLICATION_BASE))
+    {
+        target.log(LOG_NORMAL, "FLASH: flashSectorErase failed");
+        return false;
+    }
+    else
+    {
+        target.log(LOG_NORMAL, "Sector %08x erased", address+REG_APPLICATION_BASE);
+    }*/
+
+    bool result = true;
+    uint32_t bufferAddress = 0;
+    uint8_t word[4];
+    uint16_t i = 0;
+    memset(word,0,4);
+    while(bufferAddress < 256)
+    {
+        if (i > 0 && i % 4 == 0)
+        {
+            uint32_t data = (word[0] << 24) + (word[1] << 16) + (word[2] << 8) + word[3];
+            if (!target.memStore(bufferAddress + REG_FLEXRAM_BASE,data))
+            {
+                target.log(LOG_NORMAL, "FLASH: Failed to write longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",bufferAddress,word[0],word[1],word[2],word[3],data);
+            }
+            else
+            {
+                const uint8_t* bytes = &word[0];
+                uint8_t byte0 = *(bytes+(3*sizeof(uint8_t)));
+                uint8_t byte1 = *(bytes+(2*sizeof(uint8_t)));
+                uint8_t byte2 = *(bytes+(1*sizeof(uint8_t)));
+                uint8_t byte3 = *(bytes+(0*sizeof(uint8_t)));
+                target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",bufferAddress,byte0,byte1,byte2,byte3,data);
+            }
+
+            memset(word,0,4);
+            bufferAddress++;
+        }
+
+        int byte = file->read();
+        if (byte == -1)
+        {
+            result = false;
+            break;
+        }
+        else
+        {
+            word[i % 4] = byte;
+        }
+
+        ESP.wdtFeed();
+        i++;
+    }
+
+    if (result == false && i % 4 != 0)
+    {
+        Serial.println("Packing last word");
+
+        uint32_t data = (word[0] << 24) + (word[1] << 16) + (word[2] << 8) + word[3];
+        if (!target.memStore(bufferAddress+REG_FLEXRAM_BASE,data))
+        {
+            target.log(LOG_NORMAL, "FLASH: Failed to write longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",bufferAddress+REG_FLEXRAM_BASE,word[0],word[1],word[2],word[3],data);
+        }
+        else
+        {
+            const uint8_t* bytes = &word[0];
+            uint8_t byte0 = *(bytes+(3*sizeof(uint8_t)));
+            uint8_t byte1 = *(bytes+(2*sizeof(uint8_t)));
+            uint8_t byte2 = *(bytes+(1*sizeof(uint8_t)));
+            uint8_t byte3 = *(bytes+(0*sizeof(uint8_t)));
+            target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",bufferAddress+REG_FLEXRAM_BASE,byte0,byte1,byte2,byte3,data);
+        }
+    }
+
+    target.log(LOG_NORMAL, "FLASH: flashSectorProgram: %08x",address+REG_APPLICATION_BASE);
+    if (!target.ftfl_programSection(address+REG_APPLICATION_BASE, kFlashSectorSize/4))
+    {
+        target.log(LOG_NORMAL, "FLASH: flashSectorProgram failed");
+        return false;
+    }
+
+    return result;
+}
+
 ARMKinetisDebug::FlashProgrammer::FlashProgrammer(
     ARMKinetisDebug &target, const uint32_t *image, unsigned numSectors)
     : target(target), image(image), numSectors(numSectors)
@@ -457,7 +609,7 @@ bool ARMKinetisDebug::FlashProgrammer::begin()
 /*    if (!target.flashMassErase())
         return false;*/
 
-    delay(100);        
+    delay(100);
 
     // Reset again after mass erase, for new protection bits to take effect
     if (!(target.reset() && target.debugHalt() && target.initK20()))
@@ -469,7 +621,7 @@ bool ARMKinetisDebug::FlashProgrammer::begin()
     if (!target.flashSectorBufferInit())
         return false;
 
-    delay(100);        
+    delay(100);
 
     return true;
 }
@@ -478,15 +630,15 @@ bool ARMKinetisDebug::FlashProgrammer::installFirmware(const uint8_t* firmware, 
 {
   //Assert Reset Line
     Serial.println("Resetting Chip");
-    //::digitalWrite(4,LOW);    
-  
+    //::digitalWrite(4,LOW);
+
       // Start with a mass-erase
     if (!target.flashMassErase())
         return false;
 
         delay(200);
     //::digitalWrite(4,HIGH);
-        
+
     // Reset again after mass erase, for new protection bits to take effect
     if (!(target.reset() && target.debugHalt() && target.initK20()))
         return false;
@@ -505,12 +657,88 @@ bool ARMKinetisDebug::FlashProgrammer::installFirmware(const uint8_t* firmware, 
 uint8_t byte0 = *(bytes+(3*sizeof(uint8_t)));
   uint8_t byte1 = *(bytes+(2*sizeof(uint8_t)));
   uint8_t byte2 = *(bytes+(1*sizeof(uint8_t)));
-  uint8_t byte3 = *(bytes+(0*sizeof(uint8_t)));  
-        
-        target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, finished: %f",address,byte0,byte1,byte2,byte3,((float)address/(float)firmware_length)*100); 
+  uint8_t byte3 = *(bytes+(0*sizeof(uint8_t)));
+
+        target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, finished: %f",address,byte0,byte1,byte2,byte3,((float)address/(float)firmware_length)*100);
       }
     }
- 
+
+    return true;
+}
+
+bool ARMKinetisDebug::FlashProgrammer::installFirmware(File* file)
+{
+  //Assert Reset Line
+    Serial.println("Resetting Chip");
+    //::digitalWrite(4,LOW);
+
+      // Start with a mass-erase
+    if (!target.flashMassErase())
+        return false;
+
+        delay(200);
+    //::digitalWrite(4,HIGH);
+
+    // Reset again after mass erase, for new protection bits to take effect
+    if (!(target.reset() && target.debugHalt() && target.initK20()))
+        return false;
+
+    uint32_t address = 0;
+    uint8_t word[4];
+    memset(word,0,4);
+    for (address=0;address<file->size();address=address+1)
+    {
+      uint8_t byte = file->read();
+      if (address > 0 && address % 4 == 0)
+      {
+        //word[0] = file->read(word, 4);
+        if (!target.ftfl_programLongword(address-4,&word[0]))
+        {
+          target.log(LOG_ERROR, "FLASH: Failed to write longword at %08x",address-4);
+          return false;
+        }
+        else
+        {
+          const uint8_t* bytes = &word[0];
+          uint8_t byte0 = *(bytes+(3*sizeof(uint8_t)));
+          uint8_t byte1 = *(bytes+(2*sizeof(uint8_t)));
+          uint8_t byte2 = *(bytes+(1*sizeof(uint8_t)));
+          uint8_t byte3 = *(bytes+(0*sizeof(uint8_t)));
+          //target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, finished: %f",address-4,byte0,byte1,byte2,byte3,((float)address/(float)file->size())*100);
+        }
+
+        memset(word,0,4);
+      }
+
+      //target.log(LOG_NORMAL,"Read byte %02x, position in word %i, Address %i",byte,address%4,address);
+      word[address % 4] = byte;
+
+      ESP.wdtFeed();
+    }
+
+    if (address % 4 != 0)
+    {
+      address -= address % 4;
+      Serial.print("Wrote ");
+      Serial.print(address);
+      Serial.println(" bytes so far, a few left...");
+
+      if (!target.ftfl_programLongword(address,&word[0]))
+      {
+        target.log(LOG_ERROR, "FLASH: Failed to write longword at %08x",address);
+        return false;
+      }
+      else
+      {
+        const uint8_t* bytes = &word[0];
+        uint8_t byte0 = *(bytes+(3*sizeof(uint8_t)));
+        uint8_t byte1 = *(bytes+(2*sizeof(uint8_t)));
+        uint8_t byte2 = *(bytes+(1*sizeof(uint8_t)));
+        uint8_t byte3 = *(bytes+(0*sizeof(uint8_t)));
+        target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, finished: %f",address,byte0,byte1,byte2,byte3,((float)address/(float)file->size())*100);
+      }
+    }
+
     return true;
 }
 
@@ -521,19 +749,19 @@ bool ARMKinetisDebug::FlashProgrammer::isComplete()
 
 bool ARMKinetisDebug::FlashProgrammer::next()
 {
-    uint32_t address = nextSector * FLASH_SECTOR_SIZE;
-    const uint32_t *ptr = image + (nextSector * FLASH_SECTOR_SIZE/4);
+    uint32_t address = nextSector * kFlashSectorSize;
+    const uint32_t *ptr = image + (nextSector * kFlashSectorSize/4);
 
     if (isVerifying) {
         target.log(LOG_NORMAL, "FLASH: Verifying sector at %08x", address);
 
-        uint32_t buffer[FLASH_SECTOR_SIZE/4];
-        if (!target.memLoad(address, buffer, FLASH_SECTOR_SIZE/4))
+        uint32_t buffer[kFlashSectorSize/4];
+        if (!target.memLoad(address, buffer, kFlashSectorSize/4))
             return false;
 
         bool okay = true;
 
-        for (unsigned i = 0; i < FLASH_SECTOR_SIZE/4; i++) {
+        for (unsigned i = 0; i < kFlashSectorSize/4; i++) {
             if (buffer[i] != ptr[i]) {
                 target.log(LOG_ERROR, "FLASH: Verify error at %08x. Expected %08x, actual %08x",
                     address + i*4, ptr[i], buffer[i]);
@@ -561,10 +789,10 @@ bool ARMKinetisDebug::FlashProgrammer::next()
         else
         {
           target.log(LOG_NORMAL, "Sector %08x erased", address);
-        }        
+        }
 
         target.log(LOG_NORMAL, "FLASH: flashSectorBufferWrite");
-        if (!target.flashSectorBufferWrite(0, ptr, FLASH_SECTOR_SIZE/4))
+        if (!target.flashSectorBufferWrite(0, ptr, kFlashSectorSize/4))
         {
           target.log(LOG_NORMAL, "FLASH: flashSectorBufferWrite failed");
           return false;
@@ -579,7 +807,7 @@ bool ARMKinetisDebug::FlashProgrammer::next()
 
         if (++nextSector == numSectors) {
             target.log(LOG_NORMAL, "FLASH: Firmware written to device, resetting and verifying");
-            
+
             // Done programming. Another reset! Load new protection flags.
             if (!(target.reset() && target.debugHalt()))
                 return false;

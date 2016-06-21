@@ -24,6 +24,7 @@
 
 #pragma once
 #include "arm_debug.h"
+#include "FS.h"
 
 class ARMKinetisDebug : public ARMDebug
 {
@@ -69,7 +70,7 @@ public:
 
     bool eraseEverything();
 
-    
+
 
     /*
      * High-level flash programming manager. Handles the entire programming process,
@@ -82,6 +83,7 @@ public:
             bool isComplete();
             bool next();
             bool installFirmware(const uint8_t* firmware, uint32_t firmware_length);
+            bool installFirmware(File* file);
 
         private:
             ARMKinetisDebug &target;
@@ -89,6 +91,20 @@ public:
             unsigned numSectors;
             unsigned nextSector;
             bool isVerifying;
+    };
+
+    class Flasher {
+    public:
+        Flasher(ARMKinetisDebug &target);
+        bool installFirmware(File* file);
+
+    private:
+        ARMKinetisDebug &target;
+        File* file;
+        bool begin();
+        bool next();
+        uint32_t address;
+        uint8_t sector;
     };
 
     static const uint32_t kFlashSectorSize = 1024;
