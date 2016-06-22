@@ -348,6 +348,69 @@ bool ARMKinetisDebug::flashSectorErase(uint32_t address)
         ftfl_handleCommandStatus("FLASH: Error erasing sector! (FSTAT: %08x)");
 }
 
+bool ARMKinetisDebug::setProtectionBits(bool protect)
+{
+/*    if (!ftfl_busyWait())
+    {
+        log(LOG_ERROR,"Failed to wait for next command slot");
+        return false;
+    }
+
+    uint8_t data = 0xFF;
+    if (protect) data = 0x00;
+    if (!memStoreByte(REG_FTFL_FPROT0, data))
+    {
+        log(LOG_ERROR,"Failed to write protection bits to REG_FTFL_FPROT0");
+        return false;
+    }
+
+    if (!memStoreByte(REG_FTFL_FPROT1, data))
+    {
+        log(LOG_ERROR,"Failed to write protection bits to REG_FTFL_FPROT1");
+        return false;
+    }
+
+    if (!memStoreByte(REG_FTFL_FPROT2, data))
+    {
+        log(LOG_ERROR,"Failed to write protection bits to REG_FTFL_FPROT2");
+        return false;
+    }
+
+    if (!memStoreByte(REG_FTFL_FPROT3, data))
+    {
+        log(LOG_ERROR,"Failed to write protection bits to REG_FTFL_FPROT3");
+        return false;
+    }
+
+    if (!memStoreByte(REG_FTFL_FEPROT, data))
+    {
+        log(LOG_ERROR,"Failed to write protection bits to REG_FTFL_FEPROT");
+        return false;
+    }
+
+    if (!memStoreByte(REG_FTFL_FDPROT, data))
+    {
+        log(LOG_ERROR,"Failed to write protection bits to REG_FTFL_FPROT3");
+        return false;
+    }*/
+
+    return
+      ftfl_busyWait() &&
+      memStoreByte(REG_FTFL_FCCOB0, 0x06) &&
+      memStoreByte(REG_FTFL_FCCOB1, 0) &&
+      memStoreByte(REG_FTFL_FCCOB2, 4) &&
+      memStoreByte(REG_FTFL_FCCOB3, 0xC) &&
+      memStoreByte(REG_FTFL_FCCOB4, 0XFF) &&
+      memStoreByte(REG_FTFL_FCCOB5, 0XFF) &&
+      memStoreByte(REG_FTFL_FCCOB6, 0XFF) &&
+      memStoreByte(REG_FTFL_FCCOB7, 0XFE) &&
+      ftfl_launchCommand() &&
+      ftfl_busyWait() &&
+      ftfl_handleCommandStatus("FLASH: Error verifying sector! (FSTAT: %08x)");
+
+    return true;
+}
+
 bool ARMKinetisDebug::eraseEverything()
 {
     uint32_t status;
@@ -609,6 +672,21 @@ bool ARMKinetisDebug::Flasher::installFirmware(File *file)
 /*	target.log(LOG_NORMAL,"Resetting FlexRAM");
 	if (!end()) return false;*/
 
+    //target.log(LOG_NORMAL,"Setting protection bits");
+    //target.setProtectionBits(false);
+
+    target.log(LOG_NORMAL,"Verifying...");
+    uint32_t buffer[kFlashSectorSize/4];
+    if (!target.memLoad(0, buffer, kFlashSectorSize/4))
+    {
+        target.log(LOG_ERROR,"Failed to read memory block");
+        return false;
+    }
+
+    for (unsigned i = 0; i < kFlashSectorSize/4; i++) {
+        target.log(LOG_NORMAL,"Longword at %i: %08x",i,buffer[i]);
+    }
+
 	target.log(LOG_NORMAL,"Firmware update complete");
 
     return true;
@@ -692,6 +770,11 @@ bool ARMKinetisDebug::Flasher::next()
         }
         else
         {
+/*            if (address+i >=0x400 && address+i <= 0x40F)
+            {
+                target.log(LOG_NORMAL,"Overriding flash security bit");
+                byte = 0xFF;
+            }*/
             word[i % 4] = byte;
         }
 

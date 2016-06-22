@@ -70,7 +70,7 @@ public:
 
     bool eraseEverything();
 
-
+    bool setProtectionBits(bool protect);
 
     /*
      * High-level flash programming manager. Handles the entire programming process,

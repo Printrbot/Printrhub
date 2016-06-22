@@ -202,8 +202,8 @@ void setup()
     Serial.println(firmware_file.size());
     firmware_file.close();
 
-    Serial.println("Connecting to WiFi");
-    connectWiFi();
+    //Serial.println("Connecting to WiFi");
+    //connectWiFi();
 }
 
 // Attempt to connect to WiFi
@@ -244,118 +244,120 @@ void loop()
             delay(2000);
             if (digitalRead(0) == LOW)
             {
-                mode = 1;
+                mode = 2;
             }
         }
+    }
 
-        //Start Download
-        if (mode == 1)
+    //Start Download
+    if (mode == 1)
+    {
+        Serial.println("Starting firmware update, downloading file");
+
+        if (httpClient.get("www.appfruits.com",80,"/files/Blink.bin") != 0)
         {
-            Serial.println("Starting firmware update, downloading file");
+            Serial.println("Failed to request firmware file");
+            mode = 0;
+        }
+        else
+        {
+            err = httpClient.responseStatusCode();
+            if (err >= 0)
+            {
+                Serial.print("Got status code: ");
+                Serial.println(err);
 
-            if (httpClient.get("www.appfruits.com",80,"/files/Blink.bin") != 0)
-            {
-                Serial.println("Failed to request firmware file");
-                mode = 0;
-            }
-            else
-            {
-                err = httpClient.responseStatusCode();
+                // Usually you'd check that the response code is 200 or a
+                // similar "success" code (200-299) before carrying on,
+                // but we'll print out whatever response we get
+
+                err = httpClient.skipResponseHeaders();
                 if (err >= 0)
                 {
-                    Serial.print("Got status code: ");
-                    Serial.println(err);
+                    int bodyLen = httpClient.contentLength();
+                    Serial.print("Content length is: ");
+                    Serial.println(bodyLen);
+                    Serial.println();
 
-                    // Usually you'd check that the response code is 200 or a
-                    // similar "success" code (200-299) before carrying on,
-                    // but we'll print out whatever response we get
-
-                    err = httpClient.skipResponseHeaders();
-                    if (err >= 0)
-                    {
-                        int bodyLen = httpClient.contentLength();
-                        Serial.print("Content length is: ");
-                        Serial.println(bodyLen);
-                        Serial.println();
-
-                        firmware_file = SPIFFS.open("/firmware.bin","w");
-                        if (!firmware_file)
-                        {
-                            Serial.println("Failed to open firmware file for writing");
-                            mode = 0;
-                            return;
-                        }
-
-                        // Now we've got to the body, so we can print it out
-                        unsigned long timeoutStart = millis();
-                        char c;
-
-                        while ( (httpClient.connected() || httpClient.available()) &&
-                        ((millis() - timeoutStart) < kNetworkTimeout) )
-                        {
-                            ESP.wdtFeed();
-
-                            if (httpClient.available())
-                            {
-                                c = httpClient.read();
-                                // Print out this character
-
-                                firmware_file.write(c);
-
-                                bodyLen--;
-                                // We read something, reset the timeout counter
-                                timeoutStart = millis();
-                            }
-                            else
-                            {
-                                // We haven't got any data, so let's pause to allow some to
-                                // arrive
-                                delay(kNetworkDelay);
-                            }
-                        }
-
-                        firmware_file.close();
-                        Serial.println("Downloaded file");
-                        mode = 2;
-                    }
-                    else
-                    {
-                        Serial.print("Failed to skip response headers: ");
-                        Serial.println(err);
-                        mode = 0;
-                        return;
-                    }
-                }
-
-                //Download file
-                if (mode == 2)
-                {
-                    firmware_file = SPIFFS.open("/firmware.bin","r");
+                    firmware_file = SPIFFS.open("/firmware.bin","w");
                     if (!firmware_file)
                     {
-                        Serial.println("Failed to open firmware file for reading");
+                        Serial.println("Failed to open firmware file for writing");
                         mode = 0;
                         return;
                     }
 
-                    //Resetting Teensy
-                    Serial.println("Reseting Teensy - the hard way");
-                    pinMode(reset_pin,OUTPUT);
-                    digitalWrite(reset_pin,LOW);
-                    delay(500);
-                    digitalWrite(reset_pin,HIGH);
+                    // Now we've got to the body, so we can print it out
+                    unsigned long timeoutStart = millis();
+                    char c;
 
-                    Serial.println("Resetting Teensy done");
-                    delay(200);
+                    while ( (httpClient.connected() || httpClient.available()) &&
+                    ((millis() - timeoutStart) < kNetworkTimeout) )
+                    {
+                        ESP.wdtFeed();
 
-                    Serial.println("Flashing MK20");
-                    ESP.wdtDisable();
-                    flash();
-                    ESP.wdtEnable(10000);
-                    Serial.println("Flashing MK20 complete");
+                        if (httpClient.available())
+                        {
+                            c = httpClient.read();
+                            // Print out this character
+
+                            firmware_file.write(c);
+
+                            bodyLen--;
+                            // We read something, reset the timeout counter
+                            timeoutStart = millis();
+                        }
+                        else
+                        {
+                            // We haven't got any data, so let's pause to allow some to
+                            // arrive
+                            delay(kNetworkDelay);
+                        }
+                    }
+
+                    firmware_file.close();
+                    Serial.println("Downloaded file");
+                    mode = 2;
+                }
+                else
+                {
+                    Serial.print("Failed to skip response headers: ");
+                    Serial.println(err);
+                    mode = 0;
+                    return;
                 }
             }
         }
+    }
+
+    //Update Firmware
+    if (mode == 2)
+    {
+        firmware_file = SPIFFS.open("/firmware.bin","r");
+        if (!firmware_file)
+        {
+            Serial.println("Failed to open firmware file for reading");
+            mode = 0;
+            return;
+        }
+
+        //Resetting Teensy
+        Serial.println("Reseting Teensy - the hard way");
+        pinMode(reset_pin,OUTPUT);
+        digitalWrite(reset_pin,LOW);
+        delay(500);
+        digitalWrite(reset_pin,HIGH);
+
+        Serial.println("Resetting Teensy done");
+        delay(200);
+
+        Serial.println("Flashing MK20");
+        ESP.wdtDisable();
+        flash();
+        ESP.wdtEnable(10000);
+        Serial.println("Flashing MK20 complete");
+
+        mode = 0;
     }
 }
 
