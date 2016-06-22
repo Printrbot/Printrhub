@@ -158,8 +158,8 @@ void flash()
     //delay(3000);
 
     //ARMKinetisDebug::FlashProgrammer programmer(target,(uint32_t*)firmware,numSectors);
-    ARMKinetisDebug::FlashProgrammer programmer(target,fw_data,fw_sectorCount);
-    //ARMKinetisDebug::Flasher programmer(target);
+    //ARMKinetisDebug::FlashProgrammer programmer(target,fw_data,fw_sectorCount);
+    ARMKinetisDebug::Flasher programmer(target);
     if (!programmer.installFirmware(&firmware_file))
     {
         Serial.println("Failed to flash");
@@ -342,7 +342,7 @@ void loop()
                     Serial.println("Reseting Teensy - the hard way");
                     pinMode(reset_pin,OUTPUT);
                     digitalWrite(reset_pin,LOW);
-                    delay(5000);
+                    delay(500);
                     digitalWrite(reset_pin,HIGH);
 
                     Serial.println("Resetting Teensy done");

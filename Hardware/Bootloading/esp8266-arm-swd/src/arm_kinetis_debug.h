@@ -102,9 +102,12 @@ public:
         ARMKinetisDebug &target;
         File* file;
         bool begin();
+        bool end();
         bool next();
         uint32_t address;
         uint8_t sector;
+        int sectorSizeInBytes;
+        int byteAlignment;
     };
 
     static const uint32_t kFlashSectorSize = 1024;
@@ -177,4 +180,5 @@ protected:
     bool ftfl_programSection(uint32_t address, uint32_t numLWords);
     bool ftfl_handleCommandStatus(const char *cmdSpecificError = 0);
     bool ftfl_programLongword(uint32_t address, const uint8_t* bytes);
+    bool ftfl_programPartitionFunction(uint8_t eepromSize, uint8_t partitionCode);
 };
