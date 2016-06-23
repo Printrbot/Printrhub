@@ -175,6 +175,11 @@ void flash()
 
     firmware_file.close();
 
+    //Dump Memory
+    target.dumpSector(0);
+    target.dumpSector(1024);
+    target.dumpSector(2048);
+
     Serial.println("Resetting Chip");
     digitalWrite(reset_pin,LOW);
     delay(200);
@@ -203,7 +208,7 @@ void setup()
     firmware_file.close();
 
     //Serial.println("Connecting to WiFi");
-    //connectWiFi();
+    connectWiFi();
 }
 
 // Attempt to connect to WiFi
@@ -244,7 +249,7 @@ void loop()
             delay(2000);
             if (digitalRead(0) == LOW)
             {
-                mode = 2;
+                mode = 1;
             }
         }
     }

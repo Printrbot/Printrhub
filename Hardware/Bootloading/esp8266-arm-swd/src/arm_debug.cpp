@@ -302,6 +302,8 @@ bool ARMDebug::memStore(uint32_t addr, const uint32_t *data, unsigned count)
         return false;
 
     while (count) {
+        ESP.wdtFeed();
+
         log(LOG_TRACE_MEM, "MEM Store [%08x] %08x", addr, *data);
 
         if (!memWait())
@@ -327,6 +329,8 @@ bool ARMDebug::memLoad(uint32_t addr, uint32_t *data, unsigned count)
         return false;
 
     while (count) {
+        ESP.wdtFeed();
+
         if (!memWait())
             return false;
         if (!apRead(MEM_DRW, *data))

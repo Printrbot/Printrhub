@@ -72,6 +72,8 @@ public:
 
     bool setProtectionBits(bool protect);
 
+    bool dumpSector(uint32_t address);
+
     /*
      * High-level flash programming manager. Handles the entire programming process,
      * including protection resets and verification.
@@ -104,6 +106,7 @@ public:
         bool begin();
         bool end();
         bool next();
+        bool next2();
         uint32_t address;
         uint8_t sector;
         int sectorSizeInBytes;
@@ -172,6 +175,8 @@ public:
 
 protected:
     bool testMemoryAccess();
+
+
 
     // Low-level flash interface
     bool ftfl_busyWait();

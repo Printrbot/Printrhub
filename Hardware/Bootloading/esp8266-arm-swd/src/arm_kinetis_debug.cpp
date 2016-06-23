@@ -650,10 +650,12 @@ bool ARMKinetisDebug::Flasher::installFirmware(File *file)
     if (!begin()) return false;
 
     Serial.println("Begin Flashing");
-    while (next())
+/*    while (next())
     {
         address += sectorSizeInBytes;
-    }
+    }*/
+
+	next();
 
 	Serial.println("End flashing");
 
@@ -669,31 +671,45 @@ bool ARMKinetisDebug::Flasher::installFirmware(File *file)
 		return false;
 	}*/
 
-/*	target.log(LOG_NORMAL,"Resetting FlexRAM");
-	if (!end()) return false;*/
+	target.log(LOG_NORMAL,"Resetting FlexRAM");
+	if (!end()) return false;
 
     //target.log(LOG_NORMAL,"Setting protection bits");
     //target.setProtectionBits(false);
 
-    target.log(LOG_NORMAL,"Verifying...");
-    uint32_t buffer[kFlashSectorSize/4];
-    if (!target.memLoad(0, buffer, kFlashSectorSize/4))
-    {
-        target.log(LOG_ERROR,"Failed to read memory block");
-        return false;
-    }
-
-    for (unsigned i = 0; i < kFlashSectorSize/4; i++) {
-        target.log(LOG_NORMAL,"Longword at %i: %08x",i,buffer[i]);
-    }
 
 	target.log(LOG_NORMAL,"Firmware update complete");
 
     return true;
 }
 
+bool ARMKinetisDebug::dumpSector(uint32_t address)
+{
+	log(LOG_NORMAL,"Verifying...");
+	uint32_t buffer[kFlashSectorSize/4];
+	if (!memLoad(address, buffer, kFlashSectorSize/4))
+	{
+		log(LOG_ERROR,"Failed to read memory block");
+		return false;
+	}
+
+	for (unsigned i = 0; i < kFlashSectorSize/4; i++) {
+		log(LOG_NORMAL,"Longword at %i: %08x",i,buffer[i]);
+	}
+
+	return true;
+}
+
 bool ARMKinetisDebug::Flasher::begin()
 {
+/*	// Start with a mass-erase
+	target.log(LOG_NORMAL,"Erasing chip");
+	if (!target.flashMassErase())
+	{
+		target.log(LOG_ERROR,"Mass erase failed");
+		return false;
+	}
+*/
     // Use FlexRAM as normal RAM, for buffering flash sectors
     if (!target.flashSectorBufferInit())
     {
@@ -708,6 +724,20 @@ bool ARMKinetisDebug::Flasher::begin()
 
 bool ARMKinetisDebug::Flasher::end()
 {
+	target.log(LOG_NORMAL,"Resetting chip");
+	if (!target.reset())
+	{
+		target.log(LOG_ERROR,"Failed to reset device");
+		return false;
+	}
+
+	target.log(LOG_NORMAL,"Debug halt");
+	if (!target.debugHalt())
+	{
+		target.log(LOG_ERROR,"Failed to debug halt device");
+		return false;
+	}
+
 	//Partition data flash for EEPROM - values taken from Teensy-Core eeprom.c
 	if (!target.ftfl_programPartitionFunction(0x3,0x03))
 	{
@@ -715,6 +745,7 @@ bool ARMKinetisDebug::Flasher::end()
 		return false;
 	}
 
+	target.log(LOG_NORMAL,"Set FlexRAM to EEPROM mode");
 	//Set FlexRAM for EEPROM
 	if (!target.ftfl_setFlexRAMFunction(0x00))
 	{
@@ -726,6 +757,104 @@ bool ARMKinetisDebug::Flasher::end()
 }
 
 bool ARMKinetisDebug::Flasher::next()
+{
+	uint32_t address = 0;
+	uint8_t word[4];
+	memset(word,0,4);
+
+	uint32_t buffer[kFlashSectorSize/4];
+	memset(buffer,0,sizeof(uint32_t)*(kFlashSectorSize/4));
+	uint32_t bufferAddress = 0;
+	int sector = 0;
+
+	for (address=0;address<file->size();address=address+1)
+	{
+		uint8_t byte = file->read();
+		if (address > 0 && address % 4 == 0)
+		{
+			uint32_t data = (word[3] << 24) + (word[2] << 16) + (word[1] << 8) + word[0];
+			buffer[bufferAddress] = data;
+			//target.log(LOG_NORMAL, "FLASH: Wrote longword to buffer at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",address,word[0],word[1],word[2],word[3],data);
+			bufferAddress++;
+
+			if (bufferAddress >= kFlashSectorSize/4)
+			{
+				//Sector size is 2KB, buffer only 1KB, so we have to erase the section every second time
+				if (sector % 2 == 0)
+				{
+					target.log(LOG_NORMAL, "FLASH: flashSectorErase");
+					if (!target.flashSectorErase((sector*kFlashSectorSize)+REG_APPLICATION_BASE))
+					{
+						target.log(LOG_NORMAL, "FLASH: flashSectorErase failed");
+						return false;
+					}
+					else
+					{
+						target.log(LOG_NORMAL, "Sector %08x erased", (sector*kFlashSectorSize)+REG_APPLICATION_BASE);
+					}
+				}
+
+				//Write buffer to device
+				target.log(LOG_NORMAL,"Writing buffer to FlexRAM");
+				if (!target.flashSectorBufferWrite(0,buffer,kFlashSectorSize/4))
+				{
+					target.log(LOG_ERROR,"Failed to write buffer to FlexRAM");
+					return false;
+				}
+
+				target.log(LOG_NORMAL, "FLASH: flashSectorProgram: %08x",(sector*kFlashSectorSize)+REG_APPLICATION_BASE);
+				if (!target.ftfl_programSection((sector*kFlashSectorSize)+REG_APPLICATION_BASE, sectorSizeInBytes/8))
+				{
+					target.log(LOG_ERROR,"FLASH: flashSectorProgram failed 20 times in series - giving up.");
+					return false;
+				}
+
+				memset(buffer,0,sizeof(uint32_t)*(kFlashSectorSize/4));
+				bufferAddress = 0;
+				sector++;
+			}
+
+			memset(word,0,4);
+		}
+
+		//target.log(LOG_NORMAL,"Read byte %02x, position in word %i, Address %i",byte,address%4,address);
+		word[address % 4] = byte;
+
+		ESP.wdtFeed();
+	}
+
+	if (address % 4 != 0)
+	{
+		address -= address % 4;
+		Serial.print("Wrote ");
+		Serial.print(address);
+		Serial.println(" bytes so far, a few left...");
+
+		uint32_t data = (word[3] << 24) + (word[2] << 16) + (word[1] << 8) + word[0];
+		buffer[bufferAddress] = data;
+		target.log(LOG_NORMAL, "FLASH: Wrote longword to buffer at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",address,word[0],word[1],word[2],word[3],data);
+		bufferAddress++;
+	}
+
+	//Write buffer to device
+	target.log(LOG_NORMAL,"Writing buffer to FlexRAM");
+	if (!target.flashSectorBufferWrite(0,buffer,kFlashSectorSize/4))
+	{
+		target.log(LOG_ERROR,"Failed to write buffer to FlexRAM");
+		return false;
+	}
+
+	target.log(LOG_NORMAL, "FLASH: flashSectorProgram: %08x",(sector*kFlashSectorSize)+REG_APPLICATION_BASE);
+	if (!target.ftfl_programSection((sector*kFlashSectorSize)+REG_APPLICATION_BASE, sectorSizeInBytes/8))
+	{
+		target.log(LOG_ERROR,"FLASH: flashSectorProgram failed 20 times in series - giving up.");
+		return false;
+	}
+
+	return false;
+}
+
+bool ARMKinetisDebug::Flasher::next2()
 {
 /*    target.log(LOG_NORMAL, "FLASH: flashSectorErase");
     if (!target.flashSectorErase(address+REG_APPLICATION_BASE))
@@ -743,20 +872,30 @@ bool ARMKinetisDebug::Flasher::next()
     uint8_t word[4];
     uint16_t i = 0;
     memset(word,0,4);
+	uint32_t buffer[kFlashSectorSize/4];
+	memset(buffer,0,sizeof(uint32_t)*(kFlashSectorSize/4));
     while(bufferAddress < (sectorSizeInBytes/4))
     {
         if (i > 0 && i % 4 == 0)
         {
             //uint32_t data = (word[0] << 24) + (word[1] << 16) + (word[2] << 8) + word[3];
 	        uint32_t data = (word[3] << 24) + (word[2] << 16) + (word[1] << 8) + word[0];
-            if (!target.memStore(bufferAddress + REG_FLEXRAM_BASE,data))
+/*            if (!target.memStore(bufferAddress + REG_FLEXRAM_BASE,data))
             {
                 target.log(LOG_NORMAL, "FLASH: Failed to write longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",bufferAddress,word[0],word[1],word[2],word[3],data);
             }
             else
             {
                 target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",bufferAddress,word[0],word[1],word[2],word[3],data);
-            }
+            }*/
+
+	        if (address == 0 && bufferAddress < 4)
+	        {
+		        //data = 0xFFFFFFFF;
+	        }
+
+	        target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",bufferAddress,word[0],word[1],word[2],word[3],data);
+	        buffer[bufferAddress] = data;
 
             memset(word,0,4);
             bufferAddress++;
@@ -788,7 +927,7 @@ bool ARMKinetisDebug::Flasher::next()
 
 	    //uint32_t data = (word[0] << 24) + (word[1] << 16) + (word[2] << 8) + word[3];
 	    uint32_t data = (word[3] << 24) + (word[2] << 16) + (word[1] << 8) + word[0];
-        if (!target.memStore(bufferAddress+REG_FLEXRAM_BASE,data))
+/*        if (!target.memStore(bufferAddress+REG_FLEXRAM_BASE,data))
         {
             target.log(LOG_NORMAL, "FLASH: Failed to write longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",bufferAddress,word[0],word[1],word[2],word[3],data);
         }
@@ -800,11 +939,15 @@ bool ARMKinetisDebug::Flasher::next()
             uint8_t byte2 = *(bytes+(1*sizeof(uint8_t)));
             uint8_t byte3 = *(bytes+(0*sizeof(uint8_t)));
             target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",bufferAddress,byte0,byte1,byte2,byte3,data);
-        }
+        }*/
+
+	    target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",bufferAddress,word[0],word[1],word[2],word[3],data);
+
+	    buffer[bufferAddress] = data;
 
 	    bufferAddress++;
     }
-
+/*
 	//Fill rest of section with 0 bytes
 	while(bufferAddress < (sectorSizeInBytes/4))
 	{
@@ -819,6 +962,14 @@ bool ARMKinetisDebug::Flasher::next()
 		}
 
 		bufferAddress++;
+	}*/
+
+	//Write buffer to device
+	target.log(LOG_NORMAL,"Writing buffer to FlexRAM");
+	if (!target.flashSectorBufferWrite(0,buffer,kFlashSectorSize/4))
+	{
+		target.log(LOG_ERROR,"Failed to write buffer to FlexRAM");
+		return false;
 	}
 
     i = 0;
@@ -948,7 +1099,10 @@ bool ARMKinetisDebug::FlashProgrammer::installFirmware(File* file)
           uint8_t byte1 = *(bytes+(2*sizeof(uint8_t)));
           uint8_t byte2 = *(bytes+(1*sizeof(uint8_t)));
           uint8_t byte3 = *(bytes+(0*sizeof(uint8_t)));
-          //target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, finished: %f",address-4,byte0,byte1,byte2,byte3,((float)address/(float)file->size())*100);
+
+	      uint32_t data = (word[3] << 24) + (word[2] << 16) + (word[1] << 8) + word[0];
+
+          target.log(LOG_NORMAL, "FLASH: Wrote longword at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, word: %08x",address-4,byte0,byte1,byte2,byte3,data);
         }
 
         memset(word,0,4);
