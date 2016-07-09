@@ -23,6 +23,9 @@
 #include "StackArray.h"
 #include <WiFiClient.h>
 #include <ESP8266WiFi.h>
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>
+#include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
 
 // Pin definitions
 const int LED_PIN = 0;
@@ -59,6 +62,8 @@ private:
 	Mode *_currentMode;
 	unsigned long _lastTime;
 	float _deltaTime;
+	unsigned long _buttonPressedTime;
+	WiFiManager wiFiManager;
 };
 
 extern ApplicationClass Application;

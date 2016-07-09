@@ -18,6 +18,8 @@
 
 #include "Application.h"
 #include "Mode.h"
+#include <FS.h>
+#include "../MK20FirmwareUpdate.h"
 
 ApplicationClass Application;
 
@@ -28,6 +30,7 @@ ApplicationClass::ApplicationClass()
 	_currentMode = NULL;
 	_lastTime = 0;
 	_deltaTime = 0;
+	_buttonPressedTime = 0;
 }
 
 ApplicationClass::~ApplicationClass()
@@ -38,6 +41,9 @@ ApplicationClass::~ApplicationClass()
 void ApplicationClass::setup()
 {
 	Serial.begin(111520);
+	SPIFFS.begin();
+
+	//wiFiManager.autoConnect("Printrbot");
 }
 
 void ApplicationClass::loop()
@@ -88,6 +94,34 @@ void ApplicationClass::loop()
 		_lastTime = millis();
 
 		_firstModeLoop = false;
+	}
+
+	//Special mode - initiate firmware update by button pressed
+	if (digitalRead(0) == LOW)
+	{
+		if (_buttonPressedTime == 0)
+		{
+			_buttonPressedTime = millis();
+		}
+		else
+		{
+			if ((millis() - _buttonPressedTime) > 2000)
+			{
+				if (digitalRead(0) == LOW)
+				{
+					//Button pressed for two seconds
+					_buttonPressedTime = 0;
+
+					Mode* mode = new MK20FirmwareUpdate();
+					Application.pushMode(mode);
+					return;
+				}
+			}
+		}
+	}
+	else if (_buttonPressedTime > 0)
+	{
+		_buttonPressedTime = 0;
 	}
 }
 

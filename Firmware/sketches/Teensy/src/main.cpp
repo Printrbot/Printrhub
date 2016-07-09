@@ -83,7 +83,11 @@ void setup(void)
     Serial.begin(115200);
     Serial.println(F("Printrhub - LCD Controller and Hub for Printrbots!"));
 
+    //Initiate communication to Printerboard
     Serial1.begin(115200);
+
+    //Initiate communication pipeline to ESP8266
+    Serial3.begin(115200);
 
     //Pull backlight pin to turn on display backlight
     pinMode(TFT_BACKLIGHT_PWM,OUTPUT);
@@ -92,8 +96,8 @@ void setup(void)
 
     delay(100);
 
-    pinMode(7,INPUT);
-    pinMode(8,INPUT);
+//    pinMode(7,INPUT);
+//    pinMode(8,INPUT);
 
     Display.begin();
     //Rotate to landscape

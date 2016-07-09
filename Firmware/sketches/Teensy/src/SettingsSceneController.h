@@ -13,6 +13,8 @@ class SettingsSceneController: public SidebarSceneController
 {
 #pragma mark Constructor
 public:
+	virtual void loop() override;
+
 	virtual void onSidebarButtonTouchUp() override;
 
 	SettingsSceneController();
