@@ -29,6 +29,7 @@
 #include <Adafruit_FT6206.h>
 #include "../animation/Animator.h"
 #include "../../fonts/font_PT_Sans-Narrow-Web-Regular.h"
+#include "CommStack.h"
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
@@ -42,7 +43,7 @@
 class SceneController;
 class View;
 
-class ApplicationClass
+class ApplicationClass : public CommStackDelegate
 {
 #pragma mark Constructor
 public:
@@ -60,6 +61,11 @@ public:
 #pragma mark Color Theme
 	ColorTheme* getTheme();
 
+#pragma mark CommStackDelegate
+public:
+	CommStack* getESPStack();
+	bool runTask(CommHeader& header, Stream* stream);
+
 #pragma mark Misc
 	void sendScreenshot();
 
@@ -76,6 +82,7 @@ private:
 	SceneController *_currentScene;
 	unsigned long _lastTime;
 	float _deltaTime;
+	CommStack* _esp;
 };
 
 extern ApplicationClass Application;

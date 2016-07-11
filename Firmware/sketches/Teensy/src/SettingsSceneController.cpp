@@ -116,7 +116,7 @@ void SettingsSceneController::buttonPressed(void *button)
         Display.println("Talk to ESP ...");
 
         LOG("Request datetime from ESP8266");
-        LOG_VALUE("Sent number of bytes",Serial3.println("datetime"));
+        Application.getESPStack()->requestTask(GetTimeAndDate);
     }
 
     SidebarSceneController::buttonPressed(button);
@@ -126,18 +126,5 @@ void SettingsSceneController::buttonPressed(void *button)
 void SettingsSceneController::loop()
 {
     SceneController::loop();
-
-    if (Serial3.available())
-    {
-        Display.setCursor(10,20);
-        Display.println("Data available, reading...");
-
-        String datetime = Serial3.readStringUntil('\n');
-        LOG_VALUE("Received Datetime",datetime);
-
-        Display.setCursor(10,30);
-        Display.println("Received datetime from ESP");
-        Display.println(datetime);
-    }
 }
 

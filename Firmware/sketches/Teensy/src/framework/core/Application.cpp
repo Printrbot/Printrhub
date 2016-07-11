@@ -30,6 +30,7 @@ ApplicationClass::ApplicationClass()
 	_currentScene = NULL;
 	_lastTime = 0;
 	_deltaTime = 0;
+	_esp = new CommStack(&Serial3,this);
 }
 
 ApplicationClass::~ApplicationClass()
@@ -208,4 +209,35 @@ float ApplicationClass::getDeltaTime()
 {
 	return _deltaTime;
 }
+
+
+CommStack *ApplicationClass::getESPStack()
+{
+	return _esp;
+}
+
+bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
+{
+	LOG_VALUE("Running Task with ID",header.getCurrentTask());
+	LOG_VALUE("Comm-Type",header.commType);
+
+	if (header.getCurrentTask() == GetTimeAndDate)
+	{
+		if (header.commType == Response)
+		{
+			LOG("Loading Date and Time from ESP");
+			Display.setCursor(10,20);
+			Display.println("Data available, reading...");
+
+			String datetime = stream->readStringUntil('\n');
+			LOG_VALUE("Received Datetime",datetime);
+
+			Display.setCursor(10,30);
+			Display.println("Received datetime from ESP");
+			Display.println(datetime);
+		}
+	}
+	return true;
+}
+
 

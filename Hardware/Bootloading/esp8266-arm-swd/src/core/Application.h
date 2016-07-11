@@ -26,6 +26,7 @@
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
+#include "CommStack.h"
 
 // Pin definitions
 const int LED_PIN = 0;
@@ -39,7 +40,7 @@ const int LED_PIN = 0;
 
 class Mode;
 
-class ApplicationClass
+class ApplicationClass: CommStackDelegate
 {
 #pragma mark Constructor
 public:
@@ -55,6 +56,10 @@ public:
 #pragma mark Time Management
 	float getDeltaTime();
 
+#pragma mark CommStackDelegate
+public:
+	bool runTask(CommHeader& header, Stream* stream);
+
 #pragma mark Member Variables
 private:
 	bool _firstModeLoop;
@@ -64,6 +69,7 @@ private:
 	float _deltaTime;
 	unsigned long _buttonPressedTime;
 	WiFiManager wiFiManager;
+	CommStack* _mk20;
 };
 
 extern ApplicationClass Application;

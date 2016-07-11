@@ -31,11 +31,13 @@ ApplicationClass::ApplicationClass()
 	_lastTime = 0;
 	_deltaTime = 0;
 	_buttonPressedTime = 0;
+	_mk20 = new CommStack(&Serial,this);
 }
 
 ApplicationClass::~ApplicationClass()
 {
-
+	delete _mk20;
+	_mk20 = NULL;
 }
 
 void ApplicationClass::setup()
@@ -48,6 +50,11 @@ void ApplicationClass::setup()
 
 void ApplicationClass::loop()
 {
+	//Check MK20 communication by updating the comm stack. This may result in a call to
+	//the runTask member function which in turn most likely sets a new current mode controller
+	_mk20->process();
+
+	//Setup new controller and delete the old one if a new controller is pushed
 	if (_nextMode != NULL)
 	{
 		if (_currentMode != NULL)
@@ -135,4 +142,24 @@ void ApplicationClass::pushMode(Mode *mode)
 float ApplicationClass::getDeltaTime()
 {
 	return _deltaTime;
+}
+
+bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
+{
+	LOG_VALUE("Running Task with ID",header.getCurrentTask());
+	LOG_VALUE("Comm-Type",header.commType);
+	if (header.getCurrentTask() == GetTimeAndDate)
+	{
+		if (header.commType == Request)
+		{
+			LOG("Date and Time written zu Stream");
+			stream->println("2016-07-11 19:03:00 CEST");
+		}
+		else
+		{
+			LOG("Don't know what to do with a GetTimeAndDate Response");
+		}
+	}
+
+	return true;
 }
