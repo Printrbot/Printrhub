@@ -35,8 +35,8 @@ const int LED_PIN = 0;
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 #define logError(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg ": ")
 
-#define LOG(m) Serial.print(logError(m));Serial.println(m)
-#define LOG_VALUE(m,v) Serial.print(logError(m));Serial.println(v);
+#define LOG(m) /*Serial.print(logError(m));Serial.println(m)*/
+#define LOG_VALUE(m,v) /*Serial.print(logError(m));Serial.println(v);*/
 
 class Mode;
 
@@ -52,6 +52,7 @@ public:
 	void setup();
 	void pushMode(Mode* mode);
 	Mode* currentMode() { return _currentMode; };
+	void connectWiFi();
 
 #pragma mark Time Management
 	float getDeltaTime();

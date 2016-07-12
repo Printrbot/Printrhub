@@ -19,6 +19,7 @@
 #include "Application.h"
 #include "SceneController.h"
 #include "../animation/Animator.h"
+#include "../../DownloadFileController.h"
 
 ApplicationClass Application;
 
@@ -94,6 +95,9 @@ void ApplicationClass::loop()
 
 	//Clear the display
 	//Display.clear();
+
+	//Process Communication with ESP
+	_esp->process();
 
 	if (_nextScene != NULL)
 	{
@@ -235,6 +239,81 @@ bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
 			Display.setCursor(10,30);
 			Display.println("Received datetime from ESP");
 			Display.println(datetime);
+		}
+	}
+	else if (header.getCurrentTask() == GetJobWithID || header.getCurrentTask() == GetProjectItemWithID)
+	{
+		if (header.commType == Response)
+		{
+			//Wait for data to be arrived
+			while (!stream->available())
+			{
+				delay(10);
+			}
+
+			//First we ask for the job id which is sent using println on the other side so we read until a newline char
+			String jobID = stream->readStringUntil('\n');
+			LOG_VALUE("Got Response for GetJobWithID",jobID);
+
+			//Add file suffix to job
+			jobID = jobID + ".gcode";
+
+			//Open a file on SD card
+			File file = SD.open("job.gcode",O_WRITE);
+			if (!file.available())
+			{
+				//TODO: We should handle that. For now we will have to read data from ESP to clean the pipe but there should be better ways to handle errors
+			}
+
+			LOG("File opened for writing. Now waiting for number of bytes to read");
+
+			//Wait for data to be arrived
+			while (!stream->available())
+			{
+				delay(10);
+			}
+
+			//We asked for the job and now we got it, the next 4 bytes are the number of bytes sent next
+			int32_t numberOfBytes = 0;
+			int bytesRead = stream->readBytes((char*)&numberOfBytes,sizeof(int32_t));
+			if (bytesRead == sizeof(int32_t))
+			{
+				LOG_VALUE("Expecting data of size",numberOfBytes);
+
+				//We should have the correct number of bytes to read next
+				int32_t currentByteIndex = 0;
+				while (currentByteIndex < numberOfBytes)
+				{
+					if (stream->available())
+					{
+						int byteRead = stream->read();
+						if (byteRead >= 0)
+						{
+							file.write(byteRead);
+						}
+
+						currentByteIndex++;
+
+						if (currentByteIndex % 100 == 0)
+						{
+							float fraction = (float)currentByteIndex / (float)numberOfBytes;
+							DownloadFileController* downloadFileScene = (DownloadFileController*)_currentScene;
+							downloadFileScene->getProgressBar()->setValue(fraction);
+
+							LOG_VALUE("Download-Progress",fraction);
+
+							//Update the display - we need to do that here as wo don't run the application loop which does call this method each "frame"
+							Display.dispatch();
+						}
+					}
+				}
+
+				LOG("Finished downloading file");
+				LOG_VALUE("Download bytes",currentByteIndex);
+				LOG_VALUE("Expected number of bytes",numberOfBytes);
+
+				file.close();
+			}
 		}
 	}
 	return true;

@@ -12,6 +12,7 @@
 #include "SettingsSceneController.h"
 #include "ConfirmSceneController.h"
 #include "PrintStatusSceneController.h"
+#include "DownloadFileController.h"
 
 ChoosePrintSceneController::ChoosePrintSceneController():
         SidebarSceneController::SidebarSceneController()
@@ -135,9 +136,20 @@ void ChoosePrintSceneController::buttonPressed(void *button)
 {
     if (button == _printButton)
     {
-        LOG_VALUE("Printing Job-Nr",getPageIndex());
-        PrintStatusSceneController * scene = new PrintStatusSceneController();
-        Application.pushScene(scene);
+        bool jobExists = false;
+
+        if (jobExists)
+        {
+            LOG_VALUE("Printing Job-Nr",getPageIndex());
+            PrintStatusSceneController * scene = new PrintStatusSceneController();
+            Application.pushScene(scene);
+        }
+        else
+        {
+            LOG_VALUE("Need to download file",getPageIndex());
+            DownloadFileController* scene = new DownloadFileController();
+            Application.pushScene(scene);
+        }
     }
 
     SidebarSceneController::buttonPressed(button);

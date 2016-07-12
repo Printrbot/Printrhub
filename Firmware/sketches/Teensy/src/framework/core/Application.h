@@ -34,8 +34,9 @@
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 #define logError(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg ": ")
+#define logString(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg)
 
-#define LOG(m) Serial.print(logError(m));Serial.println(m)
+#define LOG(m) Serial.println(logString(m));
 #define LOG_VALUE(m,v) Serial.print(logError(m));Serial.println(v);
 
 #define TFT_BACKLIGHT_PWM 22

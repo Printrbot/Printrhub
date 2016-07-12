@@ -34,7 +34,7 @@ bool CommStack::prepareResponse(CommHeader *commHeader)
     }
     else
     {
-        commHeader->commType = Response;
+        commHeader->commType = Request;
         commHeader->currentTaskIndex++;
 
         if (commHeader->isFinished())
@@ -86,6 +86,11 @@ void CommStack::process()
                         //We got the header, run the task
                         _delegate->runTask(header,_port);
                     }
+                }
+                else
+                {
+                    LOG("All tasks finished, running last task");
+                    _delegate->runTask(header,_port);
                 }
             }
         }

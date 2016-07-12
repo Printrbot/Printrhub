@@ -20,6 +20,16 @@
 #include "Mode.h"
 #include <FS.h>
 #include "../MK20FirmwareUpdate.h"
+#include <HttpClient.h>
+
+//WiFi Setup
+const char WIFI_SSID[] = "Blue";
+const char WIFI_PSK[] = "lmaPS2009";
+
+// Number of milliseconds to wait without receiving any data before we give up
+const int kNetworkTimeout = 30*1000;
+// Number of milliseconds to wait if no data is available before trying again
+const int kNetworkDelay = 1000;
 
 ApplicationClass Application;
 
@@ -40,10 +50,41 @@ ApplicationClass::~ApplicationClass()
 	_mk20 = NULL;
 }
 
+void ApplicationClass::connectWiFi()
+{
+	byte led_status = 0;
+
+	// Set WiFi mode to station (client)
+	WiFi.mode(WIFI_STA);
+
+	// Initiate connection with SSID and PSK
+	WiFi.begin(WIFI_SSID, WIFI_PSK);
+
+	// Blink LED while we wait for WiFi connection
+	while ( WiFi.status() != WL_CONNECTED ) {
+		digitalWrite(LED_PIN, led_status);
+		led_status ^= 0x01;
+		delay(100);
+	}
+
+	// Turn LED on when we are connected
+	digitalWrite(LED_PIN, HIGH);
+}
+
+
 void ApplicationClass::setup()
 {
-	Serial.begin(111520);
+	const int CTSPin = 13; // GPIO13 for CTS input
+	const int RTSPin = 15;
+	pinMode(CTSPin, FUNCTION_4); // make pin U0CTS
+	pinMode(RTSPin, FUNCTION_4); // make pin U0RTS
+	U0C0 |= UCTXHFE; //add this sentense to add a tx flow control via MTCK( CTS ) - See more at: http://www.esp8266.com/viewtopic.php?f=27&t=8560#sthash.Os3nf7qX.dpuf
+	U0C1 |= UCRXHFE; //attach RTS
+
+	Serial.begin(230400);
 	SPIFFS.begin();
+
+	connectWiFi();
 
 	//wiFiManager.autoConnect("Printrbot");
 }
@@ -158,6 +199,104 @@ bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
 		else
 		{
 			LOG("Don't know what to do with a GetTimeAndDate Response");
+		}
+	}
+	else if (header.getCurrentTask() == GetJobWithID)
+	{
+		if (header.commType == Request)
+		{
+			//Read the job id
+			String jobID = stream->readStringUntil('\n');
+
+			//Write job ID back
+			stream->println(jobID);
+
+			int err = 0;
+			WiFiClient client;
+			HttpClient httpClient(client);
+			if (httpClient.get("www.appfruits.com", 80, jobID.c_str()) == 0)
+			{
+				err = httpClient.responseStatusCode();
+				if (err >= 0)
+				{
+					err = httpClient.skipResponseHeaders();
+					if (err >= 0)
+					{
+						int32_t bodyLen = httpClient.contentLength();
+
+						//Write the number of bytes to the stream
+						stream->write((char*)&bodyLen,sizeof(int32_t));
+
+						// Now we've got to the body, so we can print it out
+						unsigned long timeoutStart = millis();
+						char c;
+
+						while ((httpClient.connected() || httpClient.available()) &&
+						       ((millis() - timeoutStart) < kNetworkTimeout))
+						{
+							ESP.wdtFeed();
+
+							if (httpClient.available())
+							{
+								c = httpClient.read();
+								// Print out this character
+
+								stream->write(c);
+
+								bodyLen--;
+								// We read something, reset the timeout counter
+								timeoutStart = millis();
+							}
+							else
+							{
+								// We haven't got any data, so let's pause to allow some to
+								// arrive
+								delay(kNetworkDelay);
+							}
+						}
+
+						//All data sent
+						return true;
+					}
+				}
+			}
+
+			//If we are here something went wrong
+		}
+	}
+	else if (header.getCurrentTask() == GetProjectItemWithID)
+	{
+		if (header.commType == Request)
+		{
+			ESP.wdtFeed();
+
+			String jobID = stream->readStringUntil('\n');
+			LOG_VALUE("GetProjectItemWithID received with JobID",jobID);
+
+			//Write job ID back
+			stream->println(jobID);
+
+			int32_t numberOfBytes = 300000;
+			int8_t byte = 12;
+			int32_t currentByteIndex = 0;
+
+			//Write the number of bytes to the stream
+			stream->write((char*)&numberOfBytes,sizeof(int32_t));
+
+			while (currentByteIndex < numberOfBytes)
+			{
+				ESP.wdtFeed();
+
+				while(stream->write(byte) <= 0)
+				{
+					ESP.wdtFeed();
+					delay(10);
+				}
+				currentByteIndex++;
+				//byte++;
+			}
+
+			return true;
 		}
 	}
 
