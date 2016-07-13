@@ -98,6 +98,17 @@ String SceneController::getName()
 	return "SceneController";
 }
 
+bool SceneController::handlesTask(TaskID taskID)
+{
+	//Let Application do the hard work
+	return false;
+}
+
+bool SceneController::runTask(CommHeader &header, Stream *stream)
+{
+	return true;
+}
+
 void SceneController::handleTouchDown(TS_Point &point)
 {
 	//Stop scrolling immediately

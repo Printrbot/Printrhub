@@ -22,6 +22,7 @@
 #include "../views/View.h"
 #include "Application.h"
 #include "../../framework/animation/Animation.h"
+#include "CommStack.h"
 
 typedef enum SnapMode {
 	Disabled = 0,
@@ -45,6 +46,8 @@ public:
 	virtual void onWillAppear();
 	virtual void setupDisplay();
 	virtual void onWillDisappear();
+	virtual bool handlesTask(TaskID taskID);
+	virtual bool runTask(CommHeader& header, Stream* stream);
 
 #pragma mark Misc
 	virtual String getName() = 0;

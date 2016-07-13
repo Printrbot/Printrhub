@@ -20,11 +20,12 @@
 #include "Mode.h"
 #include <FS.h>
 #include "../MK20FirmwareUpdate.h"
+#include "../DownloadFileToSDCard.h"
 #include <HttpClient.h>
 
 //WiFi Setup
-const char WIFI_SSID[] = "Blue";
-const char WIFI_PSK[] = "lmaPS2009";
+const char WIFI_SSID[] = "Apple Network 123";
+const char WIFI_PSK[] = "2287143359371763";
 
 // Number of milliseconds to wait without receiving any data before we give up
 const int kNetworkTimeout = 30*1000;
@@ -202,6 +203,18 @@ bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
 		}
 	}
 	else if (header.getCurrentTask() == GetJobWithID)
+	{
+		//Read the job id
+		String jobID = stream->readStringUntil('\n');
+
+		//Write job ID back to start file download and transfer
+		stream->println(jobID);
+
+		//Initiate mode for file download
+		DownloadFileToSDCard* mode = new DownloadFileToSDCard(jobID);
+		pushMode(mode);
+	}
+	else if (header.getCurrentTask() == -1000)//GetJobWithID)	//Disabled
 	{
 		if (header.commType == Request)
 		{

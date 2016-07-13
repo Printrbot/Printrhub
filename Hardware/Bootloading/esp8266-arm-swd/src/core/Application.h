@@ -53,6 +53,7 @@ public:
 	void pushMode(Mode* mode);
 	Mode* currentMode() { return _currentMode; };
 	void connectWiFi();
+	CommStack* getMK20Stack() const { return _mk20; };
 
 #pragma mark Time Management
 	float getDeltaTime();

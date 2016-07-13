@@ -22,7 +22,11 @@ enum TaskID : uint8_t {
     PrintProjectWithID = 3,
     GetTimeAndDate = 4,
     GetProjectItemWithID = 5,
-    GetJobWithID = 6
+    GetJobWithID = 6,
+    FileOpenForWrite = 7,
+    FileSendData = 8,
+    FileClose = 9,
+    Error = 10,
 };
 
 struct CommHeader {
@@ -90,6 +94,7 @@ public:
     void process();
     bool requestTask(TaskID task);
     bool requestTasks(TaskID* tasks);
+    Stream* getPort() const { return _port; };
 
 private:
     bool readHeader(CommHeader* commHeader);

@@ -75,6 +75,76 @@ void DownloadFileController::onSidebarButtonTouchUp()
 	Application.pushScene(scene);
 }
 
+bool DownloadFileController::handlesTask(TaskID taskID)
+{
+	if (taskID == GetJobWithID || taskID == FileSendData || taskID == FileClose || taskID == Error) return true;
+	return false;
+}
+
+bool DownloadFileController::runTask(CommHeader &header, Stream *stream)
+{
+	if (header.getCurrentTask() == GetJobWithID)
+	{
+		if (header.commType == Response)
+		{
+			//Wait for data to be arrived
+			while (!stream->available())
+			{
+				delay(10);
+			}
+
+			//First we ask for the job id which is sent using println on the other side so we read until a newline char
+			String jobID = stream->readStringUntil('\n');
+			LOG_VALUE("Got Response for GetJobWithID",jobID);
+
+			//Add file suffix to job
+			jobID = jobID + ".gcode";
+
+			//Open a file on SD card
+			_file = SD.open("job.gcode",O_WRITE);
+			if (!_file.available())
+			{
+				//TODO: We should handle that. For now we will have to read data from ESP to clean the pipe but there should be better ways to handle errors
+				Application.getESPStack()->requestTask(Error);
+				return false;
+			}
+
+			LOG("File opened for writing. Now waiting for number of bytes to read");
+		}
+	}
+	else if (header.getCurrentTask() == FileSendData)
+	{
+		if (header.commType == Request)
+		{
+			//Wait for data to be arrived
+			while (!stream->available())
+			{
+				delay(10);
+			}
+
+			uint8_t numberOfBytes = stream->read();
+			uint8_t byteIndex = 0;
+
+			while (!stream->available())
+			{
+				delay(10);
+			}
+
+			uint8_t buffer[numberOfBytes];
+			if (stream->readBytes(buffer,numberOfBytes) == numberOfBytes)
+			{
+				_file.write(buffer,numberOfBytes);
+			}
+		}
+	}
+	else if (header.getCurrentTask() == FileClose)
+	{
+		_file.close();
+
+		PrintStatusSceneController* scene = new PrintStatusSceneController();
+		Application.pushScene(scene);
+	}
+}
 
 #pragma mark ButtonDelegate Implementation
 

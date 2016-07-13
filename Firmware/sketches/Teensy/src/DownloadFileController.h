@@ -29,6 +29,8 @@ private:
 	String getName();
 	virtual void onWillAppear() override;
 	virtual uint16_t getBackgroundColor() override;
+	virtual bool handlesTask(TaskID taskID);
+	virtual bool runTask(CommHeader& header, Stream* stream);
 
 #pragma mark Button Delegate
 private:
@@ -42,6 +44,7 @@ public:
 private:
 	ProgressBar* _progressBar;
 	TextLayer* _nameLayer;
+	File _file;
 };
 
 

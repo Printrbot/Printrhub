@@ -22,35 +22,44 @@ enum TaskID : uint8_t {
     PrintProjectWithID = 3,
     GetTimeAndDate = 4,
     GetProjectItemWithID = 5,
-    GetJobWithID = 6
+    GetJobWithID = 6,
+    FileOpenForWrite = 7,
+    FileSendData = 8,
+    FileClose = 9,
+    Error = 10,
 };
 
 struct CommHeader {
+public:
+    uint8_t numberOfTasks;
+    TaskID tasks[COMM_STACK_MAX_TASKS];
+    uint8_t currentTaskIndex;
+    CommType commType;
+    uint32_t contentLength;
+
 public:
     CommHeader() {
         this->numberOfTasks = 0;
         this->currentTaskIndex = 0;
         this->commType = Request;
+        this->contentLength = 0;
     }
 
-    CommHeader(TaskID task) {
+    CommHeader(TaskID task, uint32_t contentLength) {
         this->tasks[0] = task;
         this->numberOfTasks = 1;
         this->currentTaskIndex = 0;
         this->commType = Request;
+        this->contentLength = contentLength;
     }
 
-    CommHeader(TaskID* tasks, uint8_t numberOfTasks) {
+    CommHeader(TaskID* tasks, uint8_t numberOfTasks, uint32_t contentLength) {
         memcpy(&this->tasks,tasks,sizeof(uint8_t)*numberOfTasks);
         this->numberOfTasks = numberOfTasks;
         this->currentTaskIndex = 0;
         this->commType = Request;
+        this->contentLength = contentLength;
     }
-
-    uint8_t numberOfTasks;
-    TaskID tasks[COMM_STACK_MAX_TASKS];
-    uint8_t currentTaskIndex;
-    CommType commType;
 
     TaskID getCurrentTask()
     {

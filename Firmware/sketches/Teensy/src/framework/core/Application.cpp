@@ -222,6 +222,12 @@ CommStack *ApplicationClass::getESPStack()
 
 bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
 {
+	if (_currentScene->handlesTask(header.getCurrentTask()))
+	{
+		LOG_VALUE("Current scene handles Task with ID",header.getCurrentTask());
+		return _currentScene->runTask(header,stream);
+	}
+	
 	LOG_VALUE("Running Task with ID",header.getCurrentTask());
 	LOG_VALUE("Comm-Type",header.commType);
 
