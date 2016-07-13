@@ -8,7 +8,8 @@
 CommStack::CommStack(Stream* port, CommStackDelegate* delegate):
 _port(port),
 _delegate(delegate),
-_expectedPacketType(Header)
+_expectedPacketType(Header),
+_receiveBufferIndex(0)
 { }
 
 CommStack::~CommStack()
@@ -134,6 +135,7 @@ void CommStack::send(const uint8_t* buffer, size_t size)
 
 void CommStack::runTask(const uint8_t* buffer, size_t size)
 {
+    LOG("Running task and preparing response buffer");
     //Clear response data buffer
     memset(_responseBuffer,0,COMM_STACK_BUFFER_SIZE);
 
@@ -141,9 +143,19 @@ void CommStack::runTask(const uint8_t* buffer, size_t size)
     uint16_t responseDataSize = 0;
     _delegate->runTask(_currentHeader,buffer,_responseBuffer,&responseDataSize);
 
+    LOG_VALUE("Running task complete, Response data size",responseDataSize);
     //Prepare header for the response
     if (prepareResponse(&_currentHeader))
     {
+        if (_currentHeader.commType == Request)
+        {
+            LOG_VALUE("Sending Request",_currentHeader.getCurrentTask());
+        }
+        else
+        {
+            LOG_VALUE("Sending Response",_currentHeader.getCurrentTask());
+        }
+
         //Set size of responded data
         _currentHeader.contentLength = responseDataSize;
 
@@ -153,8 +165,13 @@ void CommStack::runTask(const uint8_t* buffer, size_t size)
         //Now send back data if they are available
         if (responseDataSize > 0)
         {
+            LOG_VALUE("Sending response data with size",responseDataSize);
             send(_responseBuffer,responseDataSize);
         }
+    }
+    else
+    {
+        LOG("Task sequence complete");
     }
 }
 
@@ -166,20 +183,24 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
     {
         if (size == sizeof(CommHeader))
         {
+            LOG("Received header");
             //Copy data into current header
             memcpy(&_currentHeader,buffer,size);
 
             //Check if data are expected to be sent along the header
             if (_currentHeader.contentLength > 0)
             {
+                LOG_VALUE("Now expecting data with length",_currentHeader.contentLength);
                 _expectedPacketType = Data;
             }
             else
             {
+                LOG("No data expected, expecting next package to be a header");
                 //No data will follow this header, we expect an header again next time
                 _expectedPacketType = Header;
 
                 //Run the task as no data will follow
+                LOG("Run task with data less header");
                 runTask(buffer,size);
             }
         }
@@ -194,6 +215,7 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
     {
         if (size == _currentHeader.contentLength)
         {
+            LOG("Received data, running task with data");
             //Everythings fine, we received an header and data with the expected size followed along, run the task
             runTask(buffer,size);
         }
@@ -208,92 +230,64 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
 
 void CommStack::process()
 {
-    if (_port->available())
+    while (_port->available() > 0)
     {
-        LOG("CommStack: Data Available.");
+        uint8_t data = _port->read();
 
-        while (_port->available() > 0)
+        if (data == COMM_STACK_PACKET_MARKER)
         {
-            uint8_t data = _port->read();
+            LOG("Packet received, decoding");
+            uint8_t _decodeBuffer[_receiveBufferIndex];
+            size_t numDecoded = decode(_receiveBuffer, _receiveBufferIndex, _decodeBuffer);
+            _receiveBufferIndex = 0;
 
-            if (data == COMM_STACK_PACKET_MARKER)
+            LOG("Handling packet");
+            //Packet received
+            packetReceived(_decodeBuffer,numDecoded);
+        }
+        else
+        {
+            if ((_receiveBufferIndex + 1) < COMM_STACK_BUFFER_SIZE)
             {
-                uint8_t _decodeBuffer[_receiveBufferIndex];
-                size_t numDecoded = decode(_receiveBuffer, _receiveBufferIndex, _decodeBuffer);
-                _receiveBufferIndex = 0;
-
-                //Packet received
-                packetReceived(_decodeBuffer,numDecoded);
+                _receiveBuffer[_receiveBufferIndex++] = data;
             }
             else
             {
-                if ((_receiveBufferIndex + 1) < COMM_STACK_BUFFER_SIZE)
-                {
-                    _receiveBuffer[_receiveBufferIndex++] = data;
-                }
-                else
-                {
-                    // Error, buffer overflow if we write.
-                }
+                // Error, buffer overflow if we write.
             }
         }
-
-/*        CommHeader header;
-        if (readHeader(&header))
-        {
-            LOG("Header sucessfully read");
-            LOG_VALUE("Task-ID",header.getCurrentTask());
-            LOG_VALUE("Comm-Type",header.commType);
-            if (_delegate->canRunTask(header))
-            {
-                LOG("Task can be processed");
-                //Copy request header
-                CommHeader responseHeader = header;
-
-                //Prepare header for return
-                if (prepareResponse(&responseHeader))
-                {
-                    LOG("Prepared Header");
-                    //Task initiated, answer with the same header that is flipped over and sent back
-                    if (writeHeader(&responseHeader))
-                    {
-                        LOG("Header written, running task");
-                        //We got the header, run the task
-                        _delegate->runTask(header,_port);
-                    }
-                }
-                else
-                {
-                    LOG("All tasks finished, running last task");
-                    _delegate->runTask(header,_port);
-                }
-            }
-        }*/
     }
 }
 
 bool CommStack::requestTask(TaskID task, size_t contentLength, const uint8_t *data)
 {
+    LOG_VALUE("Request Task without data with ID",task);
     CommHeader header(task,contentLength);
 
     //Send the header
+    LOG("Sending Header");
     send((uint8_t*)&header, sizeof(CommHeader));
 
     //Now send back data if they are available
     if (contentLength > 0)
     {
+        LOG_VALUE("Sending data with size",contentLength);
         send(data, contentLength);
     }
 
+    LOG("Request sent");
     return true;
 }
 
 bool CommStack::requestTask(TaskID task)
 {
+    LOG_VALUE("Request Task without data with ID",task);
     CommHeader header(task, 0);
 
     //Send the header
+    LOG("Sending Header");
     send((uint8_t*)&header, sizeof(CommHeader));
 
+    LOG("Request sent");
     return true;
 }

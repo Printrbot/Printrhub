@@ -98,8 +98,8 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, ui
 			if (!_file.available())
 			{
 				//TODO: We should handle that. For now we will have to read data from ESP to clean the pipe but there should be better ways to handle errors
-				Application.getESPStack()->requestTask(Error);
-				return false;
+				//Application.getESPStack()->requestTask(Error);
+				//return false;
 			}
 
 			LOG("File opened for writing. Now waiting for number of bytes to read");

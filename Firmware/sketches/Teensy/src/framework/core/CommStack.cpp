@@ -282,7 +282,7 @@ void CommStack::process()
 
 bool CommStack::requestTask(TaskID task, size_t contentLength, const uint8_t *data)
 {
-    LOG_VALUE("Request Task without data with ID",task);
+    LOG_VALUE("Request Task with data with ID",task);
     CommHeader header(task,contentLength);
 
     //Send the header

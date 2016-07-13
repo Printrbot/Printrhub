@@ -272,6 +272,11 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, uint8_t 
 		//DownloadFileToSDCard* mode = new DownloadFileToSDCard(jobID);
 		//pushMode(mode);
 	}
+	else
+	{
+		*responseDataSize = 0;
+		return true;
+	}
 /*	else if (header.getCurrentTask() == -1000)//GetJobWithID)	//Disabled
 	{
 		if (header.commType == Request)
