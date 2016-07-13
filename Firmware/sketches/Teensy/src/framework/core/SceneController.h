@@ -47,7 +47,7 @@ public:
 	virtual void setupDisplay();
 	virtual void onWillDisappear();
 	virtual bool handlesTask(TaskID taskID);
-	virtual bool runTask(CommHeader& header, Stream* stream);
+	virtual bool runTask(CommHeader& header, const uint8_t* data, uint8_t* responseData, uint16_t* responseDataSize);
 
 #pragma mark Misc
 	virtual String getName() = 0;

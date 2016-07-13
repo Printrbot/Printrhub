@@ -22,6 +22,7 @@
 #include "../MK20FirmwareUpdate.h"
 #include "../DownloadFileToSDCard.h"
 #include <HttpClient.h>
+#include "PubNub.h"
 
 //WiFi Setup
 const char WIFI_SSID[] = "Apple Network 123";
@@ -31,6 +32,46 @@ const char WIFI_PSK[] = "2287143359371763";
 const int kNetworkTimeout = 30*1000;
 // Number of milliseconds to wait if no data is available before trying again
 const int kNetworkDelay = 1000;
+
+PubNubLogger Logger;
+
+void pubnub_callback(char* message)
+{
+
+}
+
+void logToPubNub(const char* message)
+{
+	pubnub_publish("ESP8622",message,pubnub_callback);
+}
+
+void logValueToPubNub(const char* message, int value)
+{
+	pubnub_publish("ESP8622",message,pubnub_callback);
+	//String msg = String(message) + ":" + String(value);
+	//pubnub_publish("ESP8622",msg.c_str(),pubnub_callback);
+}
+
+void logValueToPubNub(const char* message, float value)
+{
+	pubnub_publish("ESP8622",message,pubnub_callback);
+	//String msg = String(message) + ":" + String(value);
+	//pubnub_publish("ESP8622",msg.c_str(),pubnub_callback);
+}
+
+void logValueToPubNub(const char* message, String value)
+{
+	pubnub_publish("ESP8622",message,pubnub_callback);
+	//String msg = String(message) + ":" + value;
+	//pubnub_publish("ESP8622",msg.c_str(),pubnub_callback);
+}
+
+void logValueToPubNub(const char* message, size_t value)
+{
+	pubnub_publish("ESP8622",message,pubnub_callback);
+	//String msg = String(message) + ":" + String((int)value);
+	//pubnub_publish("ESP8622",msg.c_str(),pubnub_callback);
+}
 
 ApplicationClass Application;
 
@@ -72,20 +113,33 @@ void ApplicationClass::connectWiFi()
 	digitalWrite(LED_PIN, HIGH);
 }
 
-
 void ApplicationClass::setup()
 {
+/*
 	const int CTSPin = 13; // GPIO13 for CTS input
 	const int RTSPin = 15;
 	pinMode(CTSPin, FUNCTION_4); // make pin U0CTS
 	pinMode(RTSPin, FUNCTION_4); // make pin U0RTS
 	U0C0 |= UCTXHFE; //add this sentense to add a tx flow control via MTCK( CTS ) - See more at: http://www.esp8266.com/viewtopic.php?f=27&t=8560#sthash.Os3nf7qX.dpuf
-	U0C1 |= UCRXHFE; //attach RTS
+	U0C1 |= UCRXHFE; //attach RTS*/
+
+	//Turn off MK20
+/*	pinMode(13, OUTPUT);
+	digitalWrite(13,LOW);*/
 
 	Serial.begin(230400);
 	SPIFFS.begin();
 
 	connectWiFi();
+
+	pubnub_init("pub-c-920d363e-723c-4fe8-bf82-127dbf5e2456", "sub-c-b7ae78f0-48ff-11e6-8b3b-02ee2ddab7fe");
+	pubnub_connect();
+	pubnub_publish("ESP8622","Setup finished",pubnub_callback);
+
+	LOG("HUHU");
+
+/*	digitalWrite(13,HIGH);
+	pinMode(13,INPUT_PULLUP);*/
 
 	//wiFiManager.autoConnect("Printrbot");
 }
@@ -186,7 +240,7 @@ float ApplicationClass::getDeltaTime()
 	return _deltaTime;
 }
 
-bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
+bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, uint8_t *responseData, uint16_t *responseDataSize)
 {
 	LOG_VALUE("Running Task with ID",header.getCurrentTask());
 	LOG_VALUE("Comm-Type",header.commType);
@@ -195,7 +249,9 @@ bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
 		if (header.commType == Request)
 		{
 			LOG("Date and Time written zu Stream");
-			stream->println("2016-07-11 19:03:00 CEST");
+			char datetime[] = "2016-07-13 14:50:00 CEST";
+			memcpy(responseData,datetime,strlen(datetime));
+			*responseDataSize = strlen(datetime);
 		}
 		else
 		{
@@ -204,17 +260,19 @@ bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
 	}
 	else if (header.getCurrentTask() == GetJobWithID)
 	{
-		//Read the job id
-		String jobID = stream->readStringUntil('\n');
+		char jobID[header.contentLength+1];
+		memset(jobID,0,header.contentLength+1);
+		memcpy(jobID,data,header.contentLength);
 
-		//Write job ID back to start file download and transfer
-		stream->println(jobID);
+		//Response contains the same jobID
+		memcpy(responseData,data,header.contentLength);
+		*responseDataSize = header.contentLength;
 
 		//Initiate mode for file download
-		DownloadFileToSDCard* mode = new DownloadFileToSDCard(jobID);
-		pushMode(mode);
+		//DownloadFileToSDCard* mode = new DownloadFileToSDCard(jobID);
+		//pushMode(mode);
 	}
-	else if (header.getCurrentTask() == -1000)//GetJobWithID)	//Disabled
+/*	else if (header.getCurrentTask() == -1000)//GetJobWithID)	//Disabled
 	{
 		if (header.commType == Request)
 		{
@@ -311,7 +369,7 @@ bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
 
 			return true;
 		}
-	}
+	}*/
 
 	return true;
 }

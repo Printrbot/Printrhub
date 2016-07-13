@@ -7,22 +7,12 @@
 
 CommStack::CommStack(Stream* port, CommStackDelegate* delegate):
 _port(port),
-_delegate(delegate)
+_delegate(delegate),
+_expectedPacketType(Header)
 { }
 
 CommStack::~CommStack()
 { }
-
-bool CommStack::readHeader(CommHeader* commHeader)
-{
-    int numBytes = _port->readBytes((uint8_t*)commHeader,sizeof(CommHeader));
-    if (numBytes < sizeof(CommHeader))
-    {
-        return false;
-    }
-
-    return true;
-}
 
 bool CommStack::prepareResponse(CommHeader *commHeader)
 {
@@ -34,7 +24,7 @@ bool CommStack::prepareResponse(CommHeader *commHeader)
     }
     else
     {
-        commHeader->commType = Response;
+        commHeader->commType = Request;
         commHeader->currentTaskIndex++;
 
         if (commHeader->isFinished())
@@ -46,15 +36,174 @@ bool CommStack::prepareResponse(CommHeader *commHeader)
     return true;
 }
 
-bool CommStack::writeHeader(CommHeader* commHeader)
+/*
+ * Taken from PacketSerial COBS encoding (https://github.com/bakercp/PacketSerial/blob/master/src/Encoding/COBS.h)
+ */
+size_t CommStack::encode(const uint8_t* source, size_t size, uint8_t* destination)
 {
-    int numBytes = _port->write((uint8_t*)commHeader,sizeof(CommHeader));
-    if (numBytes < sizeof(CommHeader))
+    size_t read_index  = 0;
+    size_t write_index = 1;
+    size_t code_index  = 0;
+    uint8_t code       = 1;
+
+    while(read_index < size)
     {
-        return false;
+        if(source[read_index] == 0)
+        {
+            destination[code_index] = code;
+            code = 1;
+            code_index = write_index++;
+            read_index++;
+        }
+        else
+        {
+            destination[write_index++] = source[read_index++];
+            code++;
+
+            if(code == 0xFF)
+            {
+                destination[code_index] = code;
+                code = 1;
+                code_index = write_index++;
+            }
+        }
     }
 
-    return true;
+    destination[code_index] = code;
+
+    return write_index;
+}
+
+/*
+ * Taken from PacketSerial COBS encoding (https://github.com/bakercp/PacketSerial/blob/master/src/Encoding/COBS.h)
+ */
+size_t CommStack::decode(const uint8_t* source, size_t size, uint8_t* destination)
+{
+    size_t read_index  = 0;
+    size_t write_index = 0;
+    uint8_t code;
+    uint8_t i;
+
+    while(read_index < size)
+    {
+        code = source[read_index];
+
+        if(read_index + code > size && code != 1)
+        {
+            return 0;
+        }
+
+        read_index++;
+
+        for(i = 1; i < code; i++)
+        {
+            destination[write_index++] = source[read_index++];
+        }
+
+        if(code != 0xFF && read_index != size)
+        {
+            destination[write_index++] = '\0';
+        }
+    }
+
+    return write_index;
+}
+
+/*
+ * Taken from PacketSerial COBS encoding (https://github.com/bakercp/PacketSerial/blob/master/src/Encoding/COBS.h)
+ */
+size_t CommStack::getEncodedBufferSize(size_t sourceSize)
+{
+    return sourceSize + sourceSize / 254 + 1;
+}
+
+void CommStack::send(const uint8_t* buffer, size_t size)
+{
+    if(_port == 0 || buffer == 0 || size == 0) return;
+
+    uint8_t _encodeBuffer[getEncodedBufferSize(size)];
+    size_t numEncoded = encode(buffer, size, _encodeBuffer);
+
+    LOG("Sending encoded data");
+    _port->write(_encodeBuffer, numEncoded);
+
+    LOG("Writing packet marker");
+    uint8_t packetMarker = COMM_STACK_PACKET_MARKER;
+    _port->write(packetMarker);
+}
+
+void CommStack::runTask(const uint8_t* buffer, size_t size)
+{
+    //Clear response data buffer
+    memset(_responseBuffer,0,COMM_STACK_BUFFER_SIZE);
+
+    //Trigger the application to run the task and send responded data
+    uint16_t responseDataSize = 0;
+    _delegate->runTask(_currentHeader,buffer,_responseBuffer,&responseDataSize);
+
+    //Prepare header for the response
+    if (prepareResponse(&_currentHeader))
+    {
+        //Set size of responded data
+        _currentHeader.contentLength = responseDataSize;
+
+        //Send the header
+        send((uint8_t*)&_currentHeader, sizeof(CommHeader));
+
+        //Now send back data if they are available
+        if (responseDataSize > 0)
+        {
+            send(_responseBuffer,responseDataSize);
+        }
+    }
+}
+
+void CommStack::packetReceived(const uint8_t* buffer, size_t size)
+{
+    LOG_VALUE("Packet received with size",size);
+
+    if (_expectedPacketType == Header)
+    {
+        if (size == sizeof(CommHeader))
+        {
+            //Copy data into current header
+            memcpy(&_currentHeader,buffer,size);
+
+            //Check if data are expected to be sent along the header
+            if (_currentHeader.contentLength > 0)
+            {
+                _expectedPacketType = Data;
+            }
+            else
+            {
+                //No data will follow this header, we expect an header again next time
+                _expectedPacketType = Header;
+
+                //Run the task as no data will follow
+                runTask(buffer,size);
+            }
+        }
+        else
+        {
+            LOG("Expected header, but received packet with different size");
+            LOG_VALUE("Expected header size",sizeof(CommHeader));
+            LOG_VALUE("Got packet with size",size);
+        }
+    }
+    else if (_expectedPacketType == Data)
+    {
+        if (size == _currentHeader.contentLength)
+        {
+            //Everythings fine, we received an header and data with the expected size followed along, run the task
+            runTask(buffer,size);
+        }
+        else
+        {
+            LOG("Expected data, but received packet with different size than specified in previous header");
+            LOG_VALUE("Expected data size given in header",_currentHeader.contentLength);
+            LOG_VALUE("Got packet with size",size);
+        }
+    }
 }
 
 void CommStack::process()
@@ -63,7 +212,33 @@ void CommStack::process()
     {
         LOG("CommStack: Data Available.");
 
-        CommHeader header;
+        while (_port->available() > 0)
+        {
+            uint8_t data = _port->read();
+
+            if (data == COMM_STACK_PACKET_MARKER)
+            {
+                uint8_t _decodeBuffer[_receiveBufferIndex];
+                size_t numDecoded = decode(_receiveBuffer, _receiveBufferIndex, _decodeBuffer);
+                _receiveBufferIndex = 0;
+
+                //Packet received
+                packetReceived(_decodeBuffer,numDecoded);
+            }
+            else
+            {
+                if ((_receiveBufferIndex + 1) < COMM_STACK_BUFFER_SIZE)
+                {
+                    _receiveBuffer[_receiveBufferIndex++] = data;
+                }
+                else
+                {
+                    // Error, buffer overflow if we write.
+                }
+            }
+        }
+
+/*        CommHeader header;
         if (readHeader(&header))
         {
             LOG("Header sucessfully read");
@@ -87,14 +262,38 @@ void CommStack::process()
                         _delegate->runTask(header,_port);
                     }
                 }
+                else
+                {
+                    LOG("All tasks finished, running last task");
+                    _delegate->runTask(header,_port);
+                }
             }
-        }
+        }*/
     }
 }
 
+bool CommStack::requestTask(TaskID task, size_t contentLength, const uint8_t *data)
+{
+    CommHeader header(task,contentLength);
+
+    //Send the header
+    send((uint8_t*)&header, sizeof(CommHeader));
+
+    //Now send back data if they are available
+    if (contentLength > 0)
+    {
+        send(data, contentLength);
+    }
+
+    return true;
+}
 
 bool CommStack::requestTask(TaskID task)
 {
-    CommHeader header(task);
-    return writeHeader(&header);
+    CommHeader header(task, 0);
+
+    //Send the header
+    send((uint8_t*)&header, sizeof(CommHeader));
+
+    return true;
 }

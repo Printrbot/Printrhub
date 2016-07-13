@@ -9,10 +9,17 @@
 
 //Maximum is 255 as currentTaskIndex is a byte
 #define COMM_STACK_MAX_TASKS 10
+#define COMM_STACK_PACKET_MARKER 0x00
+#define COMM_STACK_BUFFER_SIZE 256
 
 enum CommType : uint8_t {
     Request = 0,
     Response = 1
+};
+
+enum PacketType : uint8_t {
+    Header = 0,
+    Data = 1
 };
 
 enum TaskID : uint8_t {
@@ -31,30 +38,37 @@ enum TaskID : uint8_t {
 
 struct CommHeader {
 public:
-    CommHeader() {
-        this->numberOfTasks = 0;
-        this->currentTaskIndex = 0;
-        this->commType = Request;
-    }
-
-    CommHeader(TaskID task) {
-        this->tasks[0] = task;
-        this->numberOfTasks = 1;
-        this->currentTaskIndex = 0;
-        this->commType = Request;
-    }
-
-    CommHeader(TaskID* tasks, uint8_t numberOfTasks) {
-        memcpy(&this->tasks,tasks,sizeof(uint8_t)*numberOfTasks);
-        this->numberOfTasks = numberOfTasks;
-        this->currentTaskIndex = 0;
-        this->commType = Request;
-    }
-
     uint8_t numberOfTasks;
     TaskID tasks[COMM_STACK_MAX_TASKS];
     uint8_t currentTaskIndex;
     CommType commType;
+    uint32_t contentLength;
+
+public:
+    CommHeader() {
+        memset(this->tasks,0xFF,COMM_STACK_MAX_TASKS);
+        this->numberOfTasks = 0;
+        this->currentTaskIndex = 0;
+        this->commType = Request;
+        this->contentLength = 0;
+    }
+
+    CommHeader(TaskID task, uint32_t contentLength) {
+        memset(this->tasks,0xFF,COMM_STACK_MAX_TASKS);
+        this->tasks[0] = task;
+        this->numberOfTasks = 1;
+        this->currentTaskIndex = 0;
+        this->commType = Request;
+        this->contentLength = contentLength;
+    }
+
+    CommHeader(TaskID* tasks, uint8_t numberOfTasks, uint32_t contentLength) {
+        memcpy(&this->tasks,tasks,sizeof(uint8_t)*numberOfTasks);
+        this->numberOfTasks = numberOfTasks;
+        this->currentTaskIndex = 0;
+        this->commType = Request;
+        this->contentLength = contentLength;
+    }
 
     TaskID getCurrentTask()
     {
@@ -72,8 +86,7 @@ public:
 class CommStackDelegate
 {
 public:
-    virtual bool runTask(CommHeader& header, Stream* stream) = 0;
-    virtual bool canRunTask(CommHeader& header) { return true; }
+    virtual bool runTask(CommHeader& header, const uint8_t* data, uint8_t* responseData, uint16_t* responseDataSize) = 0;
 };
 
 class CommStack
@@ -92,19 +105,29 @@ public:
 
 public:
     void process();
+    bool requestTask(TaskID task, size_t contentLength, const uint8_t* data);
     bool requestTask(TaskID task);
     bool requestTasks(TaskID* tasks);
     Stream* getPort() const { return _port; };
 
 private:
-    bool readHeader(CommHeader* commHeader);
     bool prepareResponse(CommHeader* commHeader);
-    bool writeHeader(CommHeader* commHeader);
+    void packetReceived(const uint8_t* buffer, size_t size);
+    size_t getEncodedBufferSize(size_t sourceSize);
+    size_t encode(const uint8_t* source, size_t size, uint8_t* destination);
+    size_t decode(const uint8_t* source, size_t size, uint8_t* destination);
+    void runTask(const uint8_t* buffer, size_t size);
+    void send(const uint8_t* buffer, size_t size);
 
 #pragma mark Member Variables
 private:
     Stream* _port;
     CommStackDelegate* _delegate;
+    uint8_t _receiveBuffer[COMM_STACK_BUFFER_SIZE];
+    uint8_t _responseBuffer[COMM_STACK_BUFFER_SIZE];
+    size_t _receiveBufferIndex;
+    CommHeader _currentHeader;
+    PacketType _expectedPacketType;
 };
 
 #endif //ESP8266_ARM_SWD_COMMSTACK_H

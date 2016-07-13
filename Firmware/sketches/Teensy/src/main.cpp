@@ -88,8 +88,8 @@ void setup(void)
 
     //Initiate communication pipeline to ESP8266
     Serial3.begin(230400);
-    Serial3.attachCts(2);
-    Serial3.attachRts(14);
+    //Serial3.attachCts(2);
+    //Serial3.attachRts(14);
 
     //Pull backlight pin to turn on display backlight
     pinMode(TFT_BACKLIGHT_PWM,OUTPUT);

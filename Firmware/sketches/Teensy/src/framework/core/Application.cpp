@@ -220,12 +220,12 @@ CommStack *ApplicationClass::getESPStack()
 	return _esp;
 }
 
-bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
+bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, uint8_t *responseData, uint16_t *responseDataSize)
 {
 	if (_currentScene->handlesTask(header.getCurrentTask()))
 	{
 		LOG_VALUE("Current scene handles Task with ID",header.getCurrentTask());
-		return _currentScene->runTask(header,stream);
+		return _currentScene->runTask(header,data,responseData,responseDataSize);
 	}
 	
 	LOG_VALUE("Running Task with ID",header.getCurrentTask());
@@ -236,18 +236,21 @@ bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
 		if (header.commType == Response)
 		{
 			LOG("Loading Date and Time from ESP");
-			Display.setCursor(10,20);
+			Display.setCursor(10,30);
 			Display.println("Data available, reading...");
 
-			String datetime = stream->readStringUntil('\n');
+			char datetime[header.contentLength+1];
+			memset(datetime,0,header.contentLength+1);
+			memcpy(datetime,data,header.contentLength);
+
 			LOG_VALUE("Received Datetime",datetime);
 
-			Display.setCursor(10,30);
+			Display.setCursor(10,50);
 			Display.println("Received datetime from ESP");
 			Display.println(datetime);
 		}
 	}
-	else if (header.getCurrentTask() == GetJobWithID || header.getCurrentTask() == GetProjectItemWithID)
+/*	else if (header.getCurrentTask() == GetJobWithID || header.getCurrentTask() == GetProjectItemWithID)
 	{
 		if (header.commType == Response)
 		{
@@ -321,7 +324,7 @@ bool ApplicationClass::runTask(CommHeader &header, Stream *stream)
 				file.close();
 			}
 		}
-	}
+	}*/
 	return true;
 }
 

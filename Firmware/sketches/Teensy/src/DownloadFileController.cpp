@@ -59,12 +59,8 @@ void DownloadFileController::onWillAppear()
 	addView(_progressBar);
 
 	//Trigger file download
-	if (Application.getESPStack()->requestTask(GetJobWithID))
-	//if (Application.getESPStack()->requestTask(GetProjectItemWithID))
-	{
-		//Now send the unique ID of the project - this is just a hardcoded junk hash
-		Application.getESPStack()->getPort()->println("/files/firmware.bin");
-	}
+	char jobID[] = "/files/firmware.bin";
+	Application.getESPStack()->requestTask(GetJobWithID,strlen(jobID),(uint8_t*)jobID);
 
 	SidebarSceneController::onWillAppear();
 }
@@ -81,24 +77,21 @@ bool DownloadFileController::handlesTask(TaskID taskID)
 	return false;
 }
 
-bool DownloadFileController::runTask(CommHeader &header, Stream *stream)
+bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, uint8_t *responseData, uint16_t *responseDataSize)
 {
+	LOG_VALUE("DownloadFileController handling task",header.getCurrentTask());
+
 	if (header.getCurrentTask() == GetJobWithID)
 	{
+		LOG("Handling GetJobWithID Task");
+
 		if (header.commType == Response)
 		{
-			//Wait for data to be arrived
-			while (!stream->available())
-			{
-				delay(10);
-			}
+			char jobID[header.contentLength+1];
+			memset(jobID,0,header.contentLength+1);
+			memcpy(jobID,data,header.contentLength);
 
-			//First we ask for the job id which is sent using println on the other side so we read until a newline char
-			String jobID = stream->readStringUntil('\n');
-			LOG_VALUE("Got Response for GetJobWithID",jobID);
-
-			//Add file suffix to job
-			jobID = jobID + ".gcode";
+			LOG_VALUE("Starting file download job for file",jobID);
 
 			//Open a file on SD card
 			_file = SD.open("job.gcode",O_WRITE);
@@ -112,7 +105,9 @@ bool DownloadFileController::runTask(CommHeader &header, Stream *stream)
 			LOG("File opened for writing. Now waiting for number of bytes to read");
 		}
 	}
-	else if (header.getCurrentTask() == FileSendData)
+
+	return true;
+/*	else if (header.getCurrentTask() == FileSendData)
 	{
 		if (header.commType == Request)
 		{
@@ -143,7 +138,7 @@ bool DownloadFileController::runTask(CommHeader &header, Stream *stream)
 
 		PrintStatusSceneController* scene = new PrintStatusSceneController();
 		Application.pushScene(scene);
-	}
+	}*/
 }
 
 #pragma mark ButtonDelegate Implementation

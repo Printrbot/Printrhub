@@ -27,15 +27,27 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
 #include "CommStack.h"
+#include "PubNub.h"
+#include "PubNubLogger.h"
 
 // Pin definitions
 const int LED_PIN = 0;
 
+extern PubNubLogger Logger;
+
+extern void pubnub_callback(char* message);
+extern void logToPubNub(const char* message);
+extern void logValueToPubNub(const char* message, int value);
+extern void logValueToPubNub(const char* message, float value);
+extern void logValueToPubNub(const char* message, String value);
+extern void logValueToPubNub(const char* message, size_t value);
+
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 #define logError(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg ": ")
+#define logString(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg)
 
-#define LOG(m) /*Serial.print(logError(m));Serial.println(m)*/
+#define LOG(m) /*Serial.println(logString(m));*/
 #define LOG_VALUE(m,v) /*Serial.print(logError(m));Serial.println(v);*/
 
 class Mode;
@@ -60,7 +72,7 @@ public:
 
 #pragma mark CommStackDelegate
 public:
-	bool runTask(CommHeader& header, Stream* stream);
+	bool runTask(CommHeader& header, const uint8_t* data, uint8_t* responseData, uint16_t* responseDataSize);
 
 #pragma mark Member Variables
 private:

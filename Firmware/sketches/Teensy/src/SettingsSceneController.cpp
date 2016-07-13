@@ -117,6 +117,7 @@ void SettingsSceneController::buttonPressed(void *button)
 
         LOG("Request datetime from ESP8266");
         Application.getESPStack()->requestTask(GetTimeAndDate);
+        LOG("Datetime request sent");
     }
 
     SidebarSceneController::buttonPressed(button);

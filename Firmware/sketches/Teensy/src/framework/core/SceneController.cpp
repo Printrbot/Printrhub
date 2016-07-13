@@ -104,7 +104,7 @@ bool SceneController::handlesTask(TaskID taskID)
 	return false;
 }
 
-bool SceneController::runTask(CommHeader &header, Stream *stream)
+bool SceneController::runTask(CommHeader &header, const uint8_t *data, uint8_t *responseData, uint16_t *responseDataSize)
 {
 	return true;
 }
