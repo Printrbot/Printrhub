@@ -29,11 +29,12 @@
 #include "CommStack.h"
 #include "PubNub.h"
 #include "PubNubLogger.h"
+#include "FileLogger.h"
 
 // Pin definitions
 const int LED_PIN = 0;
 
-extern PubNubLogger Logger;
+extern FileLogger Logger;
 
 extern void pubnub_callback(char* message);
 extern void logToPubNub(const char* message);
@@ -47,8 +48,8 @@ extern void logValueToPubNub(const char* message, size_t value);
 #define logError(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg ": ")
 #define logString(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg)
 
-#define LOG(m) /*Serial.println(logString(m));*/
-#define LOG_VALUE(m,v) /*Serial.print(logError(m));Serial.println(v);*/
+#define LOG(m) Logger.println(logString(m));
+#define LOG_VALUE(m,v) Logger.print(logError(m));Logger.println(v);
 
 class Mode;
 
@@ -66,6 +67,7 @@ public:
 	Mode* currentMode() { return _currentMode; };
 	void connectWiFi();
 	CommStack* getMK20Stack() const { return _mk20; };
+	void updateServer();
 
 #pragma mark Time Management
 	float getDeltaTime();
@@ -84,6 +86,7 @@ private:
 	unsigned long _buttonPressedTime;
 	WiFiManager wiFiManager;
 	CommStack* _mk20;
+	WiFiServer _server;
 };
 
 extern ApplicationClass Application;

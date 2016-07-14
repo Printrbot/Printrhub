@@ -33,7 +33,7 @@ const int kNetworkTimeout = 30*1000;
 // Number of milliseconds to wait if no data is available before trying again
 const int kNetworkDelay = 1000;
 
-PubNubLogger Logger;
+FileLogger Logger;
 
 void pubnub_callback(char* message)
 {
@@ -75,7 +75,8 @@ void logValueToPubNub(const char* message, size_t value)
 
 ApplicationClass Application;
 
-ApplicationClass::ApplicationClass()
+ApplicationClass::ApplicationClass():
+		_server(80)
 {
 	_firstModeLoop = true;
 	_nextMode = NULL;
@@ -132,9 +133,9 @@ void ApplicationClass::setup()
 
 	connectWiFi();
 
-	pubnub_init("pub-c-920d363e-723c-4fe8-bf82-127dbf5e2456", "sub-c-b7ae78f0-48ff-11e6-8b3b-02ee2ddab7fe");
-	pubnub_connect();
-	pubnub_publish("ESP8622","Setup finished",pubnub_callback);
+	SPIFFS.remove("/log.txt");
+
+	_server.begin();
 
 	LOG("HUHU");
 
@@ -144,11 +145,96 @@ void ApplicationClass::setup()
 	//wiFiManager.autoConnect("Printrbot");
 }
 
+void ApplicationClass::updateServer()
+{
+	// Check if a client has connected
+	WiFiClient client = _server.available();
+	if (!client) {
+		return;
+	}
+
+	// Read the first line of the request
+	String req = client.readStringUntil('\r');
+	Serial.println(req);
+	client.flush();
+
+	// Match the request
+	int val = -1; // We'll use 'val' to keep track of both the
+	// request type (read/set) and value if set.
+	if (req.indexOf("/log/display") != -1)
+		val = 0; // Will write LED low
+	else if (req.indexOf("/log/clear") != -1)
+		val = 1; // Will write LED high
+	// Otherwise request will be invalid. We'll say as much in HTML
+
+	client.flush();
+
+	// Prepare the response. Start with the common header:
+	String s = "HTTP/1.1 200 OK\r\n";
+	s += "Content-Type: text/html\r\n\r\n";
+	s += "<!DOCTYPE HTML>\r\n<html>\r\n";
+	// If we're setting the LED, print out a message saying we did
+	if (val >= 0)
+	{
+		if (val == 0)
+		{
+			client.print(s);
+
+			File logFile = SPIFFS.open("/log.txt", "r");
+
+			char buffer[1024];
+			memset(buffer,0,1024);
+			int bufferIndex = 0;
+			for (int i=0;i<logFile.size();i=i+1)
+			{
+				uint8_t byte = logFile.read();
+				if (byte == '\n')
+				{
+					client.print(buffer);
+					memset(buffer,0,1024);
+					bufferIndex = 0;
+
+					client.print("<br/>\n");
+				}
+				else
+				{
+					buffer[bufferIndex] = byte;
+					bufferIndex++;
+
+					if (bufferIndex >= 1024)
+					{
+						client.print(buffer);
+						memset(buffer,0,1024);
+						bufferIndex = 0;
+					}
+				}
+			}
+			logFile.close();
+
+			client.print("</html>\n");
+		}
+		else if (val == 1)
+		{
+			SPIFFS.remove("/log.txt");
+			client.print("Log file removed");
+		}
+	}
+	else
+	{
+		s += "Invalid Request.<br> Try /led/1, /led/0, or /read.";
+		s += "</html>\n";
+
+		client.print(s);
+	}
+}
+
 void ApplicationClass::loop()
 {
 	//Check MK20 communication by updating the comm stack. This may result in a call to
 	//the runTask member function which in turn most likely sets a new current mode controller
 	_mk20->process();
+
+	updateServer();
 
 	//Setup new controller and delete the old one if a new controller is pushed
 	if (_nextMode != NULL)
