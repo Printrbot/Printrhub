@@ -38,48 +38,36 @@ enum TaskID : uint8_t {
 
 struct CommHeader {
 public:
-    uint8_t numberOfTasks;
-    TaskID tasks[COMM_STACK_MAX_TASKS];
-    uint8_t currentTaskIndex;
-    CommType commType;
-    uint32_t contentLength;
+    uint8_t taskID;
+    uint8_t commType;
+    uint8_t contentLength;
 
 public:
     CommHeader() {
-        memset(this->tasks,0xFF,COMM_STACK_MAX_TASKS);
-        this->numberOfTasks = 0;
-        this->currentTaskIndex = 0;
         this->commType = Request;
         this->contentLength = 0;
     }
 
     CommHeader(TaskID task, uint32_t contentLength) {
-        memset(this->tasks,0xFF,COMM_STACK_MAX_TASKS);
-        this->tasks[0] = task;
-        this->numberOfTasks = 1;
-        this->currentTaskIndex = 0;
+        this->taskID = task;
         this->commType = Request;
         this->contentLength = contentLength;
     }
 
     CommHeader(TaskID* tasks, uint8_t numberOfTasks, uint32_t contentLength) {
-        memcpy(&this->tasks,tasks,sizeof(uint8_t)*numberOfTasks);
-        this->numberOfTasks = numberOfTasks;
-        this->currentTaskIndex = 0;
+        this->taskID = tasks[0];
         this->commType = Request;
         this->contentLength = contentLength;
     }
 
     TaskID getCurrentTask()
     {
-        if (currentTaskIndex >= COMM_STACK_MAX_TASKS) return Unknown;
-        if (currentTaskIndex >= numberOfTasks) return Unknown;
-        return tasks[currentTaskIndex];
+        return (TaskID)taskID;
     }
 
     bool isFinished()
     {
-        return (currentTaskIndex >= numberOfTasks);
+        return (commType == Response);
     }
 };
 

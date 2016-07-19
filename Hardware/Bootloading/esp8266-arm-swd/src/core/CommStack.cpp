@@ -25,20 +25,12 @@ bool CommStack::prepareResponse(CommHeader *commHeader)
     if (commHeader->commType == Request)
     {
         commHeader->commType = Response;
-    }
-    else
-    {
-        commHeader->commType = Request;
-        commHeader->currentTaskIndex++;
-
-        if (commHeader->isFinished())
-        {
-            return false;
-        }
+        return true;
     }
 
-    return true;
+    return false;
 }
+
 
 /*
  * Taken from PacketSerial COBS encoding (https://github.com/bakercp/PacketSerial/blob/master/src/Encoding/COBS.h)
