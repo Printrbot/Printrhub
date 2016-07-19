@@ -19,6 +19,7 @@ PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint
     setupBuffers();
 
     _needsLayout = true;
+    _needsDisplay = false;
     _fixedBackgroundLayer = NULL;
 
     debug = false;
@@ -175,6 +176,8 @@ void PHDisplay::dispatch()
         Layer* layer = _layers.at(i);
         layer->display();
     }
+
+    _needsDisplay = false;
 }
 
 void PHDisplay::drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t *bitmap, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs)
@@ -302,6 +305,16 @@ void PHDisplay::drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint1
 void PHDisplay::setNeedsLayout()
 {
     _needsLayout = true;
+}
+
+void PHDisplay::setNeedsDisplay()
+{
+    _needsDisplay = true;
+}
+
+bool PHDisplay::willRefresh()
+{
+    return (_needsLayout || _needsDisplay);
 }
 
 void PHDisplay::invalidateRect(Rect &invalidationRect, int scrollOffset, int deltaScrollOffset)

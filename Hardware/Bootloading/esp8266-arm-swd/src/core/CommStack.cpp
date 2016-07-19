@@ -5,17 +5,27 @@
 #include "CommStack.h"
 #include "Application.h"
 
+bool CommStackReadyToSend;
+
+void readyToSendPinChanged()
+{
+    CommStackReadyToSend = !CommStackReadyToSend;
+}
+
 CommStack::CommStack(Stream* port, CommStackDelegate* delegate):
 _port(port),
 _delegate(delegate),
 _expectedPacketType(Header),
 _receiveBufferIndex(0),
 _packetMarker(COMM_STACK_PACKET_MARKER)
-{ }
+{
+    pinMode(12,INPUT);
+    attachInterrupt(12,readyToSendPinChanged,CHANGE);
+    CommStackReadyToSend = digitalRead(12);
+}
 
 CommStack::~CommStack()
 {
-    pinMode(12,INPUT);
 }
 
 bool CommStack::prepareResponse(CommHeader *commHeader)
@@ -122,12 +132,12 @@ void CommStack::send(const uint8_t* buffer, size_t size)
 
     LOG_VALUE("Sending encoded data with size",size);
 
-    while (digitalRead(12) == LOW)
+/*    while (digitalRead(12) == LOW)
     {
         //Wait for this packet to be sent until pin 12 is HIGH again
         ESP.wdtFeed();
         delay(1);
-    }
+    }*/
 
     int numBytesSent = _port->write(_encodeBuffer, numEncoded);
     _port->write(_packetMarker);

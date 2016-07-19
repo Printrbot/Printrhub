@@ -77,6 +77,8 @@ public:
     virtual bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse) = 0;
 };
 
+extern bool CommStackReadyToSend;
+
 class CommStack
 {
 /*#pragma mark Task Definitions

@@ -453,6 +453,9 @@ void Layer::setNeedsDisplay()
     }
 
     _needsDisplay = true;
+
+    //Mark Display as needs display, too
+    Display.setNeedsDisplay();
 }
 
 void Layer::draw(Rect &invalidationRect)

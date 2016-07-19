@@ -27,6 +27,8 @@ public:
 
 #pragma mark Draw Code and Display
     virtual void setNeedsLayout();
+	virtual void setNeedsDisplay();
+	virtual bool willRefresh();
     virtual void layoutIfNeeded();
     virtual void dispatch();
     virtual void drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t* bitmap, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs);
@@ -84,6 +86,7 @@ private:
     StackArray<Layer*> _layers;
     StackArray<Layer*> _presentationLayers;
     bool _needsLayout;
+	bool _needsDisplay;
     float _scrollOffset;
     Rect* _clipRect;
     uint16_t _backgroundColor;

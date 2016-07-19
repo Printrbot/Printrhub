@@ -166,6 +166,13 @@ void ApplicationClass::loop()
 		sceneController->loop();
 		_lastTime = millis();
 
+		bool willRefresh = Display.willRefresh();
+		if (willRefresh)
+		{
+			//This should be a good idea as it marks MK20 to be unable to receive data, but this does not work at the moment
+			//digitalWrite(33,LOW);
+		}
+
 		//Relayout screen tiles
 		Display.layoutIfNeeded();
 
@@ -176,7 +183,12 @@ void ApplicationClass::loop()
 		{
 			//Set display brightness to full to show what's been built up since we shut down the display
 			Display.fadeIn();
+		}
 
+		if (willRefresh)
+		{
+			//This should be a good idea as it marks MK20 to be unable to receive data, but this does not work at the moment
+			//digitalWrite(33,HIGH);
 		}
 
 		_firstSceneLoop = false;
