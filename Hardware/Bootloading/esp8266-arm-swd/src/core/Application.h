@@ -48,8 +48,8 @@ extern void logValueToPubNub(const char* message, size_t value);
 #define logError(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg ": ")
 #define logString(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg)
 
-#define LOG(m) Logger.println(logString(m));
-#define LOG_VALUE(m,v) Logger.print(logError(m));Logger.println(v);
+#define LOG(m) //Logger.println(logString(m));
+#define LOG_VALUE(m,v) //Logger.print(logError(m));Logger.println(v);
 
 class Mode;
 
@@ -74,7 +74,7 @@ public:
 
 #pragma mark CommStackDelegate
 public:
-	bool runTask(CommHeader& header, const uint8_t* data, uint8_t* responseData, uint16_t* responseDataSize);
+	bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse);
 
 #pragma mark Member Variables
 private:

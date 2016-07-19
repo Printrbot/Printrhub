@@ -185,7 +185,7 @@ void ApplicationClass::loop()
 	//Delay for a few ms if no animation is running
 	if (!Animator.hasActiveAnimations())
 	{
-		delay(16);
+		//delay(16);
 	}
 
 }
@@ -220,12 +220,12 @@ CommStack *ApplicationClass::getESPStack()
 	return _esp;
 }
 
-bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, uint8_t *responseData, uint16_t *responseDataSize)
+bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse)
 {
 	if (_currentScene->handlesTask(header.getCurrentTask()))
 	{
 		LOG_VALUE("Current scene handles Task with ID",header.getCurrentTask());
-		return _currentScene->runTask(header,data,responseData,responseDataSize);
+		return _currentScene->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse);
 	}
 	
 	LOG_VALUE("Running Task with ID",header.getCurrentTask());

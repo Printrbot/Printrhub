@@ -19,6 +19,7 @@ DownloadFileToSDCard::DownloadFileToSDCard(String filePath):
 {
     memset(_buffer,0,_bufferSize);
     _bufferIndex = 0;
+    _numChunks = 0;
 }
 
 DownloadFileToSDCard::~DownloadFileToSDCard()
@@ -42,8 +43,8 @@ void DownloadFileToSDCard::onWillEnd()
 
 void DownloadFileToSDCard::sendError(String errorMessage)
 {
+    LOG_VALUE("Failed to send to SD card",errorMessage);
     Application.getMK20Stack()->requestTask(Error);
-    Application.getMK20Stack()->getPort()->println(errorMessage);
 }
 
 void DownloadFileToSDCard::addByteToBuffer(uint8_t byte)
@@ -68,13 +69,20 @@ void DownloadFileToSDCard::sendBuffer()
     }
 
     //Send Request for sending data
-    Application.getMK20Stack()->requestTask(FileSendData);
+    Application.getMK20Stack()->requestTask(FileSendData,_bufferIndex, (uint8_t*)_buffer);
 
-    //Send the size of the buffer
-    Application.getMK20Stack()->getPort()->write(_bufferIndex);
+/*    _numChunks++;
+    if (_numChunks > 3)
+    {
+        Mode* mode = new Idle();
+        Application.pushMode(mode);
+        return;
+    }*/
+}
 
-    //Send the actual data
-    Application.getMK20Stack()->getPort()->write(_buffer,_bufferIndex);
+void DownloadFileToSDCard::sendResponse(uint32_t contentLength)
+{
+    Application.getMK20Stack()->responseTask(GetJobWithID,sizeof(uint32_t),(uint8_t*)&contentLength);
 }
 
 void DownloadFileToSDCard::loop()
@@ -100,6 +108,9 @@ void DownloadFileToSDCard::loop()
                 if (err >= 0)
                 {
                     int bodyLen = httpClient.contentLength();
+
+                    //Send the response with the size of the file
+                    sendResponse(bodyLen);
 
                     // Now we've got to the body, so we can print it out
                     unsigned long timeoutStart = millis();

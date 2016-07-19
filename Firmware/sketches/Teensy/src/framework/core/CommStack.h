@@ -86,7 +86,7 @@ public:
 class CommStackDelegate
 {
 public:
-    virtual bool runTask(CommHeader& header, const uint8_t* data, uint8_t* responseData, uint16_t* responseDataSize) = 0;
+    virtual bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse) = 0;
 };
 
 class CommStack
@@ -107,6 +107,9 @@ public:
     void process();
     bool requestTask(TaskID task, size_t contentLength, const uint8_t* data);
     bool requestTask(TaskID task);
+    bool responseTask(TaskID task);
+    bool responseTask(TaskID task, size_t contentLength, const uint8_t* data);
+    bool sendMessage(CommHeader& header, size_t contentLength=0, const uint8_t* data=NULL);
     bool requestTasks(TaskID* tasks);
     Stream* getPort() const { return _port; };
 
@@ -130,6 +133,7 @@ private:
     size_t _receiveBufferIndex;
     CommHeader _currentHeader;
     PacketType _expectedPacketType;
+    uint8_t _packetMarker;
 };
 
 #endif //ESP8266_ARM_SWD_COMMSTACK_H

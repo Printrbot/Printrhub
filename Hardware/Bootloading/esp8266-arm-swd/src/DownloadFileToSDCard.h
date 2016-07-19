@@ -32,6 +32,7 @@ public:
     void sendError(String errorMessage);
     void addByteToBuffer(uint8_t byte);
     void sendBuffer();
+    void sendResponse(uint32_t contentLength);
 
 #pragma mark Mode
     virtual String getName();
@@ -42,9 +43,10 @@ private:
     WiFiClient client;
     HttpClient httpClient;
     String _filePath;
-    static const int _bufferSize = 128;
+    static const int _bufferSize = 32;
     char _buffer[_bufferSize];
     int _bufferIndex;
+    int _numChunks;
 };
 
 

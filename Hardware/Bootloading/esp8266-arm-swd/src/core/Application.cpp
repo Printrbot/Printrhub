@@ -31,7 +31,7 @@ const char WIFI_PSK[] = "2287143359371763";
 // Number of milliseconds to wait without receiving any data before we give up
 const int kNetworkTimeout = 30*1000;
 // Number of milliseconds to wait if no data is available before trying again
-const int kNetworkDelay = 1000;
+const int kNetworkDelay = 10;
 
 FileLogger Logger;
 
@@ -128,7 +128,7 @@ void ApplicationClass::setup()
 /*	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);*/
 
-	Serial.begin(230400);
+	Serial.begin(115200);
 	SPIFFS.begin();
 
 	connectWiFi();
@@ -326,7 +326,7 @@ float ApplicationClass::getDeltaTime()
 	return _deltaTime;
 }
 
-bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, uint8_t *responseData, uint16_t *responseDataSize)
+bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse)
 {
 	LOG_VALUE("Running Task with ID",header.getCurrentTask());
 	LOG_VALUE("Comm-Type",header.commType);
@@ -334,10 +334,11 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, uint8_t 
 	{
 		if (header.commType == Request)
 		{
-			LOG("Date and Time written zu Stream");
+			LOG("Date and time written to stream");
 			char datetime[] = "2016-07-13 14:50:00 CEST";
 			memcpy(responseData,datetime,strlen(datetime));
 			*responseDataSize = strlen(datetime);
+			*sendResponse = true;
 		}
 		else
 		{
@@ -350,17 +351,19 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, uint8_t 
 		memset(jobID,0,header.contentLength+1);
 		memcpy(jobID,data,header.contentLength);
 
-		//Response contains the same jobID
-		memcpy(responseData,data,header.contentLength);
-		*responseDataSize = header.contentLength;
+		LOG_VALUE("Received GetJobWithID Request with file name",jobID);
+
+		//Send the response later when we know how large the file is
+		*sendResponse = false;
 
 		//Initiate mode for file download
-		//DownloadFileToSDCard* mode = new DownloadFileToSDCard(jobID);
-		//pushMode(mode);
+		DownloadFileToSDCard* mode = new DownloadFileToSDCard(jobID);
+		pushMode(mode);
 	}
 	else
 	{
 		*responseDataSize = 0;
+		*sendResponse = false;
 		return true;
 	}
 /*	else if (header.getCurrentTask() == -1000)//GetJobWithID)	//Disabled

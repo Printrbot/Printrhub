@@ -13,7 +13,9 @@
 #include "MainSceneController.h"
 
 DownloadFileController::DownloadFileController():
-		SidebarSceneController::SidebarSceneController()
+		SidebarSceneController::SidebarSceneController(),
+		_fileSize(0),
+		_bytesRead(0)
 {
 
 }
@@ -77,7 +79,7 @@ bool DownloadFileController::handlesTask(TaskID taskID)
 	return false;
 }
 
-bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, uint8_t *responseData, uint16_t *responseDataSize)
+bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse)
 {
 	LOG_VALUE("DownloadFileController handling task",header.getCurrentTask());
 
@@ -87,23 +89,59 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, ui
 
 		if (header.commType == Response)
 		{
-			char jobID[header.contentLength+1];
-			memset(jobID,0,header.contentLength+1);
-			memcpy(jobID,data,header.contentLength);
-
-			LOG_VALUE("Starting file download job for file",jobID);
-
-			//Open a file on SD card
-			_file = SD.open("job.gcode",O_WRITE);
-			if (!_file.available())
+			if (dataSize != sizeof(uint32_t))
 			{
-				//TODO: We should handle that. For now we will have to read data from ESP to clean the pipe but there should be better ways to handle errors
-				//Application.getESPStack()->requestTask(Error);
-				//return false;
+				LOG_VALUE("Expected content of GetJobWithID to be uint32_t with the number of bytes to receive, but received a content length of",*responseDataSize);
 			}
+			else
+			{
+				uint32_t contentLength;
+				memcpy(&contentLength,data,sizeof(uint32_t));
+				_fileSize = contentLength;
+				_bytesRead = 0;
 
-			LOG("File opened for writing. Now waiting for number of bytes to read");
+				LOG_VALUE("Expected file size of",_fileSize);
+
+				//Open a file on SD card
+				_file = SD.open("job.gcode",O_WRITE);
+				if (!_file.available())
+				{
+					//TODO: We should handle that. For now we will have to read data from ESP to clean the pipe but there should be better ways to handle errors
+					//Application.getESPStack()->requestTask(Error);
+					//return false;
+				}
+
+				LOG("File opened for writing. Now waiting for number of bytes to read");
+				LOG("Now Expecting file chunks with FileSendData tasks");
+			}
 		}
+	}
+	else if (header.getCurrentTask() == FileSendData)
+	{
+		LOG("Handling FileSendData Task");
+		if (header.commType == Request)
+		{
+			LOG_VALUE("Received Chunk of Data with Size",dataSize);
+			int numBytesWritten = _file.write(data,dataSize);
+			LOG_VALUE("Written number of bytes to file",numBytesWritten);
+
+			//That's it. We don't send a response
+			*sendResponse = false;
+
+			//Add number of bytes received to total bytes read
+			_bytesRead += dataSize;
+
+			float fraction = (float)_bytesRead / (float)_fileSize;
+			_progressBar->setValue(fraction);
+		}
+	}
+	else if (header.getCurrentTask() == FileClose)
+	{
+		LOG("Handling FileClose Task");
+		_file.close();
+
+		PrintStatusSceneController* scene = new PrintStatusSceneController();
+		Application.pushScene(scene);
 	}
 
 	return true;

@@ -36,8 +36,8 @@
 #define logError(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg ": ")
 #define logString(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg)
 
-#define LOG(m) Serial.println(logString(m));Serial.flush();
-#define LOG_VALUE(m,v) Serial.print(logError(m));Serial.println(v);Serial.flush();
+#define LOG(m) //Serial.println(logString(m));Serial.flush();
+#define LOG_VALUE(m,v) //Serial.print(logError(m));Serial.println(v);Serial.flush();
 
 #define TFT_BACKLIGHT_PWM 22
 
@@ -65,7 +65,7 @@ public:
 #pragma mark CommStackDelegate
 public:
 	CommStack* getESPStack();
-	bool runTask(CommHeader& header, const uint8_t* data, uint8_t* responseData, uint16_t* responseDataSize);
+	bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse);
 
 #pragma mark Misc
 	void sendScreenshot();

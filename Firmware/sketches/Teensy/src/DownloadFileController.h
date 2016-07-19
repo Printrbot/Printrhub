@@ -30,7 +30,7 @@ private:
 	virtual void onWillAppear() override;
 	virtual uint16_t getBackgroundColor() override;
 	virtual bool handlesTask(TaskID taskID);
-	virtual bool runTask(CommHeader& header, const uint8_t* data, uint8_t* responseData, uint16_t* responseDataSize);
+	virtual bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse);
 
 #pragma mark Button Delegate
 private:
@@ -45,6 +45,8 @@ private:
 	ProgressBar* _progressBar;
 	TextLayer* _nameLayer;
 	File _file;
+	uint32_t _fileSize;
+	uint32_t _bytesRead;
 };
 
 
