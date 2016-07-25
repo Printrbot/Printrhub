@@ -7,9 +7,9 @@
 
 bool CommStackReadyToSend;
 
-void readyToSendPinChanged()
+void ICACHE_RAM_ATTR readyToSendPinChange()
 {
-    CommStackReadyToSend = !CommStackReadyToSend;
+    CommStackReadyToSend = digitalRead(12);
 }
 
 CommStack::CommStack(Stream* port, CommStackDelegate* delegate):
@@ -20,7 +20,7 @@ _receiveBufferIndex(0),
 _packetMarker(COMM_STACK_PACKET_MARKER)
 {
     pinMode(12,INPUT);
-    attachInterrupt(12,readyToSendPinChanged,CHANGE);
+    attachInterrupt(12,readyToSendPinChange,CHANGE);
     CommStackReadyToSend = digitalRead(12);
 }
 
@@ -131,13 +131,17 @@ void CommStack::send(const uint8_t* buffer, size_t size)
     size_t numEncoded = encode(buffer, size, _encodeBuffer);
 
     LOG_VALUE("Sending encoded data with size",size);
+    LOG_VALUE("ReadToSend-Flag",CommStackReadyToSend);
 
-/*    while (digitalRead(12) == LOW)
+    if (!CommStackReadyToSend)
     {
-        //Wait for this packet to be sent until pin 12 is HIGH again
-        ESP.wdtFeed();
-        delay(1);
-    }*/
+        LOG("Waiting for Ready To Send Signal");
+        while(!CommStackReadyToSend)
+        {
+            ESP.wdtFeed();
+        }
+        LOG("Signal received, sending...");
+    }
 
     int numBytesSent = _port->write(_encodeBuffer, numEncoded);
     _port->write(_packetMarker);
@@ -200,8 +204,6 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
             //Copy data into current header
             memcpy(&_currentHeader,buffer,size);
 
-            LOG_VALUE("Header.numberOfTasks",_currentHeader.numberOfTasks);
-            LOG_VALUE("Header.currentTaskIndex",_currentHeader.currentTaskIndex);
             LOG_VALUE("Header.currentTask",_currentHeader.getCurrentTask());
             LOG_VALUE("Header.commType",_currentHeader.commType);
             LOG_VALUE("Header.contentLength",_currentHeader.contentLength);

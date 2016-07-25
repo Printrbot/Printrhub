@@ -134,7 +134,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 			float fraction = (float)_bytesRead / (float)_fileSize;
 
 			//This kills the hole file transfer progress as this takes around 50ms in which now data will be read from serial, leading to package loss
-			//_progressBar->setValue(fraction);
+			_progressBar->setValue(fraction);
 		}
 	}
 	else if (header.getCurrentTask() == FileClose)

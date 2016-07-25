@@ -170,7 +170,7 @@ void ApplicationClass::loop()
 		if (willRefresh)
 		{
 			//This should be a good idea as it marks MK20 to be unable to receive data, but this does not work at the moment
-			//digitalWrite(33,LOW);
+			digitalWrite(33,LOW);
 		}
 
 		//Relayout screen tiles
@@ -188,7 +188,7 @@ void ApplicationClass::loop()
 		if (willRefresh)
 		{
 			//This should be a good idea as it marks MK20 to be unable to receive data, but this does not work at the moment
-			//digitalWrite(33,HIGH);
+			digitalWrite(33,HIGH);
 		}
 
 		_firstSceneLoop = false;
