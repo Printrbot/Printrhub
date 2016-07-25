@@ -56,6 +56,7 @@ private:
 	RectangleLayer* _progressLayer;
 	RectangleLayer* _trackLayer;
 	uint16_t _trackColor;
+	int _currentTrackWidth;
 };
 
 

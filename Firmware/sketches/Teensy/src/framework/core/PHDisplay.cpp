@@ -314,7 +314,7 @@ void PHDisplay::setNeedsDisplay()
 
 bool PHDisplay::willRefresh()
 {
-    return (_needsLayout || _needsDisplay);
+    return (_needsDisplay);
 }
 
 void PHDisplay::invalidateRect(Rect &invalidationRect, int scrollOffset, int deltaScrollOffset)

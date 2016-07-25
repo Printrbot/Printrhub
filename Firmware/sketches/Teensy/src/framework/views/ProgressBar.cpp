@@ -25,6 +25,7 @@ ProgressBar::ProgressBar(int x, int y, int width, int height):
 	setMinValue(0);
 	setMaxValue(1);
 	_value = 0;
+	_currentTrackWidth = 0;
 
 	_backgroundColor = Application.getTheme()->getColor(ControlBackgroundColor);
 	_trackColor = Application.getTheme()->getColor(SpacerColor);
@@ -98,7 +99,13 @@ void ProgressBar::setValue(float value)
 
 	this->_value = value;
 
-	setNeedsDisplay();
+	//Only refresh if there is something to draw
+	int trackWidth = (int)((float)_frame.width * value);
+	if (trackWidth != _currentTrackWidth)
+	{
+		setNeedsDisplay();
+	}
+	_currentTrackWidth = trackWidth;
 }
 
 void ProgressBar::setLimits(float minValue, float maxValue)
