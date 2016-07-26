@@ -147,6 +147,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 	else if (header.getCurrentTask() == FileClose)
 	{
 		LOG("Handling FileClose Task");
+		LOG_VALUE("Bytes read",_bytesRead);
 		_file.close();
 
 		PrintStatusSceneController* scene = new PrintStatusSceneController();

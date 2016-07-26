@@ -217,8 +217,6 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
             //Copy data into current header
             memcpy(&_currentHeader,buffer,size);
 
-            LOG_VALUE("Header.numberOfTasks",_currentHeader.numberOfTasks);
-            LOG_VALUE("Header.currentTaskIndex",_currentHeader.currentTaskIndex);
             LOG_VALUE("Header.currentTask",_currentHeader.getCurrentTask());
             LOG_VALUE("Header.commType",_currentHeader.commType);
             LOG_VALUE("Header.contentLength",_currentHeader.contentLength);
