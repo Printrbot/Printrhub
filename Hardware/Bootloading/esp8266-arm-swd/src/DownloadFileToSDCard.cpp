@@ -13,13 +13,14 @@ const int kNetworkDelay = 1000;
 
 DownloadFileToSDCard::DownloadFileToSDCard(String filePath):
         Mode(),
-        mode(StateWorking),
+        mode(StateRequest),
         httpClient(client),
         _filePath(filePath)
 {
     memset(_buffer,0,_bufferSize);
     _bufferIndex = 0;
     _numChunks = 0;
+    _waitForResponse = false;
 }
 
 DownloadFileToSDCard::~DownloadFileToSDCard()
@@ -82,14 +83,15 @@ void DownloadFileToSDCard::sendBuffer()
 
 void DownloadFileToSDCard::sendResponse(uint32_t contentLength)
 {
-    Application.getMK20Stack()->responseTask(GetJobWithID,sizeof(uint32_t),(uint8_t*)&contentLength);
+    Application.getMK20Stack()->responseTask(GetJobWithID,sizeof(uint32_t),(uint8_t*)&contentLength,true);
 }
 
 void DownloadFileToSDCard::loop()
 {
     int err = 0;
 
-    if (mode == StateWorking)
+    //In this mode ESP will try to initiate the download of the requested file and will send the response with number of bytes to download
+    if (mode == StateRequest)
     {
         if (httpClient.get("www.appfruits.com", 80, _filePath.c_str()) != 0)
         {
@@ -107,49 +109,84 @@ void DownloadFileToSDCard::loop()
                 err = httpClient.skipResponseHeaders();
                 if (err >= 0)
                 {
-                    int bodyLen = httpClient.contentLength();
+                    _bytesToDownload = httpClient.contentLength();
 
                     //Send the response with the size of the file
-                    sendResponse(bodyLen);
+                    sendResponse(_bytesToDownload);
 
-                    // Now we've got to the body, so we can print it out
-                    unsigned long timeoutStart = millis();
-                    char c;
-
-                    while ((httpClient.connected() || httpClient.available()) &&
-                           ((millis() - timeoutStart) < kNetworkTimeout))
-                    {
-                        ESP.wdtFeed();
-
-                        if (httpClient.available())
-                        {
-                            c = httpClient.read();
-                            // Print out this character
-
-                            addByteToBuffer(c);
-
-                            bodyLen--;
-                            // We read something, reset the timeout counter
-                            timeoutStart = millis();
-                        }
-                        else
-                        {
-                            // We haven't got any data, so let's pause to allow some to
-                            // arrive
-                            delay(kNetworkDelay);
-                        }
-                    }
-
-                    //All data read from the net, make sure we send the rest of the buffer
-                    sendBuffer();
-
-                    mode = StateSuccess;
+                    //Switch to download mode
+                    _waitForResponse = false;
+                    mode = StateDownload;
                 }
                 else
                 {
                     mode = StateError;
                 }
             }
+            else
+            {
+                mode = StateError;
+            }
+        }
+    }
+
+    //In this mode ESP will download the file by chunks of _bufferSize (32 bytes) and will then leave the loop to allow for responses
+    if (mode == StateDownload)
+    {
+        // Now we've got to the body, so we can print it out
+        unsigned long timeoutStart = millis();
+        char c;
+
+        //If we are still waiting for the response of the last sent package do nothing
+        if (_waitForResponse)
+        {
+            return;
+        }
+
+        while ((httpClient.connected() || httpClient.available()) &&
+               ((millis() - timeoutStart) < kNetworkTimeout))
+        {
+            ESP.wdtFeed();
+
+            if (httpClient.available())
+            {
+                c = httpClient.read();
+                _bytesToDownload--;
+
+                //Store the byte read from the web in our buffer
+                _buffer[_bufferIndex] = c;
+
+                _bufferIndex++;
+                if (_bufferIndex >= _bufferSize)
+                {
+                    //Buffer is full, send it to MK20 and leave the loop
+                    _waitForResponse = true;
+                    sendBuffer();
+                    memset(_buffer,0,_bufferSize);
+                    _bufferIndex = 0;
+
+                    //Close this run loop now to keep up the rest of the application loop and to wait for the response
+                    break;
+                }
+
+
+                // We read something, reset the timeout counter
+                timeoutStart = millis();
+            }
+            else
+            {
+                // We haven't got any data, so let's pause to allow some to
+                // arrive
+                delay(kNetworkDelay);
+            }
+        }
+
+        //All data read from the net, make sure we send the rest of the buffer
+        if (_bytesToDownload <= 0)
+        {
+            _waitForResponse = true;
+            sendBuffer();
+            mode = StateSuccess;
         }
     }
 
@@ -171,5 +208,26 @@ void DownloadFileToSDCard::loop()
         Mode* mode = new Idle();
         Application.pushMode(mode);
         return;
+    }
+}
+
+bool DownloadFileToSDCard::handlesTask(TaskID taskID)
+{
+    if (taskID == FileSendData)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool DownloadFileToSDCard::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool *sendResponse, bool* success)
+{
+    if (header.getCurrentTask() == FileSendData)
+    {
+        if (header.commType == ResponseSuccess)
+        {
+            _waitForResponse = false;
+        }
     }
 }

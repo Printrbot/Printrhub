@@ -12,9 +12,10 @@ class DownloadFileToSDCard: public Mode
 {
 private:
     typedef enum State {
-        StateWorking = 0,
-        StateSuccess = 1,
-        StateError = 2
+        StateRequest = 0,
+        StateDownload = 1,
+        StateSuccess = 2,
+        StateError = 3
     };
 
 #pragma mark Constructor
@@ -34,6 +35,10 @@ public:
     void sendBuffer();
     void sendResponse(uint32_t contentLength);
 
+#pragma mark Communication
+    virtual bool handlesTask(TaskID taskID);
+    virtual bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse, bool* success);
+
 #pragma mark Mode
     virtual String getName();
 
@@ -47,6 +52,8 @@ private:
     char _buffer[_bufferSize];
     int _bufferIndex;
     int _numChunks;
+    bool _waitForResponse;
+    int _bytesToDownload;
 };
 
 

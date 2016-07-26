@@ -330,6 +330,13 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 {
 	LOG_VALUE("Running Task with ID",header.getCurrentTask());
 	LOG_VALUE("Comm-Type",header.commType);
+
+	if (_currentMode->handlesTask(header.getCurrentTask()))
+	{
+		LOG_VALUE("Current mode handles Task with ID",header.getCurrentTask());
+		return _currentMode->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
+	}
+
 	if (header.getCurrentTask() == GetTimeAndDate)
 	{
 		if (header.commType == Request)
