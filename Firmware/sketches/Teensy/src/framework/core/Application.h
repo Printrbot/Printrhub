@@ -65,7 +65,7 @@ public:
 #pragma mark CommStackDelegate
 public:
 	CommStack* getESPStack();
-	bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse);
+	bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse, bool* success);
 
 #pragma mark Misc
 	void sendScreenshot();

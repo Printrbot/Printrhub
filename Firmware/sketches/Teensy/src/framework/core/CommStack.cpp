@@ -33,13 +33,21 @@ bool CommStack::readHeader(CommHeader* commHeader)
     return true;
 }
 
-bool CommStack::prepareResponse(CommHeader *commHeader)
+bool CommStack::prepareResponse(CommHeader *commHeader, bool success)
 {
     //Flip Request to Response, if this is a Response switch to next task. If all tasks
     //have been processed just return true and do nothing
     if (commHeader->commType == Request)
     {
-        commHeader->commType = Response;
+        if (success)
+        {
+            commHeader->commType = ResponseSuccess;
+        }
+        else
+        {
+            commHeader->commType = ResponseFailed;
+        }
+
         return true;
     }
 
@@ -158,19 +166,24 @@ void CommStack::runTask(const uint8_t* buffer, size_t size)
     //Trigger the application to run the task and send responded data
     uint16_t responseDataSize = 0;
     bool sendResponse = true;
-    _delegate->runTask(_currentHeader,buffer,size,_responseBuffer,&responseDataSize,&sendResponse);
+    bool success = true;
+    _delegate->runTask(_currentHeader,buffer,size,_responseBuffer,&responseDataSize,&sendResponse,&success);
 
     LOG_VALUE("Running task complete, Response data size",responseDataSize);
     //Prepare header for the response
-    if (sendResponse && prepareResponse(&_currentHeader))
+    if (sendResponse && prepareResponse(&_currentHeader, success))
     {
         if (_currentHeader.commType == Request)
         {
             LOG_VALUE("Sending Request",_currentHeader.getCurrentTask());
         }
-        else
+        else if (_currentHeader.commType == ResponseSuccess)
         {
-            LOG_VALUE("Sending Response",_currentHeader.getCurrentTask());
+            LOG_VALUE("Sending Response Success",_currentHeader.getCurrentTask());
+        }
+        else if (_currentHeader.commType == ResponseFailed)
+        {
+            LOG_VALUE("Sending Response Failed",_currentHeader.getCurrentTask());
         }
 
         //Set size of responded data
@@ -348,24 +361,39 @@ bool CommStack::requestTask(TaskID task)
     return sendMessage(header);
 }
 
-bool CommStack::responseTask(TaskID task, size_t contentLength, const uint8_t *data)
+bool CommStack::responseTask(TaskID task, size_t contentLength, const uint8_t *data, bool success)
 {
     LOG_VALUE("Response Task with data with ID",task);
     CommHeader header(task,contentLength);
 
     //Set as response
-    header.commType = Response;
+    if (success)
+    {
+        header.commType = ResponseSuccess;
+    }
+    else
+    {
+        header.commType = ResponseFailed;
+    }
 
     return sendMessage(header,contentLength,data);
 }
 
-bool CommStack::responseTask(TaskID task)
+bool CommStack::responseTask(TaskID task, bool success)
 {
     LOG_VALUE("Response Task without data with ID",task);
     CommHeader header(task, 0);
 
     //Set as response
-    header.commType = Response;
+    if (success)
+    {
+        header.commType = ResponseSuccess;
+    }
+    else
+    {
+        header.commType = ResponseFailed;
+    }
+
 
     return sendMessage(header);
 }

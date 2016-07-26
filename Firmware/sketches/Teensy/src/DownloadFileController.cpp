@@ -79,7 +79,7 @@ bool DownloadFileController::handlesTask(TaskID taskID)
 	return false;
 }
 
-bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse)
+bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)
 {
 	LOG_VALUE("DownloadFileController handling task",header.getCurrentTask());
 
@@ -87,7 +87,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 	{
 		LOG("Handling GetJobWithID Task");
 
-		if (header.commType == Response)
+		if (header.commType == ResponseSuccess)
 		{
 			if (dataSize != sizeof(uint32_t))
 			{
@@ -115,6 +115,12 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 				LOG("Now Expecting file chunks with FileSendData tasks");
 			}
 		}
+		else
+		{
+			//TODO: Show an error message
+			ChoosePrintSceneController* scene = new ChoosePrintSceneController();
+			Application.pushScene(scene);
+		}
 	}
 	else if (header.getCurrentTask() == FileSendData)
 	{
@@ -126,7 +132,8 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 			LOG_VALUE("Written number of bytes to file",numBytesWritten);
 
 			//That's it. We don't send a response
-			*sendResponse = false;
+			*sendResponse = true;
+			*responseDataSize = 0;
 
 			//Add number of bytes received to total bytes read
 			_bytesRead += dataSize;

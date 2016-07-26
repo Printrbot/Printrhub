@@ -232,12 +232,12 @@ CommStack *ApplicationClass::getESPStack()
 	return _esp;
 }
 
-bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse)
+bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)
 {
 	if (_currentScene->handlesTask(header.getCurrentTask()))
 	{
 		LOG_VALUE("Current scene handles Task with ID",header.getCurrentTask());
-		return _currentScene->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse);
+		return _currentScene->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
 	}
 	
 	LOG_VALUE("Running Task with ID",header.getCurrentTask());
@@ -245,7 +245,7 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 
 	if (header.getCurrentTask() == GetTimeAndDate)
 	{
-		if (header.commType == Response)
+		if (header.commType == ResponseSuccess)
 		{
 			LOG("Loading Date and Time from ESP");
 			Display.setCursor(10,30);
