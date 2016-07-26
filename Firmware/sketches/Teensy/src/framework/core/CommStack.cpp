@@ -287,7 +287,7 @@ void CommStack::process()
         {
             if (data == COMM_STACK_PACKET_MARKER)
             {
-                //digitalWrite(33,LOW);
+                digitalWrite(33,LOW);
                 LOG_VALUE("Packet received, decoding number of bytes",_receiveBufferIndex);
                 uint8_t _decodeBuffer[_receiveBufferIndex];
                 size_t numDecoded = decode(_receiveBuffer, _receiveBufferIndex, _decodeBuffer);
@@ -296,7 +296,7 @@ void CommStack::process()
                 LOG_VALUE("Handling decoded packet with size",numDecoded);
                 //Packet received
                 packetReceived(_decodeBuffer,numDecoded);
-                //digitalWrite(33,HIGH);
+                digitalWrite(33,HIGH);
             }
             else
             {
