@@ -137,7 +137,7 @@ void ApplicationClass::setup()
 	pinMode(13,OUTPUT);
 	digitalWrite(13,HIGH);
 
-	Serial.begin(921600);
+	Serial.begin(115200*15);
 	SPIFFS.begin();
 
 	connectWiFi();
