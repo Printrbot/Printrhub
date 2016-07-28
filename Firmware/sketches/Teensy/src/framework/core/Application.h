@@ -26,7 +26,7 @@
 #include "../views/Icon.h"
 #include "PHDisplay.h"
 #include "../../drivers/Display/ILI9341_t3.h"
-#include <Adafruit_FT6206.h>
+#include "../../drivers/Adafruit_FT6206/Adafruit_FT6206.h"
 #include "../animation/Animator.h"
 #include "../../fonts/font_PT_Sans-Narrow-Web-Regular.h"
 #include "CommStack.h"
@@ -38,8 +38,11 @@
 
 #define LOG(m) //Serial.println(logString(m));Serial.flush();
 #define LOG_VALUE(m,v) //Serial.print(logError(m));Serial.println(v);Serial.flush();
+#define LOG_NORMAL(m) Serial.println(logString(m));Serial.flush();
+#define LOG_NORMAL_VALUE(m,v) Serial.print(logError(m));Serial.println(v);Serial.flush();
 
 #define TFT_BACKLIGHT_PWM 22
+#define LED_PIN 21
 
 class SceneController;
 class View;

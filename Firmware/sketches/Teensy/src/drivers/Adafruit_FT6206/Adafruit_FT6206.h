@@ -39,12 +39,16 @@
 #define FT6206_REG_FACTORYMODE 0x40
 #define FT6206_REG_THRESHHOLD 0x80
 #define FT6206_REG_POINTRATE 0x88
+#define FT6206_REG_G_MODE 0xA4
 #define FT6206_REG_FIRMVERS 0xA6
 #define FT6206_REG_CHIPID 0xA3
 #define FT6206_REG_VENDID 0xA8
 
 // calibrated for Adafruit 2.8" ctp screen
 #define FT6206_DEFAULT_THRESSHOLD 128
+
+#define FT6206_INTERRUPT_POLLING_MODE 0x00
+#define FT6206_INTERRUPT_TRIGGER_MODE 0x01
 
 class TS_Point {
  public:
@@ -61,12 +65,12 @@ class Adafruit_FT6206 {
  public:
 
   Adafruit_FT6206(void);
-  boolean begin(uint8_t thresh = FT6206_DEFAULT_THRESSHOLD);  
+  boolean begin(uint8_t interruptPin, uint8_t thresh = FT6206_DEFAULT_THRESSHOLD);
 
   void writeRegister8(uint8_t reg, uint8_t val);
   uint8_t readRegister8(uint8_t reg);
 
-  void readData(uint16_t *x, uint16_t *y);
+  bool readData(uint16_t *x, uint16_t *y);
   void autoCalibrate(void); 
 
   boolean touched(void);
@@ -75,7 +79,8 @@ class Adafruit_FT6206 {
  private:
   uint8_t touches;
   uint16_t touchX[2], touchY[2], touchID[2];
-
+    uint8_t _interruptPin;
+    TS_Point _lastPoint;
 };
 
 #endif //ADAFRUIT_FT6206_LIBRARY

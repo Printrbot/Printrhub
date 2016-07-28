@@ -17,7 +17,7 @@
 #include <SPI.h>       // this is needed for display
 #include "framework/core/PHDisplay.h"
 #include <Wire.h>      // this is needed for FT6206
-#include <Adafruit_FT6206.h>
+#include "drivers/Adafruit_FT6206/Adafruit_FT6206.h"
 #include "IdleSceneController.h"
 #include "MainSceneController.h"
 #include "drivers/SD/SD_t3.h"
@@ -28,6 +28,7 @@
 #include "Bitmaps.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
+#define TFT_TOUCH_SENSE_PIN 17
 Adafruit_FT6206 Touch = Adafruit_FT6206();
 
 // The display also uses hardware SPI, plus #9 & #10
@@ -121,7 +122,7 @@ void setup(void)
 
     showSplashScreen();
 
-    if (! Touch.begin(40))
+    if (! Touch.begin(TFT_TOUCH_SENSE_PIN,40))
     {  // pass in 'sensitivity' coefficient
         Serial.println("Couldn't start FT6206 touchscreen controller");
         while (1);

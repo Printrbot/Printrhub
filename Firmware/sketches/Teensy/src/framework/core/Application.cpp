@@ -90,14 +90,14 @@ void ApplicationClass::handleTouches()
 
 void ApplicationClass::loop()
 {
+	//Process Communication with ESP
+	_esp->process();
+
 	//Run Animations
 	Animator.update();
 
 	//Clear the display
 	//Display.clear();
-
-	//Process Communication with ESP
-	_esp->process();
 
 	if (_nextScene != NULL)
 	{
