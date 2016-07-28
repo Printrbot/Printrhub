@@ -48,7 +48,7 @@ private:
     WiFiClient client;
     HttpClient httpClient;
     String _filePath;
-    static const int _bufferSize = 32;
+    static const int _bufferSize = 128;
     char _buffer[_bufferSize];
     int _bufferIndex;
     int _numChunks;
