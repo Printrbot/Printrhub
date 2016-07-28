@@ -88,6 +88,12 @@ void ApplicationClass::handleTouches()
 	}
 }
 
+void ApplicationClass::setup()
+{
+	//Configure LED pin
+	pinMode(LED_PIN, OUTPUT);
+}
+
 void ApplicationClass::loop()
 {
 	//Process Communication with ESP

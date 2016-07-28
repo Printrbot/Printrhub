@@ -136,6 +136,9 @@ void setup(void)
     //Display.setScrollArea(0,270,50);
     //Display.setScrollInsets(50,0);
 
+    //Initiate Application
+    Application.setup();
+
     Serial.println("Starting MainMenu");
     //mainController = new MainSceneController();
     //Application.pushScene(mainController);

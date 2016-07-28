@@ -56,6 +56,7 @@ public:
 
 #pragma mark Application Flow
 	void loop();
+	void setup();
 	void pushScene(SceneController* scene);
 	SceneController* currentScene() { return _currentScene; };
 
