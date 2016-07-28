@@ -299,7 +299,7 @@ bool CommStack::sendMessage(CommHeader &header, size_t contentLength, const uint
         //Send the header and data
         LOG_VALUE("Sending Header and data with size",contentLength);
         send((uint8_t*)&header, sizeof(CommHeader));
-        delayMicroseconds(500);
+        delayMicroseconds(5);
         send(data, contentLength);
     }
     else
@@ -308,8 +308,6 @@ bool CommStack::sendMessage(CommHeader &header, size_t contentLength, const uint
         LOG("Sending the header only (no data)");
         send((uint8_t*)&header, sizeof(CommHeader));
     }
-
-    delay(1);
 
     LOG("Request sent");
     return true;
