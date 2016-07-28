@@ -128,7 +128,16 @@ void ApplicationClass::setup()
 /*	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);*/
 
-	Serial.begin(115200);
+	// 115200
+	// 230400
+	// 345600
+	// 460800
+	// 921600
+
+	pinMode(13,OUTPUT);
+	digitalWrite(13,HIGH);
+
+	Serial.begin(921600);
 	SPIFFS.begin();
 
 	connectWiFi();
@@ -232,8 +241,10 @@ void ApplicationClass::loop()
 {
 	//Check MK20 communication by updating the comm stack. This may result in a call to
 	//the runTask member function which in turn most likely sets a new current mode controller
+
 	_mk20->process();
 
+	//Disabling the server brings a little bit of performance, but not much.
 	updateServer();
 
 	//Setup new controller and delete the old one if a new controller is pushed

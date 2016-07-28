@@ -88,7 +88,7 @@ void setup(void)
     Serial1.begin(115200);
 
     //Initiate communication pipeline to ESP8266
-    Serial3.begin(115200);
+    Serial3.begin(921600);
     //Serial3.attachCts(14);
     //Serial3.attachRts(2);
 
