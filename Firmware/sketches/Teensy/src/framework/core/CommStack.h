@@ -42,23 +42,27 @@ public:
     uint8_t taskID;
     uint8_t commType;
     uint8_t contentLength;
+    uint16_t checkSum;
 
 public:
     CommHeader() {
         this->commType = Request;
         this->contentLength = 0;
+        this->checkSum = 0;
     }
 
     CommHeader(TaskID task, uint32_t contentLength) {
         this->taskID = task;
         this->commType = Request;
         this->contentLength = contentLength;
+        this->checkSum = 0;
     }
 
     CommHeader(TaskID* tasks, uint8_t numberOfTasks, uint32_t contentLength) {
         this->taskID = tasks[0];
         this->commType = Request;
         this->contentLength = contentLength;
+        this->checkSum = 0;
     }
 
     TaskID getCurrentTask()
@@ -69,6 +73,11 @@ public:
     bool isFinished()
     {
         return (commType == ResponseSuccess || commType == ResponseFailed);
+    }
+
+    void setCheckSum(uint16_t checkSum)
+    {
+        this->checkSum = checkSum;
     }
 };
 
@@ -112,6 +121,7 @@ private:
     size_t decode(const uint8_t* source, size_t size, uint8_t* destination);
     void runTask(const uint8_t* buffer, size_t size);
     void send(const uint8_t* buffer, size_t size);
+    uint16_t getCheckSum(const uint8_t* data, size_t size);
 
 #pragma mark Member Variables
 private:

@@ -245,8 +245,20 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
         if (size == _currentHeader.contentLength)
         {
             LOG("Received data, running task with data");
-            //Everythings fine, we received an header and data with the expected size followed along, run the task
-            runTask(buffer,size);
+
+            //Now check the checksum
+            uint16_t checkSum = getCheckSum(buffer,size);
+            if (checkSum != _currentHeader.checkSum)
+            {
+                LOG("Checksum test failed");
+                LOG_VALUE("Checksum of package",_currentHeader.checkSum);
+                LOG_VALUE("Computed checksum",checkSum);
+            }
+            else
+            {
+                //Everythings fine, we received an header and data with the expected size followed along, run the task
+                runTask(buffer,size);
+            }
         }
         else
         {
@@ -292,10 +304,24 @@ void CommStack::process()
     }
 }
 
+uint16_t CommStack::getCheckSum(const uint8_t *data, size_t size)
+{
+    uint16_t checkSum = 0;
+    for (int i=0;i<size;i++)
+    {
+        checkSum += data[i];
+    }
+    return checkSum;
+}
+
 bool CommStack::sendMessage(CommHeader &header, size_t contentLength, const uint8_t *data)
 {
     if (contentLength > 0)
     {
+        //Calculate the checksum and set the checksum
+        uint16_t checkSum = getCheckSum(data,contentLength);
+        header.setCheckSum(checkSum);
+
         //Send the header and data
         LOG_VALUE("Sending Header and data with size",contentLength);
         send((uint8_t*)&header, sizeof(CommHeader));
