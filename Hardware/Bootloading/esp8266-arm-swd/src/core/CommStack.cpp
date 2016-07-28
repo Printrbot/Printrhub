@@ -9,7 +9,7 @@ bool CommStackReadyToSend;
 
 void ICACHE_RAM_ATTR readyToSendPinChange()
 {
-    CommStackReadyToSend = digitalRead(12);
+    CommStackReadyToSend = digitalRead(COMMSTACK_DATAFLOW_PIN);
 }
 
 CommStack::CommStack(Stream* port, CommStackDelegate* delegate):
@@ -19,9 +19,9 @@ _expectedPacketType(Header),
 _receiveBufferIndex(0),
 _packetMarker(COMM_STACK_PACKET_MARKER)
 {
-    pinMode(12,INPUT);
-    attachInterrupt(12,readyToSendPinChange,CHANGE);
-    CommStackReadyToSend = digitalRead(12);
+    pinMode(COMMSTACK_DATAFLOW_PIN,INPUT);
+    attachInterrupt(COMMSTACK_DATAFLOW_PIN,readyToSendPinChange,CHANGE);
+    CommStackReadyToSend = digitalRead(COMMSTACK_DATAFLOW_PIN);
 }
 
 CommStack::~CommStack()

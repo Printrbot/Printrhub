@@ -30,6 +30,7 @@
 #include "../animation/Animator.h"
 #include "../../fonts/font_PT_Sans-Narrow-Web-Regular.h"
 #include "CommStack.h"
+#include "HAL.h"
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
@@ -40,9 +41,6 @@
 #define LOG_VALUE(m,v) //Serial.print(logError(m));Serial.println(v);Serial.flush();
 #define LOG_NORMAL(m) Serial.println(logString(m));Serial.flush();
 #define LOG_NORMAL_VALUE(m,v) Serial.print(logError(m));Serial.println(v);Serial.flush();
-
-#define TFT_BACKLIGHT_PWM 22
-#define LED_PIN 21
 
 class SceneController;
 class View;

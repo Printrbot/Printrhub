@@ -26,18 +26,10 @@
 #include "SettingsSceneController.h"
 #include "PrintStatusSceneController.h"
 #include "Bitmaps.h"
+#include "framework/core/HAL.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
-#define TFT_TOUCH_SENSE_PIN 17
 Adafruit_FT6206 Touch = Adafruit_FT6206();
-
-// The display also uses hardware SPI, plus #9 & #10
-#define TFT_CS 10
-#define TFT_DC 9
-#define TFT_RST 0
-#define TFT_MOSI 11
-#define TFT_MISO 12
-#define TFT_SCLK 13
 
 //ILI9341_t3::ILI9341_t3(uint8_t cs, uint8_t dc, uint8_t rst, uint8_t mosi, uint8_t sclk, uint8_t miso)
 PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
@@ -88,7 +80,7 @@ void setup(void)
     Serial1.begin(115200);
 
     //Initiate communication pipeline to ESP8266
-    Serial3.begin(115200*15);
+    Serial3.begin(COMMSTACK_BAUDRATE);
     //Serial3.attachCts(14);
     //Serial3.attachRts(2);
 

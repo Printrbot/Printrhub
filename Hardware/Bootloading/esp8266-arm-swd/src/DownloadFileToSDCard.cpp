@@ -131,7 +131,7 @@ void DownloadFileToSDCard::loop()
     }
 
     //In this mode ESP will download the file by chunks of _bufferSize (32 bytes) and will then leave the loop to allow for responses
-    digitalWrite(13,LOW);
+    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
     if (mode == StateDownload)
     {
         // Now we've got to the body, so we can print it out
@@ -141,7 +141,7 @@ void DownloadFileToSDCard::loop()
         //If we are still waiting for the response of the last sent package do nothing
         if (_waitForResponse)
         {
-            digitalWrite(13,HIGH);
+            digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
             return;
         }
 
@@ -163,20 +163,20 @@ void DownloadFileToSDCard::loop()
                 {
                     //Buffer is full, send it to MK20 and leave the loop
                     _waitForResponse = true;
-                    digitalWrite(13,HIGH);
+                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
                     delayMicroseconds(1);
-                    digitalWrite(13,LOW);
+                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
                     sendBuffer();
                     memset(_buffer,0,_bufferSize);
                     _bufferIndex = 0;
 
-                    digitalWrite(13,HIGH);
+                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
                     delayMicroseconds(1);
-                    digitalWrite(13,LOW);
+                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
                     delayMicroseconds(1);
-                    digitalWrite(13,HIGH);
+                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
                     delayMicroseconds(1);
-                    digitalWrite(13,LOW);
+                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
 
                     //Close this run loop now to keep up the rest of the application loop and to wait for the response
                     break;
@@ -201,7 +201,7 @@ void DownloadFileToSDCard::loop()
             sendBuffer();
             mode = StateSuccess;
         }
-        digitalWrite(13,HIGH);
+        digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
     }
 
     if (mode == StateError)

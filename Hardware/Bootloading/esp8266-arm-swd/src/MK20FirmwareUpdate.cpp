@@ -5,9 +5,9 @@
 #include "MK20FirmwareUpdate.h"
 #include "Idle.h"
 
-const int reset_pin = 13;
-const int swd_clock_pin = 5;
-const int swd_data_pin = 14;
+const int reset_pin = MK20_RESET_PIN;
+const int swd_clock_pin = MK20_SWD_CLK;
+const int swd_data_pin = MK20_SWD_IO;
 
 // Number of milliseconds to wait without receiving any data before we give up
 const int kNetworkTimeout = 30*1000;

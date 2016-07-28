@@ -134,10 +134,10 @@ void ApplicationClass::setup()
 	// 460800
 	// 921600
 
-	pinMode(13,OUTPUT);
-	digitalWrite(13,HIGH);
+	pinMode(COMMSTACK_WORKING_MARKER_PIN,OUTPUT);
+	digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
 
-	Serial.begin(115200*15);
+	Serial.begin(COMMSTACK_BAUDRATE);
 	SPIFFS.begin();
 
 	connectWiFi();

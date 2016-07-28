@@ -12,11 +12,11 @@ _expectedPacketType(Header),
 _receiveBufferIndex(0),
 _packetMarker(COMM_STACK_PACKET_MARKER)
 {
-    pinMode(3,OUTPUT);
-    digitalWrite(3,HIGH);
+    pinMode(COMMSTACK_DATALOSS_MARKER_PIN,OUTPUT);
+    digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
 
-    pinMode(33,OUTPUT);
-    digitalWrite(33,HIGH);
+    pinMode(COMMSTACK_DATAFLOW_PIN,OUTPUT);
+    digitalWrite(COMMSTACK_DATAFLOW_PIN,HIGH);
 }
 
 CommStack::~CommStack()
@@ -244,13 +244,13 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
             LOG_VALUE("Expected header size",sizeof(CommHeader));
             LOG_VALUE("Got packet with size",size);
 
-            digitalWrite(3,LOW);
+            digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
             delayMicroseconds(1);
-            digitalWrite(3,HIGH);
+            digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
             delayMicroseconds(1);
-            digitalWrite(3,LOW);
+            digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
             delayMicroseconds(1);
-            digitalWrite(3,HIGH);
+            digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
 
             //TODO: Do something in case of an error like sending a ResponseFailed
         }
@@ -269,9 +269,9 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
                 LOG_VALUE("Checksum of package",_currentHeader.checkSum);
                 LOG_VALUE("Computed checksum",checkSum);
 
-                digitalWrite(3,LOW);
+                digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
                 delayMicroseconds(2);
-                digitalWrite(3,HIGH);
+                digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
 
                 //TODO: Do something in case of an error like sending a ResponseFailed with the computed checksum
             }
@@ -290,9 +290,9 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
             LOG_VALUE("Expected data size given in header",_currentHeader.contentLength);
             LOG_VALUE("Got packet with size",size);
 
-            digitalWrite(3,LOW);
+            digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
             delayMicroseconds(2);
-            digitalWrite(3,HIGH);
+            digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
         }
 
         //Now that the data have been sent/received the next package should be a header
@@ -310,7 +310,7 @@ void CommStack::process()
         {
             if (data == COMM_STACK_PACKET_MARKER)
             {
-                digitalWrite(33,LOW);
+                digitalWrite(COMMSTACK_DATAFLOW_PIN,LOW);
                 LOG_VALUE("Packet received, decoding number of bytes",_receiveBufferIndex);
                 uint8_t _decodeBuffer[_receiveBufferIndex];
                 size_t numDecoded = decode(_receiveBuffer, _receiveBufferIndex, _decodeBuffer);
@@ -319,7 +319,7 @@ void CommStack::process()
                 LOG_VALUE("Handling decoded packet with size",numDecoded);
                 //Packet received
                 packetReceived(_decodeBuffer,numDecoded);
-                digitalWrite(33,HIGH);
+                digitalWrite(COMMSTACK_DATAFLOW_PIN,HIGH);
             }
             else
             {

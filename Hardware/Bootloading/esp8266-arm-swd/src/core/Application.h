@@ -30,6 +30,7 @@
 #include "PubNub.h"
 #include "PubNubLogger.h"
 #include "FileLogger.h"
+#include "HAL.h"
 
 // Pin definitions
 const int LED_PIN = 0;
