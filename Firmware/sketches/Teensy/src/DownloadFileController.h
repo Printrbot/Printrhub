@@ -16,7 +16,7 @@ class DownloadFileController: public SidebarSceneController
 public:
 	virtual void onSidebarButtonTouchUp() override;
 
-	DownloadFileController();
+	DownloadFileController(String host, int port, String remoteFilePath, String localFilePath);
 	virtual ~DownloadFileController();
 
 #pragma mark Sidebar Scene Controller
@@ -47,6 +47,11 @@ private:
 	File _file;
 	uint32_t _fileSize;
 	uint32_t _bytesRead;
+	int _previousPercent;
+	String _host;
+	String _port;
+	String _remoteFilePath;
+	String _localFilePath;
 };
 
 

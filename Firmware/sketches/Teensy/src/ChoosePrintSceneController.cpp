@@ -147,7 +147,7 @@ void ChoosePrintSceneController::buttonPressed(void *button)
         else
         {
             LOG_VALUE("Need to download file",getPageIndex());
-            DownloadFileController* scene = new DownloadFileController();
+            DownloadFileController* scene = new DownloadFileController("www.appfruits.com",80,"/files/fs.png","fs.png");
             Application.pushScene(scene);
         }
     }

@@ -12,10 +12,15 @@
 #include "PrintStatusSceneController.h"
 #include "MainSceneController.h"
 
-DownloadFileController::DownloadFileController():
+DownloadFileController::DownloadFileController(String host, int port, String remoteFilePath, String localFilePath) :
 		SidebarSceneController::SidebarSceneController(),
 		_fileSize(0),
-		_bytesRead(0)
+		_bytesRead(0),
+		_previousPercent(0),
+		_remoteFilePath(remoteFilePath),
+		_localFilePath(localFilePath),
+		_port(port),
+		_host(host)
 {
 
 }
@@ -61,7 +66,7 @@ void DownloadFileController::onWillAppear()
 	addView(_progressBar);
 
 	//Trigger file download
-	char jobID[] = "/files/firmware.bin";
+	const char* jobID = _remoteFilePath.c_str();
 	Application.getESPStack()->requestTask(GetJobWithID,strlen(jobID),(uint8_t*)jobID);
 
 	SidebarSceneController::onWillAppear();
@@ -103,7 +108,8 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 				LOG_VALUE("Expected file size of",_fileSize);
 
 				//Open a file on SD card
-				_file = SD.open("job.gcode",O_WRITE);
+				SD.remove(_localFilePath.c_str());
+				_file = SD.open(_localFilePath.c_str(),FILE_WRITE);
 				if (!_file.available())
 				{
 					//TODO: We should handle that. For now we will have to read data from ESP to clean the pipe but there should be better ways to handle errors
@@ -140,8 +146,18 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 
 			float fraction = (float)_bytesRead / (float)_fileSize;
 
-			//This kills the hole file transfer progress as this takes around 50ms in which now data will be read from serial, leading to package loss
-			_progressBar->setValue(fraction);
+			int percent = (int)(fraction*100.0f);
+			if (percent != _previousPercent)
+			{
+				LOG_NORMAL_VALUE("Progress Bar Percent",percent);
+				if (percent % 5 == 0)
+				{
+					LOG_NORMAL_VALUE("Updating Bar with fraction",fraction);
+					//Only update the progress bar once in a while as the communication is blocked while doing so and we don't want to loose too much speed
+					_progressBar->setValue(fraction);
+				}
+			}
+			_previousPercent = percent;
 		}
 	}
 	else if (header.getCurrentTask() == FileClose)
