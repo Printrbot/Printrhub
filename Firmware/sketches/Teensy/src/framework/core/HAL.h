@@ -5,8 +5,8 @@
 #ifndef TEENSY_HAL_H
 #define TEENSY_HAL_H
 
-#define PRINTRHUB_REV_01    //Uncomment if building the code for Printrhub Rev 0.1
-//#define PRINTRHUB_REV_02  //Uncomment if building the code for Printrhub Rev 0.2
+//#define PRINTRHUB_REV_01    //Uncomment if building the code for Printrhub Rev 0.1
+#define PRINTRHUB_REV_02  //Uncomment if building the code for Printrhub Rev 0.2
 
 #ifdef PRINTRHUB_REV_01
 
@@ -28,7 +28,9 @@
 #define COMMSTACK_DATALOSS_MARKER_PIN 3
 #define COMMSTACK_BAUDRATE 1728000
 
-#elif PRINTRHUB_REV_02
+#endif
+
+#ifdef PRINTRHUB_REV_02
 
 //General setup
 #define LED_PIN 21
