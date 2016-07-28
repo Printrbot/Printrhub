@@ -131,6 +131,7 @@ void DownloadFileToSDCard::loop()
     }
 
     //In this mode ESP will download the file by chunks of _bufferSize (32 bytes) and will then leave the loop to allow for responses
+    digitalWrite(13,LOW);
     if (mode == StateDownload)
     {
         // Now we've got to the body, so we can print it out
@@ -140,6 +141,7 @@ void DownloadFileToSDCard::loop()
         //If we are still waiting for the response of the last sent package do nothing
         if (_waitForResponse)
         {
+            digitalWrite(13,HIGH);
             return;
         }
 
@@ -161,9 +163,20 @@ void DownloadFileToSDCard::loop()
                 {
                     //Buffer is full, send it to MK20 and leave the loop
                     _waitForResponse = true;
+                    digitalWrite(13,HIGH);
+                    delayMicroseconds(1);
+                    digitalWrite(13,LOW);
                     sendBuffer();
                     memset(_buffer,0,_bufferSize);
                     _bufferIndex = 0;
+
+                    digitalWrite(13,HIGH);
+                    delayMicroseconds(1);
+                    digitalWrite(13,LOW);
+                    delayMicroseconds(1);
+                    digitalWrite(13,HIGH);
+                    delayMicroseconds(1);
+                    digitalWrite(13,LOW);
 
                     //Close this run loop now to keep up the rest of the application loop and to wait for the response
                     break;
@@ -188,6 +201,7 @@ void DownloadFileToSDCard::loop()
             sendBuffer();
             mode = StateSuccess;
         }
+        digitalWrite(13,HIGH);
     }
 
     if (mode == StateError)
@@ -230,4 +244,6 @@ bool DownloadFileToSDCard::runTask(CommHeader &header, const uint8_t *data, size
             _waitForResponse = false;
         }
     }
+
+    return true;
 }
