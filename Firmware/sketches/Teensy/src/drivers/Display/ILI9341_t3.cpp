@@ -1521,11 +1521,6 @@ uint32_t ILI9341_t3::textWidth(const ILI9341_t3_font_t* font, String text)
 		lineWidth = width;
 	}
 
-	Serial.print("Text Width:");
-	Serial.print(text);
-	Serial.print(":");
-	Serial.println(lineWidth);
-
 	return lineWidth;
 }
 

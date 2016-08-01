@@ -253,7 +253,6 @@ void StackArray<T>::setPrinter (Print & p) {
 // exit report method in case of error.
 template<typename T>
 void StackArray<T>::exit (const char * m) const {
-    Serial.println(m);
   // print the message if there is a printer.
   if (printer)
     printer->println (m);

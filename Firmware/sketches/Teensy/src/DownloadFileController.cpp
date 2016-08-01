@@ -149,10 +149,10 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 			int percent = (int)(fraction*100.0f);
 			if (percent != _previousPercent)
 			{
-				LOG_NORMAL_VALUE("Progress Bar Percent",percent);
+				LOG_VALUE("Progress Bar Percent",percent);
 				if (percent % 5 == 0)
 				{
-					LOG_NORMAL_VALUE("Updating Bar with fraction",fraction);
+					LOG_VALUE("Updating Bar with fraction",fraction);
 					//Only update the progress bar once in a while as the communication is blocked while doing so and we don't want to loose too much speed
 					_progressBar->setValue(fraction);
 				}

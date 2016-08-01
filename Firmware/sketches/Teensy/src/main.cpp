@@ -113,21 +113,21 @@ void setup(void)
         Display.println("Couldn't start SD card!");
         Display.fadeIn();
 
-        Serial.println("Couldn't start SD card");
+        LOG("Couldn't start SD card");
         StatusLED.on();
         while (1);
     }
-    Serial.println("Started SD card interface");
+    LOG("Started SD card interface");
 
     showSplashScreen();
 
     if (! Touch.begin(TFT_TOUCH_SENSE_PIN,40))
     {  // pass in 'sensitivity' coefficient
-        Serial.println("Couldn't start FT6206 touchscreen controller");
+        LOG("Couldn't start FT6206 touchscreen controller");
         StatusLED.on();
         while (1);
     }
-    Serial.println("Capacitive touchscreen started");
+    LOG("Capacitive touchscreen started");
 
     Display.fillScreen(ILI9341_BLACK);
 
@@ -139,7 +139,7 @@ void setup(void)
     //Initiate Application
     Application.setup();
 
-    Serial.println("Starting MainMenu");
+    LOG("Starting MainMenu");
     //mainController = new MainSceneController();
     //Application.pushScene(mainController);
     //idleScene = new IdleSceneController();
