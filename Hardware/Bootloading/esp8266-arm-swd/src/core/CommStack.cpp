@@ -183,6 +183,13 @@ void CommStack::runTask(const uint8_t* buffer, size_t size)
         //Set size of responded data
         _currentHeader.contentLength = responseDataSize;
 
+        uint16_t checkSum = 0;
+        if (responseDataSize > 0)
+        {
+            checkSum = getCheckSum(_responseBuffer,responseDataSize);
+        }
+        _currentHeader.setCheckSum(checkSum);
+
         //Send the header
         send((uint8_t*)&_currentHeader, sizeof(CommHeader));
 
