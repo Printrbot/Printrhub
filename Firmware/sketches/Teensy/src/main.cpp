@@ -17,6 +17,7 @@
 #include <SPI.h>       // this is needed for display
 #include "framework/core/PHDisplay.h"
 #include <Wire.h>      // this is needed for FT6206
+#include <SoftwareSerial.h>
 #include "drivers/Adafruit_FT6206/Adafruit_FT6206.h"
 #include "IdleSceneController.h"
 #include "MainSceneController.h"
@@ -36,6 +37,10 @@ PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_M
 
 //This is used all the time, so keep a global reference instead of building it again every time
 SceneController* mainController;
+
+#ifdef DEBUG_USE_SOFTWARE_SERIAL
+SoftwareSerial DebugSerial(DEBUG_SOFTWARE_SERIAL_RX_PIN,DEBUG_SOFTWARE_SERIAL_TX_PIN);
+#endif
 
 LED StatusLED(LED_PIN);
 
@@ -75,12 +80,18 @@ void setup(void)
     //while (!Serial);
     delay(2000);
 
-    Serial.begin(115200);
-    Serial.println(F("Printrhub - LCD Controller and Hub for Printrbots!"));
     //Initiate Status LED to be able to show some errors
     StatusLED.begin();
 
     StatusLED.pulse(1,false);
+
+#ifdef DebugSerial
+    {
+        DebugSerial.begin(115200);
+    }
+#endif
+
+    LOG("Printrhub - LCD Controller and Hub for Printrbots!");
 
     //Initiate communication to Printerboard
     Serial1.begin(115200);

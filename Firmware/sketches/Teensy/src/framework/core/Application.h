@@ -32,16 +32,21 @@
 #include "CommStack.h"
 #include "HAL.h"
 #include "LED.h"
+#include <SoftwareSerial.h>
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 #define logError(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg ": ")
 #define logString(msg) (__FILE__ " line " STRINGIZE(__LINE__) ": " msg)
 
-#define LOG(m) //Serial.println(logString(m));Serial.flush();
-#define LOG_VALUE(m,v) //Serial.print(logError(m));Serial.println(v);Serial.flush();
-#define LOG_NORMAL(m) Serial.println(logString(m));Serial.flush();
-#define LOG_NORMAL_VALUE(m,v) Serial.print(logError(m));Serial.println(v);Serial.flush();
+//#define DEBUG_LOGS
+#ifdef DEBUG_LOGS
+#define LOG(m) DebugSerial.println(logString(m));DebugSerial.flush();
+#define LOG_VALUE(m,v) DebugSerial.print(logError(m));DebugSerial.println(v);Serial.flush();
+#else
+#define LOG(m)
+#define LOG_VALUE(m,v)
+#endif
 
 class SceneController;
 class View;
@@ -97,5 +102,9 @@ extern LED StatusLED;
 extern int globalLayerId;
 extern int globalLayersCreated;
 extern int globalLayersDeleted;
+
+#ifdef DEBUG_USE_SOFTWARE_SERIAL
+extern SoftwareSerial DebugSerial;
+#endif
 
 #endif //_APPLICATION_H_

@@ -28,6 +28,9 @@
 #define COMMSTACK_DATALOSS_MARKER_PIN 3
 #define COMMSTACK_BAUDRATE 1728000
 
+//Debug
+#define DebugSerial Serial
+
 #endif
 
 #ifdef PRINTRHUB_REV_02
@@ -49,6 +52,12 @@
 #define COMMSTACK_DATAFLOW_PIN 31
 #define COMMSTACK_DATALOSS_MARKER_PIN 3
 #define COMMSTACK_BAUDRATE 1728000
+
+//Debug
+#define DEBUG_USE_SOFTWARE_SERIAL
+#define DEBUG_SOFTWARE_SERIAL_RX_PIN 14
+#define DEBUG_SOFTWARE_SERIAL_TX_PIN 2
+#define DebugSerial DebugSerial
 
 #endif
 
