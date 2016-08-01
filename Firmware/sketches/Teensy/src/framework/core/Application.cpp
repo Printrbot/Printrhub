@@ -102,6 +102,8 @@ void ApplicationClass::loop()
 	//Run Animations
 	Animator.update();
 
+	StatusLED.loop();
+
 	//Clear the display
 	//Display.clear();
 
@@ -236,6 +238,11 @@ float ApplicationClass::getDeltaTime()
 CommStack *ApplicationClass::getESPStack()
 {
 	return _esp;
+}
+
+void ApplicationClass::onCommStackError()
+{
+	StatusLED.pulse(0.5,false);
 }
 
 bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)

@@ -252,6 +252,8 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
             delayMicroseconds(1);
             digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
 
+            _delegate->onCommStackError();
+
             //TODO: Do something in case of an error like sending a ResponseFailed
         }
     }
@@ -273,6 +275,8 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
                 delayMicroseconds(2);
                 digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
 
+                _delegate->onCommStackError();
+
                 //TODO: Do something in case of an error like sending a ResponseFailed with the computed checksum
             }
             else
@@ -293,6 +297,8 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
             digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
             delayMicroseconds(2);
             digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
+
+            _delegate->onCommStackError();
         }
 
         //Now that the data have been sent/received the next package should be a header

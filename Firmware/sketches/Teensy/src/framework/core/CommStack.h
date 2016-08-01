@@ -85,6 +85,7 @@ class CommStackDelegate
 {
 public:
     virtual bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse, bool* success) = 0;
+    virtual void onCommStackError() = 0;
 };
 
 class CommStack

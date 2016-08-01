@@ -37,6 +37,8 @@ PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_M
 //This is used all the time, so keep a global reference instead of building it again every time
 SceneController* mainController;
 
+LED StatusLED(LED_PIN);
+
 int globalLayerId = 0;
 
 int globalLayersCreated = 0;
@@ -75,6 +77,10 @@ void setup(void)
 
     Serial.begin(115200);
     Serial.println(F("Printrhub - LCD Controller and Hub for Printrbots!"));
+    //Initiate Status LED to be able to show some errors
+    StatusLED.begin();
+
+    StatusLED.pulse(1,false);
 
     //Initiate communication to Printerboard
     Serial1.begin(115200);
@@ -108,6 +114,7 @@ void setup(void)
         Display.fadeIn();
 
         Serial.println("Couldn't start SD card");
+        StatusLED.on();
         while (1);
     }
     Serial.println("Started SD card interface");
@@ -117,6 +124,7 @@ void setup(void)
     if (! Touch.begin(TFT_TOUCH_SENSE_PIN,40))
     {  // pass in 'sensitivity' coefficient
         Serial.println("Couldn't start FT6206 touchscreen controller");
+        StatusLED.on();
         while (1);
     }
     Serial.println("Capacitive touchscreen started");

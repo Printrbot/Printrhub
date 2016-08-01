@@ -31,6 +31,7 @@
 #include "../../fonts/font_PT_Sans-Narrow-Web-Regular.h"
 #include "CommStack.h"
 #include "HAL.h"
+#include "LED.h"
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
@@ -68,6 +69,7 @@ public:
 public:
 	CommStack* getESPStack();
 	bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse, bool* success);
+	void onCommStackError();
 
 #pragma mark Misc
 	void sendScreenshot();
@@ -91,6 +93,7 @@ private:
 extern ApplicationClass Application;
 extern PHDisplay Display;
 extern Adafruit_FT6206 Touch;
+extern LED StatusLED;
 extern int globalLayerId;
 extern int globalLayersCreated;
 extern int globalLayersDeleted;
