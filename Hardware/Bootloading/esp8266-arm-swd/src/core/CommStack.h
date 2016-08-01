@@ -51,14 +51,14 @@ public:
         this->checkSum = 0;
     }
 
-    CommHeader(TaskID task, uint32_t contentLength) {
+    CommHeader(TaskID task, uint8_t contentLength) {
         this->taskID = task;
         this->commType = Request;
         this->contentLength = contentLength;
         this->checkSum = 0;
     }
 
-    CommHeader(TaskID* tasks, uint8_t numberOfTasks, uint32_t contentLength) {
+    CommHeader(TaskID* tasks, uint8_t numberOfTasks, uint8_t contentLength) {
         this->taskID = tasks[0];
         this->commType = Request;
         this->contentLength = contentLength;
