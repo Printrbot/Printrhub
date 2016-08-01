@@ -5,13 +5,6 @@
 #include "CommStack.h"
 #include "Application.h"
 
-bool CommStackReadyToSend;
-
-void ICACHE_RAM_ATTR readyToSendPinChange()
-{
-    CommStackReadyToSend = digitalRead(COMMSTACK_DATAFLOW_PIN);
-}
-
 CommStack::CommStack(Stream* port, CommStackDelegate* delegate):
 _port(port),
 _delegate(delegate),
@@ -20,8 +13,6 @@ _receiveBufferIndex(0),
 _packetMarker(COMM_STACK_PACKET_MARKER)
 {
     pinMode(COMMSTACK_DATAFLOW_PIN,INPUT);
-    attachInterrupt(COMMSTACK_DATAFLOW_PIN,readyToSendPinChange,CHANGE);
-    CommStackReadyToSend = digitalRead(COMMSTACK_DATAFLOW_PIN);
 }
 
 CommStack::~CommStack()
@@ -138,14 +129,15 @@ void CommStack::send(const uint8_t* buffer, size_t size)
     size_t numEncoded = encode(buffer, size, _encodeBuffer);
 
     LOG_VALUE("Sending encoded data with size",size);
-    LOG_VALUE("ReadToSend-Flag",CommStackReadyToSend);
+    LOG_VALUE("ReadToSend-Flag",digitalRead(COMMSTACK_DATAFLOW_PIN));
 
-    if (!CommStackReadyToSend)
+    if (digitalRead(COMMSTACK_DATAFLOW_PIN) == LOW)
     {
         LOG("Waiting for Ready To Send Signal");
-        while(!CommStackReadyToSend)
+        while(digitalRead(COMMSTACK_DATAFLOW_PIN) == LOW)
         {
             ESP.wdtFeed();
+            delayMicroseconds(1);
         }
         LOG("Signal received, sending...");
     }
