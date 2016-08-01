@@ -7,7 +7,7 @@
 #include "Idle.h"
 
 // Number of milliseconds to wait without receiving any data before we give up
-const int kNetworkTimeout = 30*1000;
+const int kNetworkTimeout = 10*1000;
 // Number of milliseconds to wait if no data is available before trying again
 const int kNetworkDelay = 100;
 
@@ -117,6 +117,7 @@ void DownloadFileToSDCard::loop()
                     //Switch to download mode
                     _waitForResponse = false;
                     mode = StateDownload;
+                    _lastBytesReadTimeStamp = millis();
                 }
                 else
                 {
@@ -131,22 +132,27 @@ void DownloadFileToSDCard::loop()
     }
 
     //In this mode ESP will download the file by chunks of _bufferSize (32 bytes) and will then leave the loop to allow for responses
-    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
     if (mode == StateDownload)
     {
         // Now we've got to the body, so we can print it out
-        unsigned long timeoutStart = millis();
         char c;
 
         //If we are still waiting for the response of the last sent package do nothing
         if (_waitForResponse)
         {
-            digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
             return;
         }
 
-        while ((httpClient.connected() || httpClient.available()) &&
-               ((millis() - timeoutStart) < kNetworkTimeout))
+        if (!httpClient.connected())
+        {
+            LOG("HTTPClient lost connection");
+            LOG_VALUE("Bytes left to download",_bytesToDownload);
+            mode = StateError;
+            return;
+        }
+
+        LOG("Downloading data from the net");
+        while (httpClient.available())
         {
             ESP.wdtFeed();
 
@@ -163,28 +169,17 @@ void DownloadFileToSDCard::loop()
                 {
                     //Buffer is full, send it to MK20 and leave the loop
                     _waitForResponse = true;
-                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
-                    delayMicroseconds(1);
-                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
                     sendBuffer();
                     memset(_buffer,0,_bufferSize);
                     _bufferIndex = 0;
 
-                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
-                    delayMicroseconds(1);
-                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
-                    delayMicroseconds(1);
-                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
-                    delayMicroseconds(1);
-                    digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
-
                     //Close this run loop now to keep up the rest of the application loop and to wait for the response
-                    break;
+                    return;
                 }
 
 
                 // We read something, reset the timeout counter
-                timeoutStart = millis();
+                _lastBytesReadTimeStamp = millis();
             }
             else
             {
@@ -201,7 +196,15 @@ void DownloadFileToSDCard::loop()
             sendBuffer();
             mode = StateSuccess;
         }
-        digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
+        else
+        {
+            //Check for timeout
+            if ((millis() - _lastBytesReadTimeStamp) > kNetworkTimeout)
+            {
+                LOG("Connection timeout");
+                mode = StateError;
+            }
+        }
     }
 
     if (mode == StateError)
@@ -242,6 +245,10 @@ bool DownloadFileToSDCard::runTask(CommHeader &header, const uint8_t *data, size
         if (header.commType == ResponseSuccess)
         {
             _waitForResponse = false;
+
+            digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
+            delayMicroseconds(2);
+            digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
         }
     }
 

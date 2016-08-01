@@ -54,6 +54,7 @@ private:
     int _numChunks;
     bool _waitForResponse;
     int _bytesToDownload;
+    unsigned long _lastBytesReadTimeStamp;
 };
 
 
