@@ -25,14 +25,14 @@
 #ifdef PRINTRHUB_REV_02
 
 //Firmware updates for MK20
-#define MK20_RESET_PIN 3
+#define MK20_RESET_PIN 13
 #define MK20_SWD_CLK 5
 #define MK20_SWD_IO 14
 
 //Commstack
 #define COMMSTACK_DATAFLOW_PIN 4
 #define COMMSTACK_BAUDRATE 1728000
-#define COMMSTACK_WORKING_MARKER_PIN 13
+#define COMMSTACK_WORKING_MARKER_PIN 16
 
 #endif
 
