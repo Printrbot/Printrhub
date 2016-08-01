@@ -178,7 +178,7 @@ void ApplicationClass::loop()
 		if (willRefresh)
 		{
 			//This should be a good idea as it marks MK20 to be unable to receive data, but this does not work at the moment
-			digitalWrite(33,LOW);
+			digitalWrite(COMMSTACK_DATAFLOW_PIN,LOW);
 		}
 
 		//Relayout screen tiles
@@ -196,7 +196,7 @@ void ApplicationClass::loop()
 		if (willRefresh)
 		{
 			//This should be a good idea as it marks MK20 to be unable to receive data, but this does not work at the moment
-			digitalWrite(33,HIGH);
+			digitalWrite(COMMSTACK_DATAFLOW_PIN,HIGH);
 		}
 
 		_firstSceneLoop = false;
