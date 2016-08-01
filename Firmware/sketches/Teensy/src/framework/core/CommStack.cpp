@@ -386,8 +386,6 @@ bool CommStack::sendMessage(CommHeader &header, size_t contentLength, const uint
         send((uint8_t*)&header, sizeof(CommHeader));
     }
 
-    delay(1);
-
     LOG("Request sent");
     return true;
 }
