@@ -146,6 +146,13 @@ void CommStack::send(const uint8_t* buffer, size_t size)
     _port->write(_packetMarker);
     _port->flush();
     LOG_VALUE("Number of bytes sent",numBytesSent);
+
+/*    //Wait for MK20 to receive the package
+    while (digitalRead(COMMSTACK_DATAFLOW_PIN) == HIGH)
+    {
+        ESP.wdtFeed();
+        delayMicroseconds(1);
+    }*/
 }
 
 void CommStack::runTask(const uint8_t* buffer, size_t size)
