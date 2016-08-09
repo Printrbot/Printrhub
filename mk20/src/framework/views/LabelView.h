@@ -1,0 +1,56 @@
+//
+// Created by Phillip Schuster on 09.07.16.
+//
+
+#ifndef TEENSYCMAKE_LABELVIEW_H
+#define TEENSYCMAKE_LABELVIEW_H
+
+#include "View.h"
+#include "../core/Application.h"
+#include "../layers/TextLayer.h"
+
+#define TEXTALIGN_LEFT 0
+#define TEXTALIGN_CENTERED 1
+#define TEXTALIGN_RIGHT 2
+#define TEXTALIGN_TOP 0
+#define TEXTALIGN_BOTTOM 2
+
+class LabelView: public View
+{
+#pragma mark Constructor:
+public:
+	LabelView(String text, Rect frame);
+	LabelView(String text, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
+
+#pragma mark Getter/Setter
+	void setText(String text);
+	String getText() const { return _text; };
+	void setTextAlign(uint8_t textAlign);
+	uint8_t getTextAlign() const { return _textAlign; };
+	void setVerticalTextAlign(uint8_t verticalTextAlign);
+	uint8_t getVerticalTextAlign() const { return _verticalTextAlign; };
+	void setTextColor(uint16_t color);
+	uint16_t getTextColor() { return _textColor; };
+	virtual void setFont(const ILI9341_t3_font_t *font);
+	const ILI9341_t3_font_t* getFont();
+	TextLayer* getTextLayer() { return _layer; };
+
+#pragma mark View
+	virtual bool touchDown(TS_Point& point) { return View::touchDown(point); };
+	virtual bool touchUp(TS_Point& point) { return View::touchUp(point); };
+	virtual void touchCancelled() { View::touchCancelled(); }
+	virtual void display() override;
+
+#pragma mark Member Variables
+protected:
+	TextLayer* _layer;
+private:
+	String _text;
+	uint8_t _textAlign;
+	uint8_t _verticalTextAlign;
+	const ILI9341_t3_font_t* _font;
+	uint16_t _textColor;
+};
+
+
+#endif //TEENSYCMAKE_LABELVIEW_H

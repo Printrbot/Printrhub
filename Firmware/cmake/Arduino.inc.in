@@ -1,5 +1,0 @@
-#include "Arduino.h"
-void setup();
-void loop();
-
-#include "@SOURCE_PATH@"

@@ -1,0 +1,4 @@
+esp/lib/ESP*
+esp/lib/HttpClient
+esp/.pioenvs
+mk20/.pioenvs
