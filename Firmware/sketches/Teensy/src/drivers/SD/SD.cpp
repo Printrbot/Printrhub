@@ -342,7 +342,7 @@ boolean SDClass::begin(uint8_t csPin) {
 
    */
 
-  if (!card.init(SPI_HALF_SPEED, csPin))
+  if (!card.init(SPI_FULL_SPEED, csPin))
   {
     Serial.println("Failed to init card");
     Serial.println(card.errorCode());
