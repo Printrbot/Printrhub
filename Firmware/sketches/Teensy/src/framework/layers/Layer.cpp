@@ -36,8 +36,6 @@ Layer::~Layer()
 
     removeAllSublayers();
 
-    delete _sublayers;
-    _sublayers = NULL;
     if (_sublayers != NULL)
     {
         delete _sublayers;
