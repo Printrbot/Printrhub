@@ -20,16 +20,6 @@ void RectangleLayer::draw(Rect &invalidationRect)
 {
     uint16_t backgroundColor = this->getBackgroundColor();
     uint16_t strokeColor = this->getStrokeColor();
-
-/*    Serial.print("Fill-Rect: ");
-    Serial.print(_frame.x);
-    Serial.print(",");
-    Serial.print(_frame.y);
-    Serial.print(",");
-    Serial.print(_frame.width);
-    Serial.print(",");
-    Serial.println(_frame.height);*/
-
     Rect renderFrame = Rect::Intersect(_frame,invalidationRect);
 
     //Map renderframe to screen space

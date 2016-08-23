@@ -4,21 +4,24 @@
 
 #include "DownloadFileController.h"
 #include "SD.h"
-#include "Bitmaps.h"
 #include "projects/ProjectsScene.h"
-#include "print/PrintStatusSceneController.h"
-#include "print/CleanPlasticSceneController.h"
-#include "ConfirmSceneController.h"
+//#include "print/PrintStatusSceneController.h"
+//#include "print/CleanPlasticSceneController.h"
+//#include "ConfirmSceneController.h"
 #include "framework/views/ProgressBar.h"
 #include "MainSceneController.h"
+#include "UIBitmaps.h"
+#include "font_LiberationSans.h"
+
+extern UIBitmaps uiBitmaps;
 
 DownloadFileController::DownloadFileController(String url, String localFilePath) :
-		SidebarSceneController::SidebarSceneController(),
-		_fileSize(0),
-		_bytesRead(0),
-		_previousPercent(0),
-		_localFilePath(localFilePath),
-		_url(url)
+	SidebarSceneController::SidebarSceneController(),
+	_fileSize(0),
+	_bytesRead(0),
+	_previousPercent(0),
+	_localFilePath(localFilePath),
+	_url(url)
 {
 
 }
@@ -48,33 +51,33 @@ String DownloadFileController::getName()
 }
 
 
-String DownloadFileController::getSidebarTitle() const
-{
-	return String("DOWNLOAD");
+
+UIBitmap * DownloadFileController::getSidebarIcon() {
+  return &uiBitmaps.btn_exit;
 }
 
 
-const uint8_t *DownloadFileController::getSidebarIcon()
-{
-	return imageOfCancelIcon_24_24;
+UIBitmap * DownloadFileController::getSidebarBitmap() {
+  return &uiBitmaps.sidebar_settings;
 }
 
 void DownloadFileController::onWillAppear()
 {
-	_nameLayer = new TextLayer(Rect(15,10,Display.getLayoutWidth()-30,25));
-	_nameLayer->setTextAlign(TEXTALIGN_LEFT);
-	_nameLayer->setFont(&PTSansNarrow_24);
-	_nameLayer->setText("Downloading File");
-	_nameLayer->setForegroundColor(Application.getTheme()->getColor(TextColor));
-	Display.addLayer(_nameLayer);
+	BitmapView* icon = new BitmapView(Rect(100,44,uiBitmaps.icon_download.width, uiBitmaps.icon_download.height));
+	icon->setBitmap(&uiBitmaps.icon_download);
+	addView(icon);
 
-	_progressBar = new ProgressBar(Rect(15,215,Display.getLayoutWidth()-30,7));
+	TextLayer* textLayer = new TextLayer(Rect(0,118, 270, 20));
+  textLayer->setFont(&LiberationSans_14);
+  textLayer->setTextAlign(TEXTALIGN_CENTERED);
+  textLayer->setForegroundColor(ILI9341_WHITE);
+  textLayer->setText("Downloading, please wait...");
+  Display.addLayer(textLayer);
+
+	_progressBar = new ProgressBar(Rect(0,190,270,50));
+	_progressBar->setTrackColor(ILI9341_WHITE);
 	_progressBar->setValue(0.0f);
 	addView(_progressBar);
-
-	//Trigger file download
-	const char* u = _url.c_str();
-	//Application.getESPStack()->requestTask(GetJobWithID, strlen(u), (uint8_t*) u);
 
 	SidebarSceneController::onWillAppear();
 }
@@ -92,6 +95,7 @@ bool DownloadFileController::handlesTask(TaskID taskID)
 		case FileSaveData:
 		case FileClose:
 		case SaveProjectWithID:
+		case FileSetSize:
 		case Error:
 			return true;
 			break;
@@ -104,7 +108,16 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 {
 	LOG_VALUE("DownloadFileController handling task",header.getCurrentTask());
 
-	if (header.getCurrentTask() == GetJobWithID)
+	if (header.getCurrentTask() == FileSetSize) {
+		uint32_t contentLength;
+		memcpy(&contentLength,data,sizeof(uint32_t));
+		_fileSize = contentLength;
+		_bytesRead = 0;
+		*sendResponse = true;
+		*responseDataSize = 0;
+
+	}
+	else if (header.getCurrentTask() == GetJobWithID)
 	{
 		LOG("Handling GetJobWithID Task");
 
@@ -151,11 +164,10 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 		LOG("Handling FileSaveData Task");
 		if (header.commType == Request)
 		{
-			LOG_VALUE("Received Chunk of Data with Size",dataSize);
-			int numBytesWritten = _file.write(data,dataSize);
+			LOG_VALUE("Received Chunk of Data with Size", dataSize);
+			int numBytesWritten = _file.write(data, dataSize);
 			LOG_VALUE("Written number of bytes to file",numBytesWritten);
 
-			//That's it. We don't send a response
 			*sendResponse = true;
 			*responseDataSize = 0;
 
@@ -163,19 +175,22 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 			_bytesRead += dataSize;
 
 			float fraction = (float)_bytesRead / (float)_fileSize;
-
 			int percent = (int)(fraction*100.0f);
+
 			if (percent != _previousPercent)
 			{
-				LOG_VALUE("Progress Bar Percent",percent);
 				if (percent % 5 == 0)
 				{
-					LOG_VALUE("Updating Bar with fraction",fraction);
 					//Only update the progress bar once in a while as the communication is blocked while doing so and we don't want to loose too much speed
-					_progressBar->setValue(fraction);
+
+					// TODO: Currently locks up the communication, disabled until fixed
+					//_progressBar->setValue(fraction);
+
 				}
 			}
+
 			_previousPercent = percent;
+
 		}
 	}
 	else if (header.getCurrentTask() == FileClose)
@@ -205,38 +220,6 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 	}
 
 	return true;
-/*	else if (header.getCurrentTask() == FileSendData)
-	{
-		if (header.commType == Request)
-		{
-			//Wait for data to be arrived
-			while (!stream->available())
-			{
-				delay(10);
-			}
-
-			uint8_t numberOfBytes = stream->read();
-			uint8_t byteIndex = 0;
-
-			while (!stream->available())
-			{
-				delay(10);
-			}
-
-			uint8_t buffer[numberOfBytes];
-			if (stream->readBytes(buffer,numberOfBytes) == numberOfBytes)
-			{
-				_file.write(buffer,numberOfBytes);
-			}
-		}
-	}
-	else if (header.getCurrentTask() == FileClose)
-	{
-		_file.close();
-
-		PrintStatusSceneController* scene = new PrintStatusSceneController();
-		Application.pushScene(scene);
-	}*/
 }
 
 #pragma mark ButtonDelegate Implementation

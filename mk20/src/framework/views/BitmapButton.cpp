@@ -4,6 +4,7 @@
 
 #include "BitmapButton.h"
 #include "../layers/BitmapLayer.h"
+#include "../layers/SDBitmapLayer.h"
 #include "../core/Application.h"
 #include "../animation/Animator.h"
 #include "../animation/Animation.h"
@@ -26,76 +27,89 @@ _bitmapLayer(NULL)
     LOG_VALUE("This-Frame",_frame.toString());
 }
 
-void BitmapButton::setBitmap(const uint8_t *bitmap, uint16_t width, uint16_t height)
-{
-    Rect bitmapFrame = _frame;
 
-    //The bitmap is smaller than the frame, create a layer and place the bitmap inside it
-    if (_frame.width > width || _frame.height > height)
-    {
-        _baseLayer = new RectangleLayer(_frame);
-        _baseLayer->setBackgroundColor(getBackgroundColor());
-        _baseLayer->setContext(getContext());
+BitmapButton::~BitmapButton() {}
 
-        bitmapFrame.x += (_frame.width - width)/2;
-        bitmapFrame.y += (_frame.height - height)/2;
-        bitmapFrame.width = width;
-        bitmapFrame.height = height;
+void BitmapButton::createBitmapFrame(Rect* frame, uint16_t width, uint16_t height) {
+  //The bitmap is smaller than the frame, create a layer and place the bitmap inside it
+  if (frame->width > width || frame->height > height) {
+    _baseLayer = new RectangleLayer(*frame);
+    _baseLayer->setBackgroundColor(getBackgroundColor());
+    _baseLayer->setContext(getContext());
 
-        //Stamp a hole in the base layer where we place the BitmapLayer
-        _baseLayer->splitWithRect(bitmapFrame);
-        addLayer(_baseLayer);
-    }
+    frame->x += (frame->width - width)/2;
+    frame->y += (frame->height - height)/2;
+    frame->width = width;
+    frame->height = height;
 
-    _bitmapLayer = new BitmapLayer(bitmapFrame);
-    _bitmapLayer->setBitmap(bitmap,width,height);
-    _bitmapLayer->setBackgroundColor(getBackgroundColor());
-    _bitmapLayer->setColor(getColor());
-    _bitmapLayer->setContext(getContext());
-
-    addLayer(_bitmapLayer);
+    //Stamp a hole in the base layer where we place the BitmapLayer
+    _baseLayer->splitWithRect(*frame);
+    addLayer(_baseLayer);
+  }
 }
 
-BitmapButton::~BitmapButton()
-{
-
+void BitmapButton::setBitmap(const uint16_t *bitmapRGB, uint16_t width, uint16_t height) {
+  Rect bitmapFrame = _frame;
+  createBitmapFrame(&bitmapFrame, width, height);
+  _bitmapLayer = new BitmapLayer(bitmapFrame);
+  _bitmapLayer->setBitmap(bitmapRGB, width, height);
+  _bitmapLayer->setContext(getContext());
+  addLayer(_bitmapLayer);
 }
 
+void BitmapButton::setBitmap(const uint8_t *bitmap, uint16_t width, uint16_t height) {
+  Rect bitmapFrame = _frame;
+  createBitmapFrame(&bitmapFrame, width, height);
 
+  _bitmapLayer = new BitmapLayer(bitmapFrame);
+  _bitmapLayer->setBitmap(bitmap, width, height);
+  _bitmapLayer->setBackgroundColor(getBackgroundColor());
+  _bitmapLayer->setColor(getColor());
+  _bitmapLayer->setContext(getContext());
+  addLayer(_bitmapLayer);
+}
+
+void BitmapButton::setBitmap(UIBitmap * bitmap) {
+  _sdbitmapLayer = new SDBitmapLayer(_frame);
+  _sdbitmapLayer->setBitmap("ui", bitmap->width, bitmap->height, bitmap->offset);
+  _sdbitmapLayer->setContext(getContext());
+  addLayer(_sdbitmapLayer);
+}
 
 void BitmapButton::setFrame(Rect frame)
 {
-    if (_frame == frame) return;
+  if (_frame == frame) return;
 
-    View::setFrame(frame);
-    _originalFrame = frame;
+  View::setFrame(frame);
+  _originalFrame = frame;
 
-    _layers.at(0)->setFrame(frame);
+  _layers.at(0)->setFrame(frame);
 }
 
 void BitmapButton::updateButton(ButtonState buttonState)
 {
-    if (buttonState == ButtonState::Off)
-    {
-        if (getBaseLayer() != NULL)
-        {
-            getBaseLayer()->setBackgroundColor(getBackgroundColor());
-        }
+  /*
+  if (buttonState == ButtonState::Off)
+  {
+      if (getBaseLayer() != NULL)
+      {
+          getBaseLayer()->setBackgroundColor(getBackgroundColor());
+      }
 
-        getBitmapLayer()->setBackgroundColor(getBackgroundColor());
-        getBitmapLayer()->setColor(getColor());
-    }
-    else if (buttonState == ButtonState::On)
-    {
-        if (getBaseLayer() != NULL)
-        {
-            getBaseLayer()->setBackgroundColor(getAlternateBackgroundColor());
-        }
+      getBitmapLayer()->setBackgroundColor(getBackgroundColor());
+      getBitmapLayer()->setColor(getColor());
+  }
+  else if (buttonState == ButtonState::On)
+  {
+      if (getBaseLayer() != NULL)
+      {
+          getBaseLayer()->setBackgroundColor(getAlternateBackgroundColor());
+      }
 
-        getBitmapLayer()->setBackgroundColor(getAlternateBackgroundColor());
-        getBitmapLayer()->setColor(getAlternateTextColor());
-    }
-
+      getBitmapLayer()->setBackgroundColor(getAlternateBackgroundColor());
+      getBitmapLayer()->setColor(getAlternateTextColor());
+  }
+  */
     setNeedsDisplay();
 }
 

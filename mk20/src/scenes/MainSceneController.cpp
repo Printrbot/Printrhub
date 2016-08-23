@@ -3,14 +3,13 @@
 //
 
 #include "MainSceneController.h"
-#include "Bitmaps.h"
 #include "framework/views/LabelButton.h"
 #include "framework/core/Application.h"
 #include "NavBar.h"
 #include "projects/ProjectsScene.h"
-#include "WiFiSetupSceneController.h"
-#include "VirtualKeyboardSceneController.h"
-#include "print/MachineControlSceneController.h"
+//#include "WiFiSetupSceneController.h"
+//#include "VirtualKeyboardSceneController.h"
+//#include "print/MachineControlSceneController.h"
 #include "framework/core/ColorTheme.h"
 
 MainSceneController::MainSceneController():
@@ -68,24 +67,24 @@ void MainSceneController::buttonPressed(void *button)
 {
     LOG("MainSceneController::buttonPressed");
 
-    if (button == _printButton)
-    {
-        ProjectsScene* scene = new ProjectsScene();
-        Application.pushScene(scene);
-    }
-    else if (button == _settingsButton)
-    {
-        VirtualKeyboardSceneController* scene = new VirtualKeyboardSceneController();
-        Application.pushScene(scene);
-    }
-    else if (button == _hotendButton)
-    {
-        MachineControlSceneController* scene = new MachineControlSceneController();
-        Application.pushScene(scene);
-    }
-    else
-    {
+    // if (button == _printButton)
+    // {
+    //     ProjectsScene* scene = new ProjectsScene();
+    //     Application.pushScene(scene);
+    // }
+    // if (button == _settingsButton)
+    // {
+    //     VirtualKeyboardSceneController* scene = new VirtualKeyboardSceneController();
+    //     Application.pushScene(scene);
+    // }
+    // // else if (button == _hotendButton)
+    // {
+    //     MachineControlSceneController* scene = new MachineControlSceneController();
+    //     Application.pushScene(scene);
+    // }
+    //else
+    //{
         MainSceneController* scene = new MainSceneController();
         Application.pushScene(scene);
-    }
+    //}
 }

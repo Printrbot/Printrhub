@@ -4,7 +4,6 @@
 
 #include "IdleView.h"
 #include "framework/core/Application.h"
-#include "Bitmaps.h"
 
 IdleView::IdleView(const Rect &frame):
     View(frame)
@@ -18,7 +17,7 @@ IdleView::IdleView(const Rect &frame):
     _layers.push(_layer2);
 
     _buttonLayer = new BitmapLayer(Rect(200,10,68,58));
-    _buttonLayer->setBitmap(imageOfWarningIcon_66_58,68,58);
+  //  _buttonLayer->setBitmap(imageOfWarningIcon_66_58,68,58);
     _layers.push(_buttonLayer);
 }
 

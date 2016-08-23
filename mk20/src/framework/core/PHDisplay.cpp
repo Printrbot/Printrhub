@@ -265,11 +265,11 @@ void PHDisplay::drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h,
 
 
 void PHDisplay::drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs,
-                                       uint16_t ys, uint16_t ws, uint16_t hs)
+                                       uint16_t ys, uint16_t ws, uint16_t hs, uint32_t byteOffset)
 {
     if (_lockBuffer != NULL)
     {
-        _lockBuffer->drawFileBitmapByColumn(x,y,w,h,file,xs,ys,ws,hs);
+        _lockBuffer->drawFileBitmapByColumn(x,y,w,h,file,xs,ys,ws,hs, byteOffset);
         return;
     }
 
@@ -277,7 +277,8 @@ void PHDisplay::drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint1
     uint16_t buffer[320];
     for (uint16_t xb=0;xb<w;xb++)
     {
-        file->seek(((xb+xs)*hs)*sizeof(uint16_t));
+        file->seek((((xb+xs)*hs)*sizeof(uint16_t))+byteOffset);
+
         file->read(buffer,sizeof(uint16_t)*hs);
 
         SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));

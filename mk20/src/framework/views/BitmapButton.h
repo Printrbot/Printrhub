@@ -7,7 +7,9 @@
 
 #include "View.h"
 #include "../layers/BitmapLayer.h"
+#include "../layers/SDBitmapLayer.h"
 #include "Button.h"
+#include "../core/UIBitmap.h"
 
 class BitmapButton;
 
@@ -20,6 +22,8 @@ public:
 
 #pragma mark Getter/Setter
     virtual void setBitmap(const uint8_t* bitmap, uint16_t width, uint16_t height);
+    virtual void setBitmap(const uint16_t* bitmap, uint16_t width, uint16_t height);
+    virtual void setBitmap(UIBitmap * bitmap);
     uint16_t getColor() const { return _color; }
     void setColor(uint16_t color) { _color = color; }
     virtual void setAlternateBackgroundColor(uint16_t color) { _alternateBackgroundColor = color; };
@@ -33,7 +37,8 @@ public:
 
 #pragma mark View
     virtual void setFrame(Rect frame) override;
-
+private:
+    void createBitmapFrame(Rect* frame, uint16_t width, uint16_t height);
 #pragma mark Touch Handling
 private:
     virtual bool touchUp(TS_Point &point) override;
@@ -52,6 +57,7 @@ protected:
     uint16_t _alternateTextColor;
     RectangleLayer* _baseLayer;
     BitmapLayer* _bitmapLayer;
+    SDBitmapLayer* _sdbitmapLayer;
 };
 
 

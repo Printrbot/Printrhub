@@ -11,6 +11,7 @@
 extern "C" {
 #endif
 
+extern const uint8_t imageOfOpenButton_65_65[];
 extern const uint16_t idlescreen[];
 extern const uint8_t imageOfCancelIcon_24_24[];
 extern const uint8_t imageOfPauseIcon_24_24[];
@@ -30,6 +31,11 @@ extern const uint8_t imageOfRotateIcon_37_31[];
 extern const uint8_t imageOfCancelPrintIcon_32_30[];
 extern const uint8_t imageOfResumeIcon_32_30[];
 extern const uint8_t imageOfArrowIcon_64_64[];
+extern const uint8_t imageOfArrowIcon_64_64[];
+extern const uint16_t imageOfProjectText_50_190[];
+extern const uint16_t imageOfJobsText_50_190[];
+
+extern const uint16_t imageOfProjectOpenBtn_120_50[];
 
 #ifdef __cplusplus
 } // extern "C"

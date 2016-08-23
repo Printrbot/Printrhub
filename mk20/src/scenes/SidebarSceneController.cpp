@@ -3,71 +3,59 @@
 //
 
 #include "SidebarSceneController.h"
+#include "UIBitmaps.h"
+#include "framework/views/BitmapView.h"
 
-SidebarSceneController::SidebarSceneController(): SceneController()
-{
+extern UIBitmaps uiBitmaps;
 
-}
-
-SidebarSceneController::~SidebarSceneController()
-{
+SidebarSceneController::SidebarSceneController(): SceneController() {
 
 }
 
-void SidebarSceneController::setupSidebar()
-{
-	Rect textLayerRect(0,0,50,190);
-	_textLayer = new VerticalTextLayer(textLayerRect);
-	_textLayer->setText(getSidebarTitle());
-	_textLayer->setForegroundColor(Application.getTheme()->getColor(SidebarTextColor));
-	_textLayer->setBackgroundColor(Application.getTheme()->getColor(SidebarBackgroundColor));
-	_textLayer->setVerticalTextAlign(TEXTALIGN_CENTERED);
-	_textLayer->setTextAlign(TEXTALIGN_RIGHT);
-	_textLayer->setFont(&PTSansNarrow_24);
-	_textLayer->setPadding(3);
-	_textLayer->setContext(DisplayContext::Fixed);
-	Display.addLayer(_textLayer);
+SidebarSceneController::~SidebarSceneController() {
 
-	Rect bottomButtonRect(0,190,50,50);
-	_actionButton = new BitmapButton(bottomButtonRect);
-	_actionButton->setContext(DisplayContext::Fixed);
-	_actionButton->setBackgroundColor(Application.getTheme()->getColor(HighlightBackgroundColor));
-	_actionButton->setColor(Application.getTheme()->getColor(HighlighTextColor));
-	_actionButton->setAlternateBackgroundColor(Application.getTheme()->getColor(HighlightAlternateBackgroundColor));
-	_actionButton->setAlternateTextColor(Application.getTheme()->getColor(HighlightAlternateTextColor));
-	_actionButton->setBitmap(getSidebarIcon(),24,24);
+}
+
+void SidebarSceneController::setupSidebar() {
+	// setup action button
+	 Rect bottomButtonRect(0,190,50,50);
+	 _actionButton = new BitmapButton(bottomButtonRect);
+	 _actionButton->setContext(DisplayContext::Fixed);
+	//_actionButton->setBackgroundColor(Application.getTheme()->getColor(HighlightBackgroundColor));
+	//_actionButton->setColor(Application.getTheme()->getColor(HighlighTextColor));
+	//_actionButton->setAlternateBackgroundColor(Application.getTheme()->getColor(HighlightAlternateBackgroundColor));
+	//_actionButton->setAlternateTextColor(Application.getTheme()->getColor(HighlightAlternateTextColor));
+	_actionButton->setBitmap(getSidebarIcon());
 	_actionButton->setDelegate(this);
 	addView(_actionButton);
+
+	if (getSidebarBitmap()) {
+		_sidebarImage = new BitmapView(Rect(0,0,50, 190));
+		_sidebarImage->setContext(DisplayContext::Fixed);
+		_sidebarImage->setBitmap(getSidebarBitmap());
+		addView(_sidebarImage);
+	} else {
+		Display.fillRect(0,0,50,190, ILI9341_WHITE);
+	}
+
 }
 
-
-void SidebarSceneController::setupDisplay()
-{
+void SidebarSceneController::setupDisplay() {
 	Display.setScrollInsets(50,0);
 	Display.setScroll(0);
 }
 
-
-void SidebarSceneController::onWillAppear()
-{
+void SidebarSceneController::onWillAppear() {
 	setupSidebar();
-
 	SceneController::onWillAppear();
 }
 
-
-void SidebarSceneController::onSidebarButtonTouchUp()
-{
+void SidebarSceneController::onSidebarButtonTouchUp() {
 
 }
 
-#pragma mark Button Delegate
-
-void SidebarSceneController::buttonPressed(void *button)
-{
-	if (button == _actionButton)
-	{
+void SidebarSceneController::buttonPressed(void *button) {
+	if (button == _actionButton) {
 		onSidebarButtonTouchUp();
 	}
 }
-

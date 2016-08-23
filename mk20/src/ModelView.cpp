@@ -4,7 +4,6 @@
 
 #include "ModelView.h"
 #include "framework/core/Application.h"
-#include "Bitmaps.h"
 #include "framework/layers/SDBitmapLayer.h"
 #include "framework/layers/TransparentTextLayer.h"
 
@@ -32,17 +31,8 @@ ModelView::ModelView(Rect frame):
     _deleteButtonText = "DELETE";
 }
 
-
-
 void ModelView::display()
 {
-/*    _imageLayer = new RectangleLayer(Rect(_frame.x + 70,10,180,150));
-    _imageLayer->setBackgroundColor(Application.getTheme()->getSecondaryColor1());
-    addLayer(_imageLayer);*/
-
-/*    _imageLayer = new RectangleLayer(_frame);
-    _imageLayer->setBackgroundColor(_color);
-    addLayer(_imageLayer);*/
 
     SDBitmapLayer* imageLayer = new SDBitmapLayer(_frame);
     imageLayer->setBitmap(_imageFileName.c_str(), 270, 240);

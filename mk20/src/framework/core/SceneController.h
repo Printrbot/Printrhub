@@ -40,6 +40,7 @@ public:
 #pragma mark View Management
 	virtual StackArray<View*>* getViews() { return &_views; };
 	virtual void addView(View* view) { _views.push(view); };
+	virtual View* getView(uint16_t n) { return _views.at(n); };
 
 #pragma mark Touch Handling
 	virtual void handleTouchDown(TS_Point& point);

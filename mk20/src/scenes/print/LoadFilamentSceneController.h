@@ -21,7 +21,7 @@ public:
 
 #pragma mark Sidebar Scene Controller
 private:
-	virtual const uint8_t *getSidebarIcon() override;
+	//virtual const uint16_t *getSidebarIcon() override;
 	virtual String getSidebarTitle() const override;
 
 #pragma mark Scene Controller

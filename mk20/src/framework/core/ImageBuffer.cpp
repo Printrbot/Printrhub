@@ -109,12 +109,12 @@ void ImageBuffer::drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, con
 }
 
 void ImageBuffer::drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs,
-                                         uint16_t ys, uint16_t ws, uint16_t hs)
+                                         uint16_t ys, uint16_t ws, uint16_t hs, uint32_t byteOffset)
 {
 	uint16_t buffer[320];
 	for (uint16_t xb=0;xb<w;xb++)
 	{
-		file->seek(((xb+xs)*hs)*sizeof(uint16_t));
+		file->seek((((xb+xs)*hs)*sizeof(uint16_t))+byteOffset);
 		file->read(buffer,sizeof(uint16_t)*hs);
 
 		for (uint16_t yb=0;yb<h;yb++)
@@ -154,5 +154,3 @@ void ImageBuffer::setTranslation(int16_t tx, int16_t ty)
 	_tx = tx;
 	_ty = ty;
 }
-
-

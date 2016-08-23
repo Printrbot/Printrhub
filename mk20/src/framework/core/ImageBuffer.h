@@ -23,7 +23,7 @@ public:
 	virtual void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 	virtual void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
 	virtual void drawBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t* bitmap, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs);
-	virtual void drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs);
+	virtual void drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, uint32_t byteOffset = 0);
 	virtual void drawMaskedBitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint8_t* bitmap, uint16_t xs, uint16_t ys, uint16_t ws, uint16_t hs, uint16_t foregroundColor, uint16_t backgroundColor);
 	virtual void setTranslation(int16_t tx, int16_t ty);
 

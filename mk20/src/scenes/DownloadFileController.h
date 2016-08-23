@@ -19,20 +19,23 @@ public:
 	DownloadFileController(String url, String localFilePath);
 	DownloadFileController();
 	virtual ~DownloadFileController();
+
 	ProgressBar* getProgressBar() { return _progressBar; };
 	virtual bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse, bool* success);
 
+	virtual UIBitmap * getSidebarBitmap() override;
+	virtual UIBitmap * getSidebarIcon() override;
 
 private:
-	virtual const uint8_t *getSidebarIcon() override;
-	virtual String getSidebarTitle() const override;
 	String getName();
 	virtual void onWillAppear() override;
 	virtual uint16_t getBackgroundColor() override;
+
 	virtual bool handlesTask(TaskID taskID);
+
 	virtual void buttonPressed(void *button) override;
+
 	ProgressBar* _progressBar;
-	TextLayer* _nameLayer;
 	File _file;
 	uint32_t _fileSize;
 	uint32_t _bytesRead;

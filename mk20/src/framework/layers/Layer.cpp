@@ -36,8 +36,6 @@ Layer::~Layer()
 
     removeAllSublayers();
 
-    delete _sublayers;
-    _sublayers = NULL;
     if (_sublayers != NULL)
     {
         delete _sublayers;
@@ -503,4 +501,3 @@ uint16_t Layer::getOriginX()
     if (getContext() == DisplayContext::Fixed) return 0;
     return Display.getLayoutStart();
 }
-

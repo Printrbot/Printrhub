@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include "Layer.h"
+#include "../core/UIBitmap.h"
 
 class BitmapLayer: public Layer
 {
@@ -19,6 +20,7 @@ public:
 #pragma mark Layer
     virtual void draw(Rect &invalidationRect) override;
     virtual void setBitmap(const uint8_t* bitmap, uint16_t width, uint16_t height);
+    virtual void setBitmap(const uint16_t* bitmap, uint16_t width, uint16_t height);
 
 #pragma mark Getter/Setter
     const uint16_t &getColor() const { return _color; }
@@ -27,6 +29,8 @@ public:
 #pragma mark Member Variables
 private:
     const uint8_t* _bitmap;
+    const uint16_t* _bitmapRGB;
+    const UIBitmap* _uiBitmap;
     uint16_t _width;
     uint16_t _height;
     uint16_t _color;

@@ -8,8 +8,10 @@
 #include "scenes/MainSceneController.h"
 //#include "SD/SD_t3.h"
 #include "scenes/projects/ProjectsScene.h"
-#include "Bitmaps.h"
+
 #include "framework/core/HAL.h"
+#include "UIBitmaps.h"
+///#include "Bitmaps.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
 Adafruit_FT6206 Touch = Adafruit_FT6206();
@@ -19,6 +21,9 @@ PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_M
 
 //This is used all the time, so keep a global reference instead of building it again every time
 SceneController* mainScene;
+
+UIBitmaps uiBitmaps;
+
 
 #ifdef DEBUG_USE_SOFTWARE_SERIAL
 SoftwareSerial DebugSerial(DEBUG_SOFTWARE_SERIAL_RX_PIN,DEBUG_SOFTWARE_SERIAL_TX_PIN);
@@ -41,20 +46,56 @@ void testImage(void)
     Display.drawMaskedBitmap(10,80,32,30,imageOfCancelPrintIcon_32_30,0,0,32,30,ILI9341_BLACK,ILI9341_WHITE);
     Display.drawMaskedBitmap(10,120,24,24,imageOfWrenchIcon_24_24,0,0,24,24,ILI9341_BLACK,ILI9341_WHITE);*/
 
-    Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240);
+    //Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240);
 
     while(true) {};
 }
 
 void showSplashScreen()
 {
-    Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240);
+/*
+  Serial.print("bitmap size: ");
+  Serial.println(UIBitmaps::splash().size);
+  Serial.print("width: ");
+  Serial.println(UIBitmaps::splash().width);
+  Serial.print("height: ");
+  Serial.println(UIBitmaps::splash().height);
+  Serial.print("offset: ");
+  Serial.println(UIBitmaps::splash().offset);
+
+  uint16_t b[UIBitmaps::splash().size];
+  File file = SD.open("ui", FILE_READ);
+  file.seek(UIBitmaps::splash().offset);
+  file.read(&b, UIBitmaps::splash().size);
+  Serial.println(file.size());
+  Serial.println("OH SHIT");
+  /*
+  File file = SD.open("ui", FILE_READ);
+  file.seek(UIBitmaps::splash().offset);
+  file.read(&b, UIBitmaps::splash().size);
+*/
+
+
+/*
+  Display.drawBitmap(
+    0,0,
+    uiBitmaps.splash.width, uiBitmaps.splash.height,
+    uiBitmaps.getBitmap(uiBitmaps.splash),
+    0,0,
+    uiBitmaps.splash.width, uiBitmaps.splash.height
+  );
+
+*/
+
+  //Display.drawBitmap(0,0,62,84,b,0,0,62,84);
+  //Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240);
 
     Display.fadeIn();
 
-    delay(2000);
+    delay(10000);
 
     Display.fadeOut();
+
 }
 
 void setup(void)
@@ -112,7 +153,9 @@ void setup(void)
     }
     LOG("Started SD card interface");
 
-    showSplashScreen();
+    
+
+    //showSplashScreen();
 
     if (! Touch.begin(TFT_TOUCH_SENSE_PIN,40))
     {  // pass in 'sensitivity' coefficient
