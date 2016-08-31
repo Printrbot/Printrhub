@@ -6,8 +6,11 @@
 #include "SceneController.h"
 #include "../animation/Animator.h"
 #include "../../scenes/DownloadFileController.h"
+#include "Printr.h"
 
 ApplicationClass Application;
+
+extern Printr printr;
 
 ApplicationClass::ApplicationClass()
 {
@@ -78,12 +81,16 @@ void ApplicationClass::setup()
 {
 	//Configure LED pin
 	pinMode(LED_PIN, OUTPUT);
+	printr.init();
 }
 
 void ApplicationClass::loop()
 {
 	//Process Communication with ESP
 	_esp->process();
+
+	//run the loop on printr
+	printr.loop();
 
 	//Run Animations
 	Animator.update();

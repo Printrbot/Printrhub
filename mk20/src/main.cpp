@@ -11,6 +11,7 @@
 
 #include "framework/core/HAL.h"
 #include "UIBitmaps.h"
+#include "Printr.h"
 ///#include "Bitmaps.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
@@ -23,6 +24,8 @@ PHDisplay Display = PHDisplay(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_M
 SceneController* mainScene;
 
 UIBitmaps uiBitmaps;
+
+Printr printr;
 
 
 #ifdef DEBUG_USE_SOFTWARE_SERIAL
@@ -101,11 +104,8 @@ void showSplashScreen()
 void setup(void)
 {
     //while (!Serial);
-    delay(2000);
-
     //Initiate Status LED to be able to show some errors
     StatusLED.begin();
-
     StatusLED.pulse(1,false);
 
 #ifdef DebugSerial
@@ -114,10 +114,11 @@ void setup(void)
     }
 #endif
 
+
+
+
     LOG("Printrhub - LCD Controller and Hub for Printrbots!");
 
-    //Initiate communication to Printerboard
-    Serial1.begin(115200);
 
     //Initiate communication pipeline to ESP8266
     Serial3.begin(COMMSTACK_BAUDRATE);
@@ -135,6 +136,8 @@ void setup(void)
 //    pinMode(8,INPUT);
 
     Display.begin();
+
+
     //Rotate to landscape
     Display.setRotation(ILI9341_ORIENTATION_LANDSCAPE_LEFT);
     Display.setScroll(0);
@@ -153,7 +156,7 @@ void setup(void)
     }
     LOG("Started SD card interface");
 
-    
+
 
     //showSplashScreen();
 
@@ -183,12 +186,14 @@ void setup(void)
     //wifiController = new WiFiSetupSceneController();
     //Application.pushScene(wifiController);
 
+
     mainScene = new ProjectsScene();
     Application.pushScene(mainScene);
+
+
 }
 
 void loop()
 {
-    Application.loop();
-//    delay(16);
+  Application.loop();
 }

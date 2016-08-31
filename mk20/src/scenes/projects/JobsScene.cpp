@@ -85,10 +85,7 @@ void JobsScene::onWillAppear() {
 }
 
 
-void JobsScene::onSidebarButtonTouchUp() {
-  ProjectsScene * scene = new ProjectsScene();
-  Application.pushScene(scene);
-}
+
 
 
 void JobsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
@@ -112,6 +109,11 @@ void JobsScene::animationFinished(Animation *animation) {
 
 }
 
+void JobsScene::onSidebarButtonTouchUp() {
+  ProjectsScene * scene = new ProjectsScene();
+  Application.pushScene(scene);
+}
+
 void JobsScene::buttonPressed(void *button)
 {
 
@@ -120,6 +122,7 @@ void JobsScene::buttonPressed(void *button)
     ImageView * v = (ImageView *) getView(getPageIndex());
     String fn = v->getIndexFileName();
 
+    
 
 
     /*

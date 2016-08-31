@@ -2,6 +2,7 @@
 #include "framework/views/BitmapButton.h"
 #include "../SidebarSceneController.h"
 #include "../projects/ProjectsScene.h"
+#include "../filament/SelectFilamentAction.h"
 
 extern UIBitmaps uiBitmaps;
 
@@ -35,6 +36,7 @@ void SettingsScene::onWillAppear() {
 
   _filament = new BitmapButton(Rect(22,26,uiBitmaps.btn_filament.width,uiBitmaps.btn_filament.height));
   _filament->setBitmap(&uiBitmaps.btn_filament);
+  _filament->setDelegate(this);
   addView(_filament);
 
   _calibrate = new BitmapButton(Rect(102,26,uiBitmaps.btn_calibrate.width,uiBitmaps.btn_calibrate.height));
@@ -45,9 +47,9 @@ void SettingsScene::onWillAppear() {
   _wifi->setBitmap(&uiBitmaps.btn_wifi);
   addView(_wifi);
 
-  _cloud = new BitmapButton(Rect(22,126,uiBitmaps.btn_cloud.width,uiBitmaps.btn_cloud.height));
-  _cloud->setBitmap(&uiBitmaps.btn_cloud);
-  addView(_cloud);
+  _jobs = new BitmapButton(Rect(22,126,uiBitmaps.btn_jobs.width,uiBitmaps.btn_jobs.height));
+  _jobs->setBitmap(&uiBitmaps.btn_jobs);
+  addView(_jobs);
 
   _update = new BitmapButton(Rect(102,126,uiBitmaps.btn_update.width,uiBitmaps.btn_update.height));
   _update->setBitmap(&uiBitmaps.btn_update);
@@ -66,19 +68,11 @@ void SettingsScene::onSidebarButtonTouchUp() {
   Application.pushScene(scene);
 }
 
-void SettingsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
-  //if (_openBtn != NULL) {
-  //  _openBtn->setVisible(false);
-  //}
-  SceneController::handleTouchMoved(point, oldPoint);
-}
-
-void SettingsScene::animationFinished(Animation *animation) {
-  SceneController::animationFinished(animation);
-
-}
-
 void SettingsScene::buttonPressed(void *button)
 {
+  if (button == _filament) {
+    SelectFilamentAction * scene = new SelectFilamentAction();
+    Application.pushScene(scene);
+  }
   SidebarSceneController::buttonPressed(button);
 }

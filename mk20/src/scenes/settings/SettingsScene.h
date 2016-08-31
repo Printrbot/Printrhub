@@ -9,9 +9,6 @@ public:
 
 	SettingsScene();
   virtual ~SettingsScene();
-
-	virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint) override;
-	virtual void animationFinished(Animation *animation) override;
 	virtual void onSidebarButtonTouchUp() override;
 
 	virtual uint16_t getBackgroundColor() override;
@@ -25,7 +22,7 @@ private:
     virtual void buttonPressed(void *button) override;
 
 protected:
-		BitmapButton* _cloud;
+		BitmapButton* _jobs;
 		BitmapButton* _filament;
 	  BitmapButton* _wifi;
     BitmapButton* _calibrate;

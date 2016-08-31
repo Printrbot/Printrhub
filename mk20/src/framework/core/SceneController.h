@@ -36,6 +36,7 @@ public:
 
 #pragma mark Misc
 	virtual String getName() = 0;
+	virtual void printrCallback(const char ctype[], float * data);
 
 #pragma mark View Management
 	virtual StackArray<View*>* getViews() { return &_views; };
