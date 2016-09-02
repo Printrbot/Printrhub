@@ -108,6 +108,13 @@ void setup(void)
     StatusLED.begin();
     StatusLED.pulse(1,false);
 
+    // init printer pins
+
+    pinMode(G2_RESET_PIN, OUTPUT);
+    digitalWrite(G2_RESET_PIN, HIGH);
+    pinMode(G2_ERASE_PIN, OUTPUT);
+    digitalWrite(G2_ERASE_PIN, LOW);
+
 #ifdef DebugSerial
     {
         DebugSerial.begin(115200);
