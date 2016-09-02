@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-#define FIRMWARE_VERSION "0.11"
+#define FIRMWARE_VERSION "0.12"
 
 struct ConfigData {
   bool blank;
@@ -19,13 +19,13 @@ struct ConfigData {
 
 class Config {
 public:
-  static ConfigData data;
-  static void save();
-  static void load();
+  Config();
+  ConfigData data;
+  void save();
+  void load();
 private:
-  static int addr;
-  static void write(int &pos, uint8_t* value, uint8_t size);
-  static void read(int &pos, uint8_t* value, uint8_t size);
+  void write(int &pos, uint8_t* value, uint8_t size);
+  void read(int &pos, uint8_t* value, uint8_t size);
 };
 
 #endif

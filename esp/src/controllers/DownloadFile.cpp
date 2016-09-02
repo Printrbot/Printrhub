@@ -143,11 +143,12 @@ void DownloadFile::loop() {
         httpCode = _http.skipResponseHeaders();
         if (httpCode >= 0) {
           _bytesToDownload = _http.contentLength();
-          EventLogger::log("Bytes to download:");
-          Application.getMK20Stack()->requestTask(FileSetSize, sizeof(uint32_t), (uint8_t*)&_bytesToDownload);
-          char _t[16];
-          sprintf(_t, "%lu", _bytesToDownload);
-          EventLogger::log(_t);
+          //EventLogger::log("Bytes to download:");
+          //char _t[16];
+          //sprintf(_t, "%lu", _bytesToDownload);
+          //EventLogger::log(_t);
+          Application.getMK20Stack()->requestTask(FileSetSize, sizeof(uint32_t), (uint8_t*) &_bytesToDownload);
+          EventLogger::log("sent file size request...");
           _state = StateWaiting;
         } else {
           _state = StateError;
@@ -230,24 +231,23 @@ void DownloadFile::loop() {
     _state = StateWaiting;
     return;
   }
-
 }
 
 void DownloadFile::addByteToBuffer(uint8_t byte) {
   _buffer[_bufferIndex] = byte;
   _bufferIndex++;
   if (_bufferIndex >= _bufferSize) {
-      Application.getMK20Stack()->requestTask(FileSaveData, _bufferIndex, (uint8_t*)_buffer);
-      memset(_buffer,0,_bufferSize);
-      _bufferIndex = 0;
+    Application.getMK20Stack()->requestTask(FileSaveData, _bufferIndex, (uint8_t*)_buffer);
+    memset(_buffer,0,_bufferSize);
+    _bufferIndex = 0;
   }
 }
-
 
 bool DownloadFile::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool *sendResponse, bool* success)
 {
   if (header.commType == ResponseFailed) {
     // stop on error??
+    EventLogger::log("Oh shit... response failed");
   }
   if (header.getCurrentTask() == FileClose) {
     // all good, exit the task

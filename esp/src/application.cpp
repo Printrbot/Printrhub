@@ -7,6 +7,7 @@
 #include <EEPROM.h>
 #include "event_logger.h"
 
+Config config;
 ApplicationClass Application;
 
 ApplicationClass::ApplicationClass() {
@@ -30,9 +31,6 @@ void ApplicationClass::setup() {
 
 	Serial.begin(COMMSTACK_BAUDRATE);
 	SPIFFS.begin();
-
-	EEPROM.begin(512);
-	Config::load();
 
 	Mode* manageWifi = new ManageWifi();
 	Application.pushMode(manageWifi);

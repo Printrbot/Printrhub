@@ -4,50 +4,53 @@
 #include "Arduino.h"
 
 
-ConfigData Config::data = ConfigData();
+ConfigData data = ConfigData();
 
 #define EEPROM_OFFSET 0
 
-#define STORE_VAR(pos, value) Config::write(pos, (uint8_t*)&value, sizeof(value))
-#define READ_VAR(pos, value) Config::read(pos, (uint8_t*)&value, sizeof(value))
+#define STORE_VAR(pos, value) write(pos, (uint8_t*)&value, sizeof(value))
+#define READ_VAR(pos, value) read(pos, (uint8_t*)&value, sizeof(value))
+
+Config::Config():
+data(ConfigData()) {
+  EEPROM.begin(512);
+  load();
+}
 
 void Config::load() {
   int i = EEPROM_OFFSET;
-  READ_VAR(i, Config::data.blank);
-  READ_VAR(i, Config::data.accessPoint);
-  READ_VAR(i, Config::data.name);
-  READ_VAR(i, Config::data.locked);
-  READ_VAR(i, Config::data.password);
-  READ_VAR(i, Config::data.wifiSsid);
-  READ_VAR(i, Config::data.wifiPassword);
-  READ_VAR(i, Config::data.jwt);
+  READ_VAR(i, data.blank);
+  READ_VAR(i, data.accessPoint);
+  READ_VAR(i, data.name);
+  READ_VAR(i, data.locked);
+  READ_VAR(i, data.password);
+  READ_VAR(i, data.wifiSsid);
+  READ_VAR(i, data.wifiPassword);
+  READ_VAR(i, data.jwt);
 /*
   Serial.println("READING FROM EEPROM:");
-  Serial.println(Config::data.blank);
-  Serial.println(Config::data.name);
-  Serial.println(Config::data.locked);
-  Serial.println(Config::data.password);
-  Serial.println(Config::data.wifiSsid);
-  Serial.println(Config::data.wifiPassword);
-  Serial.println(Config::data.apPassword);
-  Serial.println(Config::data.jwt);
+  Serial.println(data.blank);
+  Serial.println(data.name);
+  Serial.println(data.locked);
+  Serial.println(data.password);
+  Serial.println(data.wifiSsid);
+  Serial.println(data.wifiPassword);
+  Serial.println(data.apPassword);
+  Serial.println(data.jwt);
   */
 }
 
 void Config::save() {
-
   int i = EEPROM_OFFSET;
-  STORE_VAR(i, Config::data.blank);
-  STORE_VAR(i, Config::data.accessPoint);
-  STORE_VAR(i, Config::data.name);
-  STORE_VAR(i, Config::data.locked);
-  STORE_VAR(i, Config::data.password);
-  STORE_VAR(i, Config::data.wifiSsid);
-  STORE_VAR(i, Config::data.wifiPassword);
-  STORE_VAR(i, Config::data.jwt);
+  STORE_VAR(i, data.blank);
+  STORE_VAR(i, data.accessPoint);
+  STORE_VAR(i, data.name);
+  STORE_VAR(i, data.locked);
+  STORE_VAR(i, data.password);
+  STORE_VAR(i, data.wifiSsid);
+  STORE_VAR(i, data.wifiPassword);
+  STORE_VAR(i, data.jwt);
   EEPROM.commit();
-
-  ESP.restart();
 }
 
 void Config::write(int &pos, uint8_t* value, uint8_t size) {

@@ -13,10 +13,10 @@ public:
     StateSuccess = 1,
     StateOffline = 2,
     StateConnectStation = 3,
-    StateCreateAP = 4,
     StateConnecting = 5,
     StateUpdateConfig = 6,
-    StateConnected = 7
+    StateConnected = 7,
+    StateScanning = 8
   };
 
   ManageWifi();
@@ -30,6 +30,7 @@ public:
   bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse, bool* success);
   virtual bool handlesTask(TaskID taskID);
   String getName();
+  void setTask(TaskID taskID) { _currentTask = taskID; };
 
 private:
   void createAP();

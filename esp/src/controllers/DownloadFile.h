@@ -47,7 +47,7 @@ private:
   int _numChunks;
   bool _waitForResponse;
   bool parseUrl();
-  int _bytesToDownload;
+  uint32_t _bytesToDownload;
   unsigned long _lastBytesReadTimeStamp;
   TaskID _currentTask;
   HttpClient _http;

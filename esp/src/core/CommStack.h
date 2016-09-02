@@ -14,14 +14,14 @@
 #define COMM_STACK_BUFFER_SIZE 256
 
 enum CommType : uint8_t {
-    Request = 0,
-    ResponseSuccess = 1,
-    ResponseFailed = 2
+  Request = 0,
+  ResponseSuccess = 1,
+  ResponseFailed = 2
 };
 
 enum PacketType : uint8_t {
-    Header = 0,
-    Data = 1
+  Header = 0,
+  Data = 1
 };
 
 enum TaskID : uint8_t {
@@ -45,15 +45,16 @@ enum TaskID : uint8_t {
   Error = 17,
   SaveProjectWithID = 18,
   FileSetSize = 19,
-  SystemInfo = 20
+  SystemInfo = 20,
+  ScanWifi = 21
 };
 
 struct CommHeader {
 public:
-    uint8_t taskID;
-    uint8_t commType;
-    uint8_t contentLength;
-    uint16_t checkSum;
+  uint8_t taskID;
+  uint8_t commType;
+  uint8_t contentLength;
+  uint16_t checkSum;
 
 public:
     CommHeader() {

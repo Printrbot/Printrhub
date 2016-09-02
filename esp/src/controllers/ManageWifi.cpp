@@ -10,6 +10,7 @@
 
 extern WebServer webserver;
 extern ApplicationClass Application;
+extern Config config;
 
 ManageWifi::ManageWifi() :
 _state(StateOffline),
@@ -26,6 +27,7 @@ bool ManageWifi::handlesTask(TaskID taskID) {
   switch(taskID) {
     case StartWifi:
     case StopWifi:
+    case ScanWifi:
       return true;
       break;
     default:
@@ -37,12 +39,30 @@ void ManageWifi::loop() {
 
   if (_state == StateOffline && _currentTask == StartWifi) {
     _state = StateConnecting;
-    if (Config::data.blank) {
+    if (config.data.blank) {
   		// start the wifi in adhoc mode
   		createAP();
   	} else {
   		connectWifiStation();
   	}
+    return;
+  }
+
+  if (_currentTask == ScanWifi && _state != StateSuccess ) {
+    // currently just outputs detected networks to event logger for debugging
+    EventLogger::log("SCANNING WIFI");
+    int n = WiFi.scanNetworks();
+    EventLogger::log("scan done");
+    if (n == 0)
+      EventLogger::log("no networks found");
+    else {
+      for (int i = 0; i < n; ++i) {
+        EventLogger::log(WiFi.SSID(i).c_str());
+        delay(10);
+      }
+    }
+    EventLogger::log("done");
+    _state = StateSuccess;
     return;
   }
 
@@ -67,7 +87,7 @@ void ManageWifi::loop() {
 void ManageWifi::connectWifiStation() {
   _connectRetry = 0;
   WiFi.mode(WIFI_STA);
-  WiFi.begin(Config::data.wifiSsid, Config::data.wifiPassword);
+  WiFi.begin(config.data.wifiSsid, config.data.wifiPassword);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(3000);
@@ -75,8 +95,8 @@ void ManageWifi::connectWifiStation() {
 
     if (_connectRetry > _maxConnectRetry) {
       // if the connection failed,
-      // set the response to error
-      _state = StateError;
+      // create AP
+      createAP();
       break;
     }
   }
@@ -84,19 +104,19 @@ void ManageWifi::connectWifiStation() {
   if (WiFi.status() == WL_CONNECTED) {
     _ipAddress = WiFi.localIP();
     _state = StateConnected;
-    MDNS.begin(Config::data.name);
+    MDNS.begin(config.data.name);
   }
 }
 
 void ManageWifi::createAP() {
   WiFi.mode(WIFI_AP);
-  if (Config::data.blank) {
+  if (config.data.blank) {
     WiFi.softAP("printrbot", "printrbot");
     MDNS.begin("printrbot");
   }
   else {
-    WiFi.softAP(Config::data.name, Config::data.apPassword);
-    MDNS.begin(Config::data.name);
+    WiFi.softAP(config.data.name, config.data.apPassword);
+    MDNS.begin(config.data.name);
   }
   _ipAddress = WiFi.softAPIP();
   _state = StateConnected;
@@ -131,5 +151,6 @@ bool ManageWifi::runTask(CommHeader &header, const uint8_t *data, size_t dataSiz
       _currentTask = StartWifi;
     }
   }
+
   return true;
 }

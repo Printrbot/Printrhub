@@ -6,6 +6,7 @@
 #include "event_logger.h"
 #include "controllers/MK20FirmwareUpdate.h"
 #include "controllers/ESPFirmwareUpdate.h"
+#include "controllers/ManageWifi.h"
 #include "core/Mode.h"
 #include "controllers/DownloadFile.h"
 #include "controllers/Idle.h"
@@ -17,6 +18,7 @@ AsyncWebServer server(80);
 AsyncEventSource events("/events");
 
 WebServer webserver;
+extern Config config;
 
 WebServer::WebServer() {
 
@@ -46,47 +48,38 @@ void handleRoot(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", temp);
 }
 
-void doTest(AsyncWebServerRequest *request) {
-	//brain.sendToPrinter();
-	EventLogger::log("RUNNING GCODE");
-	const char gcode[] = "G28.2 X0 Y0 Z0\n";
-	Application.getMK20Stack()->requestTask(RunPrinterGCode, sizeof(gcode), (uint8_t*) gcode);
-
-	Mode * idle = new Idle();
-	Application.pushMode(idle);
-
-	request->send (200, "text/html", "testing communication, look for output in event console");
-}
-
-
 void doUpdateConfig(AsyncWebServerRequest *request) {
 	AsyncWebParameter* n = request->getParam("name", true);
-	strcpy(Config::data.name, n->value().c_str());
+	strcpy(config.data.name, n->value().c_str());
 //	EventLogger::log(Config::data.name);
 
 	AsyncWebParameter* ssid = request->getParam("ssid", true);
-	strcpy(Config::data.wifiSsid, ssid->value().c_str());
+	strcpy(config.data.wifiSsid, ssid->value().c_str());
 //	EventLogger::log(Config::data.wifiSsid);
 
 	AsyncWebParameter* wp = request->getParam("wifipassword", true);
-	strcpy(Config::data.wifiPassword, wp->value().c_str());
+	strcpy(config.data.wifiPassword, wp->value().c_str());
 	//EventLogger::log(Config::data.wifiPassword);
 
-	Config::data.accessPoint = request->hasParam("accesspoint", true);
-	Config::data.locked = request->hasParam("locked", true);
+	config.data.accessPoint = request->hasParam("accesspoint", true);
+	config.data.locked = request->hasParam("locked", true);
 
 	if (request->hasParam("locked", true)) {
 		AsyncWebParameter* pp = request->getParam("wifipassword", true);
-		strcpy(Config::data.password, pp->value().c_str());
+		strcpy(config.data.password, pp->value().c_str());
 //			EventLogger::log(Config::data.password);
 	}
-	Config::data.blank = false;
+	config.data.blank = false;
 //	EventLogger::log("CONFIG UPDATED!");
 
 	// do config save last since it restarts the esp and we want
 	// some feedback to user
+
+	config.save();
 	EventLogger::log("Done updating config, restarting ESP");
-	Config::save();
+
+	delay(1000);
+	ESP.restart();
 }
 
 void WebServer::begin() {
@@ -127,7 +120,17 @@ void WebServer::begin() {
 	});
 
 	server.on("/test", HTTP_GET, [](AsyncWebServerRequest *request) {
-		doTest(request);
+		AsyncWebServerResponse *response = request->beginResponse(200, "text/json", "{'sup':'yo'}");
+		EventLogger::log(config.data.name);
+		response->addHeader("Access-Control-Allow-Origin", "*");
+		request->send(response);
+	});
+
+	server.on("/scanwifi", HTTP_GET, [](AsyncWebServerRequest *request) {
+		ManageWifi* mode = new ManageWifi();
+		mode->setTask(ScanWifi);
+		Application.pushMode(mode);
+		request->send(200, "text/plain", "Scan started, please wait...");
 	});
 
 	server.on("/fetch", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -150,9 +153,9 @@ void WebServer::begin() {
 			Mode* df = new DownloadFile(SaveProjectWithID, id->value().c_str(), url->value().c_str());
 			Application.pushMode(df);
 
-			root["url"] = url->value().c_str();
-			root["id"] = url->value().c_str();
-			root["type"] = url->value().c_str();
+			root["url"] = url->value();
+			root["id"] = id->value();
+			root["type"] = ftype->value();
 
 			response->setLength();
 			request->send(response);
@@ -164,7 +167,7 @@ void WebServer::begin() {
 	server.on("/updateconfig", HTTP_POST, [](AsyncWebServerRequest *request) {
 		if(request->hasParam("name", true) && request->hasParam("ssid", true)) {
 			request->send(200, "text/plain", "config updated...");
-			delay(100);
+			//delay(100);
 			doUpdateConfig(request);
 		} else {
 			request->send(500, "text/plain", "Error: required params missing...");
