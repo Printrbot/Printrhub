@@ -134,6 +134,10 @@ void ApplicationClass::setup()
 	// 460800
 	// 921600
 
+	//Start MK20 by pulling RESET_B high
+	pinMode(MK20_RESET_PIN,OUTPUT);
+	digitalWrite(MK20_RESET_PIN,HIGH);
+
 	pinMode(COMMSTACK_WORKING_MARKER_PIN,OUTPUT);
 	digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
 
