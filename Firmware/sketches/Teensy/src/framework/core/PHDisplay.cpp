@@ -69,7 +69,7 @@ void PHDisplay::clear()
 {
     setupBuffers();
     _layers.clear(false);
-    _needsLayout = true;
+    _needsLayout = false;
     _autoLayout = true;
     _fixedBackgroundLayer = NULL;
     _scrollOffset = 0;
@@ -99,6 +99,8 @@ void PHDisplay::layoutIfNeeded()
 {
     if (!_needsLayout) return;
     if (_fixedBackgroundLayer != NULL) return;
+
+    LOG("Layout if needed");
 
     //Now delete the old background layer and swap foreground to background
     delete _backgroundLayer;
@@ -141,6 +143,7 @@ void PHDisplay::layoutIfNeeded()
     _foregroundLayer->setStrokeWidth(0);
 
     //We have calculated the width for scrolling, if we don't use auto layout stop work now
+    _needsLayout = false;
     if (!_autoLayout) return;
 
     for (int i=0;i<_layers.count();i++)
