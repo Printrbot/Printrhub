@@ -42,7 +42,7 @@
 <layer number="42" name="bRestrict" color="1" fill="10" visible="yes" active="yes"/>
 <layer number="43" name="vRestrict" color="2" fill="10" visible="yes" active="yes"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
-<layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
+<layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="46" name="Milling" color="3" fill="1" visible="yes" active="yes"/>
 <layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
 <layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
@@ -185,9 +185,9 @@
 <text x="67.437" y="4.667" size="0.8128" layer="21" font="vector" ratio="16" rot="R90" align="bottom-center">RESET</text>
 <text x="73.787" y="4.667" size="0.8128" layer="21" font="vector" ratio="16" rot="R90" align="bottom-center">GPIO0</text>
 <text x="1.27" y="38.068" size="0.8128" layer="21" font="vector" ratio="16" align="bottom-center">°</text>
-<text x="44.736" y="56.007" size="0.8128" layer="21" font="vector" ratio="16" rot="R90">POWER</text>
-<text x="46.101" y="53.308" size="1.27" layer="21" font="vector" ratio="16">+</text>
-<text x="52.324" y="53.435" size="1.27" layer="21" font="vector" ratio="16">-</text>
+<text x="47.022" y="56.134" size="0.8128" layer="21" font="vector" ratio="16" rot="R90">POWER</text>
+<text x="38.481" y="53.308" size="1.27" layer="21" font="vector" ratio="16">+</text>
+<text x="43.434" y="53.435" size="1.27" layer="21" font="vector" ratio="16">-</text>
 <text x="56.261" y="52.8" size="0.8128" layer="21" font="vector" ratio="16" align="bottom-center">°</text>
 <text x="80.772" y="11.906" size="0.8128" layer="21" font="vector" ratio="15" rot="R90" align="top-left">Printrhub Rev 0.4</text>
 <polygon width="0.3429" layer="46">
@@ -607,6 +607,10 @@
 <text x="-13.97" y="2.921" size="1.27" layer="25" ratio="10">&gt;NAME</text>
 <text x="-13.97" y="-4.191" size="1.27" layer="27">&gt;VALUE</text>
 </package>
+<package name="HOLE_M3.0">
+<circle x="0" y="0" radius="1.9" width="0.127" layer="21"/>
+<hole x="0" y="0" drill="3.2"/>
+</package>
 </packages>
 </library>
 <library name="con-sd-card">
@@ -752,20 +756,6 @@ USE AT YOUR OWN RISK!&lt;p&gt;
 <rectangle x1="-0.4318" y1="-3.6576" x2="0.4318" y2="-1.8034" layer="51"/>
 <rectangle x1="-2.7432" y1="-3.6576" x2="-1.8796" y2="-1.8034" layer="51"/>
 <rectangle x1="1.8796" y1="-3.6576" x2="2.7432" y2="-1.8034" layer="51"/>
-</package>
-</packages>
-</library>
-<library name="microbuilder">
-<packages>
-<package name="MOUNTINGHOLE_2.0_PLATED">
-<circle x="0" y="0" radius="1.75" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="39"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="43"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="40"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="41"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="42"/>
-<pad name="P$1" x="0" y="0" drill="2.2" diameter="3"/>
-<text x="-0.87" y="-2.74" size="0.8128" layer="48">2,0</text>
 </package>
 </packages>
 </library>
@@ -1175,11 +1165,11 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="NAME" x="5.588" y="7.461" size="0.8128" layer="25" font="vector" ratio="16" rot="R180"/>
 <attribute name="VALUE" x="3.302" y="8.223" size="0.8128" layer="27" font="vector" ratio="16" rot="R180"/>
 </element>
-<element name="R5" library="appfruits" package="0603-RES" value="10K" x="26.035" y="24.479" smashed="yes" rot="R180">
-<attribute name="MF" value="Panasonic" x="26.035" y="24.479" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="MPN" value="ERJ-3GEYJ103V" x="26.035" y="24.479" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="NAME" x="26.797" y="26.003" size="0.8128" layer="25" font="vector" ratio="16" rot="R180"/>
-<attribute name="VALUE" x="27.051" y="25.622" size="0.8128" layer="27" font="vector" ratio="16" rot="R180"/>
+<element name="R5" library="appfruits" package="0603-RES" value="10K" x="26.035" y="24.606" smashed="yes" rot="R180">
+<attribute name="MF" value="Panasonic" x="26.035" y="24.606" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="MPN" value="ERJ-3GEYJ103V" x="26.035" y="24.606" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="NAME" x="26.797" y="26.13" size="0.8128" layer="25" font="vector" ratio="16" rot="R180"/>
+<attribute name="VALUE" x="27.051" y="25.749" size="0.8128" layer="27" font="vector" ratio="16" rot="R180"/>
 </element>
 <element name="C1" library="appfruits" package="0603-CAP" value="10uF" x="26.035" y="12.192" smashed="yes" rot="R270">
 <attribute name="MF" value="Murata" x="26.035" y="12.192" size="1.778" layer="27" rot="R270" display="off"/>
@@ -1201,10 +1191,10 @@ Please make sure your boards conform to these design rules.</description>
 <element name="TFT1" library="appfruits" package="TFT_2.83IN_240X320_50PIN" value="DISP_LCD_2.8IN_240X320_50PIN" x="41.274" y="30.607" smashed="yes" rot="MR270">
 <attribute name="VALUE" x="57.399" y="15.881" size="0.8128" layer="27" ratio="16" rot="R90"/>
 </element>
-<element name="U$15" library="microbuilder" package="MOUNTINGHOLE_2.0_PLATED" value="MOUNTINGHOLE2.0" x="2.54" y="58.674" smashed="yes"/>
-<element name="U$16" library="microbuilder" package="MOUNTINGHOLE_2.0_PLATED" value="MOUNTINGHOLE2.0" x="80.01" y="58.674" smashed="yes"/>
-<element name="U$17" library="microbuilder" package="MOUNTINGHOLE_2.0_PLATED" value="MOUNTINGHOLE2.0" x="2.54" y="2.54" smashed="yes"/>
-<element name="U$18" library="microbuilder" package="MOUNTINGHOLE_2.0_PLATED" value="MOUNTINGHOLE2.0" x="80.01" y="2.54" smashed="yes"/>
+<element name="U$15" library="appfruits" package="HOLE_M3.0" value="MOUNTINGHOLE" x="2.54" y="58.674" smashed="yes"/>
+<element name="U$16" library="appfruits" package="HOLE_M3.0" value="MOUNTINGHOLE" x="80.01" y="58.674" smashed="yes"/>
+<element name="U$17" library="appfruits" package="HOLE_M3.0" value="MOUNTINGHOLE" x="2.54" y="2.54" smashed="yes"/>
+<element name="U$18" library="appfruits" package="HOLE_M3.0" value="MOUNTINGHOLE" x="80.01" y="2.54" smashed="yes"/>
 <element name="R13" library="appfruits" package="0603-RES" value="10K" x="2.286" y="8.731" smashed="yes" rot="R180">
 <attribute name="MPN" value="ERJ-3GEYJ103V" x="2.286" y="8.731" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="MF" value="Panasonic" x="2.286" y="8.731" size="1.778" layer="27" rot="R180" display="off"/>
@@ -1282,11 +1272,11 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="NAME" x="40.894" y="46.863" size="0.8128" layer="25" font="vector" ratio="16"/>
 <attribute name="VALUE" x="40.005" y="48.387" size="0.8128" layer="27" font="vector" ratio="16" rot="R180"/>
 </element>
-<element name="R23" library="appfruits" package="0603-RES" value="10K" x="41.91" y="16.097" smashed="yes" rot="R270">
-<attribute name="MPN" value="ERJ-3GEYJ103V" x="41.91" y="16.097" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="MF" value="Panasonic" x="41.91" y="16.097" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="NAME" x="42.799" y="17.24" size="0.8128" layer="25" font="vector" ratio="16" rot="R270"/>
-<attribute name="VALUE" x="40.767" y="17.113" size="0.8128" layer="27" font="vector" ratio="16" rot="R270"/>
+<element name="R23" library="appfruits" package="0603-RES" value="10K" x="41.91" y="13.176" smashed="yes" rot="R270">
+<attribute name="MPN" value="ERJ-3GEYJ103V" x="41.91" y="13.176" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="MF" value="Panasonic" x="41.91" y="13.176" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="NAME" x="42.799" y="14.319" size="0.8128" layer="25" font="vector" ratio="16" rot="R270"/>
+<attribute name="VALUE" x="40.767" y="14.192" size="0.8128" layer="27" font="vector" ratio="16" rot="R270"/>
 </element>
 <element name="R25" library="appfruits" package="0603-RES" value="1K" x="42.45" y="22.86" smashed="yes">
 <attribute name="MPN" value="ERJ-3GEYJ102V" x="42.45" y="22.86" size="1.778" layer="27" display="off"/>
@@ -1299,7 +1289,7 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="VALUE" x="57.15" y="49.625" size="1.27" layer="27"/>
 </element>
 <element name="FTDI" library="appfruits" package="1X06_SMD_STRAIGHT_ALT" value="" x="3.302" y="39.973" smashed="yes" rot="R270">
-<attribute name="NAME" x="3.048" y="37.814" size="0.8128" layer="25" font="vector" ratio="16" rot="R270"/>
+<attribute name="NAME" x="4.826" y="37.941" size="0.8128" layer="25" font="vector" ratio="16" rot="R180"/>
 <attribute name="VALUE" x="-0.889" y="53.943" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="JP3" library="SparkFun-Connectors" package="JST-2-SMD-VERT" value="M024UCON-15767" x="41.275" y="57.245" smashed="yes">
@@ -1310,7 +1300,7 @@ Please make sure your boards conform to these design rules.</description>
 <element name="R26" library="appfruits" package="0603-RES" value="10K" x="47.244" y="38.132" smashed="yes" rot="R180">
 <attribute name="MF" value="Panasonic" x="47.244" y="38.132" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="MPN" value="ERJ-3GEYJ103V" x="47.244" y="38.132" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="NAME" x="48.387" y="37.37" size="0.8128" layer="25" font="vector" ratio="15" rot="R180"/>
+<attribute name="NAME" x="45.466" y="38.513" size="0.8128" layer="25" font="vector" ratio="15" rot="R180"/>
 <attribute name="VALUE" x="48.26" y="39.275" size="0.4064" layer="27" font="vector" rot="R180"/>
 </element>
 <element name="R27" library="appfruits" package="0603-RES" value="10K" x="41.91" y="8.731" smashed="yes" rot="R90">
@@ -1401,6 +1391,18 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="LABEL" value="" x="34.544" y="25.527" size="1.016" layer="25" ratio="18"/>
 <attribute name="BOM" value="EXCLUDE" x="33.02" y="27.305" size="1.778" layer="27" display="off"/>
 <attribute name="NAME" x="34.29" y="27.305" size="0.8128" layer="25" font="vector" ratio="16" align="center-left"/>
+</element>
+<element name="R9" library="appfruits" package="0603-RES" value="10K" x="47.244" y="41.148" smashed="yes">
+<attribute name="MPN" value="ERJ-3GEYJ103V" x="47.244" y="41.148" size="1.778" layer="27" display="off"/>
+<attribute name="MF" value="Panasonic" x="47.244" y="41.148" size="1.778" layer="27" display="off"/>
+<attribute name="NAME" x="45.466" y="41.529" size="0.8128" layer="25" font="vector" ratio="16" align="top-right"/>
+<attribute name="VALUE" x="46.228" y="40.005" size="0.4064" layer="27" font="vector"/>
+</element>
+<element name="R11" library="appfruits" package="0603-RES" value="10K" x="47.244" y="39.624" smashed="yes" rot="R180">
+<attribute name="MPN" value="ERJ-3GEYJ103V" x="47.244" y="39.624" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="MF" value="Panasonic" x="47.244" y="39.624" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="NAME" x="45.466" y="40.005" size="0.8128" layer="25" font="vector" ratio="16" rot="R180"/>
+<attribute name="VALUE" x="48.26" y="40.767" size="0.4064" layer="27" font="vector" rot="R180"/>
 </element>
 </elements>
 <signals>
@@ -1515,7 +1517,7 @@ Please make sure your boards conform to these design rules.</description>
 <via x="58.42" y="49.117" extent="1-16" drill="0.2794"/>
 <via x="53.975" y="47.847" extent="1-16" drill="0.2794"/>
 <via x="43.815" y="47.625" extent="1-16" drill="0.2794"/>
-<via x="48.26" y="41.275" extent="1-16" drill="0.2794"/>
+<via x="49.53" y="43.18" extent="1-16" drill="0.2794"/>
 <via x="48.26" y="32.099" extent="1-16" drill="0.2794"/>
 <via x="45.974" y="20.034" extent="1-16" drill="0.2794"/>
 <via x="40.64" y="32.607" extent="1-16" drill="0.2794"/>
@@ -1558,6 +1560,10 @@ Please make sure your boards conform to these design rules.</description>
 <via x="59.69" y="52.578" extent="1-16" drill="0.2794"/>
 <via x="64.77" y="54.832" extent="1-16" drill="0.2794"/>
 <via x="59.69" y="54.832" extent="1-16" drill="0.2794"/>
+<contactref element="R11" pad="1"/>
+<via x="32.385" y="50.8" extent="1-16" drill="0.2794"/>
+<via x="45.72" y="13.97" extent="1-16" drill="0.2794"/>
+<via x="6.35" y="28.797" extent="1-16" drill="0.2794"/>
 </signal>
 <signal name="3.3V">
 <contactref element="U1" pad="7"/>
@@ -1663,10 +1669,7 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="46.402" y1="21.579" x2="46.402" y2="22.82" width="0.1524" layer="1"/>
 <wire x1="46.402" y1="22.82" x2="46.394" y2="22.828" width="0.1524" layer="1"/>
 <via x="34.21" y="7.101" extent="1-16" drill="0.2794"/>
-<via x="41.91" y="14.065" extent="1-16" drill="0.2794"/>
 <via x="56.054" y="1.386" extent="1-16" drill="0.2794"/>
-<wire x1="41.91" y1="15.247" x2="41.91" y2="14.065" width="0.1524" layer="1"/>
-<wire x1="41.91" y1="14.006" x2="41.91" y2="14.065" width="0.1524" layer="1"/>
 <via x="26.035" y="14.573" extent="1-16" drill="0.2794"/>
 <wire x1="26.035" y1="13.042" x2="26.035" y2="14.573" width="0.4064" layer="1"/>
 <via x="1.397" y="5.556" extent="1-16" drill="0.2794"/>
@@ -1729,6 +1732,11 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="30.908" y1="32.159" x2="30.947" y2="32.12" width="0.1524" layer="1"/>
 <wire x1="26.885" y1="23.082" x2="26.885" y2="22.0968" width="0.4064" layer="1"/>
 <wire x1="26.885" y1="22.0968" x2="26.8948" y2="22.087" width="0.1524" layer="1"/>
+<contactref element="R9" pad="2"/>
+<via x="49.4665" y="41.1414" extent="1-16" drill="0.2794"/>
+<wire x1="48.094" y1="41.148" x2="49.4599" y2="41.148" width="0.4064" layer="1"/>
+<wire x1="49.4599" y1="41.148" x2="49.4665" y2="41.1414" width="0.1524" layer="1"/>
+<wire x1="41.91" y1="12.326" x2="41.91" y2="10.89" width="0.1524" layer="1"/>
 </signal>
 <signal name="SDA">
 <contactref element="U1" pad="38"/>
@@ -2266,10 +2274,11 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="22.57" y1="32.897" x2="22.57" y2="30.293" width="0.1524" layer="1"/>
 <wire x1="36.068" y1="28.924" x2="23.939" y2="28.924" width="0.1524" layer="1"/>
 <wire x1="23.939" y1="28.924" x2="22.57" y2="30.293" width="0.1524" layer="1"/>
-<wire x1="41.91" y1="16.947" x2="40.52" y2="16.947" width="0.1524" layer="1"/>
-<wire x1="40.52" y1="16.947" x2="39.765" y2="16.192" width="0.1524" layer="1"/>
-<wire x1="41.91" y1="16.947" x2="41.91" y2="17.145" width="0.1524" layer="1"/>
+<wire x1="41.91" y1="14.026" x2="41.91" y2="15.875" width="0.1524" layer="1"/>
+<wire x1="41.91" y1="16.192" x2="41.91" y2="17.145" width="0.1524" layer="1"/>
 <wire x1="41.91" y1="17.145" x2="38.1" y2="20.955" width="0.1524" layer="1"/>
+<wire x1="39.765" y1="16.192" x2="41.91" y2="16.192" width="0.1524" layer="1"/>
+<wire x1="41.91" y1="16.192" x2="41.91" y2="15.875" width="0.1524" layer="1"/>
 </signal>
 <signal name="SD_CS">
 <contactref element="J1" pad="2"/>
@@ -2418,25 +2427,31 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="U1" pad="53"/>
 <contactref element="PRINTER" pad="11"/>
 <wire x1="31.02" y1="36.847" x2="40.562" y2="36.847" width="0.1524" layer="1"/>
-<wire x1="40.562" y1="36.847" x2="44.069" y2="40.354" width="0.1524" layer="1"/>
-<via x="44.069" y="40.354" extent="1-16" drill="0.2794"/>
+<wire x1="40.562" y1="36.847" x2="43.307" y2="39.592" width="0.1524" layer="1"/>
+<via x="43.307" y="39.592" extent="1-16" drill="0.2794"/>
 <wire x1="70.231" y1="56.229" x2="71.12" y2="55.34" width="0.1524" layer="16"/>
 <via x="71.12" y="55.34" extent="1-16" drill="0.2794"/>
 <wire x1="71.12" y1="55.34" x2="71.12" y2="53.689" width="0.1524" layer="1"/>
-<wire x1="44.069" y1="40.354" x2="59.944" y2="56.229" width="0.1524" layer="16"/>
+<wire x1="43.307" y1="39.592" x2="59.944" y2="56.229" width="0.1524" layer="16"/>
 <wire x1="59.944" y1="56.229" x2="70.231" y2="56.229" width="0.1524" layer="16"/>
+<contactref element="R11" pad="2"/>
+<wire x1="43.307" y1="39.592" x2="46.362" y2="39.592" width="0.1524" layer="1"/>
+<wire x1="46.362" y1="39.592" x2="46.394" y2="39.624" width="0.1524" layer="1"/>
 </signal>
 <signal name="PRINTER_RESET">
 <contactref element="U1" pad="54"/>
 <contactref element="PRINTER" pad="13"/>
 <wire x1="31.02" y1="37.347" x2="40.173" y2="37.347" width="0.1524" layer="1"/>
-<wire x1="40.173" y1="37.347" x2="43.18" y2="40.354" width="0.1524" layer="1"/>
-<via x="43.18" y="40.354" extent="1-16" drill="0.2794"/>
+<wire x1="40.173" y1="37.347" x2="43.942" y2="41.116" width="0.1524" layer="1"/>
+<via x="43.942" y="41.116" extent="1-16" drill="0.2794"/>
 <wire x1="72.263" y1="56.737" x2="73.66" y2="55.34" width="0.1524" layer="16"/>
 <via x="73.66" y="55.34" extent="1-16" drill="0.2794"/>
 <wire x1="73.66" y1="55.34" x2="73.66" y2="53.689" width="0.1524" layer="1"/>
-<wire x1="43.18" y1="40.354" x2="59.563" y2="56.737" width="0.1524" layer="16"/>
+<wire x1="43.942" y1="41.116" x2="59.563" y2="56.737" width="0.1524" layer="16"/>
 <wire x1="59.563" y1="56.737" x2="72.263" y2="56.737" width="0.1524" layer="16"/>
+<contactref element="R9" pad="1"/>
+<wire x1="43.942" y1="41.116" x2="46.362" y2="41.116" width="0.1524" layer="1"/>
+<wire x1="46.362" y1="41.116" x2="46.394" y2="41.148" width="0.1524" layer="1"/>
 </signal>
 <signal name="MK20_GPIO_4">
 <contactref element="U1" pad="29"/>
@@ -2474,7 +2489,7 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="20.611" y1="26.207" x2="20.611" y2="24.982" width="0.1524" layer="1"/>
 <wire x1="20.611" y1="24.982" x2="21.082" y2="24.511" width="0.1524" layer="1"/>
 <wire x1="21.082" y1="24.511" x2="25.153" y2="24.511" width="0.1524" layer="1"/>
-<wire x1="25.153" y1="24.511" x2="25.185" y2="24.479" width="0.1524" layer="1"/>
+<wire x1="25.153" y1="24.511" x2="25.185" y2="24.606" width="0.1524" layer="1"/>
 </signal>
 <signal name="SWD_IO">
 <contactref element="U1" pad="25"/>

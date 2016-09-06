@@ -198,65 +198,6 @@
 </library>
 <library name="microbuilder">
 <packages>
-<package name="MOUNTINGHOLE_3.0_PLATED">
-<wire x1="-2.159" y1="0" x2="0" y2="-2.159" width="2.4892" layer="51" curve="90" cap="flat"/>
-<wire x1="0" y1="2.159" x2="2.159" y2="0" width="2.4892" layer="51" curve="-90" cap="flat"/>
-<circle x="0" y="0" radius="3.429" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="0.762" width="0.4572" layer="51"/>
-<circle x="0" y="0" radius="3.048" width="2.032" layer="39"/>
-<circle x="0" y="0" radius="3.048" width="2.032" layer="43"/>
-<circle x="0" y="0" radius="3.048" width="2.032" layer="40"/>
-<circle x="0" y="0" radius="3.048" width="2.032" layer="41"/>
-<circle x="0" y="0" radius="3.048" width="2.032" layer="42"/>
-<pad name="P$1" x="0" y="0" drill="3" diameter="6.4516"/>
-<text x="-1.27" y="-3.81" size="1.27" layer="48">3,0</text>
-</package>
-<package name="MOUNTINGHOLE_1.0_PLATED">
-<circle x="0" y="0" radius="1.75" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="39"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="43"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="40"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="41"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="42"/>
-<pad name="P$1" x="0" y="0" drill="1" diameter="3"/>
-<text x="-0.87" y="-2.74" size="0.8128" layer="48">1,0</text>
-</package>
-<package name="MOUNTINGHOLE_2.0_PLATED">
-<circle x="0" y="0" radius="1.75" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="39"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="43"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="40"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="41"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="42"/>
-<pad name="P$1" x="0" y="0" drill="2.2" diameter="3"/>
-<text x="-0.87" y="-2.74" size="0.8128" layer="48">2,0</text>
-</package>
-<package name="MOUNTINGHOLE_3.0_PLATEDTHIN">
-<circle x="0" y="0" radius="2.032" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="39"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="43"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="40"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="41"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="42"/>
-<pad name="P$1" x="0" y="0" drill="3" diameter="3.6"/>
-<text x="-0.87" y="-2.74" size="0.8128" layer="48">3,0</text>
-</package>
-<package name="MOUNTINGHOLE_2.5_PLATED">
-<circle x="0" y="0" radius="1.75" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="39"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="40"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="41"/>
-<circle x="0" y="0" radius="1" width="2.032" layer="42"/>
-<pad name="P$1" x="0" y="0" drill="2.5" diameter="3.2"/>
-</package>
-<package name="MOUNTINGHOLE_2.5_PLATED_THICK">
-<circle x="0" y="0" radius="2.25" width="0.2032" layer="21"/>
-<circle x="0" y="0" radius="1.25" width="2.032" layer="39"/>
-<circle x="0" y="0" radius="1.25" width="2.032" layer="40"/>
-<circle x="0" y="0" radius="1.25" width="2.032" layer="41"/>
-<circle x="0" y="0" radius="1.25" width="2.032" layer="42"/>
-<pad name="P$1" x="0" y="0" drill="2.5" diameter="4"/>
-</package>
 </packages>
 <symbols>
 <symbol name="GND">
@@ -269,10 +210,6 @@
 <wire x1="0" y1="0" x2="1.27" y2="-1.27" width="0.254" layer="94"/>
 <text x="-1.524" y="1.016" size="1.27" layer="96">&gt;VALUE</text>
 <pin name="3.3V" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
-</symbol>
-<symbol name="MOUNTINGHOLE">
-<circle x="0" y="0" radius="2.54" width="0.254" layer="94"/>
-<circle x="0" y="0" radius="1.905" width="0.254" layer="94"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -296,47 +233,6 @@
 </gates>
 <devices>
 <device name="">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="MOUNTINGHOLE">
-<description>&lt;b&gt;Mounting Hole&lt;/b&gt;
-&lt;p&gt;For #2 screws (0.086"/2.18mm width, 0.094"/2.4mm hole) use 2.5mm&lt;/p&gt;</description>
-<gates>
-<gate name="G$1" symbol="MOUNTINGHOLE" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="MOUNTINGHOLE_3.0_PLATED">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="1.0" package="MOUNTINGHOLE_1.0_PLATED">
-<technologies>
-<technology name="">
-<attribute name="BOM" value="EXCLUDE" constant="no"/>
-</technology>
-</technologies>
-</device>
-<device name="2.0" package="MOUNTINGHOLE_2.0_PLATED">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="3.0THIN" package="MOUNTINGHOLE_3.0_PLATEDTHIN">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="2.5" package="MOUNTINGHOLE_2.5_PLATED">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="2.5_THICK" package="MOUNTINGHOLE_2.5_PLATED_THICK">
 <technologies>
 <technology name=""/>
 </technologies>
@@ -2640,6 +2536,17 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 <wire x1="5.08" y1="1.905" x2="7.62" y2="1.905" width="0.127" layer="51"/>
 <wire x1="6.35" y1="4.6355" x2="6.35" y2="10.1175" width="0.635" layer="51"/>
 </package>
+<package name="HOLE_M3.0">
+<circle x="0" y="0" radius="1.9" width="0.127" layer="21"/>
+<hole x="0" y="0" drill="3.2"/>
+</package>
+<package name="HOLE_M1.6">
+<pad name="P$1" x="0" y="0" drill="1.6" diameter="3.2" stop="no" thermals="no"/>
+<circle x="0" y="0" radius="0.8" width="1.6" layer="39"/>
+</package>
+<package name="HOLE_M2.5">
+<pad name="P$1" x="0" y="0" drill="2.85" diameter="5.4" thermals="no"/>
+</package>
 </packages>
 <symbols>
 <symbol name="CAP">
@@ -2984,6 +2891,10 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 <pin name="4" x="5.08" y="2.54" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="5" x="5.08" y="5.08" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="6" x="5.08" y="7.62" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
+</symbol>
+<symbol name="MOUNTINGHOLE">
+<circle x="0" y="0" radius="2.54" width="0.254" layer="94"/>
+<circle x="0" y="0" radius="3.302" width="0.254" layer="94"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -5284,6 +5195,28 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 </device>
 </devices>
 </deviceset>
+<deviceset name="MOUNTINGHOLE">
+<gates>
+<gate name="G$1" symbol="MOUNTINGHOLE" x="0" y="0"/>
+</gates>
+<devices>
+<device name="M1.6" package="HOLE_M1.6">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="M2.5" package="HOLE_M2.5">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="" package="HOLE_M3.0">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 <library name="SparkFun-Aesthetics">
@@ -7395,10 +7328,10 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <part name="LED1" library="appfruits" deviceset="LED" device="-GREEN"/>
 <part name="R6" library="appfruits" deviceset="RESISTOR" device="-1K" value="1K"/>
 <part name="TFT1" library="appfruits" deviceset="DISP_LCD_2.8IN_240X320_50PIN" device=""/>
-<part name="U$15" library="microbuilder" deviceset="MOUNTINGHOLE" device="2.0"/>
-<part name="U$16" library="microbuilder" deviceset="MOUNTINGHOLE" device="2.0"/>
-<part name="U$17" library="microbuilder" deviceset="MOUNTINGHOLE" device="2.0"/>
-<part name="U$18" library="microbuilder" deviceset="MOUNTINGHOLE" device="2.0"/>
+<part name="U$15" library="appfruits" deviceset="MOUNTINGHOLE" device="" value="MOUNTINGHOLE"/>
+<part name="U$16" library="appfruits" deviceset="MOUNTINGHOLE" device="" value="MOUNTINGHOLE"/>
+<part name="U$17" library="appfruits" deviceset="MOUNTINGHOLE" device="" value="MOUNTINGHOLE"/>
+<part name="U$18" library="appfruits" deviceset="MOUNTINGHOLE" device="" value="MOUNTINGHOLE"/>
 <part name="U$21" library="microbuilder" deviceset="3.3V" device=""/>
 <part name="R13" library="appfruits" deviceset="RESISTOR" device="-10K" value="10K"/>
 <part name="R14" library="appfruits" deviceset="RESISTOR" device="-0" value="0"/>
@@ -7478,6 +7411,10 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="SWD_IO" library="appfruits" deviceset="TPV" device="-SMD-18RN"/>
 <part name="SWD_CLK" library="appfruits" deviceset="TPV" device="-SMD-18RN"/>
+<part name="R9" library="appfruits" deviceset="RESISTOR" device="-10K" value="10K"/>
+<part name="U$35" library="microbuilder" deviceset="3.3V" device=""/>
+<part name="R11" library="appfruits" deviceset="RESISTOR" device="-10K" value="10K"/>
+<part name="GND10" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -7617,13 +7554,13 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <instance part="U$33" gate="G$1" x="-22.86" y="-175.26"/>
 <instance part="R25" gate="G$1" x="294.64" y="-93.98" rot="R90"/>
 <instance part="U$4" gate="G$1" x="294.64" y="-81.28"/>
-<instance part="PRINTER" gate="A" x="304.8" y="30.48"/>
+<instance part="PRINTER" gate="A" x="330.2" y="35.56"/>
 <instance part="FTDI" gate="G$1" x="-38.1" y="-43.18"/>
 <instance part="GND18" gate="1" x="-27.94" y="-53.34"/>
 <instance part="JP3" gate="G$1" x="-101.6" y="0"/>
 <instance part="GND19" gate="1" x="-76.2" y="-10.16"/>
-<instance part="GND16" gate="1" x="294.64" y="12.7"/>
-<instance part="GND17" gate="1" x="317.5" y="12.7"/>
+<instance part="GND16" gate="1" x="320.04" y="17.78"/>
+<instance part="GND17" gate="1" x="342.9" y="17.78"/>
 <instance part="GND20" gate="1" x="15.24" y="-10.16"/>
 <instance part="GND21" gate="1" x="106.68" y="-10.16"/>
 <instance part="SW1" gate="G$1" x="12.7" y="2.54"/>
@@ -7663,6 +7600,10 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <instance part="GND5" gate="1" x="-30.48" y="-114.3"/>
 <instance part="SWD_IO" gate="G$1" x="187.96" y="7.62"/>
 <instance part="SWD_CLK" gate="G$1" x="187.96" y="-2.54"/>
+<instance part="R9" gate="G$1" x="292.1" y="40.64" rot="R90"/>
+<instance part="U$35" gate="G$1" x="292.1" y="50.8"/>
+<instance part="R11" gate="G$1" x="297.18" y="20.32" rot="R90"/>
+<instance part="GND10" gate="1" x="297.18" y="10.16"/>
 </instances>
 <busses>
 </busses>
@@ -7810,15 +7751,15 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="1"/>
-<wire x1="302.26" y1="38.1" x2="294.64" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="327.66" y1="43.18" x2="320.04" y2="43.18" width="0.1524" layer="91"/>
 <pinref part="GND16" gate="1" pin="GND"/>
-<wire x1="294.64" y1="38.1" x2="294.64" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="320.04" y1="43.18" x2="320.04" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="6"/>
-<wire x1="309.88" y1="33.02" x2="317.5" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="335.28" y1="38.1" x2="342.9" y2="38.1" width="0.1524" layer="91"/>
 <pinref part="GND17" gate="1" pin="GND"/>
-<wire x1="317.5" y1="33.02" x2="317.5" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="342.9" y1="38.1" x2="342.9" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND20" gate="1" pin="GND"/>
@@ -7857,6 +7798,11 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <wire x1="-63.5" y1="-99.06" x2="-30.48" y2="-99.06" width="0.1524" layer="91"/>
 <wire x1="-30.48" y1="-99.06" x2="-30.48" y2="-111.76" width="0.1524" layer="91"/>
 <pinref part="GND5" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="R11" gate="G$1" pin="1"/>
+<pinref part="GND10" gate="1" pin="GND"/>
+<wire x1="297.18" y1="15.24" x2="297.18" y2="12.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="3.3V" class="0">
@@ -8038,8 +7984,8 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="4"/>
-<wire x1="309.88" y1="35.56" x2="320.04" y2="35.56" width="0.1524" layer="91"/>
-<label x="320.04" y="35.56" size="1.778" layer="95"/>
+<wire x1="335.28" y1="40.64" x2="345.44" y2="40.64" width="0.1524" layer="91"/>
+<label x="345.44" y="40.64" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="R26" gate="G$1" pin="2"/>
@@ -8061,6 +8007,11 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <pinref part="U$14" gate="G$1" pin="3.3V"/>
 <wire x1="-71.12" y1="-99.06" x2="-101.6" y2="-99.06" width="0.1524" layer="91"/>
 <wire x1="-101.6" y1="-99.06" x2="-101.6" y2="-91.44" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U$35" gate="G$1" pin="3.3V"/>
+<pinref part="R9" gate="G$1" pin="2"/>
+<wire x1="292.1" y1="48.26" x2="292.1" y2="45.72" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SDA" class="0">
@@ -8273,8 +8224,8 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="7"/>
-<wire x1="302.26" y1="30.48" x2="292.1" y2="30.48" width="0.1524" layer="91"/>
-<label x="292.1" y="30.48" size="1.778" layer="99" rot="MR0"/>
+<wire x1="327.66" y1="35.56" x2="317.5" y2="35.56" width="0.1524" layer="91"/>
+<label x="317.5" y="35.56" size="1.778" layer="99" rot="MR0"/>
 </segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="PTB18"/>
@@ -8308,8 +8259,8 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="9"/>
-<wire x1="302.26" y1="27.94" x2="292.1" y2="27.94" width="0.1524" layer="91"/>
-<label x="292.1" y="27.94" size="1.778" layer="99" rot="MR0"/>
+<wire x1="327.66" y1="33.02" x2="317.5" y2="33.02" width="0.1524" layer="91"/>
+<label x="317.5" y="33.02" size="1.778" layer="99" rot="MR0"/>
 </segment>
 <segment>
 <pinref part="RESET" gate="G$1" pin="TP"/>
@@ -8632,8 +8583,8 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="12"/>
-<wire x1="309.88" y1="25.4" x2="320.04" y2="25.4" width="0.1524" layer="91"/>
-<label x="320.04" y="25.4" size="1.778" layer="95"/>
+<wire x1="335.28" y1="30.48" x2="345.44" y2="30.48" width="0.1524" layer="91"/>
+<label x="345.44" y="30.48" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="PRINTER_RX" class="0">
@@ -8644,8 +8595,8 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="14"/>
-<wire x1="309.88" y1="22.86" x2="320.04" y2="22.86" width="0.1524" layer="91"/>
-<label x="320.04" y="22.86" size="1.778" layer="95"/>
+<wire x1="335.28" y1="27.94" x2="345.44" y2="27.94" width="0.1524" layer="91"/>
+<label x="345.44" y="27.94" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="UART2_RX" class="0">
@@ -8695,8 +8646,8 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <net name="PRINTER_RTS" class="0">
 <segment>
 <pinref part="PRINTER" gate="A" pin="10"/>
-<wire x1="309.88" y1="27.94" x2="320.04" y2="27.94" width="0.1524" layer="91"/>
-<label x="320.04" y="27.94" size="1.778" layer="95"/>
+<wire x1="335.28" y1="33.02" x2="345.44" y2="33.02" width="0.1524" layer="91"/>
+<label x="345.44" y="33.02" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="PTD5"/>
@@ -8707,8 +8658,8 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <net name="PRINTER_CTS" class="0">
 <segment>
 <pinref part="PRINTER" gate="A" pin="8"/>
-<wire x1="309.88" y1="30.48" x2="320.04" y2="30.48" width="0.1524" layer="91"/>
-<label x="320.04" y="30.48" size="1.778" layer="95"/>
+<wire x1="335.28" y1="35.56" x2="345.44" y2="35.56" width="0.1524" layer="91"/>
+<label x="345.44" y="35.56" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="PTD4"/>
@@ -8731,8 +8682,12 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="11"/>
-<wire x1="302.26" y1="25.4" x2="292.1" y2="25.4" width="0.1524" layer="91"/>
-<label x="292.1" y="25.4" size="1.778" layer="95" rot="MR0"/>
+<wire x1="327.66" y1="30.48" x2="297.18" y2="30.48" width="0.1524" layer="91"/>
+<label x="287.02" y="30.48" size="1.778" layer="95" rot="MR0"/>
+<junction x="297.18" y="30.48"/>
+<wire x1="297.18" y1="30.48" x2="287.02" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="297.18" y1="30.48" x2="297.18" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="R11" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="PRINTER_RESET" class="0">
@@ -8743,8 +8698,12 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="13"/>
-<wire x1="302.26" y1="22.86" x2="292.1" y2="22.86" width="0.1524" layer="91"/>
-<label x="292.1" y="22.86" size="1.778" layer="95" rot="MR0"/>
+<wire x1="327.66" y1="27.94" x2="292.1" y2="27.94" width="0.1524" layer="91"/>
+<label x="287.02" y="27.94" size="1.778" layer="95" rot="MR0"/>
+<pinref part="R9" gate="G$1" pin="1"/>
+<wire x1="292.1" y1="27.94" x2="287.02" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="292.1" y1="35.56" x2="292.1" y2="27.94" width="0.1524" layer="91"/>
+<junction x="292.1" y="27.94"/>
 </segment>
 </net>
 <net name="MK20_GPIO_4" class="0">
@@ -8755,8 +8714,8 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="3"/>
-<wire x1="302.26" y1="35.56" x2="292.1" y2="35.56" width="0.1524" layer="91"/>
-<label x="292.1" y="35.56" size="1.778" layer="99" rot="MR0"/>
+<wire x1="327.66" y1="40.64" x2="317.5" y2="40.64" width="0.1524" layer="91"/>
+<label x="317.5" y="40.64" size="1.778" layer="99" rot="MR0"/>
 </segment>
 </net>
 <net name="MK20_GPIO_3" class="0">
@@ -8767,8 +8726,8 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </segment>
 <segment>
 <pinref part="PRINTER" gate="A" pin="5"/>
-<wire x1="302.26" y1="33.02" x2="292.1" y2="33.02" width="0.1524" layer="91"/>
-<label x="292.1" y="33.02" size="1.778" layer="99" rot="MR0"/>
+<wire x1="327.66" y1="38.1" x2="317.5" y2="38.1" width="0.1524" layer="91"/>
+<label x="317.5" y="38.1" size="1.778" layer="99" rot="MR0"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -8816,8 +8775,8 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <net name="EXT_VIN" class="0">
 <segment>
 <pinref part="PRINTER" gate="A" pin="2"/>
-<wire x1="309.88" y1="38.1" x2="320.04" y2="38.1" width="0.1524" layer="91"/>
-<label x="320.04" y="38.1" size="1.778" layer="95"/>
+<wire x1="335.28" y1="43.18" x2="345.44" y2="43.18" width="0.1524" layer="91"/>
+<label x="345.44" y="43.18" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="D5" gate="G$1" pin="A"/>
