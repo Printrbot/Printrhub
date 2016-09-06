@@ -8669,11 +8669,6 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <wire x1="177.8" y1="30.48" x2="162.56" y2="30.48" width="0.1524" layer="91"/>
 <label x="162.56" y="30.48" size="1.778" layer="95" rot="MR0"/>
 </segment>
-<segment>
-<pinref part="JP2" gate="A" pin="5"/>
-<wire x1="-71.12" y1="-104.14" x2="-83.82" y2="-104.14" width="0.1524" layer="91"/>
-<label x="-83.82" y="-104.14" size="1.778" layer="95" rot="MR0"/>
-</segment>
 </net>
 <net name="UART2_TX" class="0">
 <segment>
@@ -8695,11 +8690,6 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <pinref part="TX" gate="G$1" pin="TP"/>
 <wire x1="177.8" y1="38.1" x2="162.56" y2="38.1" width="0.1524" layer="91"/>
 <label x="162.56" y="38.1" size="1.778" layer="95" rot="MR0"/>
-</segment>
-<segment>
-<pinref part="JP2" gate="A" pin="3"/>
-<wire x1="-71.12" y1="-101.6" x2="-83.82" y2="-101.6" width="0.1524" layer="91"/>
-<label x="-83.82" y="-101.6" size="1.778" layer="95" rot="MR0"/>
 </segment>
 </net>
 <net name="PRINTER_RTS" class="0">
@@ -8924,12 +8914,22 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <wire x1="165.1" y1="-149.86" x2="187.96" y2="-149.86" width="0.1524" layer="91"/>
 <label x="187.96" y="-149.86" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="JP2" gate="A" pin="3"/>
+<wire x1="-71.12" y1="-101.6" x2="-83.82" y2="-101.6" width="0.1524" layer="91"/>
+<label x="-83.82" y="-101.6" size="1.778" layer="95" rot="MR0"/>
+</segment>
 </net>
 <net name="SDA1" class="0">
 <segment>
 <pinref part="U1" gate="G$1" pin="PTC11"/>
 <wire x1="165.1" y1="-147.32" x2="187.96" y2="-147.32" width="0.1524" layer="91"/>
 <label x="187.96" y="-147.32" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="JP2" gate="A" pin="5"/>
+<wire x1="-71.12" y1="-104.14" x2="-83.82" y2="-104.14" width="0.1524" layer="91"/>
+<label x="-83.82" y="-104.14" size="1.778" layer="95" rot="MR0"/>
 </segment>
 </net>
 </nets>
