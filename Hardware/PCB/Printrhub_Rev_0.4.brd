@@ -609,7 +609,7 @@
 </package>
 <package name="HOLE_M3.0">
 <circle x="0" y="0" radius="1.9" width="0.127" layer="21"/>
-<hole x="0" y="0" drill="3.2"/>
+<hole x="0" y="0" drill="2.9"/>
 </package>
 </packages>
 </library>

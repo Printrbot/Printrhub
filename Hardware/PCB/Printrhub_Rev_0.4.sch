@@ -2538,7 +2538,7 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 </package>
 <package name="HOLE_M3.0">
 <circle x="0" y="0" radius="1.9" width="0.127" layer="21"/>
-<hole x="0" y="0" drill="3.2"/>
+<hole x="0" y="0" drill="2.9"/>
 </package>
 <package name="HOLE_M1.6">
 <pad name="P$1" x="0" y="0" drill="1.6" diameter="3.2" stop="no" thermals="no"/>
