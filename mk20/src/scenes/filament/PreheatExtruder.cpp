@@ -42,19 +42,20 @@ uint16_t PreheatExtruder::getBackgroundColor()
 
 void PreheatExtruder::onWillAppear() {
 
-  BitmapView* icon = new BitmapView(Rect(85,50,uiBitmaps.icon_time.width, uiBitmaps.icon_time.height));
-  icon->setBitmap(&uiBitmaps.icon_time);
+  BitmapView* icon = new BitmapView(Rect(0,0,uiBitmaps.heating_screen.width, uiBitmaps.heating_screen.height - 5));
+  icon->setBitmap(&uiBitmaps.heating_screen);
   addView(icon);
 
+/*
   TextLayer* textLayer = new TextLayer(Rect(5, 200, 260, 20));
   textLayer->setFont(&LiberationSans_12);
   textLayer->setTextAlign(TEXTALIGN_CENTERED);
   textLayer->setForegroundColor(ILI9341_WHITE);
   textLayer->setText("Heating extruder, please wait...");
   Display.addLayer(textLayer);
-
+*/
   _progressBar = new ProgressBar(Rect(0,235,270,5));
-	_progressBar->setTrackColor(ILI9341_WHITE);
+	_progressBar->setTrackColor(ILI9341_RED);
 	_progressBar->setValue(0.0f);
 	addView(_progressBar);
 
@@ -65,6 +66,7 @@ void PreheatExtruder::onWillAppear() {
 
   printr.sendLine("G0 X105");
   printr.sendLine("M100({he1st:200})");
+  printr.sendLine("{_leds:2}");
   printr.sendLine("M101({he1at:t})");
   if (!printr.isHomed()) {
     printr.homeZ();
@@ -101,6 +103,7 @@ void PreheatExtruder::printrCallback(const char ctype[], float * data) {
 void PreheatExtruder::onSidebarButtonTouchUp() {
   // flush the queue
   printr.stopAndFlush();
+  printr.sendLine("{_leds:1}");
   printr.sendLine("G0 Y120");
   printr.turnOffHotend();
 
