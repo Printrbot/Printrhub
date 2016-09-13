@@ -18,7 +18,7 @@ PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint
 {
     setupBuffers();
 
-    _needsLayout = true;
+    _needsLayout = false;
     _needsDisplay = false;
     _fixedBackgroundLayer = NULL;
 
@@ -141,6 +141,7 @@ void PHDisplay::layoutIfNeeded()
     _foregroundLayer->setStrokeWidth(0);
 
     //We have calculated the width for scrolling, if we don't use auto layout stop work now
+    _needsLayout = false;
     if (!_autoLayout) return;
 
     for (int i=0;i<_layers.count();i++)
