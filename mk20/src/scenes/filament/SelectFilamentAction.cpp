@@ -39,28 +39,28 @@ uint16_t SelectFilamentAction::getBackgroundColor()
 
 void SelectFilamentAction::onWillAppear() {
 
-  BitmapView* icon = new BitmapView(Rect(85,35,uiBitmaps.icon_filament.width, uiBitmaps.icon_filament.height));
+  BitmapView* icon = new BitmapView(Rect(85,10,uiBitmaps.icon_filament.width, uiBitmaps.icon_filament.height));
   icon->setBitmap(&uiBitmaps.icon_filament);
   addView(icon);
 
-
-  TextLayer* textLayer = new TextLayer(Rect(10,132, 250, 20));
+/*
+  TextLayer* textLayer = new TextLayer(Rect(10,136, 250, 20));
   textLayer->setFont(&LiberationSans_14);
   textLayer->setTextAlign(TEXTALIGN_CENTERED);
   textLayer->setForegroundColor(ILI9341_WHITE);
   textLayer->setBackgroundColor(getBackgroundColor());
   textLayer->setText("Please select below");
   Display.addLayer(textLayer);
+*/
 
 
 
-
-  _loadBtn = new BitmapButton(Rect(30,178, uiBitmaps.btn_load.width, uiBitmaps.btn_load.height));
+  _loadBtn = new BitmapButton(Rect(15,112, uiBitmaps.btn_load.width, uiBitmaps.btn_load.height));
   _loadBtn->setBitmap(&uiBitmaps.btn_load);
   _loadBtn->setDelegate(this);
   addView(_loadBtn);
 
-  _unloadBtn = new BitmapButton(Rect(120,178, uiBitmaps.btn_unload.width, uiBitmaps.btn_unload.height));
+  _unloadBtn = new BitmapButton(Rect(15,172, uiBitmaps.btn_unload.width, uiBitmaps.btn_unload.height));
   _unloadBtn->setBitmap(&uiBitmaps.btn_unload);
   _unloadBtn->setDelegate(this);
   addView(_unloadBtn);
