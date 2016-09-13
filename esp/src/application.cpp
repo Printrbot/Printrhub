@@ -26,6 +26,10 @@ ApplicationClass::~ApplicationClass() {
 }
 
 void ApplicationClass::setup() {
+
+	pinMode(MK20_RESET_PIN,OUTPUT);
+	digitalWrite(MK20_RESET_PIN,HIGH);
+
 	pinMode(COMMSTACK_WORKING_MARKER_PIN, OUTPUT);
 	digitalWrite(COMMSTACK_WORKING_MARKER_PIN, HIGH);
 
@@ -35,8 +39,10 @@ void ApplicationClass::setup() {
 	Mode* manageWifi = new ManageWifi();
 	Application.pushMode(manageWifi);
 
+	config.load();
+
 	// request info from mk20
-	getMK20Stack()->requestTask(SystemInfo);
+	//getMK20Stack()->requestTask(SystemInfo);
 
 	//connectWiFi();
  //	_server.begin();

@@ -82,6 +82,18 @@ void doUpdateConfig(AsyncWebServerRequest *request) {
 	ESP.restart();
 }
 
+void doUpdateName(AsyncWebServerRequest *request) {
+	AsyncWebParameter* n = request->getParam("name", true);
+	strcpy(config.data.name, n->value().c_str());
+//	EventLogger::log(Config::data.name);
+
+	config.save();
+	EventLogger::log("Done updating config, restarting ESP");
+
+	delay(1000);
+	ESP.restart();
+}
+
 void WebServer::begin() {
 
 	server.addHandler(&events);
@@ -114,8 +126,18 @@ void WebServer::begin() {
 
 	server.on("/info", HTTP_GET, [](AsyncWebServerRequest *request) {
 	//	String info = brain.getInfo();
-		AsyncWebServerResponse *response = request->beginResponse(200, "text/json", "{'name':'printrbot'}");
+		AsyncJsonResponse * response = new AsyncJsonResponse();
 		response->addHeader("Access-Control-Allow-Origin", "*");
+
+		JsonObject& root = response->getRoot();
+
+		root["name"] = config.data.name;
+		root["ap"] = config.data.accessPoint;
+		root["locked"] = config.data.locked;
+		root["ssid"] = config.data.wifiSsid;
+		root["firmware"] = FIRMWARE_VERSION;
+
+		response->setLength();
 		request->send(response);
 	});
 
@@ -147,7 +169,6 @@ void WebServer::begin() {
 			AsyncWebParameter* ftype = request->getParam("type");
 
 			// extract host and path to file from url
-
 			// check type, and set the appropriate task id
 			// hardcoded to SaveProjectWithID for now
 			Mode* df = new DownloadFile(SaveProjectWithID, id->value().c_str(), url->value().c_str());
