@@ -58,23 +58,23 @@ UIBitmap * DownloadFileController::getSidebarIcon() {
 
 
 UIBitmap * DownloadFileController::getSidebarBitmap() {
-  return &uiBitmaps.sidebar_settings;
+  return &uiBitmaps.sidebar_downloading;
 }
 
 void DownloadFileController::onWillAppear()
 {
-	BitmapView* icon = new BitmapView(Rect(100,44,uiBitmaps.icon_download.width, uiBitmaps.icon_download.height));
-	icon->setBitmap(&uiBitmaps.icon_download);
-	addView(icon);
-
-	TextLayer* textLayer = new TextLayer(Rect(0,118, 270, 20));
-  textLayer->setFont(&LiberationSans_14);
+	BitmapView* icon = new BitmapView(Rect(0,0,uiBitmaps.downloading_scene.width, uiBitmaps.downloading_scene.height));
+  icon->setBitmap(&uiBitmaps.downloading_scene);
+  addView(icon);
+/*
+	TextLayer* textLayer = new TextLayer(Rect(5, 200, 260, 20));
+  textLayer->setFont(&LiberationSans_12);
   textLayer->setTextAlign(TEXTALIGN_CENTERED);
   textLayer->setForegroundColor(ILI9341_WHITE);
   textLayer->setText("Downloading, please wait...");
   Display.addLayer(textLayer);
-
-	_progressBar = new ProgressBar(Rect(0,190,270,50));
+*/
+	_progressBar = new ProgressBar(Rect(0,235,270,5));
 	_progressBar->setTrackColor(ILI9341_WHITE);
 	_progressBar->setValue(0.0f);
 	addView(_progressBar);
