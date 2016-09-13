@@ -56,48 +56,16 @@ void testImage(void)
 
 void showSplashScreen()
 {
-/*
-  Serial.print("bitmap size: ");
-  Serial.println(UIBitmaps::splash().size);
-  Serial.print("width: ");
-  Serial.println(UIBitmaps::splash().width);
-  Serial.print("height: ");
-  Serial.println(UIBitmaps::splash().height);
-  Serial.print("offset: ");
-  Serial.println(UIBitmaps::splash().offset);
-
-  uint16_t b[UIBitmaps::splash().size];
-  File file = SD.open("ui", FILE_READ);
-  file.seek(UIBitmaps::splash().offset);
-  file.read(&b, UIBitmaps::splash().size);
-  Serial.println(file.size());
-  Serial.println("OH SHIT");
-  /*
-  File file = SD.open("ui", FILE_READ);
-  file.seek(UIBitmaps::splash().offset);
-  file.read(&b, UIBitmaps::splash().size);
-*/
-
-
-/*
-  Display.drawBitmap(
-    0,0,
-    uiBitmaps.splash.width, uiBitmaps.splash.height,
-    uiBitmaps.getBitmap(uiBitmaps.splash),
-    0,0,
-    uiBitmaps.splash.width, uiBitmaps.splash.height
-  );
-
-*/
-
-  //Display.drawBitmap(0,0,62,84,b,0,0,62,84);
-  //Display.drawBitmap(0,0,320,240,idlescreen,0,0,320,240);
+    File file = SD.open("ui", FILE_READ);
+    Display.drawFileBitmapByColumn(0,0,320,240,&file,0,0,320,240, uiBitmaps.splash.offset);
 
     Display.fadeIn();
 
-    delay(10000);
+    delay(3000);
 
     Display.fadeOut();
+
+    file.close();
 
 }
 
@@ -111,7 +79,10 @@ void setup(void)
     // init printer pins
 
     pinMode(G2_RESET_PIN, OUTPUT);
+    digitalWrite(G2_RESET_PIN, LOW);
+    delay(500);
     digitalWrite(G2_RESET_PIN, HIGH);
+
     pinMode(G2_ERASE_PIN, OUTPUT);
     digitalWrite(G2_ERASE_PIN, LOW);
 
@@ -120,9 +91,6 @@ void setup(void)
         DebugSerial.begin(115200);
     }
 #endif
-
-
-
 
     LOG("Printrhub - LCD Controller and Hub for Printrbots!");
 
@@ -165,7 +133,7 @@ void setup(void)
 
 
 
-    //showSplashScreen();
+    showSplashScreen();
 
     if (! Touch.begin(TFT_TOUCH_SENSE_PIN,40))
     {  // pass in 'sensitivity' coefficient
