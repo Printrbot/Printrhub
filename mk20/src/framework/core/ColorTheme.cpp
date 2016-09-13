@@ -9,7 +9,7 @@
 
 ColorTheme::ColorTheme():
 		_colors({RGB565(100,100,100),	//SpacerColor
-				 RGB565(84,84,84),	//BackgroundColor
+				 RGB565(241,241,241),	//BackgroundColor
 				 RGB565(96,96,96),		//HighlightBackgroundColor
 				 RGB565(255,255,255),	//HighlightTextColor
 				 RGB565(3,100,120),		//HighlightBackgroundColor
@@ -18,13 +18,13 @@ ColorTheme::ColorTheme():
 				 RGB565(220,220,220),	//ControlAlternateBackgroundColor
 				 RGB565(40,40,40),		//ControlTextColor
 				 RGB565(70,70,70),		//ControlAlternateTextColor
-				 RGB565(79,79,79),		//TextColor
+				 RGB565(71,71,71),		//TextColor
 				 RGB565(255,255,255),	//OverlayTextColor
 				 RGB565(2,224,53),		//SuccessColor
 				 RGB565(255,105,1),		//WarningColor
 				 RGB565(255,4,0),		//AlertColor
-				 RGB565(113,113,113),		//SidebarColor
-				 RGB565(255,255,255)	//SidebarTextColor
+				 RGB565(200,200,200),		//SidebarColor
+				 RGB565(96,96,96)	//SidebarTextColor
 		})
 {
 }
