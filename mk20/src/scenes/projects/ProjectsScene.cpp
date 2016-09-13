@@ -80,13 +80,13 @@ void ProjectsScene::onWillAppear() {
     return;
   }
 
-  _openBtn = new BitmapButton(Rect(50,175,120,50));
+  _openBtn = new BitmapButton(Rect(63,190,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
   _openBtn->setBitmap(&uiBitmaps.btn_open);
   _openBtn->setVisible(true);
   _openBtn->setDelegate(this);
   addView(_openBtn);
 
-  _deleteBtn = new BitmapButton(Rect(175,175,50,50));
+  _deleteBtn = new BitmapButton(Rect(220,190,50,50));
   _deleteBtn->setBitmap(&uiBitmaps.btn_trash);
   _deleteBtn->setVisible(true);
   _deleteBtn->setDelegate(this);
@@ -114,11 +114,11 @@ void ProjectsScene::animationFinished(Animation *animation) {
   int index = getPageIndex();
   float x = Display.getLayoutWidth() * index;
 
-  _openBtn->setFrame(Rect((x+50),175,120,50));
+  _openBtn->setFrame(Rect(x+63,190,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
   _openBtn->setVisible(true);
   _openBtn->setDelegate(this);
 
-  _deleteBtn->setFrame(Rect((x+175),175,50,50));
+  _deleteBtn->setFrame(Rect(x+220,190,50,50));
   _deleteBtn->setVisible(true);
   _deleteBtn->setDelegate(this);
 }

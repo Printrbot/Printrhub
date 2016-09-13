@@ -73,7 +73,7 @@ void JobsScene::onWillAppear() {
 
   _file.close();
 
-  _printBtn = new BitmapButton(Rect(72,175,120,50));
+  _printBtn = new BitmapButton(Rect(167,190,uiBitmaps.btn_print.width,uiBitmaps.btn_print.height));
   _printBtn->setBitmap(&uiBitmaps.btn_print);
   _printBtn->setVisible(true);
   _printBtn->setDelegate(this);
@@ -103,7 +103,7 @@ void JobsScene::animationFinished(Animation *animation) {
   float x = Display.getLayoutWidth() * index;
 
   //_printBtn->setIcon(imageOfOpenButton_65_65, Application.getTheme()->getColor(HighlightBackgroundColor), 65, 65);
-  _printBtn->setFrame(Rect((x+72),175,120,50));
+  _printBtn->setFrame(Rect((x+167),190,uiBitmaps.btn_print.width,uiBitmaps.btn_print.height));
   _printBtn->setVisible(true);
   _printBtn->setDelegate(this);
 
@@ -122,7 +122,7 @@ void JobsScene::buttonPressed(void *button)
     ImageView * v = (ImageView *) getView(getPageIndex());
     String fn = v->getIndexFileName();
 
-    
+
 
 
     /*

@@ -5,6 +5,7 @@
 #include "SidebarSceneController.h"
 #include "UIBitmaps.h"
 #include "framework/views/BitmapView.h"
+#include "framework/core/Application.h"
 
 extern UIBitmaps uiBitmaps;
 
@@ -35,7 +36,7 @@ void SidebarSceneController::setupSidebar() {
 		_sidebarImage->setBitmap(getSidebarBitmap());
 		addView(_sidebarImage);
 	} else {
-		Display.fillRect(0,0,50,190, ILI9341_WHITE);
+		Display.fillRect(0,0,50,190, Application.getTheme()->getColor(SidebarBackgroundColor));
 	}
 
 }

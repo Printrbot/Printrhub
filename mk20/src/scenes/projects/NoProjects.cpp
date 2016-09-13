@@ -23,7 +23,7 @@ UIBitmap * NoProjects::getSidebarIcon() {
 }
 
 UIBitmap * NoProjects::getSidebarBitmap() {
-  return NULL;
+  return &uiBitmaps.sidebar_project;
 }
 
 
@@ -34,17 +34,17 @@ uint16_t NoProjects::getBackgroundColor()
 
 void NoProjects::onWillAppear() {
 
-  BitmapView* icon = new BitmapView(Rect(100,44,uiBitmaps.icon_alert.width, uiBitmaps.icon_alert.height));
-  icon->setBitmap(&uiBitmaps.icon_alert);
+  BitmapView* icon = new BitmapView(Rect(0,0,uiBitmaps.scene_empty_project.width, uiBitmaps.scene_empty_project.height));
+  icon->setBitmap(&uiBitmaps.scene_empty_project);
   addView(icon);
-
-  TextLayer* textLayer = new TextLayer(Rect(34,138, 197, 20));
+/*
+  TextLayer* textLayer = new TextLayer(Rect(34,158, 197, 20));
   textLayer->setFont(&LiberationSans_14);
   textLayer->setTextAlign(TEXTALIGN_CENTERED);
   textLayer->setForegroundColor(ILI9341_WHITE);
   textLayer->setText("No projects available :(");
   Display.addLayer(textLayer);
-
+*/
   SidebarSceneController::onWillAppear();
 }
 
