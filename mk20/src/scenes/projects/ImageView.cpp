@@ -21,7 +21,7 @@ ImageView::ImageView(Rect frame, uint32_t offset):
 void ImageView::display()
 {
   SDBitmapLayer* imageLayer = new SDBitmapLayer(_frame);
-  imageLayer->setBitmap(_fileName.c_str(), 270, 240, _offset);
+  imageLayer->setBitmap(_indexFileName.c_str(), 270, 240, _offset);
   Display.addLayer(imageLayer);
 
   _imageLayer = imageLayer;
