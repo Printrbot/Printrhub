@@ -5,6 +5,7 @@
 #include "ProjectsScene.h"
 #include "SD.h"
 #include "UIBitmaps.h"
+#include "../DownloadFileController.h"
 //#include "font_AwesomeF080.h"
 //#include "font_AwesomeF000.h"
 
@@ -62,12 +63,17 @@ void JobsScene::onWillAppear() {
   for (uint8_t cnt=0; cnt < t; cnt++) {
     imageView = new ImageView(Rect(270*cnt,0,270,240), 129673 + (129768 * cnt) + 168);
 
+    char _jfile[8];
+    _file.seek(129673 + (129768 * cnt));
+    _file.read(_jfile, 8);
+
     char _jname[32];
     _file.seek(129673 + (129768 * cnt) + 8 );
     _file.read(_jname, 32);
 
     imageView->setImageTitle(_jname);
     imageView->setIndexFileName(_projectIndex.c_str());
+    imageView->setJobFileName(_jfile);
     addView(imageView);
   }
 
@@ -116,29 +122,22 @@ void JobsScene::onSidebarButtonTouchUp() {
 
 void JobsScene::buttonPressed(void *button)
 {
-
   if (button == _printBtn) {
 
     ImageView * v = (ImageView *) getView(getPageIndex());
     String fn = v->getIndexFileName();
 
-
-
-
-    /*
     bool jobExists = false;
 
     if (jobExists) {
       LOG_VALUE("Printing Job-Nr",getPageIndex());
-      PrintStatusSceneController * scene = new PrintStatusSceneController();
-      Application.pushScene(scene);
+      //PrintStatusSceneController * scene = new PrintStatusSceneController();
+      //Application.pushScene(scene);
     } else {
       LOG_VALUE("Need to download file",getPageIndex());
       DownloadFileController* scene = new DownloadFileController("http://printrapp.s3-us-west-1.amazonaws.com/u/1526cae4477c387ffc07bd6cad001614/p/26c8a30b51efe91ceb507d443600d6d7/f631d66d1df76827a25776fcd9e3ed14.raw", "feet.png");
       Application.pushScene(scene);
     }
-    */
   }
-
   SidebarSceneController::buttonPressed(button);
 }
