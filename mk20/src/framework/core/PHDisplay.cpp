@@ -743,7 +743,7 @@ Rect PHDisplay::prepareRenderFrame(const Rect proposedRenderFrame, DisplayContex
     if (context == DisplayContext::Scrolling)
     {
         //Transform to screen space
-        if (frame.x > Display.getLayoutWidth())
+        if (frame.x >= Display.getLayoutWidth())
         {
             frame.x = frame.x % Display.getLayoutWidth();
             frame.x += Display.getLayoutStart();
