@@ -72,6 +72,7 @@ private:
 	float _decelerationRate;
 	float _currentDecelerationRate;
 	Animation* _scrollAnimation;
+	unsigned long _lastScrollTime;
 };
 
 

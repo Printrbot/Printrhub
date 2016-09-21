@@ -429,7 +429,7 @@ float PHDisplay::clampScrollTarget(float scrollTarget)
     return scrollTarget;
 }
 
-void PHDisplay::setScrollOffset(float scrollOffset)
+void PHDisplay::setScrollOffset(float scrollOffset, bool update)
 {
    // LOG_VALUE("Layout-Width: ",(_foregroundLayer->getFrame().width-1));
     if (scrollOffset < -((_foregroundLayer->getFrame().width-1)-getLayoutWidth()))
@@ -467,8 +467,11 @@ void PHDisplay::setScrollOffset(float scrollOffset)
 
         if (vw > 0)
         {
-            Rect invalidationRect(vx,0,vw,240);
-            invalidateRect(invalidationRect, newScrollOffset, diffScrollOffset);
+            if (update)
+            {
+                Rect invalidationRect(vx,0,vw,240);
+                invalidateRect(invalidationRect, newScrollOffset, diffScrollOffset);
+            }
         }
     }
     else if (diffScrollOffset < 0)
@@ -487,8 +490,11 @@ void PHDisplay::setScrollOffset(float scrollOffset)
 
         if (vw > 0)
         {
-            Rect invalidationRect(vx,0,vw,240);
-            invalidateRect(invalidationRect, newScrollOffset, diffScrollOffset);
+            if (update)
+            {
+                Rect invalidationRect(vx,0,vw,240);
+                invalidateRect(invalidationRect, newScrollOffset, diffScrollOffset);
+            }
         }
         //fillRect(sx,0,sw,240,ILI9341_GREEN);
     }

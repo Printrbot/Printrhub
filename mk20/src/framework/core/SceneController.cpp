@@ -12,6 +12,7 @@ SceneController::SceneController()
 	_scrollSnap = 0;
 	_decelerationRate = 270.0f*7;   //Pixels per Second
 	_scrollAnimation = NULL;
+    _lastScrollTime = 0;
 }
 
 SceneController::~SceneController()
@@ -239,11 +240,31 @@ void SceneController::addScrollOffset(float scrollOffset)
 {
 	if (scrollOffset == 0) return;
 
+    bool updateScrolling = true;
+    if (_lastScrollTime > 0)
+    {
+        unsigned long currentTime = micros();
+        if (_lastScrollTime < currentTime)
+        {
+            if (currentTime - _lastScrollTime < 3000)
+            {
+                updateScrolling = false;
+                return;
+            }
+        }
+        else
+        {
+            //Just overflowed, don't check
+        }
+    }
+
 	//_scrollOffset += scrollOffset;
 	//LOG_VALUE("_scrollOffset: ",scrollOffset + _scrollOffset);
 
-	Display.setScrollOffset(_scrollOffset + scrollOffset);
+	Display.setScrollOffset(_scrollOffset + scrollOffset, updateScrolling);
 	_scrollOffset = Display.getScrollOffset();
+
+    _lastScrollTime = micros();
 }
 
 void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)

@@ -66,7 +66,7 @@ public:
 
 #pragma mark Scrolling
 public:
-    virtual void setScrollOffset(float scrollOffset);
+    virtual void setScrollOffset(float scrollOffset, bool update);
     virtual float getScrollOffset() { return _scrollOffset; };
     virtual void setScrollInsets(uint16_t left, uint16_t right);
     Rect visibleRect();
