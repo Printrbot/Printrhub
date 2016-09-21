@@ -33,6 +33,7 @@ public:
 
 private:
 	Animation _animationSlots[10];
+	unsigned long _lastUpdateTime;
 };
 
 extern AnimatorClass Animator;

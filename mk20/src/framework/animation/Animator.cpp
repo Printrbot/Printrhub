@@ -22,7 +22,7 @@ AnimatorClass Animator;
 
 AnimatorClass::AnimatorClass()
 {
-
+	_lastUpdateTime = 0;
 }
 
 Animation* AnimatorClass::getAnimationSlot()
@@ -55,6 +55,22 @@ bool AnimatorClass::hasActiveAnimations()
 
 void AnimatorClass::update()
 {
+	if (_lastUpdateTime > 0)
+	{
+		unsigned long currentTime = micros();
+		if (_lastUpdateTime < currentTime)
+		{
+			if (currentTime - _lastUpdateTime < 5000)
+			{
+				return;
+			}
+		}
+		else
+		{
+			//Just overflowed, don't check
+		}
+	}
+
 	for (uint8_t i=0;i<10;i++)
 	{
 		if (_animationSlots[i].isActive())
@@ -62,4 +78,6 @@ void AnimatorClass::update()
 			_animationSlots[i].update();
 		}
 	}
+
+	_lastUpdateTime = micros();
 }

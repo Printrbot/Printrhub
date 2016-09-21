@@ -402,11 +402,11 @@ int PHDisplay::mapScrollOffset(int so)
     //Shift display to the specific frame (this is hardware scrolling)
     if (so < 0)
     {
-        int numScreens = -so/getLayoutWidth();
+        int numScreens = -so/(getLayoutWidth());
         numScreens += 1;
         so += numScreens * getLayoutWidth();
     }
-    if (so > getLayoutWidth()-1)
+    if (so >= getLayoutWidth())
     {
         so -= getLayoutWidth();
     }
