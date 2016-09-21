@@ -188,7 +188,7 @@ void SceneController::handleTouchUp(TS_Point &point)
 		float targetOffset = _scrollOffset;
 
 		//Clamp snapping distance to max 3 slots
-		float maxDistance = _scrollSnap*2;
+		float maxDistance = _scrollSnap;
 		if (stoppingDistance < -maxDistance)
 		{
 			stoppingDistance = -maxDistance;
