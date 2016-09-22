@@ -78,10 +78,10 @@ void PreheatExtruder::onWillAppear() {
 }
 
 void PreheatExtruder::printrCallback(const char ctype[], float * data) {
-  if (ctype == "he1t") {
+  if (strcmp(ctype,"he1t") == 0) {
     float _v = *data / 200;
     _progressBar->setValue(_v);
-  } else if (ctype == "line") {
+  } else if (strcmp(ctype,"line") == 0) {
     // show instruction scene with pullout text
     if (_nextScene == 1) {
       UnloadFilament * scene = new UnloadFilament();
