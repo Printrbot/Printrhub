@@ -45,13 +45,12 @@ void CalibrateScene::onWillAppear() {
 
   _offset = 0.1;
 
-  TransparentTextLayer* _offsetText = new TransparentTextLayer(Rect(84,50, 150, 24));
+  _offsetText = new TextLayer(Rect(137,13, 112, 62));
   _offsetText->setFont(&LiberationSans_32);
   _offsetText->setTextAlign(TEXTALIGN_CENTERED);
   _offsetText->setForegroundColor(ILI9341_BLACK);
-  _offsetText->setText(_offset);
-
-
+  _offsetText->setBackgroundColor(RGB565(200,200,200));
+  _offsetText->setText(String(_offset));
 
   Display.addLayer(_offsetText);
 
@@ -83,12 +82,15 @@ void CalibrateScene::onSidebarButtonTouchUp() {
 void CalibrateScene::buttonPressed(void *button)
 {
   if (button == _plusBtn) {
-    //_offset += 0.1f;
-    _offsetText->setText(_offset);
+    _offset += 0.1f;
+
+    String offsetText = String(_offset);
+    _offsetText->setText(offsetText);
   }
   if (button == _minusBtn) {
-    //_offset -= 0.1f;
-    _offsetText->setText(_offset);
+    _offset -= 0.1f;
+    String offsetText = String(_offset);
+    _offsetText->setText(offsetText);
   }
 
   SidebarSceneController::buttonPressed(button);

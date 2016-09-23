@@ -3,7 +3,7 @@
 
 #include "../SidebarSceneController.h"
 #include "framework/views/BitmapButton.h"
-#include "framework/layers/TransparentTextLayer.h"
+#include "framework/layers/TextLayer.h"
 
 class CalibrateScene: public SidebarSceneController {
 public:
@@ -24,7 +24,7 @@ private:
 	float _offset;
 
 protected:
-	TransparentTextLayer* _offsetText;
+	TextLayer* _offsetText;
 	BitmapButton* _saveBtn;
 	BitmapButton* _plusBtn;
 	BitmapButton* _minusBtn;

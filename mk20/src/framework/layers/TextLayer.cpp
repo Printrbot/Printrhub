@@ -128,3 +128,9 @@ void TextLayer::draw(Rect &invalidationRect)
 
     Display.resetClippingRect();
 }
+
+void TextLayer::setText(const String &text)
+{
+    _text = text;
+    setNeedsDisplay();
+}

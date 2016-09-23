@@ -33,7 +33,7 @@ public:
     uint16_t getBackgroundColor() const { return _backgroundColor; }
     void setBackgroundColor(uint16_t _backgroundColor) { TextLayer::_backgroundColor = _backgroundColor; }
     const String getText() const { return _text; }
-    void setText(String text) { _text = text; }
+    void setText(const String &text);
     uint8_t getTextAlign() const { return _textAlign; }
     uint8_t getVerticalTextAlign() const { return _verticalTextAlign; }
     void setVerticalTextAlign(uint8_t verticalTextAlign);
