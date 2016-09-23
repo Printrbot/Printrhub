@@ -83,15 +83,15 @@ void CalibrateScene::buttonPressed(void *button)
 {
   if (button == _plusBtn) {
     _offset += 0.1f;
-
-    String offsetText = String(_offset);
-    _offsetText->setText(offsetText);
   }
   if (button == _minusBtn) {
     _offset -= 0.1f;
-    String offsetText = String(_offset);
-    _offsetText->setText(offsetText);
   }
+  
+  //Convert float to string and set to text field
+  char buffer[10];  
+  dtostrf(_offset, 3, 1, buffer);
+  _offsetText->setText(String(buffer));
 
   SidebarSceneController::buttonPressed(button);
 }
