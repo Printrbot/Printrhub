@@ -24,6 +24,10 @@ PHDisplay::PHDisplay(uint8_t _CS, uint8_t _DC, uint8_t _RST, uint8_t _MOSI, uint
 
     debug = false;
     _transparentText = false;
+    
+    _scrollOffset = 0;
+    _scrollInsetLeft = 0;
+    _scrollInsetRight = 0;
 }
 
 void PHDisplay::addLayer(Layer *layer)
