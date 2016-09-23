@@ -66,7 +66,7 @@ void PreheatExtruder::onWillAppear() {
 
   printr.sendLine("G0 X105");
   printr.sendLine("M100({he1st:200})");
-  printr.sendLine("{_leds:2}");
+  printr.sendLine("M100({_leds:2})");
   printr.sendLine("M101({he1at:t})");
   if (!printr.isHomed()) {
     printr.homeZ();
@@ -103,7 +103,7 @@ void PreheatExtruder::printrCallback(const char ctype[], float * data) {
 void PreheatExtruder::onSidebarButtonTouchUp() {
   // flush the queue
   printr.stopAndFlush();
-  printr.sendLine("{_leds:1}");
+  printr.sendLine("M100({_leds:1})");
   printr.sendLine("G0 Y120");
   printr.turnOffHotend();
 

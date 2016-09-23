@@ -55,7 +55,7 @@ void LoadFilament::onWillAppear() {
   _doneBtn->setBitmap(&uiBitmaps.btn_done);
   _doneBtn->setDelegate(this);
   addView(_doneBtn);
-  printr.sendLine("{_leds:5}");
+  printr.sendLine("M100({_leds:1})");
   printr.sendLine("G1 A1000 F2000");
 
   SidebarSceneController::onWillAppear();
@@ -73,7 +73,6 @@ void LoadFilament::buttonPressed(void *button)
     // stop the extruder
     printr.turnOffHotend();
     printr.stopAndFlush();
-    printr.sendLine("{_leds:1}");
     printr.sendLine("G0 Y120");
     printr.sendLine("G0 Z30");
     printr.setListener(NULL);
