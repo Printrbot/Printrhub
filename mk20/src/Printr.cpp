@@ -10,7 +10,8 @@ _printing(false),
 _listener(NULL),
 _homeX(false),
 _homeY(false),
-_homeZ(false) {
+_homeZ(false),
+_currentAction(0){
 
 }
 
@@ -21,13 +22,76 @@ void Printr::init() {
   Serial1.begin(115200);
   Serial1.attachCts(CTS_PIN);
   Serial1.attachRts(RTS_PIN);
-  Serial1.println("{sr:{line:t,he1t,he1st,he1at,dist:t,stat:t}}");
+
+  sendLine("{sr:{line:t,he1t:t,he1st:t,he1at:t,stat:t}}");
+  delay(200);
+  sendLine("{_leds:4}");
+  delay(200);
+  sendLine("{sv:1}");
+
+  //Serial1.println("{sr:{line:t},_leds:4}");
 }
 
 void Printr::loop() {
   readSerial();
-  if (_printing) {
-    // handle file printing here...
+
+  if (!_printing) return;
+  if (!_sendNext) return;
+
+  String inStr;
+
+  // check if we are in startup sequence
+  if (_currentAction == 1) {
+    if (_startGCodeFile.available()) {
+      inStr = _startGCodeFile.readStringUntil('\n');
+    } else {
+      // done with startup gcode, start the main job file
+      _currentAction = 2;
+      _lastSentProgramLine = 1;
+      _processedProgramLine = 0;
+      // close the start gcode file
+      _startGCodeFile.close();
+
+
+      sendLine("M100({_leds:1})");
+      sendLine("G0 Z5");
+      sendLine("G92 Z5.5"); // offset should come from eeprom
+
+      int sent = 0;
+      // send 6 lines of job gcode
+      // then wait for responses to send more
+      while(1) {
+        inStr = _printFile.readStringUntil('\n');
+        inStr.trim();
+        char f = inStr[0];
+        if (inStr.length() > 0 && inStr[0] != ';') {
+          sendLine(inStr);
+          sent++;
+        }
+        if (sent > 6)
+          break;
+      }
+      return;
+    }
+  }
+  else if (_currentAction == 2) {
+    if (_printFile.available()) {
+      inStr = _printFile.readStringUntil('\n');
+    } else {
+      // finished reading the file
+      // This is a hack until total line numbers
+      // is implemented, then program will end
+      // when M3 is passed to it, or when _processedProgramLine == _totalProgramLines
+      programEnd();
+    }
+  }
+
+  inStr.trim();
+  // send it to printer
+  if (inStr.length() > 0 && inStr[0] != ';') {
+    sendLine(String("N") + String(_lastSentProgramLine) + String(" ") + inStr);
+    _lastSentProgramLine++;
+    _sendNext = false;
   }
 }
 
@@ -54,14 +118,25 @@ void Printr::readSerial() {
   }
 }
 
-void Printr::startPrint(File file) {
+void Printr::startJob(String filePath) {
+  _printFile = SD.open(filePath.c_str(), FILE_READ);
+  // set the temperature based on material selected
+  sendLine("M100({he1st:190})");
+  runJobStartGCode();
+}
+
+void Printr::runJobStartGCode() {
+  _startGCodeFile = SD.open("/gc/start", FILE_READ);
   _lastSentProgramLine = 1;
   _processedProgramLine = 0;
-  // figure out total lines....
-  _printFile = file;
-  _sendNext = true;
+  _currentAction = 1;
   _printing = true;
 }
+
+void Printr::runJobEndGCode() {
+
+}
+
 
 void Printr::homeX() {
   sendLine("G28.2 X0");
@@ -79,11 +154,11 @@ void Printr::homeZ() {
 }
 
 void Printr::programEnd() {
-  if (_listener != nullptr)
-    _listener->printrCallback("end", nullptr);
 
   if (!_printing)
     return;
+
+  sendLine("M100({_leds:4})");
 
   _printFile.close();
   _printing = false;
@@ -92,6 +167,9 @@ void Printr::programEnd() {
   _totalProgramLines = 0;
   // turn off the hotend just in case
   turnOffHotend();
+
+  if (_listener != nullptr)
+    _listener->printrCallback("end", nullptr);
 }
 
 void Printr::sendLine(String line) {
@@ -99,49 +177,24 @@ void Printr::sendLine(String line) {
 }
 
 void Printr::parseResponse() {
-  if (_listener == NULL || _listener == nullptr) return;
+
   char * line = readBuffer.line_buff;
+
+  _sendNext = true;
+
   if (line[0] == '{') {
     StaticJsonBuffer<512> jsonBuffer;
     StaticJsonBuffer<512> rBuffer;
 
     JsonObject& o = jsonBuffer.parseObject(line);
+
     if (!o.success()) {
       // failed...
     } else {
-      // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-codes
-      // footer f: {}
-/*
-      String foot = o["f"];
-      if (foot.length() > 0) {
-        // get sr
-        JsonArray& _f = rBuffer.parseArray(foot);
 
-        switch((int) _f[1]) {
-          case 20:
-            //fatal error
-            Display.fillRect(0,0,320,240,ILI9341_WHITE);
-            Display.setCursor(10,10);
-            Display.setTextColor(ILI9341_BLACK);
-            Display.println("Error 20: internal error!");
-            Display.fadeIn();
-            break;
-
-          default:
-            _sendNext = true;
-        }
-      }
-*/
-/*
-      // parse response r: {}
-      String rr = o["r"];
-      if (rr.length() > 0) {
-
-        //JsonObject& r = rBuffer.parseObject(rr);
-      }
-*/
       // parse sr
       String sr = o["sr"];
+
       if (sr.length() > 0) {
         JsonObject& _sr = rBuffer.parseObject(sr);
         // {sr: {stat:0}}
@@ -169,6 +222,7 @@ void Printr::parseResponse() {
           }
         }
 
+
         // parse hotend 1 temperature
         if (_sr["he1t"]) {
           _hotend1Temp = (float) _sr["he1t"];
@@ -178,16 +232,18 @@ void Printr::parseResponse() {
         }
 
         if (_sr["line"]) {
+          _sendNext = true;
           _processedProgramLine = _sr["line"];
-          /*
           if (_processedProgramLine == _totalProgramLines)  {
             programEnd();
           }
-          */
-          _progress = (float) (_processedProgramLine / _totalProgramLines);
 
-          if (_listener != NULL)
-            _listener->printrCallback("line", &_progress);
+          if (!_printing) {
+            _progress = (float) (_processedProgramLine / _totalProgramLines);
+
+            if (_listener != NULL)
+              _listener->printrCallback("line", &_progress);
+          }
         }
       }
     }

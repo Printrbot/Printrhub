@@ -25,7 +25,7 @@ public:
   void stopAndFlush();
   void turnOffHotend();
 
-  void startPrint(File file);
+  void startJob(String filePath);
   bool isHomed() { return _homeX && _homeY && _homeZ; };
 
   void homeX();
@@ -37,6 +37,9 @@ private:
   void readSerial();
   void parseResponse();
 
+  void runJobStartGCode();
+  void runJobEndGCode();
+
 
   PrintrBuffer readBuffer;
 
@@ -44,6 +47,7 @@ private:
   float _hotend1Temp;
   float _bedTemp;
   int _stat;
+  int _currentAction;
   int _currentProgramLine;
   int _processedProgramLine;
   int _totalProgramLines;
@@ -52,9 +56,12 @@ private:
   bool _sendNext;
   bool _printing;
   File _printFile;
+  File _startGCodeFile;
+  File _endGCodeFile;
   bool _homeX;
   bool _homeY;
   bool _homeZ;
+
 };
 
 
