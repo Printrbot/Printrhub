@@ -13,7 +13,6 @@
 #include "Application.h"
 #include "AsyncJson.h"
 #include <ArduinoJson.h>
-#include "types.h"
 
 AsyncWebServer server(80);
 AsyncEventSource events("/events");
