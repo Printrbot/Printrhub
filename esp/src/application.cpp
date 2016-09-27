@@ -4,6 +4,7 @@
 #include "config.h"
 #include "controllers/ManageWifi.h"
 #include "controllers/DownloadFile.h"
+#include "controllers/DownloadFileToSDCard.h"
 #include <EEPROM.h>
 #include "event_logger.h"
 
@@ -126,7 +127,7 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 				*sendResponse = false;
 				//Initiate mode for file download
 				EventLogger::log(_url);
-				Mode* df = new DownloadFile(GetJobWithID, _url);
+                DownloadFileToSDCard* df = new DownloadFileToSDCard(String(_url));
 				Application.pushMode(df);
 				}
 				break;

@@ -79,6 +79,10 @@ void DownloadFileController::onWillAppear()
 	_progressBar->setValue(0.0f);
 	addView(_progressBar);
 
+	//Trigger file download
+	const char* url = _url.c_str();
+	Application.getESPStack()->requestTask(TaskID::DownloadFile,strlen(url),(uint8_t*)url);
+
 	SidebarSceneController::onWillAppear();
 }
 

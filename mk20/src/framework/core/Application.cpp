@@ -6,7 +6,10 @@
 #include "SceneController.h"
 #include "../animation/Animator.h"
 #include "../../scenes/DownloadFileController.h"
+#include "../../scenes/alerts/ErrorScene.h"
 #include "Printr.h"
+#include <ArduinoJson.h>
+#include "../../errors.h"
 
 ApplicationClass Application;
 
@@ -258,13 +261,58 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 
 	if (header.getCurrentTask() == TaskID::SaveProjectWithID) {
 		if (header.commType == Request) {
-			DownloadFileController* dfc = new DownloadFileController();
-			Application.pushScene(dfc);
-			return dfc->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
+
+            StaticJsonBuffer<500> jsonBuffer;
+            String jsonObject((const char*)data);
+            JsonObject& root = jsonBuffer.parseObject(jsonObject);
+
+            if (root.success())
+            {
+                String url = root["url"];
+                if (url.length() > 0)
+                {
+                    String localFilePath("/projects/");
+                    localFilePath += root["id"].asString();
+                    DownloadFileController* dfc = new DownloadFileController(url,localFilePath);
+                    Application.pushScene(dfc);
+                }
+            }
+            else
+            {
+                LOG("Could not parse SaveProjectWithID data package from JSON");
+            }
+
+            //Do not send a response as we will trigger a "mode" change on ESP in the next request
+            *sendResponse = false;
 		}
 	}
 
-	if (header.getCurrentTask() == GetTimeAndDate)
+    if (header.getCurrentTask() == TaskID::DownloadError) {
+      if (header.commType == Request) {
+
+        //Cast data into local error code variable
+        uint8_t error = *data;
+        DownloadError errorCode = (DownloadError)error;
+
+        if (errorCode == DownloadError::Timeout) {
+          Application.pushScene(new ErrorScene("Timeout"));
+        } else if (errorCode == DownloadError::InternalServerError) {
+          Application.pushScene(new ErrorScene("Internal Server Error"));
+        } else if (errorCode == DownloadError::FileNotFound) {
+          Application.pushScene(new ErrorScene("File not found"));
+        } else if (errorCode == DownloadError::Forbidden) {
+          Application.pushScene(new ErrorScene("Forbidden"));
+        } else if (errorCode == DownloadError::UnknownError) {
+          Application.pushScene(new ErrorScene("Unknown Error"));
+        } else if (errorCode == DownloadError::ConnectionFailed) {
+          Application.pushScene(new ErrorScene("Connection failed"));
+        }
+
+        *sendResponse = false;
+      }
+    }
+
+	if (header.getCurrentTask() == TaskID::GetTimeAndDate)
 	{
 		if (header.commType == ResponseSuccess)
 		{

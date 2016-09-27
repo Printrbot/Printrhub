@@ -43,7 +43,9 @@ enum class TaskID : uint8_t {
     RunPrinterGCode = 16,
     Error = 17,
     SaveProjectWithID = 18,
-    FileSetSize = 19
+    FileSetSize = 19,
+    DownloadFile = 22,
+    DownloadError = 23
 };
 
 struct CommHeader {
