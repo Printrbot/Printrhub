@@ -35,6 +35,7 @@ private:
 
 	virtual void buttonPressed(void *button) override;
 
+protected:
 	ProgressBar* _progressBar;
 	File _file;
 	uint32_t _fileSize;

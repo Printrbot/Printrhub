@@ -185,8 +185,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 					//Only update the progress bar once in a while as the communication is blocked while doing so and we don't want to loose too much speed
 
 					// TODO: Currently locks up the communication, disabled until fixed
-					//_progressBar->setValue(fraction);
-
+					_progressBar->setValue(fraction);
 				}
 			}
 
