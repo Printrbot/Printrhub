@@ -332,7 +332,7 @@ void PHDisplay::invalidateRect(Rect &invalidationRect, int scrollOffset, int del
 
     if (deltaScrollOffset > 0)
     {
-        int so = mapScrollOffset(scrollOffset);
+        int so = mapScrollOffset(scrollOffset-invalidationRect.width-1);
         Display.setScroll(so);
 
         if (_autoLayout)
