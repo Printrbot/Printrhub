@@ -26,7 +26,7 @@ void ESPFirmwareUpdate::onWillEnd() {
 
 bool ESPFirmwareUpdate::handlesTask(TaskID taskID) {
   switch(taskID) {
-    case UpdateESPFirmware:
+    case TaskID::UpdateESPFirmware:
       return true;
       break;
     default:

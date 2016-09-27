@@ -101,14 +101,14 @@ void DownloadFile::onWillEnd() {
 
 bool DownloadFile::handlesTask(TaskID taskID) {
   switch(taskID) {
-    case GetProjectWithID:
-    case GetJobWithID:
-    case GetProjectItemWithID:
-    case SaveProjectWithID:
-    case FileSaveData:
-    case FileSetSize:
-    case FileClose:
-    case Error:
+    case TaskID::GetProjectWithID:
+    case TaskID::GetJobWithID:
+    case TaskID::GetProjectItemWithID:
+    case TaskID::SaveProjectWithID:
+    case TaskID::FileSaveData:
+    case TaskID::FileSetSize:
+    case TaskID::FileClose:
+    case TaskID::Error:
       return true;
       break;
     default:
@@ -147,7 +147,7 @@ void DownloadFile::loop() {
           //char _t[16];
           //sprintf(_t, "%lu", _bytesToDownload);
           //EventLogger::log(_t);
-          Application.getMK20Stack()->requestTask(FileSetSize, sizeof(uint32_t), (uint8_t*) &_bytesToDownload);
+          Application.getMK20Stack()->requestTask(TaskID::FileSetSize, sizeof(uint32_t), (uint8_t*) &_bytesToDownload);
           EventLogger::log("sent file size request...");
           _state = StateWaiting;
         } else {
@@ -185,7 +185,7 @@ void DownloadFile::loop() {
         if (_bufferIndex >= _bufferSize) {
           //Buffer is full, send it to MK20 and leave the loop
           _waitForResponse = true;
-          Application.getMK20Stack()->requestTask(FileSaveData,_bufferIndex, (uint8_t*)_buffer);
+          Application.getMK20Stack()->requestTask(TaskID::FileSaveData,_bufferIndex, (uint8_t*)_buffer);
           memset(_buffer,0,_bufferSize);
           _bufferIndex = 0;
           //EventLogger::log("Sending SHIT>...");
@@ -206,7 +206,7 @@ void DownloadFile::loop() {
     //All data read from the net, make sure we send the rest of the buffer
     if (_bytesToDownload <= 0) {
       _waitForResponse = true;
-      Application.getMK20Stack()->requestTask(FileSaveData,_bufferIndex, (uint8_t*)_buffer);
+      Application.getMK20Stack()->requestTask(TaskID::FileSaveData,_bufferIndex, (uint8_t*)_buffer);
       EventLogger::log("FINISHED SENDING FILE");
       //_state = StateSuccess;
     }
@@ -220,14 +220,14 @@ void DownloadFile::loop() {
   }
 
   if (_state == StateError) {
-    Application.getMK20Stack()->requestTask(Error);
+    Application.getMK20Stack()->requestTask(TaskID::Error);
     Mode* mode = new Idle();
     Application.pushMode(mode);
     return;
   }
 
   if (_state == StateSuccess) {
-    Application.getMK20Stack()->requestTask(FileClose);
+    Application.getMK20Stack()->requestTask(TaskID::FileClose);
     _state = StateWaiting;
     return;
   }
@@ -237,7 +237,7 @@ void DownloadFile::addByteToBuffer(uint8_t byte) {
   _buffer[_bufferIndex] = byte;
   _bufferIndex++;
   if (_bufferIndex >= _bufferSize) {
-    Application.getMK20Stack()->requestTask(FileSaveData, _bufferIndex, (uint8_t*)_buffer);
+    Application.getMK20Stack()->requestTask(TaskID::FileSaveData, _bufferIndex, (uint8_t*)_buffer);
     memset(_buffer,0,_bufferSize);
     _bufferIndex = 0;
   }
@@ -249,13 +249,13 @@ bool DownloadFile::runTask(CommHeader &header, const uint8_t *data, size_t dataS
     // stop on error??
     EventLogger::log("Oh shit... response failed");
   }
-  if (header.getCurrentTask() == FileClose) {
+  if (header.getCurrentTask() == TaskID::FileClose) {
     // all good, exit the task
     EventLogger::log("File is closed, back to idle");
     Mode* mode = new Idle();
     Application.pushMode(mode);
   }
-  if (header.getCurrentTask() == FileSaveData) {
+  if (header.getCurrentTask() == TaskID::FileSaveData) {
     if (header.commType == ResponseSuccess) {
       _waitForResponse = false;
       // check if we are done
@@ -265,15 +265,15 @@ bool DownloadFile::runTask(CommHeader &header, const uint8_t *data, size_t dataS
       }
     }
   }
-  else if (header.getCurrentTask() == SaveProjectWithID) {
+  else if (header.getCurrentTask() == TaskID::SaveProjectWithID) {
     if (header.commType == ResponseSuccess) {
-      _currentTask = FileSetSize;
+      _currentTask = TaskID::FileSetSize;
       _state = StateStartDownload;
     }
   }
-  else if (header.getCurrentTask() == FileSetSize) {
+  else if (header.getCurrentTask() == TaskID::FileSetSize) {
     if (header.commType == ResponseSuccess) {
-      _currentTask = FileSaveData;
+      _currentTask = TaskID::FileSaveData;
       _state = StateDownloading;
     }
   }

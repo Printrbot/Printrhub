@@ -95,7 +95,7 @@ void ApplicationClass::loop()
 bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)
 {
 	// skip all data writing tasks
-	if (header.getCurrentTask() != 8) {
+	if (header.getCurrentTask() != TaskID::FileSaveData) {
 		EventLogger::log("!New TASK!");
 		char i[3];
 		sprintf(i, "%d", header.getCurrentTask());
@@ -115,8 +115,9 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 		EventLogger::log("CURRENT MODE DOES NOT HANDLE THIS TASK");
 		switch(header.getCurrentTask()) {
 
-			case GetProjectWithID:
-			case GetJobWithID: {
+            case TaskID::DownloadFile:
+			case TaskID::GetProjectWithID:
+			case TaskID::GetJobWithID: {
 				EventLogger::log("GET PROJECT WITH ID TASK");
 				char _url[header.contentLength+1];
 				memset(_url,0,header.contentLength+1);
@@ -130,19 +131,19 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 				}
 				break;
 
-			case StartWifi:
-			case StopWifi: {
+			case TaskID::StartWifi:
+			case TaskID::StopWifi: {
 				EventLogger::log("Wifi TASK");
 				Mode* mw = new ManageWifi();
 				Application.pushMode(mw);
 				}
 				break;
 
-			case SystemInfo:
+			case TaskID::SystemInfo:
 				EventLogger::log("GOT SYSTEM INFO");
 				break;
 
-			case RunPrinterGCode: {
+			case TaskID::RunPrinterGCode: {
 				EventLogger::log("GOT REPLY ON GCODE RUN");
 				// do not need to create new mode for this...
 				}

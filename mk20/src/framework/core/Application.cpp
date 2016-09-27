@@ -249,7 +249,7 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 	LOG_VALUE("Running Task with ID",header.getCurrentTask());
 	LOG_VALUE("Comm-Type",header.commType);
 
-	if (header.getCurrentTask() == SaveProjectWithID) {
+	if (header.getCurrentTask() == TaskID::SaveProjectWithID) {
 		if (header.commType == Request) {
 			DownloadFileController* dfc = new DownloadFileController();
 			Application.pushScene(dfc);

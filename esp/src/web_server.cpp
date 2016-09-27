@@ -150,7 +150,7 @@ void WebServer::begin() {
 
 	server.on("/scanwifi", HTTP_GET, [](AsyncWebServerRequest *request) {
 		ManageWifi* mode = new ManageWifi();
-		mode->setTask(ScanWifi);
+		mode->setTask(TaskID::ScanWifi);
 		Application.pushMode(mode);
 		request->send(200, "text/plain", "Scan started, please wait...");
 	});

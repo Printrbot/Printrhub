@@ -91,12 +91,13 @@ void DownloadFileController::onSidebarButtonTouchUp()
 bool DownloadFileController::handlesTask(TaskID taskID)
 {
 	switch(taskID) {
-		case GetJobWithID:
-		case FileSaveData:
-		case FileClose:
-		case SaveProjectWithID:
-		case FileSetSize:
-		case Error:
+		case TaskID::GetJobWithID:
+		case TaskID::FileSaveData:
+		case TaskID::FileClose:
+		case TaskID::SaveProjectWithID:
+		case TaskID::FileSetSize:
+		case TaskID::Error:
+		case TaskID::DownloadFile:
 			return true;
 			break;
 		default:
@@ -108,7 +109,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 {
 	LOG_VALUE("DownloadFileController handling task",header.getCurrentTask());
 
-	if (header.getCurrentTask() == FileSetSize) {
+	if (header.getCurrentTask() == TaskID::FileSetSize) {
 		uint32_t contentLength;
 		memcpy(&contentLength,data,sizeof(uint32_t));
 		_fileSize = contentLength;
@@ -117,7 +118,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 		*responseDataSize = 0;
 
 	}
-	else if (header.getCurrentTask() == GetJobWithID)
+	else if (header.getCurrentTask() == TaskID::DownloadFile)
 	{
 		LOG("Handling GetJobWithID Task");
 
@@ -159,7 +160,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 			Application.pushScene(scene);
 		}
 	}
-	else if (header.getCurrentTask() == FileSaveData)
+	else if (header.getCurrentTask() == TaskID::FileSaveData)
 	{
 		LOG("Handling FileSaveData Task");
 		if (header.commType == Request)
@@ -193,7 +194,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 
 		}
 	}
-	else if (header.getCurrentTask() == FileClose)
+	else if (header.getCurrentTask() == TaskID::FileClose)
 	{
 		LOG("Handling FileClose Task");
 		LOG_VALUE("Bytes read",_bytesRead);
@@ -203,7 +204,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 		ProjectsScene* scene = new ProjectsScene();
 		Application.pushScene(scene);
 	}
-	else if (header.getCurrentTask() == SaveProjectWithID)
+	else if (header.getCurrentTask() == TaskID::SaveProjectWithID)
 	{
 		char _fp[header.contentLength+1];
 		memset(_fp, 0, header.contentLength+1);
