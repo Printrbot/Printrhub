@@ -34,7 +34,7 @@ public:
 
 #pragma mark UIElement
 	virtual String getDescription() override;
-	virtual void setFrame(Rect frame) override;
+	virtual void setFrame(Rect frame, bool updateLayout=true) override;
 
 #pragma mark Display
 	Rect getScreenFrame();

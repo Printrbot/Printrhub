@@ -9,12 +9,12 @@ Rect& UIElement::getFrame()
     return _frame;
 }
 
-void UIElement::setFrame(Rect frame)
+void UIElement::setFrame(Rect frame, bool updateLayout)
 {
     _frame = frame;
 }
 
-void UIElement::setFrame(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+void UIElement::setFrame(uint16_t x, uint16_t y, uint16_t width, uint16_t height, bool updateLayout)
 {
-    setFrame(Rect(x,y,width,height));
+    setFrame(Rect(x,y,width,height),updateLayout);
 }

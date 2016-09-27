@@ -13,7 +13,7 @@ class LabelButton: public LabelView, public Button
 {
 #pragma mark Constructor
 public:
-	virtual void setFrame(Rect frame) override;
+	virtual void setFrame(Rect frame, bool updateLayout=true) override;
 
 	LabelButton(String text, Rect frame);
     LabelButton(String text, uint16_t x, uint16_t y, uint16_t width, uint16_t height);

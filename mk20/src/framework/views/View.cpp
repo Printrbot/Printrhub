@@ -164,14 +164,17 @@ void View::addLayer(Layer *layer)
 	_layers.push(layer);
 }
 
-void View::setFrame(Rect frame)
+void View::setFrame(Rect frame, bool updateLayout)
 {
 	_frame.x = frame.x;
 	_frame.y = frame.y;
 	_frame.width = frame.width;
 	_frame.height = frame.height;
 
-	Display.setNeedsLayout();
+	if (updateLayout)
+	{
+		Display.setNeedsLayout();
+	}
 }
 
 bool View::touchDown(TS_Point &point)

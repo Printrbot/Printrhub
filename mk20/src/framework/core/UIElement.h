@@ -113,8 +113,8 @@ typedef enum DisplayContext {
 class UIElement
 {
 public:
-    virtual void setFrame(Rect frame);
-    void setFrame(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
+    virtual void setFrame(Rect frame, bool updateLayout=true);
+    void setFrame(uint16_t x, uint16_t y, uint16_t width, uint16_t height, bool updateLayout);
     Rect& getFrame();
 
     void setName(String name) { _name = name; };
