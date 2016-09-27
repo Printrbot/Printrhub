@@ -162,6 +162,8 @@ void PHDisplay::layoutIfNeeded()
 
 void PHDisplay::dispatch()
 {
+    if (!_needsDisplay) return;
+
     //LOG("Sending background to display");
     if (_fixedBackgroundLayer != NULL)
     {
