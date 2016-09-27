@@ -82,6 +82,13 @@ void ApplicationClass::setup()
 	//Configure LED pin
 	pinMode(LED_PIN, OUTPUT);
 	printr.init();
+
+    //Make sure we have a jobs folder
+    //TODO: Decide if this is necessary or if the SD card is setup with this path during production
+    if (!SD.exists("/jobs"))
+    {
+        SD.mkdir("/jobs");
+    }
 }
 
 void ApplicationClass::loop()
