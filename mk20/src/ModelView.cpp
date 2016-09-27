@@ -33,10 +33,9 @@ ModelView::ModelView(Rect frame):
 
 void ModelView::display()
 {
-
     SDBitmapLayer* imageLayer = new SDBitmapLayer(_frame);
     imageLayer->setBitmap(_imageFileName.c_str(), 270, 240);
-    Display.addLayer(imageLayer);
+    addLayer(imageLayer);
 
     _imageLayer = imageLayer;
 
