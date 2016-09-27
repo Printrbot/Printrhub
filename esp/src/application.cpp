@@ -28,9 +28,6 @@ ApplicationClass::~ApplicationClass() {
 
 void ApplicationClass::setup() {
 
-	pinMode(MK20_RESET_PIN,OUTPUT);
-	digitalWrite(MK20_RESET_PIN,HIGH);
-
 	pinMode(COMMSTACK_WORKING_MARKER_PIN, OUTPUT);
 	digitalWrite(COMMSTACK_WORKING_MARKER_PIN, HIGH);
 
