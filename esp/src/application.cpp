@@ -34,6 +34,9 @@ void ApplicationClass::setup() {
 	pinMode(COMMSTACK_WORKING_MARKER_PIN, OUTPUT);
 	digitalWrite(COMMSTACK_WORKING_MARKER_PIN, HIGH);
 
+    pinMode(COMMSTACK_INFO_MARKER_PIN, OUTPUT);
+    digitalWrite(COMMSTACK_INFO_MARKER_PIN, HIGH);
+
 	Serial.begin(COMMSTACK_BAUDRATE);
 	SPIFFS.begin();
 
