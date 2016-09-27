@@ -76,14 +76,14 @@ void BitmapButton::setBitmap(UIBitmap * bitmap) {
   addLayer(_sdbitmapLayer);
 }
 
-void BitmapButton::setFrame(Rect frame)
+void BitmapButton::setFrame(Rect frame, bool updateLayout)
 {
   if (_frame == frame) return;
 
-  View::setFrame(frame);
+  View::setFrame(frame,updateLayout);
   _originalFrame = frame;
 
-  _layers.at(0)->setFrame(frame);
+  _layers.at(0)->setFrame(frame,updateLayout);
 }
 
 void BitmapButton::updateButton(ButtonState buttonState)

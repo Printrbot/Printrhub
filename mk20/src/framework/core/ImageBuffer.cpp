@@ -119,7 +119,7 @@ void ImageBuffer::drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uin
 
 		for (uint16_t yb=0;yb<h;yb++)
 		{
-			drawPixel(x+xb,y+yb,buffer[xb+xs]);
+			drawPixel(x+xb,y+yb,buffer[yb+ys]);
 		}
 	}
 }

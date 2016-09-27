@@ -185,13 +185,13 @@ void LabelButton::display()
 }
 
 
-void LabelButton::setFrame(Rect frame)
+void LabelButton::setFrame(Rect frame, bool updateLayout)
 {
-    View::setFrame(frame);
+    View::setFrame(frame,updateLayout);
 
     if (_iconBitmap == NULL)
     {
-        _layer->setFrame(frame);
+        _layer->setFrame(frame, updateLayout);
     }
     else
     {
@@ -210,9 +210,9 @@ void LabelButton::setFrame(Rect frame)
             paddingRight = paddingLeft;
         }
 
-        _gapLayer->setFrame(Rect(_frame.x,_frame.y,paddingLeft + _iconWidth + 10,_frame.height));
-        _iconLayer->setFrame(Rect(_frame.x + paddingLeft,_frame.y + paddingHeight, _iconWidth,_iconHeight));
-        _layer->setFrame(Rect(_frame.x+paddingLeft+_iconWidth+10,_frame.y,textWidth + paddingRight,_frame.height));
+        _gapLayer->setFrame(Rect(_frame.x,_frame.y,paddingLeft + _iconWidth + 10,_frame.height),updateLayout);
+        _iconLayer->setFrame(Rect(_frame.x + paddingLeft,_frame.y + paddingHeight, _iconWidth,_iconHeight),updateLayout);
+        _layer->setFrame(Rect(_frame.x+paddingLeft+_iconWidth+10,_frame.y,textWidth + paddingRight,_frame.height),updateLayout);
     }
 }
 

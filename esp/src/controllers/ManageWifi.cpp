@@ -14,7 +14,7 @@ extern Config config;
 
 ManageWifi::ManageWifi() :
 _state(StateOffline),
-_currentTask(StartWifi),
+_currentTask(TaskID::StartWifi),
 _webServerStarted(false) {
 
 }
@@ -25,9 +25,9 @@ ManageWifi::~ManageWifi() {
 
 bool ManageWifi::handlesTask(TaskID taskID) {
   switch(taskID) {
-    case StartWifi:
-    case StopWifi:
-    case ScanWifi:
+    case TaskID::StartWifi:
+    case TaskID::StopWifi:
+    case TaskID::ScanWifi:
       return true;
       break;
     default:
@@ -37,7 +37,7 @@ bool ManageWifi::handlesTask(TaskID taskID) {
 
 void ManageWifi::loop() {
 
-  if (_state == StateOffline && _currentTask == StartWifi) {
+  if (_state == StateOffline && _currentTask == TaskID::StartWifi) {
     _state = StateConnecting;
     if (config.data.blank) {
   		// start the wifi in adhoc mode
@@ -48,7 +48,7 @@ void ManageWifi::loop() {
     return;
   }
 
-  if (_currentTask == ScanWifi && _state != StateSuccess ) {
+  if (_currentTask == TaskID::ScanWifi && _state != StateSuccess ) {
     // currently just outputs detected networks to event logger for debugging
     EventLogger::log("SCANNING WIFI");
     int n = WiFi.scanNetworks();
@@ -145,10 +145,10 @@ bool ManageWifi::handlesTask(TaskID taskID) {
 */
 
 bool ManageWifi::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool *sendResponse, bool* success) {
-  if (header.getCurrentTask() == StartWifi) {
+  if (header.getCurrentTask() == TaskID::StartWifi) {
     if (header.commType == Request) {
       _state = StateOffline;
-      _currentTask = StartWifi;
+      _currentTask = TaskID::StartWifi;
     }
   }
 

@@ -395,12 +395,15 @@ void Layer::removeAllSublayers()
     _sublayers->clear();
 }
 
-void Layer::setFrame(Rect frame)
+void Layer::setFrame(Rect frame, bool updateLayout)
 {
     UIElement::setFrame(frame);
 
-    _needsDisplay = true;
-    Display.setNeedsLayout();
+    setNeedsDisplay();
+    if (updateLayout)
+    {
+        Display.setNeedsLayout();
+    }
 }
 
 Rect Layer::prepareRenderFrame(const Rect proposedRenderFrame)

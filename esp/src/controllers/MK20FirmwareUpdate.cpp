@@ -25,7 +25,7 @@ MK20FirmwareUpdate::~MK20FirmwareUpdate() {
 
 bool MK20FirmwareUpdate::handlesTask(TaskID taskID) {
   switch(taskID) {
-    case UpdateMK20Firmware:
+    case TaskID::UpdateMK20Firmware:
       break;
     default:
       return false;

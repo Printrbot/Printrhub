@@ -19,7 +19,6 @@ public:
     void setBitmap(const uint16_t* bitmap) { _bitmap = bitmap; };
     void setColor(const uint16_t color) { _color = color; };
     void setIndexFileName(String fileName) { _indexFileName = fileName; };
-    void setJobFileName(String fileName) { _jobFileName = fileName; };
     String getIndexFileName() { return _indexFileName; };
 
     uint16_t _width;
@@ -28,7 +27,6 @@ public:
 private:
     String _imageTitle;
     String _indexFileName;
-    String _jobFileName;
     TextLayer* _imageTitleLayer;
     Layer* _imageLayer;
     const uint16_t* _bitmap;

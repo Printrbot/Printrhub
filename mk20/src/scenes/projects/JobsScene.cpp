@@ -13,10 +13,15 @@ extern UIBitmaps uiBitmaps;
 
 JobsScene::JobsScene(String projectIndex):
   SidebarSceneController::SidebarSceneController(),
-  _projectIndex(projectIndex) {
+  _projectIndex(projectIndex),
+  _jobs(NULL){
 }
 
 JobsScene::~JobsScene() {
+    if (_jobs != NULL) {
+        free (_jobs);
+        _jobs = NULL;
+    }
 }
 
 
@@ -59,22 +64,20 @@ void JobsScene::onWillAppear() {
   addView(imageView);
   */
 
+  //Create an array holding Job instances
+  _jobs = (Job*)malloc(sizeof(Job)*t);
 
   for (uint8_t cnt=0; cnt < t; cnt++) {
     imageView = new ImageView(Rect(270*cnt,0,270,240), 129673 + (129768 * cnt) + 168);
 
-    char _jfile[8];
+    //Read data from file in current Job instance
     _file.seek(129673 + (129768 * cnt));
-    _file.read(_jfile, 8);
+    _file.read(&_jobs[cnt],8+32+128);
 
-    char _jname[32];
-    _file.seek(129673 + (129768 * cnt) + 8 );
-    _file.read(_jname, 32);
-
-    imageView->setImageTitle(_jname);
+    imageView->setImageTitle(_jobs[cnt].title);
     imageView->setIndexFileName(_projectIndex.c_str());
-    imageView->setJobFileName(_jfile);
     addView(imageView);
+
   }
 
   _file.close();
@@ -124,18 +127,29 @@ void JobsScene::buttonPressed(void *button)
 {
   if (button == _printBtn) {
 
-    ImageView * v = (ImageView *) getView(getPageIndex());
-    String fn = v->getIndexFileName();
+    //Query current Job item
+    Job job = _jobs[getPageIndex()];
 
-    bool jobExists = false;
+    //This does not work as Job structs index field is 8 bytes but filled with content, there is no byte left for the null terminator,
+    //thus this code adds the index and the title to fn (as job.index delivers index+title as index doesn't have a null terminator)
+    //TODO: Change job index structure to 9 bytes for index to give room for null terminator
+    //String fn = String("/jobs/") + String(job.index);
 
+    //We know how long the filename will be, as /jobs/ (6) and index (8) have constant width, add +1 for null terminator!
+    //This is a bad hack that shouldn't be necessary as soon as job index is fixed
+    char filePath[15] = "/jobs/";
+    memcpy(&filePath[6],job.index,sizeof(char)*8); //Append job index
+
+    bool jobExists = SD.exists(filePath);
     if (jobExists) {
       LOG_VALUE("Printing Job-Nr",getPageIndex());
-      //PrintStatusSceneController * scene = new PrintStatusSceneController();
+      //PrintStatusScene * scene = new PrintStatusScene();
       //Application.pushScene(scene);
+      DownloadFileController* scene = new DownloadFileController(String(job.url),String(filePath));
+      Application.pushScene(scene);
     } else {
       LOG_VALUE("Need to download file",getPageIndex());
-      DownloadFileController* scene = new DownloadFileController("http://printrapp.s3-us-west-1.amazonaws.com/u/1526cae4477c387ffc07bd6cad001614/p/26c8a30b51efe91ceb507d443600d6d7/f631d66d1df76827a25776fcd9e3ed14.raw", "feet.png");
+      DownloadFileController* scene = new DownloadFileController(String(job.url),String(filePath));
       Application.pushScene(scene);
     }
   }

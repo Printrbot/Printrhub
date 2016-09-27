@@ -6,6 +6,12 @@
 #include "framework/views/LabelView.h"
 #include "framework/views/LabelButton.h"
 
+typedef struct Job {
+	char index[8];
+	char title[32];
+	char url[128];
+} Job;
+
 class JobsScene: public SidebarSceneController
 {
 
@@ -25,6 +31,7 @@ private:
     String getName() override;
     virtual void buttonPressed(void *button) override;
     String _projectIndex;
+	Job* _jobs;
 
 protected:
 	  BitmapButton* _printBtn;

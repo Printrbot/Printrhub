@@ -53,7 +53,7 @@ public:
     void log();
 
 #pragma mark UIElements
-    virtual void setFrame(Rect frame) override;
+    virtual void setFrame(Rect frame, bool updateLayout=true) override;
 
 #pragma mark Member Variables
 protected:

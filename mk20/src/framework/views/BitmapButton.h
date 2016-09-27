@@ -36,7 +36,7 @@ public:
     void setBitmapLayer(BitmapLayer *bitmapLayer) { _bitmapLayer = bitmapLayer; }
 
 #pragma mark View
-    virtual void setFrame(Rect frame) override;
+    virtual void setFrame(Rect frame, bool updateLayout=true) override;
 private:
     void createBitmapFrame(Rect* frame, uint16_t width, uint16_t height);
 #pragma mark Touch Handling

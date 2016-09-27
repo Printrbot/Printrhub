@@ -4,6 +4,7 @@
 #include "config.h"
 #include "controllers/ManageWifi.h"
 #include "controllers/DownloadFile.h"
+#include "controllers/DownloadFileToSDCard.h"
 #include <EEPROM.h>
 #include "event_logger.h"
 
@@ -32,6 +33,9 @@ void ApplicationClass::setup() {
 
 	pinMode(COMMSTACK_WORKING_MARKER_PIN, OUTPUT);
 	digitalWrite(COMMSTACK_WORKING_MARKER_PIN, HIGH);
+
+    pinMode(COMMSTACK_INFO_MARKER_PIN, OUTPUT);
+    digitalWrite(COMMSTACK_INFO_MARKER_PIN, HIGH);
 
 	Serial.begin(COMMSTACK_BAUDRATE);
 	SPIFFS.begin();
@@ -95,7 +99,7 @@ void ApplicationClass::loop()
 bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)
 {
 	// skip all data writing tasks
-	if (header.getCurrentTask() != 8) {
+	if (header.getCurrentTask() != TaskID::FileSaveData) {
 		EventLogger::log("!New TASK!");
 		char i[3];
 		sprintf(i, "%d", header.getCurrentTask());
@@ -115,8 +119,9 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 		EventLogger::log("CURRENT MODE DOES NOT HANDLE THIS TASK");
 		switch(header.getCurrentTask()) {
 
-			case GetProjectWithID:
-			case GetJobWithID: {
+            case TaskID::DownloadFile:
+			case TaskID::GetProjectWithID:
+			case TaskID::GetJobWithID: {
 				EventLogger::log("GET PROJECT WITH ID TASK");
 				char _url[header.contentLength+1];
 				memset(_url,0,header.contentLength+1);
@@ -125,24 +130,24 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 				*sendResponse = false;
 				//Initiate mode for file download
 				EventLogger::log(_url);
-				Mode* df = new DownloadFile(GetJobWithID, _url);
+                DownloadFileToSDCard* df = new DownloadFileToSDCard(String(_url));
 				Application.pushMode(df);
 				}
 				break;
 
-			case StartWifi:
-			case StopWifi: {
+			case TaskID::StartWifi:
+			case TaskID::StopWifi: {
 				EventLogger::log("Wifi TASK");
 				Mode* mw = new ManageWifi();
 				Application.pushMode(mw);
 				}
 				break;
 
-			case SystemInfo:
+			case TaskID::SystemInfo:
 				EventLogger::log("GOT SYSTEM INFO");
 				break;
 
-			case RunPrinterGCode: {
+			case TaskID::RunPrinterGCode: {
 				EventLogger::log("GOT REPLY ON GCODE RUN");
 				// do not need to create new mode for this...
 				}

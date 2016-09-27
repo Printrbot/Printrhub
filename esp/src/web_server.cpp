@@ -13,6 +13,7 @@
 #include "Application.h"
 #include "AsyncJson.h"
 #include <ArduinoJson.h>
+#include "types.h"
 
 AsyncWebServer server(80);
 AsyncEventSource events("/events");
@@ -150,7 +151,7 @@ void WebServer::begin() {
 
 	server.on("/scanwifi", HTTP_GET, [](AsyncWebServerRequest *request) {
 		ManageWifi* mode = new ManageWifi();
-		mode->setTask(ScanWifi);
+		mode->setTask(TaskID::ScanWifi);
 		Application.pushMode(mode);
 		request->send(200, "text/plain", "Scan started, please wait...");
 	});
@@ -167,16 +168,15 @@ void WebServer::begin() {
 			AsyncWebParameter* url = request->getParam("url");
 			AsyncWebParameter* id = request->getParam("id");
 			AsyncWebParameter* ftype = request->getParam("type");
-
-			// extract host and path to file from url
-			// check type, and set the appropriate task id
-			// hardcoded to SaveProjectWithID for now
-			Mode* df = new DownloadFile(SaveProjectWithID, id->value().c_str(), url->value().c_str());
-			Application.pushMode(df);
-
+            
 			root["url"] = url->value();
 			root["id"] = id->value();
 			root["type"] = ftype->value();
+
+            int length = root.measureLength()+1;
+            char buffer[length];
+            root.printTo(buffer,length);
+            Application.getMK20Stack()->requestTask(TaskID::SaveProjectWithID,length,(uint8_t*)buffer);
 
 			response->setLength();
 			request->send(response);

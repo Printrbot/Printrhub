@@ -71,10 +71,8 @@ void ProgressBar::setNeedsDisplay()
 {
 	if (_progressLayer == NULL || _trackLayer == NULL) return;
 
-	_progressLayer->setFrame(getLeftRect());
-	_trackLayer->setFrame(getRightRect());
-
-	View::setNeedsDisplay();
+	_progressLayer->setFrame(getLeftRect(),false);
+	_trackLayer->setFrame(getRightRect(),false);
 }
 
 void ProgressBar::setValue(float value)

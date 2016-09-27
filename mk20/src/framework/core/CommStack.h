@@ -23,7 +23,7 @@ enum PacketType : uint8_t {
     Data = 1
 };
 
-enum TaskID : uint8_t {
+enum class TaskID : uint8_t {
     Unknown = 0, // is this one needed?
     GetIndexFile = 1,
     GetProjectWithID = 2,
@@ -43,7 +43,9 @@ enum TaskID : uint8_t {
     RunPrinterGCode = 16,
     Error = 17,
     SaveProjectWithID = 18,
-    FileSetSize = 19
+    FileSetSize = 19,
+    DownloadFile = 22,
+    DownloadError = 23
 };
 
 struct CommHeader {
@@ -61,14 +63,14 @@ public:
     }
 
     CommHeader(TaskID task, uint8_t contentLength) {
-        this->taskID = task;
+        this->taskID = (uint8_t)task;
         this->commType = Request;
         this->contentLength = contentLength;
         this->checkSum = 0;
     }
 
     CommHeader(TaskID* tasks, uint8_t numberOfTasks, uint8_t contentLength) {
-        this->taskID = tasks[0];
+        this->taskID = (uint8_t)tasks[0];
         this->commType = Request;
         this->contentLength = contentLength;
         this->checkSum = 0;
