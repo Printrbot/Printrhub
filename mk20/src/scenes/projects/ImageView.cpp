@@ -22,7 +22,7 @@ void ImageView::display()
 {
   SDBitmapLayer* imageLayer = new SDBitmapLayer(_frame);
   imageLayer->setBitmap(_indexFileName.c_str(), 270, 240, _offset);
-  Display.addLayer(imageLayer);
+  addLayer(imageLayer);
 
   _imageLayer = imageLayer;
 
