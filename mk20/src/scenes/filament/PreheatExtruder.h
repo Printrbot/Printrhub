@@ -14,7 +14,7 @@ public:
 	virtual uint16_t getBackgroundColor() override;
 	virtual UIBitmap * getSidebarBitmap() override;
 	virtual UIBitmap * getSidebarIcon() override;
-	virtual void printrCallback(const char ctype[], float * data) override;
+	virtual void printrCallback(const char ctype[], float * fdata, int * idata) override;
 	void setNextScene(uint8_t scene) {_nextScene = scene;};
 
 private:

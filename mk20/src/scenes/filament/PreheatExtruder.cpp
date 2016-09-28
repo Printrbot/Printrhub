@@ -77,9 +77,9 @@ void PreheatExtruder::onWillAppear() {
   SidebarSceneController::onWillAppear();
 }
 
-void PreheatExtruder::printrCallback(const char ctype[], float * data) {
+void PreheatExtruder::printrCallback(const char ctype[], float * fdata, int * idata) {
   if (strcmp(ctype,"he1t") == 0) {
-    float _v = *data / 200;
+    float _v = *fdata / 200;
     _progressBar->setValue(_v);
   } else if (strcmp(ctype,"line") == 0) {
     // show instruction scene with pullout text
