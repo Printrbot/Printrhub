@@ -22,7 +22,7 @@ private:
 
   String getName();
   virtual void onWillAppear() override;
-  virtual void printrCallback(const char ctype[], float * data) override;
+  virtual void printrCallback(const char ctype[], float * fdata, int * idata) override;
   virtual void buttonPressed(void *button) override;
   LabelButton* _button;
   ProgressBar* _progressBar;
@@ -36,6 +36,7 @@ private:
   String _jobFilePath;
   String _projectIndex;
   int _jobOffset;
+  int _totalJobLines;
 
 };
 
