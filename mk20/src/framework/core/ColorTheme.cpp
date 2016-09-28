@@ -12,7 +12,7 @@ ColorTheme::ColorTheme():
 				 RGB565(241,241,241),	//BackgroundColor
 				 RGB565(96,96,96),		//HighlightBackgroundColor
 				 RGB565(255,255,255),	//HighlightTextColor
-				 RGB565(3,100,120),		//HighlightBackgroundColor
+				 RGB565(233,154,36),		//HighlightBackgroundColor
 				 RGB565(190,190,190),	//HighlightTextColor
 				 RGB565(255,255,255),   //ControlBackgroundColor
 				 RGB565(220,220,220),	//ControlAlternateBackgroundColor

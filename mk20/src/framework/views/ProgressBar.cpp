@@ -14,7 +14,7 @@ ProgressBar::ProgressBar(int x, int y, int width, int height):
 	_currentTrackWidth = 0;
 
 	_backgroundColor = Application.getTheme()->getColor(ControlBackgroundColor);
-	_trackColor = Application.getTheme()->getColor(SpacerColor);
+	_trackColor = Application.getTheme()->getColor(HighlightBackgroundColor);
 
 	_progressLayer = new RectangleLayer(getLeftRect());
 	_progressLayer->setBackgroundColor(_backgroundColor);
