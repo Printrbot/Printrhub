@@ -46,11 +46,13 @@ public:
   UIBitmap sidebar_filament = {876704,19000,50,190};
   UIBitmap sidebar_jobs = {895704,19000,50,190};
   UIBitmap sidebar_password = {914704,19000,50,190};
-  UIBitmap sidebar_project = {933704,19000,50,190};
-  UIBitmap sidebar_settings = {952704,19000,50,190};
-  UIBitmap sidebar_update = {971704,19000,50,190};
-  UIBitmap sidebar_wifi = {990704,19000,50,190};
-  UIBitmap splash = {1009704,153600,320,240};
+  UIBitmap sidebar_printing = {933704,19000,50,190};
+  UIBitmap sidebar_project = {952704,19000,50,190};
+  UIBitmap sidebar_settings = {971704,19000,50,190};
+  UIBitmap sidebar_update = {990704,19000,50,190};
+  UIBitmap sidebar_wifi = {1009704,19000,50,190};
+  UIBitmap splash = {1028704,153600,320,240};
+
 };
 
 
