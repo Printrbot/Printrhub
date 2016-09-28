@@ -334,7 +334,7 @@ void SceneController::animationUpdated(Animation *animation, float currentValue,
 	}
 }
 
-void SceneController::printrCallback(const char ctype[], float * data) {
+void SceneController::printrCallback(const char ctype[], float * fdata, int * idata) {
 }
 
 
