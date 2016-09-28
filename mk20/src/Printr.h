@@ -25,7 +25,7 @@ public:
   void stopAndFlush();
   void turnOffHotend();
 
-  void startJob(String filePath);
+  int startJob(String filePath);
   bool isHomed() { return _homeX && _homeY && _homeZ; };
 
   void homeX();

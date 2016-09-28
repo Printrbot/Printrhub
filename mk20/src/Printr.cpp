@@ -118,12 +118,33 @@ void Printr::readSerial() {
   }
 }
 
-void Printr::startJob(String filePath) {
+int Printr::startJob(String filePath) {
   _printFile = SD.open(filePath.c_str(), FILE_READ);
-  // set the temperature based on material selected
+
+  int totalLines = -1;
+
+  // read json header (if available)
+  char i[2];
+  _printFile.read(&i, 2);
+  if (i[0] == ';' && i[1] == '{') {
+    // found json string in header, parse it now
+    _printFile.seek(1);
+    String js = _printFile.readStringUntil('\n');
+
+    StaticJsonBuffer<512> jb;
+    JsonObject& h = jb.parseObject(js);
+
+    if (h.success()) {
+      totalLines = h["lines"];
+    }
+  }
+
+  // TODO: set the temperature based on material selected
   sendLine("M100({he1st:195})");
   sendLine("G92.1 X0 Y0 Z0 A0 B0");
   runJobStartGCode();
+
+  return totalLines;
 }
 
 void Printr::runJobStartGCode() {
@@ -170,7 +191,7 @@ void Printr::programEnd() {
   turnOffHotend();
 
   if (_listener != nullptr)
-    _listener->printrCallback("end", nullptr);
+    _listener->printrCallback("end", nullptr, nullptr);
 }
 
 void Printr::sendLine(String line) {
@@ -228,23 +249,18 @@ void Printr::parseResponse() {
         if (_sr["he1t"]) {
           _hotend1Temp = (float) _sr["he1t"];
           if (_listener != NULL) {
-            _listener->printrCallback("he1t", &_hotend1Temp);
+            _listener->printrCallback("he1t", &_hotend1Temp, nullptr);
           }
         }
 
         if (_sr["line"]) {
           _sendNext = true;
           _processedProgramLine = _sr["line"];
-          if (_processedProgramLine == _totalProgramLines)  {
-            programEnd();
-          }
 
-          if (!_printing) {
-            _progress = (float) (_processedProgramLine / _totalProgramLines);
+          //_progress = (float) (_processedProgramLine / _totalProgramLines);
+          if (_listener != NULL)
+            _listener->printrCallback("line", nullptr, &_processedProgramLine);
 
-            if (_listener != NULL)
-              _listener->printrCallback("line", &_progress);
-          }
         }
       }
     }
