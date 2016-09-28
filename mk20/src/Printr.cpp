@@ -55,7 +55,7 @@ void Printr::loop() {
 
       sendLine("M100({_leds:1})");
       sendLine("G0 Z5");
-      sendLine("G92 Z5.5"); // offset should come from eeprom
+      sendLine("G92 Z5"); // offset should come from eeprom
 
       int sent = 0;
       // send 6 lines of job gcode
@@ -121,7 +121,8 @@ void Printr::readSerial() {
 void Printr::startJob(String filePath) {
   _printFile = SD.open(filePath.c_str(), FILE_READ);
   // set the temperature based on material selected
-  sendLine("M100({he1st:190})");
+  sendLine("M100({he1st:195})");
+  sendLine("G92.1 X0 Y0 Z0 A0 B0");
   runJobStartGCode();
 }
 
