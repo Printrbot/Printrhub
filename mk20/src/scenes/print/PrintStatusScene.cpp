@@ -6,6 +6,8 @@
 //#include "PausePrintSceneController.h"
 #include "Printr.h"
 #include "UIBitmaps.h"
+#include "framework/layers/TransparentTextLayer.h"
+#include "font_LiberationSans.h"
 //#include "FinishPrintSceneController.h"
 //#include "core/Application.h"
 
@@ -27,7 +29,7 @@ PrintStatusScene::~PrintStatusScene() {
 }
 
 UIBitmap * PrintStatusScene::getSidebarBitmap() {
-  return &uiBitmaps.sidebar_jobs;
+  return &uiBitmaps.sidebar_printing;
 }
 
 
@@ -39,36 +41,36 @@ String PrintStatusScene::getName() {
   return "PrintStatusScene";
 }
 
-void PrintStatusScene::onWillAppear()
-{
-  /*
-    _imageLayer = new SDBitmapLayer(Rect(0,0,270,240));
-    _imageLayer->setBitmap(Printr::project.image_file,270,240);
-    Display.setFixedBackgroundLayer(_imageLayer);
+void PrintStatusScene::onWillAppear() {
 
-    _nameLayer = new TransparentTextLayer(Rect(15,10,Display.getLayoutWidth()-30,25));
-    _nameLayer->setTextAlign(TEXTALIGN_LEFT);
-    _nameLayer->setFont(&PTSansNarrow_24);
-    _nameLayer->setText(Printer::project.title);
-    _nameLayer->setForegroundColor(Application.getTheme()->getColor(OverlayTextColor));
-    Display.addLayer(_nameLayer);
-*/
-    _progressBar = new ProgressBar(Rect(15,215,Display.getLayoutWidth()-30,7));
-    _progressBar->setValue(0.0f);
-    addView(_progressBar);
+  String _projectFilePath = String("/projects/" + String(_project.index));
+  _imageLayer = new SDBitmapLayer(Rect(0,0,270,240));
+  _imageLayer->setBitmap(_projectFilePath.c_str(), 270,240,  129675 + (129899 * _jobOffset) + 299);
+  Display.setFixedBackgroundLayer(_imageLayer);
 
 
-    printr.startJob(_jobFilePath);
 
-/*
-    _pLayer = new TransparentTextLayer(Rect(12,190,Display.getLayoutWidth()-30,20));
-    _pLayer->setTextAlign(TEXTALIGN_LEFT);
-    _pLayer->setFont(&PTSansNarrow_16);
-    _pLayer->setText("Printing...");
-    _pLayer->setForegroundColor(Application.getTheme()->getColor(OverlayTextColor));
-    Display.addLayer(_pLayer);
-*/
-    SidebarSceneController::onWillAppear();
+  _nameLayer = new TransparentTextLayer(Rect(15,10,Display.getLayoutWidth()-30,25));
+  _nameLayer->setTextAlign(TEXTALIGN_LEFT);
+  _nameLayer->setFont(&LiberationSans_14);
+  _nameLayer->setText(String(_job.title));
+  _nameLayer->setForegroundColor(ILI9341_BLACK);
+
+   Display.addLayer(_nameLayer);
+
+  _progressBar = new ProgressBar(Rect(15,215,Display.getLayoutWidth()-30,7));
+  _progressBar->setValue(0.0f);
+  addView(_progressBar);
+  printr.startJob(_jobFilePath);
+
+  _pLayer = new TransparentTextLayer(Rect(12,190,Display.getLayoutWidth()-30,20));
+  _pLayer->setTextAlign(TEXTALIGN_LEFT);
+  _pLayer->setFont(&LiberationSans_14);
+  _pLayer->setText("Printing...");
+  _pLayer->setForegroundColor(ILI9341_BLACK);
+  Display.addLayer(_pLayer);
+
+  SidebarSceneController::onWillAppear();
 }
 
 void PrintStatusScene::printrCallback(const char ctype[], float * data) {
