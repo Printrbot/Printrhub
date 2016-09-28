@@ -8,16 +8,18 @@
 #include "UIBitmaps.h"
 //#include "FinishPrintSceneController.h"
 //#include "core/Application.h"
-#include "../projects/ProjectsScene.h"
+
+#include "scenes/print/PrintStatusScene.h"
 
 extern UIBitmaps uiBitmaps;
 extern Printr printr;
 
-PrintStatusScene::PrintStatusScene(String jobFilePath, String projectIndex, int jobOffset):
+PrintStatusScene::PrintStatusScene(String jobFilePath, Project project, Job job, uint16_t jobOffset):
   SidebarSceneController::SidebarSceneController(),
-_jobFilePath(jobFilePath),
-_projectIndex(projectIndex),
-_jobOffset(jobOffset){
+  _jobFilePath(jobFilePath),
+  _project(project),
+  _job(job),
+  _jobOffset(jobOffset){
   printr.setListener(this);
 }
 

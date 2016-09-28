@@ -6,18 +6,19 @@
 #include "framework/views/ProgressBar.h"
 #include "framework/views/LabelView.h"
 #include "framework/views/LabelButton.h"
-
+#include "scenes/projects/ProjectsScene.h"
+#include "scenes/projects/JobsScene.h"
 
 class PrintStatusScene: public SidebarSceneController, public ButtonDelegate {
 
 public:
   virtual void loop() override;
-  PrintStatusScene(String jobFilePath, String projectIndex, int jobOffset);
+  PrintStatusScene(String jobFilePath, Project project, Job job, uint16_t offset);
   virtual ~PrintStatusScene();
 
 private:
   virtual UIBitmap * getSidebarBitmap() override;
-	virtual UIBitmap * getSidebarIcon() override;
+  virtual UIBitmap * getSidebarIcon() override;
 
   String getName();
   virtual void onWillAppear() override;
@@ -29,10 +30,12 @@ private:
   TextLayer* _nameLayer;
   TextLayer* _pLayer;
   float _step;
+  Project _project;
+  Job _job;
 
-	String _jobFilePath;
-	String _projectIndex;
-	int _jobOffset;
+  String _jobFilePath;
+  String _projectIndex;
+  int _jobOffset;
 
 };
 

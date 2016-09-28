@@ -6,6 +6,7 @@
 #include "SD.h"
 #include "UIBitmaps.h"
 #include "../DownloadFileController.h"
+#include "scenes/print/PrintStatusScene.h"
 //#include "font_AwesomeF080.h"
 //#include "font_AwesomeF000.h"
 
@@ -18,10 +19,10 @@ JobsScene::JobsScene(String projectIndex):
 }
 
 JobsScene::~JobsScene() {
-    if (_jobs != NULL) {
-        free (_jobs);
-        _jobs = NULL;
-    }
+  if (_jobs != NULL) {
+    free (_jobs);
+    _jobs = NULL;
+  }
 }
 
 
@@ -47,37 +48,25 @@ void JobsScene::onWillAppear() {
 
   // open the file
   File _file = SD.open(_projectIndex.c_str(), FILE_READ);
-  // read how many jobs it contains
-  uint8_t t;
-  _file.seek(72);
-  _file.read(&t, 1);
-  // loop through jobs and build images
 
-  //Display.fillRect(50,0,270,240,ILI9341_WHITE);
+  _file.seek(32);
+  _file.read(&_project, sizeof(Project));
 
   ImageView* imageView;
 
-  /*
-  imageView = new ImageView(Rect(0,0,270,240), 129841);
-  imageView->setImageTitle("TESTING");
-  imageView->setIndexFileName(_projectIndex.c_str());
-  addView(imageView);
-  */
-
   //Create an array holding Job instances
-  _jobs = (Job*)malloc(sizeof(Job)*t);
+  _jobs = (Job*)malloc(sizeof(Job)* _project.jobs);
 
-  for (uint8_t cnt=0; cnt < t; cnt++) {
-    imageView = new ImageView(Rect(270*cnt,0,270,240), 129673 + (129768 * cnt) + 168);
+  for (uint8_t cnt=0; cnt < _project.jobs; cnt++) {
+    imageView = new ImageView(Rect(270*cnt,0,270,240), 129675 + (129899 * cnt) + 299);
 
     //Read data from file in current Job instance
-    _file.seek(129673 + (129768 * cnt));
-    _file.read(&_jobs[cnt],8+32+128);
+    _file.seek(129675 + (129899 * cnt));
+    _file.read(&_jobs[cnt],299);
 
     imageView->setImageTitle(_jobs[cnt].title);
     imageView->setIndexFileName(_projectIndex.c_str());
     addView(imageView);
-
   }
 
   _file.close();
@@ -88,14 +77,9 @@ void JobsScene::onWillAppear() {
   _printBtn->setDelegate(this);
   addView(_printBtn);
 
-
   SidebarSceneController::onWillAppear();
   //Display.drawBitmap(0,0,50,190, imageOfJobsText_50_190,0,0,50,190);
 }
-
-
-
-
 
 void JobsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
   if (_printBtn != NULL) {
@@ -135,21 +119,31 @@ void JobsScene::buttonPressed(void *button)
     //TODO: Change job index structure to 9 bytes for index to give room for null terminator
     //String fn = String("/jobs/") + String(job.index);
 
-    //We know how long the filename will be, as /jobs/ (6) and index (8) have constant width, add +1 for null terminator!
+    //We know how long the filename will be, as /jobs/ (6) + project index (8) + "/" (1) + job index (8) have constant width, add +1 for null terminator!
     //This is a bad hack that shouldn't be necessary as soon as job index is fixed
-    char filePath[15] = "/jobs/";
-    memcpy(&filePath[6],job.index,sizeof(char)*8); //Append job index
 
-    bool jobExists = SD.exists(filePath);
+    String filePath = "/jobs/" + String(_project.index) + "/" + String(job.index);
+
+
+    //memcpy(&filePath[6],job.index,sizeof(char)*8); //Append job index
+
+    bool jobExists = SD.exists(filePath.c_str());
+
     if (jobExists) {
       LOG_VALUE("Printing Job-Nr",getPageIndex());
-      //PrintStatusScene * scene = new PrintStatusScene();
-      //Application.pushScene(scene);
-      DownloadFileController* scene = new DownloadFileController(String(job.url),String(filePath));
+      PrintStatusScene * scene = new PrintStatusScene(filePath, _project, job, getPageIndex());
       Application.pushScene(scene);
+      //DownloadFileController* scene = new DownloadFileController(String(job.url),filePath);
+      //Application.pushScene(scene);
     } else {
       LOG_VALUE("Need to download file",getPageIndex());
-      DownloadFileController* scene = new DownloadFileController(String(job.url),String(filePath));
+      // create directory if needed
+      String _jdir = String("/jobs/"+ String(_project.index));
+      if (!SD.exists(_jdir.c_str())) {
+        SD.mkdir(_jdir.c_str());
+      }
+
+      DownloadFileController* scene = new DownloadFileController(String(job.url),filePath);
       Application.pushScene(scene);
     }
   }

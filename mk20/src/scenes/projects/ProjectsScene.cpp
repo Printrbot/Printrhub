@@ -47,7 +47,6 @@ void ProjectsScene::onWillAppear() {
 
   ImageView* imageView;
 
-
   for (int cnt = 0; true; ++cnt) {
 
     File pfile = pdir.openNextFile();
@@ -58,7 +57,7 @@ void ProjectsScene::onWillAppear() {
     imageView = new ImageView(Rect(270 * cnt,0,270,240), 73);
 
     char _pname[32];
-    pfile.seek(40);
+    pfile.seek(42);
     pfile.read(_pname, 32);
 
     imageView->setImageTitle(_pname);
