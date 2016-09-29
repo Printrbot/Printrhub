@@ -58,6 +58,7 @@ private:
     bool _waitForResponse;
     int _bytesToDownload;
     unsigned long _lastBytesReadTimeStamp;
+    uint8_t _retries;
 
     int _port;
     String _url;

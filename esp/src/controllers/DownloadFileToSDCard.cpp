@@ -22,6 +22,7 @@ DownloadFileToSDCard::DownloadFileToSDCard(String url):
     _bufferIndex = 0;
     _numChunks = 0;
     _waitForResponse = false;
+    _retries = 0;
 
     parseUrl();
 
@@ -243,8 +244,6 @@ void DownloadFileToSDCard::loop()
                     //Buffer is full, send it to MK20 and leave the loop
                     _waitForResponse = true;
                     sendBuffer();
-                    memset(_buffer,0,_bufferSize);
-                    _bufferIndex = 0;
 
                     //Close this run loop now to keep up the rest of the application loop and to wait for the response
                     return;
@@ -256,6 +255,7 @@ void DownloadFileToSDCard::loop()
             }
             else
             {
+                return;
             }
         }
 
@@ -320,7 +320,28 @@ bool DownloadFileToSDCard::runTask(CommHeader &header, const uint8_t *data, size
         if (header.commType == ResponseSuccess)
         {
             _waitForResponse = false;
+            _retries = 0;
 
+            //Clear the buffer
+            memset(_buffer,0,_bufferSize);
+            _bufferIndex = 0;
+        }
+        else if (header.commType == ResponseFailed)
+        {
+            //Only try sending packet again for a limited time, then just fail
+            _retries++;
+            if (_retries > 3)
+            {
+                uint8_t errorCode = (uint8_t)DownloadError::UnknownError;
+                Application.getMK20Stack()->requestTask(TaskID::DownloadError,sizeof(uint8_t),&errorCode);
+
+                Mode* mode = new Idle();
+                Application.pushMode(mode);
+                return false;
+            }
+
+            //Sending data has failed, just send the packet again
+            sendBuffer();
         }
     }
 

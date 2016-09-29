@@ -132,6 +132,7 @@ private:
     size_t encode(const uint8_t* source, size_t size, uint8_t* destination);
     size_t decode(const uint8_t* source, size_t size, uint8_t* destination);
     void runTask(const uint8_t* buffer, size_t size);
+    void onDataPacketFailed(const uint8_t* buffer, size_t size);
     void send(const uint8_t* buffer, size_t size);
     uint16_t getCheckSum(const uint8_t* data, size_t size);
 

@@ -211,6 +211,17 @@ void CommStack::runTask(const uint8_t* buffer, size_t size)
     }
 }
 
+void CommStack::onDataPacketFailed(const uint8_t *buffer, size_t size)
+{
+    //Prepare header
+    _currentHeader.contentLength = 0;
+    _currentHeader.setCheckSum(0);
+    _currentHeader.commType = ResponseFailed;
+
+    //Send ResponseFailed packet
+    send((uint8_t*)&_currentHeader, sizeof(CommHeader));
+}
+
 void CommStack::packetReceived(const uint8_t* buffer, size_t size)
 {
     LOG_VALUE("Packet received with size",size);
@@ -283,7 +294,8 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
 
                 _delegate->onCommStackError();
 
-                //TODO: Do something in case of an error like sending a ResponseFailed with the computed checksum
+                //Send back the error response
+                onDataPacketFailed(buffer,size);
             }
             else
             {
@@ -305,6 +317,9 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
             digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
 
             _delegate->onCommStackError();
+
+            //Send back the error response
+            onDataPacketFailed(buffer,size);
         }
 
         //Now that the data have been sent/received the next package should be a header
