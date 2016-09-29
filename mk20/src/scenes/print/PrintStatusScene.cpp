@@ -26,6 +26,7 @@ PrintStatusScene::PrintStatusScene(String jobFilePath, Project project, Job job,
 }
 
 PrintStatusScene::~PrintStatusScene() {
+  printr.setListener(nullptr);
 }
 
 UIBitmap * PrintStatusScene::getSidebarBitmap() {
@@ -84,7 +85,7 @@ void PrintStatusScene::printrCallback(const char ctype[], float * fdata, int * i
   }
   else if ( _totalJobLines != -1 && strcmp(ctype,"line") == 0) {
     // update the progress bar here...
-    float _v = *idata / _totalJobLines;
+    float _v = (float) *idata / (float) _totalJobLines;
     _progressBar->setValue(_v);
   }
 }

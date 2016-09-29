@@ -17,7 +17,7 @@ PreheatExtruder::PreheatExtruder():
 }
 
 PreheatExtruder::~PreheatExtruder() {
-
+  printr.setListener(nullptr);
 }
 
 
@@ -54,8 +54,8 @@ void PreheatExtruder::onWillAppear() {
   textLayer->setText("Heating extruder, please wait...");
   Display.addLayer(textLayer);
 */
-  _progressBar = new ProgressBar(Rect(0,235,270,5));
-	//_progressBar->setTrackColor(ILI9341_RED);
+  _progressBar = new ProgressBar(Rect(0,228,270,12));
+	_progressBar->setTrackColor(ILI9341_RED);
 	_progressBar->setValue(0.0f);
 	addView(_progressBar);
 
