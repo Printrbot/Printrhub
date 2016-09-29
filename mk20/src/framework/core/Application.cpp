@@ -273,6 +273,12 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
                 {
                     String localFilePath("/projects/");
                     localFilePath += root["id"].asString();
+
+                    if (SD.exists(localFilePath.c_str()))
+                    {
+                      SD.remove(localFilePath.c_str());
+                    }
+
                     DownloadFileController* dfc = new DownloadFileController(url,localFilePath);
                     Application.pushScene(dfc);
                 }
