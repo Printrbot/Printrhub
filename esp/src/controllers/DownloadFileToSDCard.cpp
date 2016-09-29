@@ -256,11 +256,6 @@ void DownloadFileToSDCard::loop()
             }
             else
             {
-                // We haven't got any data, so let's pause to allow some to
-                // arrive
-                digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
-                delay(kNetworkDelay);
-                digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
             }
         }
 
@@ -326,9 +321,6 @@ bool DownloadFileToSDCard::runTask(CommHeader &header, const uint8_t *data, size
         {
             _waitForResponse = false;
 
-            digitalWrite(COMMSTACK_WORKING_MARKER_PIN,LOW);
-            delayMicroseconds(2);
-            digitalWrite(COMMSTACK_WORKING_MARKER_PIN,HIGH);
         }
     }
 
