@@ -215,6 +215,15 @@ void DownloadFileToSDCard::loop()
             return;
         }
 
+        if (!httpClient.available())
+        {
+            digitalWrite(COMMSTACK_INFO_MARKER_PIN,LOW);
+        }
+        else
+        {
+            digitalWrite(COMMSTACK_INFO_MARKER_PIN,HIGH);
+        }
+
         LOG("Downloading data from the net");
         while (httpClient.available())
         {
