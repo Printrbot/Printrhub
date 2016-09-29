@@ -7,7 +7,7 @@
 
 #include "core/Mode.h"
 #include <HttpClient.h>
-#include <WiFiClient.h>
+#include "../core/FasterWiFiClient.h"
 #include "../errors.h"
 
 class DownloadFileToSDCard: public Mode
@@ -49,7 +49,7 @@ public:
 private:
     State mode;
     DownloadError _error;
-    WiFiClient client;
+    FasterWiFiClient client;
     HttpClient httpClient;
     static const int _bufferSize = 128;
     char _buffer[_bufferSize];
