@@ -2,6 +2,9 @@
 #include <ArduinoJson.h>
 #include "SD.h"
 #include "framework/core/HAL.h"
+#include "scenes/settings/DataStore.h"
+
+extern DataStore dataStore;
 
 Printr::Printr():
 readBuffer(PrintrBuffer()),
@@ -55,7 +58,12 @@ void Printr::loop() {
 
       sendLine("M100({_leds:1})");
       sendLine("G0 Z5");
-      sendLine("G92 Z5"); // offset should come from eeprom
+
+      float headOffset = 5.0 - dataStore.getHeadOffset();
+      String gco = String("G92 Z") + String(headOffset);
+
+
+      sendLine(gco); // offset should come from eeprom
 
       int sent = 0;
       // send 6 lines of job gcode
