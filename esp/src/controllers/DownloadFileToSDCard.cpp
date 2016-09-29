@@ -24,6 +24,8 @@ DownloadFileToSDCard::DownloadFileToSDCard(String url):
     _waitForResponse = false;
 
     parseUrl();
+
+    client.setNoDelay(true);
 }
 
 DownloadFileToSDCard::~DownloadFileToSDCard()
