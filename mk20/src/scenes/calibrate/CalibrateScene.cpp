@@ -4,9 +4,11 @@
 #include "font_LiberationSans.h"
 #include "../settings/SettingsScene.h"
 #include "Printr.h"
+#include "scenes/settings/DataStore.h"
 
 extern UIBitmaps uiBitmaps;
 extern Printr printr;
+extern DataStore dataStore;
 
 CalibrateScene::CalibrateScene():
   SidebarSceneController::SidebarSceneController()
@@ -38,13 +40,11 @@ uint16_t CalibrateScene::getBackgroundColor()
 
 void CalibrateScene::onWillAppear() {
 
-
   BitmapView* hb = new BitmapView(Rect(16,10,uiBitmaps.hotend.width, uiBitmaps.hotend.height));
   hb->setBitmap(&uiBitmaps.hotend);
   addView(hb);
 
-  _offset = 0.1;
-
+  _offset = dataStore.getHeadOffset();
   _offsetText = new TextLayer(Rect(137,13, 112, 62));
   _offsetText->setFont(&LiberationSans_32);
   _offsetText->setTextAlign(TEXTALIGN_CENTERED);
@@ -87,9 +87,19 @@ void CalibrateScene::buttonPressed(void *button)
   if (button == _minusBtn) {
     _offset -= 0.1f;
   }
+
+  if (button == _saveBtn) {
+    dataStore.setHeadOffset(_offset);
+    dataStore.save();
+
+    SettingsScene * scene = new SettingsScene();
+    Application.pushScene(scene);
+
+    return;
+  }
   
   //Convert float to string and set to text field
-  char buffer[10];  
+  char buffer[10];
   dtostrf(_offset, 3, 1, buffer);
   _offsetText->setText(String(buffer));
 

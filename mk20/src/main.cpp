@@ -13,6 +13,7 @@
 #include "UIBitmaps.h"
 #include "Printr.h"
 ///#include "Bitmaps.h"
+#include "scenes/settings/DataStore.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
 Adafruit_FT6206 Touch = Adafruit_FT6206();
@@ -26,6 +27,7 @@ SceneController* mainScene;
 UIBitmaps uiBitmaps;
 
 Printr printr;
+DataStore dataStore;
 
 
 #ifdef DEBUG_USE_SOFTWARE_SERIAL
