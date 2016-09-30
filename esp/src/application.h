@@ -11,6 +11,9 @@ class Mode;
 #define LOG(m) //EventLogger::log(m)//Serial.println((m)) //Logger.println(logString(m));
 #define LOG_VALUE(m,v) //EventLogger::log((m))//;Serial.println(v)//Logger.print(logError(m));Logger.println(v);
 
+#define FIRMWARE_URL_ESP "http://www.appfruits.com/files/esp/firmware.bin"
+#define FIRMWARE_URL_MK20 "http://www.appfruits.com/files/mk29/firmware.bin"
+
 class ApplicationClass: CommStackDelegate
 {
 

@@ -10,8 +10,9 @@
 
 extern UIBitmaps uiBitmaps;
 
-ErrorScene::ErrorScene(const String& errorMessage): SidebarSceneController::SidebarSceneController() {
+ErrorScene::ErrorScene(const String& errorMessage, bool showButton): SidebarSceneController::SidebarSceneController() {
   _errorMessage = errorMessage;
+  _showButton = showButton;
 }
 
 ErrorScene::~ErrorScene() {
@@ -48,11 +49,15 @@ void ErrorScene::onWillAppear() {
   labelView->setTextAlign(TEXTALIGN_CENTERED);
   addView(labelView);
 
-  _okBtn = new LabelButton("OK",Rect(50,178,170,38));
-  _okBtn->setBackgroundColor(ILI9341_DARKGREEN);
-  _okBtn->setTextColor(ILI9341_WHITE);
-  _okBtn->setDelegate(this);
-  addView(_okBtn);
+  if (_showButton)
+  {
+    _okBtn = new LabelButton("OK",Rect(50,178,170,38));
+    _okBtn->setBackgroundColor(ILI9341_DARKGREEN);
+    _okBtn->setTextColor(ILI9341_WHITE);
+    _okBtn->setDelegate(this);
+    addView(_okBtn);
+  }
+
 
   SidebarSceneController::onWillAppear();
 }

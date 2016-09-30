@@ -6,6 +6,7 @@
 #include "controllers/DownloadFile.h"
 #include "controllers/DownloadFileToSDCard.h"
 #include <EEPROM.h>
+#include <controllers/ESPFirmwareUpdate.h>
 #include "event_logger.h"
 
 Config config;
@@ -130,6 +131,18 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
                 DownloadFileToSDCard* df = new DownloadFileToSDCard(String(_url));
 				Application.pushMode(df);
 				}
+				break;
+
+			case TaskID::StartFirmwareUpdate:
+			{
+
+				//TODO: Give URL for ESP firmware
+				ESPFirmwareUpdate *mode = new ESPFirmwareUpdate(FIRMWARE_URL_ESP);
+				Application.pushMode(mode);
+
+				*sendResponse = true;
+				*responseDataSize = 0;
+			}
 				break;
 
 			case TaskID::StartWifi:

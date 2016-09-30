@@ -12,7 +12,7 @@
 class ErrorScene: public SidebarSceneController {
 public:
 
-    ErrorScene(const String& errorMessage);
+    ErrorScene(const String& errorMessage, bool showButton=true);
     virtual ~ErrorScene();
 
     virtual void onSidebarButtonTouchUp() override;
@@ -28,6 +28,7 @@ private:
 
 protected:
     LabelButton* _okBtn;
+    bool _showButton;
     String _errorMessage;
 };
 

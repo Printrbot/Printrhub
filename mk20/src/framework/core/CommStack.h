@@ -45,7 +45,8 @@ enum class TaskID : uint8_t {
     SaveProjectWithID = 18,
     FileSetSize = 19,
     DownloadFile = 22,
-    DownloadError = 23
+    DownloadError = 23,
+    StartFirmwareUpdate = 24
 };
 
 struct CommHeader {

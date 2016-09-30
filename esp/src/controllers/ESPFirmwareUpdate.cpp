@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "../event_logger.h"
 #include <ESP8266httpUpdate.h>
+#include "MK20FirmwareUpdate.h"
 
 ESPFirmwareUpdate::ESPFirmwareUpdate(String url):
 Mode(),
@@ -73,8 +74,10 @@ void ESPFirmwareUpdate::loop() {
   }
 
   if (_state == StateSuccess) {
-    Mode* mode = new Idle();
+
+    MK20FirmwareUpdate* mode = new MK20FirmwareUpdate(FIRMWARE_URL_MK20);
     Application.pushMode(mode);
+
     return;
   }
 }

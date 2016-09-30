@@ -337,6 +337,17 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 			Display.println(datetime);
 		}
 	}
+
+  if (header.getCurrentTask() == TaskID::StartFirmwareUpdate)
+  {
+    //We ask ESP therefore we get the response
+    if (header.commType == ResponseSuccess)
+    {
+      ErrorScene* scene = new ErrorScene("Updating Firmware",false);
+      Application.pushScene(scene);
+    }
+  }
+
 /*	else if (header.getCurrentTask() == GetJobWithID || header.getCurrentTask() == GetProjectItemWithID)
 	{
 		if (header.commType == Response)

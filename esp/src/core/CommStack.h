@@ -48,7 +48,8 @@ enum class TaskID : uint8_t {
   SystemInfo = 20,
   ScanWifi = 21,
   DownloadFile = 22,
-  DownloadError = 23
+  DownloadError = 23,
+  StartFirmwareUpdate = 24
 };
 
 struct CommHeader {
