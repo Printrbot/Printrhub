@@ -212,9 +212,9 @@ int FasterWiFiClient::available()
     int result = _client->getSize();
 
     //Remove that as it takes so much time when downloading with DownloadFileController
-    //if (!result) {
-    //  optimistic_yield(100);
-    //}
+    if (!result) {
+      optimistic_yield(100);
+    }
     return result;
 }
 
