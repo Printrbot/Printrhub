@@ -7,6 +7,7 @@
 
 #include "Arduino.h"
 #include "../hal.h"
+#include <ArduinoJson.h>
 
 //Maximum is 255 as currentTaskIndex is a byte
 #define COMM_STACK_MAX_TASKS 10
@@ -49,7 +50,10 @@ enum class TaskID : uint8_t {
   ScanWifi = 21,
   DownloadFile = 22,
   DownloadError = 23,
-  StartFirmwareUpdate = 24
+  StartFirmwareUpdate = 24,
+  Ping = 25,
+  ShowFirmwareUpdateNotification = 26,
+  FirmwareUpdateError = 27
 };
 
 struct CommHeader {
@@ -121,6 +125,7 @@ public:
 public:
     void process();
     bool requestTask(TaskID task, size_t contentLength, const uint8_t* data);
+    bool requestTask(TaskID task, const JsonObject& object);
     bool requestTask(TaskID task);
     bool responseTask(TaskID task, bool success);
     bool responseTask(TaskID task, size_t contentLength, const uint8_t* data, bool success);

@@ -10,11 +10,10 @@ const int kNetworkTimeout = 30*1000;
 // Number of milliseconds to wait if no data is available before trying again
 const int kNetworkDelay = 1000;
 
-MK20FirmwareUpdate::MK20FirmwareUpdate(String url):
+MK20FirmwareUpdate::MK20FirmwareUpdate():
 Mode(),
 target(MK20_SWD_CLK, MK20_SWD_IO, ARMDebug::LOG_NORMAL),
-_state(StateDownloadFirmware),
-_url(url)
+_state(StateFlashFirmware)
 {
 
 }
@@ -44,86 +43,8 @@ void MK20FirmwareUpdate::onWillEnd() {
 }
 
 void MK20FirmwareUpdate::flashFirmware() {
-  File firmware_file = SPIFFS.open("/mk20.bin", "r");
-  if (!firmware_file) {
-    Serial.println("Failed to open firmware file for reading");
-    _state = StateError;
-  }
 
-  EventLogger::log("Reseting Teensy - the hard way");
-  pinMode(MK20_RESET_PIN, OUTPUT);
-  digitalWrite(MK20_RESET_PIN, LOW);
-  delay(500);
-  digitalWrite(MK20_RESET_PIN, HIGH);
-
-  EventLogger::log("Resetting Teensy done");
-  delay(200);
-
-  EventLogger::log("Flashing");
-  ESP.wdtDisable();
-
-  // flash here
-  ARMKinetisDebug target(MK20_SWD_CLK, MK20_SWD_IO, ARMDebug::LOG_NORMAL);
-  uint32_t idcode;
-  if (target.begin() && target.getIDCODE(idcode)) {
-    char result[128];
-    EventLogger::log("Debug Port Detected:");
-  }
-  delay(200);
-
-  if (!target.detect()) {
-    EventLogger::log("Detect failed:");
-    _state = StateError;
-  }
-  delay(200);
-
-  if (!target.reset()) {
-    EventLogger::log("Reset failed:");
-    EventLogger::log("Trying to unlock device:");
-    digitalWrite(MK20_RESET_PIN,LOW);
-    target.flashMassErase();
-    digitalWrite(MK20_RESET_PIN,HIGH);
-    EventLogger::log("Unlock successful. Powercycle device and try again");
-    _state = StateError;
-  } else {
-    EventLogger::log("Device reset complete");
-  }
-  delay(200);
-
-  if (!target.debugHalt()) {
-    EventLogger::log("Debug Halt failed");
-  } else {
-    EventLogger::log("Debug halt complete");
-  }
-  delay(200);
-
-  if (!target.initK20()) {
-    EventLogger::log("MK20 Init faile");
-  }
-  else {
-    EventLogger::log("MK20 initialized");
-  }
-  delay(200);
-
-  ARMKinetisDebug::Flasher programmer(target);
-  if (!programmer.installFirmware(&firmware_file)) {
-    EventLogger::log("Failed to flash");
-    _state = StateError;
-  }
-
-  firmware_file.close();
-  target.dumpSector(0);
-  target.dumpSector(1024);
-  target.dumpSector(2048);
-
-  EventLogger::log("Resetting Chip");
-  digitalWrite(MK20_RESET_PIN,LOW);
-  delay(200);
-  digitalWrite(MK20_RESET_PIN,HIGH);
-
-  // end flash
-  ESP.wdtEnable(10000);
-  EventLogger::log("Flashing MK20 complete");
+  _mk20->updateFirmware();
 
   _state = StateSuccess;
 }
@@ -198,8 +119,10 @@ void MK20FirmwareUpdate::loop() {
   }
 
   if (_state == StateSuccess) {
+
     Mode* mode = new Idle();
     Application.pushMode(mode);
+
     return;
   }
 }

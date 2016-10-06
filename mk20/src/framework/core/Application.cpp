@@ -7,6 +7,8 @@
 #include "../animation/Animator.h"
 #include "../../scenes/DownloadFileController.h"
 #include "../../scenes/alerts/ErrorScene.h"
+#include "../../scenes/projects/ProjectsScene.h"
+#include "../../scenes/firmware/ConfirmFirmwareUpdateScene.h"
 #include "Printr.h"
 #include <ArduinoJson.h>
 #include "../../errors.h"
@@ -23,7 +25,10 @@ ApplicationClass::ApplicationClass()
 	_currentScene = NULL;
 	_lastTime = 0;
 	_deltaTime = 0;
+  _buildNumber = FIRMWARE_BUILDNR;
 	_esp = new CommStack(&Serial3,this);
+  _espOK = false;
+  _lastESPPing = 0;
 }
 
 ApplicationClass::~ApplicationClass()
@@ -86,16 +91,31 @@ void ApplicationClass::setup()
 	pinMode(LED_PIN, OUTPUT);
 	printr.init();
 
-    //Make sure we have a jobs folder
-    //TODO: Decide if this is necessary or if the SD card is setup with this path during production
-    if (!SD.exists("/jobs"))
-    {
-        SD.mkdir("/jobs");
-    }
+  //Make sure we have a jobs folder
+  //TODO: Decide if this is necessary or if the SD card is setup with this path during production
+  if (!SD.exists("/jobs"))
+  {
+      SD.mkdir("/jobs");
+  }
+}
+
+void ApplicationClass::pingESP()
+{
+  //Send ping with current version to ESP
+  int version = FIRMWARE_BUILDNR;
+  _esp->requestTask(TaskID::Ping,sizeof(int),(uint8_t*)&version);
 }
 
 void ApplicationClass::loop()
 {
+  //Peridically send ping to ESP
+  if (!_espOK) {
+    if ((millis() - _lastESPPing) > 5000) {
+      pingESP();
+      _lastESPPing = millis();
+    }
+  }
+
 	//Process Communication with ESP
 	_esp->process();
 
@@ -250,7 +270,7 @@ void ApplicationClass::onCommStackError()
 
 bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)
 {
-	if (_currentScene->handlesTask(header.getCurrentTask()))
+	if (_currentScene != NULL && _currentScene->handlesTask(header.getCurrentTask()))
 	{
 		LOG_VALUE("Current scene handles Task with ID",header.getCurrentTask());
 		return _currentScene->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
@@ -312,11 +332,30 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
           Application.pushScene(new ErrorScene("Unknown Error"));
         } else if (errorCode == DownloadError::ConnectionFailed) {
           Application.pushScene(new ErrorScene("Connection failed"));
+        } else if (errorCode == DownloadError::PrepareDownloadedFileFailed) {
+          Application.pushScene(new ErrorScene("File preparation failed"));
+        } else if (errorCode == DownloadError::RemoveOldFilesFailed) {
+          Application.pushScene(new ErrorScene("Remove old file failed"));
         }
 
         *sendResponse = false;
       }
     }
+
+  if (header.getCurrentTask() == TaskID::FirmwareUpdateError) {
+    if (header.commType == Request) {
+
+      //Cast data into local error code variable
+      uint8_t error = *data;
+      FirmwareUpdateError errorCode = (FirmwareUpdateError)error;
+
+      if (errorCode == FirmwareUpdateError::UnknownError) {
+        Application.pushScene(new ErrorScene("Unknown Error"));
+      }
+
+      *sendResponse = false;
+    }
+  }
 
 	if (header.getCurrentTask() == TaskID::GetTimeAndDate)
 	{
@@ -344,6 +383,51 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
     if (header.commType == ResponseSuccess)
     {
       ErrorScene* scene = new ErrorScene("Updating Firmware",false);
+      Application.pushScene(scene);
+    }
+  }
+
+  if (header.getCurrentTask() == TaskID::Ping)
+  {
+    if (!_espOK) {
+      if (header.commType == ResponseSuccess)
+      {
+        //We have received the response from ESP on our ping - do nothing
+        int buildNumber = 0;
+        memcpy(&buildNumber,data,dataSize);
+
+        //Stop sending pings
+        _espOK = true;
+
+        //Communication with ESP established, show project scene
+        ProjectsScene* mainScene = new ProjectsScene();
+        Application.pushScene(mainScene);
+      }
+      else if (header.commType == Request)
+      {
+        //Read build number from MK20 firmware
+        int buildNumber = 0;
+        memcpy(&buildNumber,data,sizeof(int));
+
+        //Stop sending pings to MK20
+        _espOK = true;
+
+        //Send ESP build number in response
+        buildNumber = FIRMWARE_BUILDNR;
+        *sendResponse = true;
+        *responseDataSize = sizeof(int);
+        memcpy(responseData,&buildNumber,sizeof(int));
+      }
+    }
+  }
+
+  if (header.getCurrentTask() == TaskID::ShowFirmwareUpdateNotification)
+  {
+    if (header.commType == Request)
+    {
+      *sendResponse = false;
+
+      ConfirmFirmwareUpdateScene* scene = new ConfirmFirmwareUpdateScene();
       Application.pushScene(scene);
     }
   }

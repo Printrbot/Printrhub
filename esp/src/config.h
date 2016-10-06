@@ -4,6 +4,7 @@
 #include "Arduino.h"
 
 #define FIRMWARE_VERSION "0.12"
+#define FIRMWARE_BUILDNR 99
 
 struct ConfigData {
   bool blank;

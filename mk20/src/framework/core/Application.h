@@ -34,6 +34,9 @@
 #define LOG_VALUE(m,v)
 #endif
 
+#define FIRMWARE_VERSION "0.12"
+#define FIRMWARE_BUILDNR 99
+
 class SceneController;
 class View;
 
@@ -45,6 +48,8 @@ public:
 	~ApplicationClass();
 
 #pragma mark Application Flow
+  void pingESP();
+  int getBuildNumber() { return _buildNumber; }
 	void loop();
 	void setup();
 	void pushScene(SceneController* scene);
@@ -79,6 +84,9 @@ private:
 	unsigned long _lastTime;
 	float _deltaTime;
 	CommStack* _esp;
+  int _buildNumber;
+  bool _espOK;
+  unsigned long _lastESPPing;
 };
 
 extern ApplicationClass Application;

@@ -353,6 +353,14 @@ bool CommStack::requestTask(TaskID task, size_t contentLength, const uint8_t *da
     return sendMessage(header,contentLength,data);
 }
 
+bool CommStack::requestTask(TaskID task, const JsonObject &object)
+{
+    int length = object.measureLength()+1;
+    char buffer[length];
+    object.printTo(buffer,length);
+    return requestTask(task,length,(uint8_t*)buffer);
+}
+
 bool CommStack::requestTask(TaskID task)
 {
     LOG_VALUE("Request Task without data with ID",task);

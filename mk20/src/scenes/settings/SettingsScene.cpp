@@ -88,7 +88,7 @@ void SettingsScene::buttonPressed(void *button)
 
   }
   else if (button == _update) {
-    Application.getESPStack()->requestTask(TaskID::StartFirmwareUpdateESP);
+    Application.getESPStack()->requestTask(TaskID::StartFirmwareUpdate);
   }
   else if (button == _calibrate) {
 

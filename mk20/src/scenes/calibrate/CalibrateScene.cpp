@@ -40,9 +40,19 @@ uint16_t CalibrateScene::getBackgroundColor()
 
 void CalibrateScene::onWillAppear() {
 
-  BitmapView* hb = new BitmapView(Rect(16,10,uiBitmaps.hotend.width, uiBitmaps.hotend.height));
+ /* BitmapView* hb = new BitmapView(Rect(16,10,uiBitmaps.hotend.width, uiBitmaps.hotend.height));
   hb->setBitmap(&uiBitmaps.hotend);
-  addView(hb);
+  addView(hb);*/
+
+  SDBitmapLayer* hotendLayer = new SDBitmapLayer(Rect(16,10,121,uiBitmaps.hotend.height));
+  hotendLayer->setBitmap("ui",121,uiBitmaps.hotend.height,uiBitmaps.hotend.offset);
+  Display.addLayer(hotendLayer);
+
+  SDBitmapLayer* offsetLayer = new SDBitmapLayer(Rect(137,75,uiBitmaps.hotend.width-121,uiBitmaps.hotend.height-64));
+  offsetLayer->setXOffset(121);
+  offsetLayer->setYOffset(64);
+  offsetLayer->setBitmap("ui",uiBitmaps.hotend.width-121,uiBitmaps.hotend.height-64,uiBitmaps.hotend.offset);
+  Display.addLayer(offsetLayer);
 
   _offset = dataStore.getHeadOffset();
   _offsetText = new TextLayer(Rect(137,13, 112, 62));

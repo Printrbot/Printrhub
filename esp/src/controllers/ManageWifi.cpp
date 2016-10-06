@@ -7,6 +7,7 @@
 #include "Idle.h"
 #include "Application.h"
 #include "event_logger.h"
+#include "CheckForFirmwareUpdates.h"
 
 extern WebServer webserver;
 extern ApplicationClass Application;
@@ -74,8 +75,20 @@ void ManageWifi::loop() {
   }
 
   if (_state == StateSuccess) {
-    Mode* mode = new Idle();
-    Application.pushMode(mode);
+
+    if (config.data.blank) {
+      //We are in AP mode, don't check firmware update as we don't have internet connection yet
+      Mode* mode = new Idle();
+      Application.pushMode(mode);
+    }
+    else
+    {
+      //Check firmware data
+      CheckForFirmwareUpdates* updateCheck = new CheckForFirmwareUpdates();
+      Application.pushMode(updateCheck);
+    }
+
+
   }
 
   if (_state == StateError) {

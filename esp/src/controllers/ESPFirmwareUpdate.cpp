@@ -36,6 +36,7 @@ bool ESPFirmwareUpdate::handlesTask(TaskID taskID) {
 }
 
 void ESPFirmwareUpdate::flashFirmware() {
+
   EventLogger::log("IN SERVER UPDATE LOOP");
   t_httpUpdate_return ret = ESPhttpUpdate.update(_url);
   switch(ret) {
@@ -75,8 +76,6 @@ void ESPFirmwareUpdate::loop() {
 
   if (_state == StateSuccess) {
 
-    MK20FirmwareUpdate* mode = new MK20FirmwareUpdate(FIRMWARE_URL_MK20);
-    Application.pushMode(mode);
 
     return;
   }

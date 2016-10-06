@@ -46,7 +46,10 @@ enum class TaskID : uint8_t {
     FileSetSize = 19,
     DownloadFile = 22,
     DownloadError = 23,
-    StartFirmwareUpdate = 24
+    StartFirmwareUpdate = 24,
+    Ping = 25,
+    ShowFirmwareUpdateNotification = 26,
+    FirmwareUpdateError = 27
 };
 
 struct CommHeader {

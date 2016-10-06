@@ -119,8 +119,8 @@ void WebServer::begin() {
 
 	server.on("/updatemk20", HTTP_GET, [](AsyncWebServerRequest *request) {
 		AsyncWebParameter* url = request->getParam("url");
-		Mode* mk20FU = new MK20FirmwareUpdate(url->value().c_str());
-		Application.pushMode(mk20FU);
+//		Mode* mk20FU = new MK20FirmwareUpdate(url->value().c_str());
+//		Application.pushMode(mk20FU);
 		request->send(200, "text/plain", "MK20 firmware update started, please wait...");
 	});
 
@@ -136,6 +136,17 @@ void WebServer::begin() {
 		root["locked"] = config.data.locked;
 		root["ssid"] = config.data.wifiSsid;
 		root["firmware"] = FIRMWARE_VERSION;
+		root["mk20"] = Application.isMK20Available();
+
+		if (Application.getFirmwareUpdateInfo() != NULL) {
+			root["fw_update"] = true;
+			root["fw_info_sent"] = Application.firmwareUpdateNotified();
+			root["fw_cloud_buildnr"] = Application.getFirmwareUpdateInfo()->buildnr;
+		}
+		else
+		{
+			root["fw_update"] = false;
+		}
 
 		response->setLength();
 		request->send(response);

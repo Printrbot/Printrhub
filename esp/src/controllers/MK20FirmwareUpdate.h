@@ -20,7 +20,7 @@ private:
   };
 
 public:
-  MK20FirmwareUpdate(String url);
+  MK20FirmwareUpdate();
   virtual ~MK20FirmwareUpdate();
 
   virtual void loop();
@@ -36,6 +36,7 @@ private:
   String _url;
   ARMKinetisDebug target;
   File firmware_file;
+  MK20* _mk20;
 };
 
 
