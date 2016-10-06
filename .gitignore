@@ -1,0 +1,5 @@
+esp/lib/ESP*
+esp/lib/HttpClient
+esp/.pioenvs
+mk20/.pioenvs
+utils/firmware/node_modules
