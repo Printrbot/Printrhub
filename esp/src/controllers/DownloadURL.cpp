@@ -15,17 +15,13 @@ const int kNetworkDelay = 100;
 DownloadURL::DownloadURL(String url):
         Mode(),
         mode(StateRequest),
-        httpClient(client),
-        _url(url)
+        _url(url),
+        _stream(NULL)
 {
     memset(_buffer,0,_bufferSize);
     _bufferIndex = 0;
     _numChunks = 0;
     _retries = 0;
-
-    parseUrl();
-
-    client.setNoDelay(true);
 }
 
 DownloadURL::~DownloadURL()
@@ -79,34 +75,33 @@ void DownloadURL::loop()
     //In this mode ESP will try to initiate the download of the requested file and will send the response with number of bytes to download
     if (mode == StateRequest)
     {
-        if (httpClient.get(_host.c_str(), _port, _path.c_str()) != 0)
+        if (!_httpClient.begin(_url))
         {
+            EventLogger::log("Download failed, could not parse URL: %s",_url.c_str());
             mode = StateError;
             _error = DownloadError::ConnectionFailed;
         }
         else
         {
-            err = httpClient.responseStatusCode();
+            err = _httpClient.GET();
             if (err >= 200 && err <= 299)
             {
-                // Usually you'd check that the response code is 200 or a
-                // similar "success" code (200-299) before carrying on,
-                // but we'll print out whatever response we get
+                _stream = _httpClient.getStreamPtr();
+                _bytesToDownload = _httpClient.getSize();
 
-                err = httpClient.skipResponseHeaders();
-                if (err >= 0)
+                EventLogger::log("Begin Download from %s, size: %d",_url.c_str(),_bytesToDownload);
+
+                if (_stream == NULL || _bytesToDownload == 0)
                 {
-                    _bytesToDownload = httpClient.contentLength();
-
+                    mode = StateError;
+                    _error = DownloadError::UnknownError;
+                }
+                else
+                {
                     onBeginDownload(_bytesToDownload);
 
                     mode = StateDownload;
                     _lastBytesReadTimeStamp = millis();
-                }
-                else
-                {
-                    mode = StateError;
-                    _error = DownloadError::UnknownError;
                 }
             }
             else if (err >= 300 && err <= 399)
@@ -135,83 +130,59 @@ void DownloadURL::loop()
     //In this mode ESP will download the file by chunks of _bufferSize (32 bytes) and will then leave the loop to allow for responses
     if (mode == StateDownload)
     {
-        // Now we've got to the body, so we can print it out
-        char c;
+        while(_httpClient.connected() && (_bytesToDownload > 0 || _bytesToDownload == -1)) {
+            // get available data size
+            size_t size = _stream->available();
+            if(size) {
+                // read up to 128 byte
+                int c = _stream->readBytes(_buffer, ((size > _bufferSize) ? _bufferSize : size));
 
-        if (!httpClient.connected())
-        {
-            LOG("HTTPClient lost connection");
-            LOG_VALUE("Bytes left to download",_bytesToDownload);
-            mode = StateError;
-            _error = DownloadError::Timeout;
-            return;
-        }
+                //EventLogger::log("Data received, size: %d, bytes left: %d",c,_bytesToDownload);
 
-        if (!httpClient.available())
-        {
-            digitalWrite(COMMSTACK_INFO_MARKER_PIN,LOW);
-        }
-        else
-        {
-            digitalWrite(COMMSTACK_INFO_MARKER_PIN,HIGH);
-        }
+                onDataReceived(_buffer,c);
+                _bytesToDownload -= c;
 
-        LOG("Downloading data from the net");
-        while (httpClient.available())
-        {
-            ESP.wdtFeed();
-
-            if (httpClient.available())
-            {
-                c = httpClient.read();
-                _bytesToDownload--;
-
-                //Store the byte read from the web in our buffer
-                _buffer[_bufferIndex] = c;
-
-                _bufferIndex++;
-                if (_bufferIndex >= _bufferSize)
-                {
-                    onDataReceived(_buffer,_bufferIndex);
-                    _bufferIndex = 0;
-                }
-
-                // We read something, reset the timeout counter
                 _lastBytesReadTimeStamp = millis();
             }
             else
             {
-                return;
+                //Check for timeout
+                if ((millis() - _lastBytesReadTimeStamp) > kNetworkTimeout)
+                {
+                    EventLogger::log("Download failed, timeout");
+
+                    LOG("Connection timeout");
+                    mode = StateError;
+                    _error = DownloadError::Timeout;
+                    return;
+                }
+
+                delay(1);
             }
         }
 
-        //All data read from the net, make sure we send the rest of the buffer
-        if (_bytesToDownload <= 0)
+        if (_bytesToDownload == 0)
         {
-            onDataReceived(_buffer,_bufferIndex);
             mode = StateSuccess;
         }
         else
         {
-            //Check for timeout
-            if ((millis() - _lastBytesReadTimeStamp) > kNetworkTimeout)
-            {
-                LOG("Connection timeout");
-                mode = StateError;
-                _error = DownloadError::Timeout;
-            }
+            mode = StateError;
+            _error = DownloadError::Timeout;
         }
     }
 
     if (mode == StateError)
     {
         //Send the error to MK20
+        EventLogger::log("Download failed, Error-Code: %d",_error);
         onError(_error);
         return;
     }
 
     if (mode == StateSuccess)
     {
+        EventLogger::log("Download successful");
         onFinished();
         return;
     }

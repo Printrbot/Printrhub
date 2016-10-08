@@ -6,7 +6,7 @@
 #define ESP_DOWNLOADURL_H
 
 #include "core/Mode.h"
-#include <HttpClient.h>
+#include <ESP8266HTTPClient.h>
 #include "../core/FasterWiFiClient.h"
 #include "../errors.h"
 
@@ -41,8 +41,8 @@ public:
 private:
     State mode;
     DownloadError _error;
-    FasterWiFiClient client;
-    HttpClient httpClient;
+    WiFiClient* _stream;
+    HTTPClient _httpClient;
     static const int _bufferSize = 128;
     uint8_t _buffer[_bufferSize];
     int _bufferIndex;
