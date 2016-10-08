@@ -28,6 +28,10 @@ public:
 #pragma mark Application Flow
     virtual void loop();
 
+#pragma mark Communication with MK20
+    virtual bool handlesTask(TaskID taskID);
+    virtual bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse, bool* success);
+
 #pragma mark private member functions
     bool parseUrl();
 
@@ -36,6 +40,11 @@ public:
     virtual bool onDataReceived(uint8_t* data, uint16_t size) = 0;
     virtual void onError(DownloadError errorCode) = 0;
     virtual void onFinished() = 0;
+    virtual bool readNextData();
+
+#pragma mark Getter and Setter
+    uint8_t* getBuffer() { return _buffer; };
+    int getBufferIndex() { return _bufferIndex; };
 
 #pragma mark private member variables
 private:

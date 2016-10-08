@@ -68,6 +68,11 @@ bool DownloadURL::parseUrl()
     return true;
 }
 
+bool DownloadURL::readNextData()
+{
+    return true;
+}
+
 void DownloadURL::loop()
 {
     int err = 0;
@@ -130,6 +135,12 @@ void DownloadURL::loop()
     //In this mode ESP will download the file by chunks of _bufferSize (32 bytes) and will then leave the loop to allow for responses
     if (mode == StateDownload)
     {
+        //Check if we have to wait until the last data have been processed
+        if (!readNextData())
+        {
+            return;
+        }
+
         while(_httpClient.connected() && (_bytesToDownload > 0 || _bytesToDownload == -1)) {
             // get available data size
             size_t size = _stream->available();
@@ -143,6 +154,9 @@ void DownloadURL::loop()
                 _bytesToDownload -= c;
 
                 _lastBytesReadTimeStamp = millis();
+
+                //Close this run loop now to keep up the rest of the application loop and to wait for the response
+                return;
             }
             else
             {
@@ -186,4 +200,14 @@ void DownloadURL::loop()
         onFinished();
         return;
     }
+}
+
+bool DownloadURL::handlesTask(TaskID taskID)
+{
+    return Mode::handlesTask(taskID);
+}
+
+bool DownloadURL::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool *sendResponse, bool *success)
+{
+    return Mode::runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
 }
