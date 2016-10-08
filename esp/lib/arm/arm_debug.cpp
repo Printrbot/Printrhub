@@ -26,6 +26,7 @@
 #include "arm_debug.h"
 
 #include "arm_kinetis_reg.h"  // Actually we just want ARM
+#include "../../src/event_logger.h"
 
 //This works fine
 //#define LOW_DELAY 4
@@ -794,7 +795,7 @@ void ARMDebug::log(int level, const char *fmt, ...)
         int ret = vsnprintf(buffer, sizeof buffer, fmt, ap);
         va_end(ap);
 
-        Serial.println(buffer);
+        EventLogger::log(buffer);
     }
 }
 
