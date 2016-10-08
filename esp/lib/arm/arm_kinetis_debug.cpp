@@ -648,6 +648,7 @@ bool ARMKinetisDebug::Flasher::installFirmware(File *file)
 
     Serial.println("Initialize flash process");
     if (!begin()) return false;
+    ESP.wdtFeed();
 
     Serial.println("Begin Flashing");
 /*    while (next())
@@ -656,6 +657,7 @@ bool ARMKinetisDebug::Flasher::installFirmware(File *file)
     }*/
 
 	next();
+    ESP.wdtFeed();
 
 	Serial.println("End flashing");
 
@@ -679,6 +681,7 @@ bool ARMKinetisDebug::Flasher::installFirmware(File *file)
 
 
 	target.log(LOG_NORMAL,"Firmware update complete");
+    ESP.wdtFeed();
 
     return true;
 }
@@ -737,14 +740,14 @@ bool ARMKinetisDebug::Flasher::end()
 		target.log(LOG_ERROR,"Failed to debug halt device");
 		return false;
 	}
-
+/*
 	//Partition data flash for EEPROM - values taken from Teensy-Core eeprom.c
 	if (!target.ftfl_programPartitionFunction(0x3,0x03))
 	{
 		target.log(LOG_ERROR,"Failed to parition data flash for EEPROM");
 		return false;
 	}
-
+*/
 	target.log(LOG_NORMAL,"Set FlexRAM to EEPROM mode");
 	//Set FlexRAM for EEPROM
 	if (!target.ftfl_setFlexRAMFunction(0x00))
@@ -769,6 +772,8 @@ bool ARMKinetisDebug::Flasher::next()
 
 	for (address=0;address<file->size();address=address+1)
 	{
+        ESP.wdtFeed();
+
 		uint8_t byte = file->read();
 		if (address > 0 && address % 4 == 0)
 		{
