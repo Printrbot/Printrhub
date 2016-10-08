@@ -5,6 +5,7 @@
 #include "../event_logger.h"
 
 Template::Template():
+Mode(),
 _state(StateSuccess) {
 
 };

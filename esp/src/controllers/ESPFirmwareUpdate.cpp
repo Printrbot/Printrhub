@@ -7,8 +7,7 @@
 
 ESPFirmwareUpdate::ESPFirmwareUpdate(String url):
 Mode(),
-_url(url),
-_state(StateFlashFirmware)
+_url(url)
 {
 }
 
@@ -36,48 +35,38 @@ bool ESPFirmwareUpdate::handlesTask(TaskID taskID) {
 }
 
 void ESPFirmwareUpdate::flashFirmware() {
+
   EventLogger::log("IN SERVER UPDATE LOOP");
+  ESPhttpUpdate.rebootOnUpdate(false);
   t_httpUpdate_return ret = ESPhttpUpdate.update(_url);
-  switch(ret) {
-    case HTTP_UPDATE_FAILED: {
-      String s = ESPhttpUpdate.getLastErrorString().c_str();
-      char sb[128];
-      s.toCharArray(sb, 128, 0);
-      EventLogger::log(sb);
-      }
-      _state = StateError;
-      break;
 
-    case HTTP_UPDATE_NO_UPDATES:
-      EventLogger::log("NO UPDATES\n\n");
-      _state = StateError;
-      break;
+  if (ret == HTTP_UPDATE_NO_UPDATES)
+  {
+      EventLogger::log("ESP Update failed, no updates");
+      delay(100);
+      exitWithError(DownloadError::ESPUpdateNoUpdates);
+      return;
+  }
+  else if (ret == HTTP_UPDATE_FAILED)
+  {
+      EventLogger::log("ESP Update failed: %s",ESPhttpUpdate.getLastErrorString().c_str());
+      delay(100);
+      exitWithError(DownloadError::ESPUpdateFailed);
+      return;
+  }
+  else if (ret == HTTP_UPDATE_OK)
+  {
+      EventLogger::log("ESP Update successful, restarting ESP");
+      delay(100);
 
-    case HTTP_UPDATE_OK:
-      _state = StateSuccess;
-      EventLogger::log("UPDATE OK");
-      break;
+      //Just restart ESP
+      Application.getMK20Stack()->requestTask(TaskID::FirmwareUpdateComplete);
+
+      //Exit and wait for MK20 to reset ESP
+      exit();
   }
 }
 
 void ESPFirmwareUpdate::loop() {
-
-  if (_state == StateFlashFirmware) {
     flashFirmware();
-    return;
-  }
-
-  if (_state == StateError) {
-    Mode* mode = new Idle();
-    Application.pushMode(mode);
-    return;
-  }
-
-  if (_state == StateSuccess) {
-
-    MK20FirmwareUpdate* mode = new MK20FirmwareUpdate(FIRMWARE_URL_MK20);
-    Application.pushMode(mode);
-
-    return;
-  }
 }

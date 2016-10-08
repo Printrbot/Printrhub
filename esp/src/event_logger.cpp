@@ -4,15 +4,44 @@
 #include <ESPAsyncWebServer.h>
 #include <Arduino.h>
 #include "core/CommStack.h"
+#include "application.h"
 
 extern AsyncEventSource events;
 
 void EventLogger::log(char * msg, ...) {
-  events.send(msg);
+
+  va_list ap;
+  char buffer[128];
+
+  va_start(ap, msg);
+  int ret = vsnprintf(buffer, sizeof buffer, msg, ap);
+  va_end(ap);
+
+  events.send(buffer);
+
+    //Serial.println(buffer);
+
+
+//  int len = strlen(buffer);
+//  Application.getMK20Stack()->requestTask(TaskID::DebugLog,(size_t)(len+1),(uint8_t*)&buffer[0]);
+
 }
 
 void EventLogger::log(const char * msg, ...) {
-  events.send(msg);
+
+    va_list ap;
+    char buffer[128];
+
+    va_start(ap, msg);
+    int ret = vsnprintf(buffer, sizeof buffer, msg, ap);
+    va_end(ap);
+
+    events.send(buffer);
+
+    //Serial.println(buffer);
+
+  //int len = strlen(buffer);
+  //Application.getMK20Stack()->requestTask(TaskID::DebugLog,(size_t)(len+1),(uint8_t*)&buffer[0]);
 
   /*
   va_list args;

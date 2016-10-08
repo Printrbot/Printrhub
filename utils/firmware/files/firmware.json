@@ -1,5 +1,5 @@
 {
-  version: 100,
-  esp_url: "http://static.printrbot.cloud/firmware/simple/esp.bin",
-  mk20_url: "http://static.printrbot.cloud/firmware/simple/mk20.bin"
+  "version": 100,
+  "esp_url": "http://static.printrbot.cloud/firmware/simple/esp.bin",
+  "mk20_url": "http://static.printrbot.cloud/firmware/simple/mk20.bin"
 }

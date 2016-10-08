@@ -60,15 +60,9 @@ void showSplashScreen()
 {
     File file = SD.open("ui", FILE_READ);
     Display.drawFileBitmapByColumn(0,0,320,240,&file,0,0,320,240, uiBitmaps.splash.offset);
-
-    Display.fadeIn();
-
-    delay(3000);
-
-    Display.fadeOut();
-
     file.close();
 
+    Display.fadeIn();
 }
 
 void setup(void)
@@ -91,6 +85,12 @@ void setup(void)
 #ifdef DebugSerial
     {
         DebugSerial.begin(115200);
+
+        #ifdef DEBUG_SETUP
+        DEBUG_SETUP;
+        #endif
+
+        DebugSerial.println("Debug Serial initiated");
     }
 #endif
 
@@ -133,8 +133,6 @@ void setup(void)
     }
     LOG("Started SD card interface");
 
-
-
     showSplashScreen();
 
     if (! Touch.begin(TFT_TOUCH_SENSE_PIN,40))
@@ -145,7 +143,7 @@ void setup(void)
     }
     LOG("Capacitive touchscreen started");
 
-    Display.fillScreen(ILI9341_BLACK);
+    //Display.fillScreen(ILI9341_BLACK);
 
     //testFont();
 
@@ -164,10 +162,8 @@ void setup(void)
     //Application.pushScene(wifiController);
 
 
-    mainScene = new ProjectsScene();
-    Application.pushScene(mainScene);
-
-
+//    mainScene = new ProjectsScene();
+//    Application.pushScene(mainScene);
 }
 
 void loop()

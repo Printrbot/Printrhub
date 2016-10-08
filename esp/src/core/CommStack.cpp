@@ -10,7 +10,8 @@ _port(port),
 _delegate(delegate),
 _expectedPacketType(Header),
 _receiveBufferIndex(0),
-_packetMarker(COMM_STACK_PACKET_MARKER)
+_packetMarker(COMM_STACK_PACKET_MARKER),
+_ready(false)
 {
     pinMode(COMMSTACK_DATAFLOW_PIN,INPUT);
 }
@@ -38,6 +39,18 @@ bool CommStack::prepareResponse(CommHeader *commHeader, bool success)
     }
 
     return false;
+}
+
+void CommStack::log(const char *msg, ...)
+{
+    char buffer[500];
+    va_list args;
+    va_start(args, msg);
+    sprintf(buffer, msg, args);
+    va_end(args);
+
+    int len = strlen(buffer);
+    requestTask(TaskID::DebugLog,(size_t)(len+1),(uint8_t*)&buffer[0]);
 }
 
 /*
@@ -131,15 +144,20 @@ void CommStack::send(const uint8_t* buffer, size_t size)
     LOG_VALUE("Sending encoded data with size",size);
     LOG_VALUE("ReadToSend-Flag",digitalRead(COMMSTACK_DATAFLOW_PIN));
 
+    //Data flow pin is LOW
     if (digitalRead(COMMSTACK_DATAFLOW_PIN) == LOW)
     {
-        LOG("Waiting for Ready To Send Signal");
-        while(digitalRead(COMMSTACK_DATAFLOW_PIN) == LOW)
+        //Only wait if it's been previously been HIGH (i.e. CommStack has been initialized on the other side)
+        if (isReady())
         {
-            ESP.wdtFeed();
-            delayMicroseconds(1);
+            LOG("Waiting for Ready To Send Signal");
+            while(digitalRead(COMMSTACK_DATAFLOW_PIN) == LOW)
+            {
+                ESP.wdtFeed();
+                delayMicroseconds(1);
+            }
+            LOG("Signal received, sending...");
         }
-        LOG("Signal received, sending...");
     }
 
     int numBytesSent = _port->write(_encodeBuffer, numEncoded);
@@ -281,6 +299,15 @@ void CommStack::packetReceived(const uint8_t* buffer, size_t size)
 
 void CommStack::process()
 {
+    //Make sure data flow pin on other side is HIGH, meaning that CommStack on the other side has been initialized
+    if (!_ready)
+    {
+        if (digitalRead(COMMSTACK_DATAFLOW_PIN) == HIGH)
+        {
+            _ready = true;
+        }
+    }
+
     while (_port->available() > 0)
     {
         uint8_t data = _port->read();
@@ -322,6 +349,9 @@ uint16_t CommStack::getCheckSum(const uint8_t *data, size_t size)
 
 bool CommStack::sendMessage(CommHeader &header, size_t contentLength, const uint8_t *data)
 {
+    //Don't send as other side is not ready
+    //if (!isReady()) return false;
+
     if (contentLength > 0)
     {
         //Calculate the checksum and set the checksum
@@ -351,6 +381,14 @@ bool CommStack::requestTask(TaskID task, size_t contentLength, const uint8_t *da
     CommHeader header(task,contentLength);
 
     return sendMessage(header,contentLength,data);
+}
+
+bool CommStack::requestTask(TaskID task, const JsonObject &object)
+{
+    int length = object.measureLength()+1;
+    char buffer[length];
+    object.printTo(buffer,length);
+    return requestTask(task,length,(uint8_t*)buffer);
 }
 
 bool CommStack::requestTask(TaskID task)

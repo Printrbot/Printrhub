@@ -36,7 +36,7 @@ void SidebarSceneController::setupSidebar() {
 		_sidebarImage->setBitmap(getSidebarBitmap());
 		addView(_sidebarImage);
 	} else {
-		Display.fillRect(0,0,50,190, Application.getTheme()->getColor(SidebarBackgroundColor));
+		Display.fillRect(0,0,50,240, Application.getTheme()->getColor(SidebarBackgroundColor));
 	}
 
 }

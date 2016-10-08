@@ -20,7 +20,7 @@ private:
   };
 
 public:
-  MK20FirmwareUpdate(String url);
+  MK20FirmwareUpdate(String localFilePath);
   virtual ~MK20FirmwareUpdate();
 
   virtual void loop();
@@ -30,12 +30,12 @@ public:
   virtual String getName();
 
 private:
-  void downloadFirmware();
   void flashFirmware();
   State _state;
-  String _url;
+  String _localFilePath;
   ARMKinetisDebug target;
   File firmware_file;
+  MK20* _mk20;
 };
 
 

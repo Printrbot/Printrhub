@@ -2,7 +2,6 @@
 #define EVENT_LOGGER_H
 
 #include <Arduino.h>
-#include "core/CommStack.h"
 
 class EventLogger {
 public:

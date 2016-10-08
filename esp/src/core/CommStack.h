@@ -7,6 +7,7 @@
 
 #include "Arduino.h"
 #include "../hal.h"
+#include <ArduinoJson.h>
 
 //Maximum is 255 as currentTaskIndex is a byte
 #define COMM_STACK_MAX_TASKS 10
@@ -49,7 +50,13 @@ enum class TaskID : uint8_t {
   ScanWifi = 21,
   DownloadFile = 22,
   DownloadError = 23,
-  StartFirmwareUpdate = 24
+  StartFirmwareUpdate = 24,
+  Ping = 25,
+  ShowFirmwareUpdateNotification = 26,
+  FirmwareUpdateError = 27,
+  DebugLog = 28,
+  RestartESP = 29,
+  FirmwareUpdateComplete = 30
 };
 
 struct CommHeader {
@@ -121,13 +128,16 @@ public:
 public:
     void process();
     bool requestTask(TaskID task, size_t contentLength, const uint8_t* data);
+    bool requestTask(TaskID task, const JsonObject& object);
     bool requestTask(TaskID task);
     bool responseTask(TaskID task, bool success);
     bool responseTask(TaskID task, size_t contentLength, const uint8_t* data, bool success);
     bool sendMessage(CommHeader& header, size_t contentLength=0, const uint8_t* data=NULL);
     bool requestTasks(TaskID* tasks);
     bool waitForResponse();
+    void log(const char* msg, ...);
     Stream* getPort() const { return _port; };
+    bool isReady() { return _ready; };
 
 private:
     bool prepareResponse(CommHeader* commHeader, bool success);
@@ -149,6 +159,7 @@ private:
     CommHeader _currentHeader;
     PacketType _expectedPacketType;
     uint8_t _packetMarker;
+    bool _ready;
 };
 
 #endif //ESP8266_ARM_SWD_COMMSTACK_H

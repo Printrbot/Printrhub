@@ -24,6 +24,12 @@ SceneController::~SceneController()
 	}
 }
 
+bool SceneController::isModal()
+{
+	//Default is that this scene can be replaced by pushing another one on the stack
+	return false;
+}
+
 void SceneController::loop()
 {
 	if (Touch.touched()) return;
