@@ -85,6 +85,12 @@ void setup(void)
 #ifdef DebugSerial
     {
         DebugSerial.begin(115200);
+
+        #ifdef DEBUG_SETUP
+        DEBUG_SETUP;
+        #endif
+
+        DebugSerial.println("Debug Serial initiated");
     }
 #endif
 
