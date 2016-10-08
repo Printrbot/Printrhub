@@ -110,6 +110,8 @@ void ApplicationClass::loop()
         //If MK20 did not raise CommStack pin to HIGH after 20 seconds we have to apply a firmware
         if ((millis() - _appStartTime) > 20000)
         {
+            //TODO: Find a better way of doing that, this is triggered too often unintentially
+            /*
             //If we have infos about the current MK20 firmware version
             if (_firmwareUpdateInfo != NULL) {
 
@@ -128,7 +130,7 @@ void ApplicationClass::loop()
                     //Start firmware update of MK20
                     Application.pushMode(downloadMK20Firmware);
                 }
-            }
+            }*/
         }
     }
     else
