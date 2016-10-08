@@ -28,13 +28,18 @@ UIBitmap * ConfirmFirmwareUpdateScene::getSidebarIcon() {
 }
 
 UIBitmap * ConfirmFirmwareUpdateScene::getSidebarBitmap() {
-  return NULL;
+  return &uiBitmaps.sidebar_update;
 }
 
 
 uint16_t ConfirmFirmwareUpdateScene::getBackgroundColor()
 {
   return Application.getTheme()->getColor(BackgroundColor);
+}
+
+bool ConfirmFirmwareUpdateScene::isModal()
+{
+  return true;
 }
 
 void ConfirmFirmwareUpdateScene::onWillAppear() {
@@ -71,7 +76,7 @@ void ConfirmFirmwareUpdateScene::buttonPressed(void *button)
 
     //Show firmware in progress scene and initiate firmware update by requesting it to ESP
     FirmwareInProgressScene* scene = new FirmwareInProgressScene();
-    Application.pushScene(scene);
+    Application.pushScene(scene,true);
 
     Application.getESPStack()->requestTask(TaskID::StartFirmwareUpdate);
   }

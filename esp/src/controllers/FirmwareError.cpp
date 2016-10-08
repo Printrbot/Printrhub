@@ -6,6 +6,7 @@
 #include "Idle.h"
 
 FirmwareError::FirmwareError(FirmwareUpdateError error):
+Mode(),
 _error(error)
 {
 

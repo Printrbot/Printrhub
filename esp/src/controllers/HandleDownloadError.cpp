@@ -6,6 +6,7 @@
 #include "Idle.h"
 
 HandleDownloadError::HandleDownloadError(DownloadError error):
+Mode(),
 _error(error)
 {
 

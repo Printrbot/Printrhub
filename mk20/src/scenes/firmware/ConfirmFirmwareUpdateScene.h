@@ -21,6 +21,7 @@ public:
     virtual uint16_t getBackgroundColor() override;
     virtual UIBitmap * getSidebarBitmap() override;
     virtual UIBitmap * getSidebarIcon() override;
+    virtual bool isModal() override;
 
 private:
     virtual void onWillAppear() override;

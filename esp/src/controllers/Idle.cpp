@@ -5,7 +5,8 @@
 #include "../event_logger.h"
 #include "Idle.h"
 
-Idle::Idle()
+Idle::Idle():
+Mode()
 {
 
 }

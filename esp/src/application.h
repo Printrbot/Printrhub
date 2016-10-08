@@ -6,6 +6,7 @@
 #include <FS.h>
 #include "event_logger.h"
 #include "MK20.h"
+#include "errors.h"
 
 class Mode;
 
@@ -37,6 +38,13 @@ public:
 	MK20* getMK20Stack() const { return _mk20; };
 	float getDeltaTime();
 
+	void sendPulse(int length=5, int count=1);
+
+	void reset();
+
+	void idle();
+	void handleError(DownloadError error);
+
 	void setFirmwareUpdateInfo(FirmwareUpdateInfo* info) { _firmwareUpdateInfo = info; };
 	bool firmwareUpdateAvailable() { return _firmwareUpdateInfo != NULL; };
 	FirmwareUpdateInfo* getFirmwareUpdateInfo() { return _firmwareUpdateInfo; };
@@ -53,6 +61,7 @@ private:
 	unsigned long _buttonPressedTime;
 	MK20* _mk20;
 	bool _mk20OK;
+    unsigned long _appStartTime;
 	unsigned long _lastMK20Ping;
 //	WiFiServer _server;
     int _buildNumber;

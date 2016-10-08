@@ -49,10 +49,11 @@ public:
 
 #pragma mark Application Flow
   void pingESP();
+  void resetESP();
   int getBuildNumber() { return _buildNumber; }
 	void loop();
 	void setup();
-	void pushScene(SceneController* scene);
+	void pushScene(SceneController* scene, bool cancelModal=false);
 	SceneController* currentScene() { return _currentScene; };
 
 #pragma mark Touch Handling

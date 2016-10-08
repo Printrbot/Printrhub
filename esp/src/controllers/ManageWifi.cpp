@@ -14,6 +14,7 @@ extern ApplicationClass Application;
 extern Config config;
 
 ManageWifi::ManageWifi() :
+Mode(),
 _state(StateOffline),
 _currentTask(TaskID::StartWifi),
 _webServerStarted(false) {

@@ -49,8 +49,6 @@ void CalibrateScene::onWillAppear() {
   Display.addLayer(hotendLayer);
 
   SDBitmapLayer* offsetLayer = new SDBitmapLayer(Rect(137,75,uiBitmaps.hotend.width-121,uiBitmaps.hotend.height-64));
-  offsetLayer->setXOffset(121);
-  offsetLayer->setYOffset(64);
   offsetLayer->setBitmap("ui",uiBitmaps.hotend.width-121,uiBitmaps.hotend.height-64,uiBitmaps.hotend.offset);
   Display.addLayer(offsetLayer);
 

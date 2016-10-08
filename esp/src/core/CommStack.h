@@ -53,7 +53,10 @@ enum class TaskID : uint8_t {
   StartFirmwareUpdate = 24,
   Ping = 25,
   ShowFirmwareUpdateNotification = 26,
-  FirmwareUpdateError = 27
+  FirmwareUpdateError = 27,
+  DebugLog = 28,
+  RestartESP = 29,
+  FirmwareUpdateComplete = 30
 };
 
 struct CommHeader {
@@ -132,7 +135,9 @@ public:
     bool sendMessage(CommHeader& header, size_t contentLength=0, const uint8_t* data=NULL);
     bool requestTasks(TaskID* tasks);
     bool waitForResponse();
+    void log(const char* msg, ...);
     Stream* getPort() const { return _port; };
+    bool isReady() { return _ready; };
 
 private:
     bool prepareResponse(CommHeader* commHeader, bool success);
@@ -154,6 +159,7 @@ private:
     CommHeader _currentHeader;
     PacketType _expectedPacketType;
     uint8_t _packetMarker;
+    bool _ready;
 };
 
 #endif //ESP8266_ARM_SWD_COMMSTACK_H

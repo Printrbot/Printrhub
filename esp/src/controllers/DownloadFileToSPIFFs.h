@@ -10,7 +10,7 @@
 class DownloadFileToSPIFFs : public DownloadURL
 {
 public:
-    DownloadFileToSPIFFs(String url, String localFilePath, Mode* nextMode);
+    DownloadFileToSPIFFs(String url, String localFilePath);
     ~DownloadFileToSPIFFs();
 
 #pragma mark DownloadURL prototcol
@@ -25,7 +25,6 @@ public:
 private:
     String _localFilePath;
     File _file;
-    Mode* _nextMode;
 };
 
 

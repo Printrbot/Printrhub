@@ -11,6 +11,8 @@
 #include "event_logger.h"
 #include "controllers/CheckForFirmwareUpdates.h"
 #include "controllers/DownloadFileToSPIFFs.h"
+#include "controllers/Idle.h"
+#include "controllers/HandleDownloadError.h"
 
 Config config;
 ApplicationClass Application;
@@ -37,6 +39,9 @@ ApplicationClass::~ApplicationClass() {
 
 void ApplicationClass::setup() {
 
+    //Start with MK20 timeout at current time
+    _appStartTime = millis();
+
 	pinMode(COMMSTACK_WORKING_MARKER_PIN, OUTPUT);
 	digitalWrite(COMMSTACK_WORKING_MARKER_PIN, HIGH);
 
@@ -61,7 +66,8 @@ void ApplicationClass::setup() {
 }
 
 void ApplicationClass::pushMode(Mode *mode) {
-	LOG_VALUE("Pushing mode",mode->getName());
+
+	EventLogger::log("Pushing mode %s",mode->getName().c_str());
 	_nextMode = mode;
 }
 
@@ -75,15 +81,64 @@ void ApplicationClass::pingMK20() {
     _mk20->requestTask(TaskID::Ping,sizeof(int),(uint8_t*)&version);
 }
 
+void ApplicationClass::reset()
+{
+    //Send Restart message to MK20 which will pull ESP_RESET low for a hard reset
+    _mk20->requestTask(TaskID::RestartESP);
+}
+
+void ApplicationClass::sendPulse(int length, int count)
+{
+    float d = (float)length/(float)count;
+    for (int i=0;i<count;i++)
+    {
+        digitalWrite(COMMSTACK_INFO_MARKER_PIN,LOW);
+        delay(d/2);
+        digitalWrite(COMMSTACK_INFO_MARKER_PIN,HIGH);
+        delay(d/2);
+    }
+}
+
 void ApplicationClass::loop()
 {
+    //Process CommStack, this also senses CommStack state of the other side by reading its data flow pin
 	_mk20->process();
 
-    //Peridically send ping to ESP
-    if (!_mk20OK) {
-        if ((millis() - _lastMK20Ping) > 5000) {
-            pingMK20();
-            _lastMK20Ping = millis();
+    //Check if CommStack on other side has been initialized
+    if (!_mk20->isReady())
+    {
+        //If MK20 did not raise CommStack pin to HIGH after 20 seconds we have to apply a firmware
+        if ((millis() - _appStartTime) > 20000)
+        {
+            //If we have infos about the current MK20 firmware version
+            if (_firmwareUpdateInfo != NULL) {
+
+                //Only do that once
+                if (!_firmwareChecked) {
+
+                    //We have a bricked MK20 a WiFi connection and latest firmware infos, download firmware and flash MK20
+                    _firmwareChecked = true;
+                    String mk20FirmwareFile("/mk20_100.bin");
+
+                    //Prepare modes for subsequent execution
+                    MK20FirmwareUpdate* mk20UpdateFirmware = new MK20FirmwareUpdate(mk20FirmwareFile);
+                    DownloadFileToSPIFFs* downloadMK20Firmware = new DownloadFileToSPIFFs(_firmwareUpdateInfo->mk20_url,mk20FirmwareFile);
+                    downloadMK20Firmware->setNextMode(mk20UpdateFirmware);
+
+                    //Start firmware update of MK20
+                    Application.pushMode(downloadMK20Firmware);
+                }
+            }
+        }
+    }
+    else
+    {
+        //CommStack on other side is ready, ping it to establish connection
+        if (!_mk20OK) {
+            if ((millis() - _lastMK20Ping) > 5000) {
+                pingMK20();
+                _lastMK20Ping = millis();
+            }
         }
     }
 
@@ -125,7 +180,7 @@ void ApplicationClass::loop()
     {
         if (!_firmwareChecked && _firmwareUpdateInfo != NULL) {
             _firmwareChecked = true;
-            EventLogger::log("Firmware update check finished, checking version");
+            EventLogger::log("MK20 is ready, firmware is loaded.");
 
             if (_firmwareUpdateInfo->buildnr > FIRMWARE_BUILDNR) {
                 EventLogger::log("New firmware available, asking for update");
@@ -166,28 +221,23 @@ void ApplicationClass::loop()
 	}
 }
 
+void ApplicationClass::idle()
+{
+    Idle* idle = new Idle();
+    pushMode(idle);
+}
+
+void ApplicationClass::handleError(DownloadError error)
+{
+    idle();
+}
+
 bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)
 {
-	// skip all data writing tasks
-	if (header.getCurrentTask() != TaskID::FileSaveData) {
-		EventLogger::log("!New TASK!");
-		char i[3];
-		sprintf(i, "%d", header.getCurrentTask());
-		EventLogger::log(i);
-	}
-	/*
-	EventLogger::log("Current mode is:");
-	char c[_currentMode->getName().length()+1];
-	_currentMode->getName().toCharArray(c, sizeof(c), 0);
-	EventLogger::log(c);
-*/
-
 	if (_currentMode != NULL && _currentMode->handlesTask(header.getCurrentTask())) {
 		//EventLogger::log("RUNNIGN CURRENT TASK");
 		return _currentMode->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
 	}
-
-    EventLogger::log("CURRENT MODE DOES NOT HANDLE THIS TASK");
 
     TaskID taskID = header.getCurrentTask();
 	if (taskID == TaskID::DownloadFile || taskID == TaskID::GetProjectItemWithID || taskID == TaskID::GetJobWithID)
@@ -215,6 +265,7 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 
             //Stop sending pings to MK20
             _mk20OK = true;
+            _firmwareChecked = false;
 
             //Send ESP build number in response
             buildNumber = FIRMWARE_BUILDNR;
@@ -236,9 +287,23 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
         *sendResponse = false;
         *responseDataSize = 0;
 
-        MK20FirmwareUpdate* updateFirmware = new MK20FirmwareUpdate();
-        DownloadFileToSPIFFs* downloadMK20Firmware = new DownloadFileToSPIFFs(_firmwareUpdateInfo->mk20_url,String("/mk20.bin"),(Mode*)updateFirmware);
+        //Prepare files
+        String mk20FirmwareFile("/mk20_100.bin");
+
+        //Prepare modes for subsequent execution
+        MK20FirmwareUpdate* mk20UpdateFirmware = new MK20FirmwareUpdate(mk20FirmwareFile);
+        ESPFirmwareUpdate* espUpdateFirmware = new ESPFirmwareUpdate(_firmwareUpdateInfo->esp_url);
+        DownloadFileToSPIFFs* downloadMK20Firmware = new DownloadFileToSPIFFs(_firmwareUpdateInfo->mk20_url,mk20FirmwareFile);
+
+        //Chain modes together: Download MK20 firmware, flash MK20, update ESP
+        downloadMK20Firmware->setNextMode(mk20UpdateFirmware);
+        mk20UpdateFirmware->setNextMode(espUpdateFirmware);
+
+        //Start with the first one
         Application.pushMode(downloadMK20Firmware);
+
+        //ESPFirmwareUpdate* espUpdateFirmware = new ESPFirmwareUpdate(_firmwareUpdateInfo->esp_url);
+        //Application.pushMode(espUpdateFirmware );
     }
     else if (taskID == TaskID::StartWifi || taskID == TaskID::StopWifi)
     {
@@ -258,6 +323,11 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
         EventLogger::log("GOT REPLY ON GCODE RUN");
         // do not need to create new mode for this...
 
+        *sendResponse = false;
+    }
+    else if (taskID == TaskID::DebugLog)
+    {
+        //Just ignore it and don't send a response
         *sendResponse = false;
     }
 

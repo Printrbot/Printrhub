@@ -6,9 +6,8 @@
 #include "Idle.h"
 #include "HandleDownloadError.h"
 
-DownloadFileToSPIFFs::DownloadFileToSPIFFs(String url, String localFilePath, Mode* nextMode):
+DownloadFileToSPIFFs::DownloadFileToSPIFFs(String url, String localFilePath):
         DownloadURL(url),
-        _nextMode(nextMode),
         _localFilePath(localFilePath)
 {}
 
@@ -23,16 +22,20 @@ String DownloadFileToSPIFFs::getName()
 
 bool DownloadFileToSPIFFs::onBeginDownload(uint32_t expectedSize)
 {
-    _file = SPIFFS.open("/download.tmp", "w");
-
-    Serial.println("Download began");
+    //_file = SPIFFS.open("/download.tmp", "w");
+    EventLogger::log("Saving downloaded file in path %s",_localFilePath.c_str());
+    _file = SPIFFS.open(_localFilePath, "w");
+    if (!_file)
+    {
+        EventLogger::log("Failed to open file %s",_localFilePath.c_str());
+        return false;
+    }
 
     return true;
 }
 
 bool DownloadFileToSPIFFs::onDataReceived(uint8_t *data, uint16_t size)
 {
-    Serial.println("Data received");
     _file.write(data,size);
 
     return true;
@@ -40,7 +43,6 @@ bool DownloadFileToSPIFFs::onDataReceived(uint8_t *data, uint16_t size)
 
 void DownloadFileToSPIFFs::onError(DownloadError errorCode)
 {
-    Serial.println("Error");
     HandleDownloadError* error = new HandleDownloadError(errorCode);
     Application.pushMode(error);
 }
@@ -48,10 +50,9 @@ void DownloadFileToSPIFFs::onError(DownloadError errorCode)
 void DownloadFileToSPIFFs::onFinished()
 {
     _file.close();
-    Serial.println("Finished");
 
     //Delete existing file and rename downloaded file
-    if (SPIFFS.exists(_localFilePath)) {
+/*    if (SPIFFS.exists(_localFilePath)) {
         Serial.println("File exists");
         if (!SPIFFS.remove(_localFilePath)) {
             Serial.println("Remove failed");
@@ -66,16 +67,7 @@ void DownloadFileToSPIFFs::onFinished()
         HandleDownloadError* error = new HandleDownloadError(DownloadError::PrepareDownloadedFileFailed);
         Application.pushMode(error);
         return;
-    }
+    }*/
 
-    if (_nextMode != NULL)
-    {
-        Serial.println("Update firmware");
-        Application.pushMode(_nextMode);
-    }
-    else
-    {
-        Idle* idle = new Idle();
-        Application.pushMode(idle);
-    }
+    exit();
 }

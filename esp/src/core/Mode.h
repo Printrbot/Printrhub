@@ -42,10 +42,16 @@ public:
 
 #pragma mark Misc
 	virtual String getName() = 0;
+	virtual void setNextMode(Mode* mode);
+
+#pragma mark Internally used
+protected:
+	virtual void exit();
+    virtual void exitWithError(DownloadError error);
 
 #pragma mark Member Variables
 private:
-
+	Mode* _nextMode;
 };
 
 

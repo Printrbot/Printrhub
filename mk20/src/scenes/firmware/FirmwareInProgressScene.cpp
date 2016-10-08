@@ -29,7 +29,7 @@ UIBitmap * FirmwareInProgressScene::getSidebarIcon() {
 }
 
 UIBitmap * FirmwareInProgressScene::getSidebarBitmap() {
-  return NULL;
+  return &uiBitmaps.sidebar_update;
 }
 
 
@@ -45,6 +45,10 @@ void FirmwareInProgressScene::onWillAppear() {
   addView(icon);
 
   SidebarSceneController::onWillAppear();
+}
+
+bool FirmwareInProgressScene::isModal() {
+  return true;
 }
 
 

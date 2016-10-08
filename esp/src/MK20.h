@@ -17,7 +17,7 @@ public:
 
     void reset();
     bool writeFirmware(File &file);
-    bool updateFirmware();
+    bool updateFirmware(String localFilePath);
     void showUpdateFirmwareNotification();
 
     bool isTimedOut() { return !_isAlive && _timeout > 10; };
