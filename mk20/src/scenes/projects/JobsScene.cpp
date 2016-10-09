@@ -131,8 +131,8 @@ void JobsScene::buttonPressed(void *button)
 
     if (jobExists) {
       LOG_VALUE("Printing Job-Nr",getPageIndex());
-      //PrintStatusScene * scene = new PrintStatusScene(filePath, _project, job, getPageIndex());
-      //Application.pushScene(scene);
+      PrintStatusScene * scene = new PrintStatusScene(filePath, _project, job, getPageIndex());
+      Application.pushScene(scene);
       //DownloadFileController* scene = new DownloadFileController(String(job.url),filePath);
       //Application.pushScene(scene);
     } else {
