@@ -8,6 +8,7 @@
 #include "Application.h"
 #include "event_logger.h"
 #include "CheckForFirmwareUpdates.h"
+#include <ArduinoJson.h>
 
 extern WebServer webserver;
 extern ApplicationClass Application;
@@ -53,16 +54,26 @@ void ManageWifi::loop() {
   if (_currentTask == TaskID::ScanWifi && _state != StateSuccess ) {
     // currently just outputs detected networks to event logger for debugging
     EventLogger::log("SCANNING WIFI");
+
+    StaticJsonBuffer<1000> jsonBuffer;
+    JsonObject& root = jsonBuffer.createObject();
+    JsonArray& data = root.createNestedArray("networks");
+
+    File netfile = SPIFFS.open("/net.json", "w");
     int n = WiFi.scanNetworks();
     EventLogger::log("scan done");
     if (n == 0)
       EventLogger::log("no networks found");
     else {
       for (int i = 0; i < n; ++i) {
+        //netfile.write(WiFi.SSID(i).c_str());
+        data.add(String(WiFi.SSID(i)));
         EventLogger::log(WiFi.SSID(i).c_str());
         delay(10);
       }
     }
+    root.printTo(netfile);
+    netfile.close();
     EventLogger::log("done");
     _state = StateSuccess;
     return;
