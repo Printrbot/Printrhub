@@ -36,6 +36,8 @@ private:
 	String _projectIndex;
   Job* _jobs;
 	Project _project;
+	String _jobFilePath;
+	Job _selectedJob;
 
 protected:
 	BitmapButton* _printBtn;

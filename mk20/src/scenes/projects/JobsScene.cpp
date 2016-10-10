@@ -71,8 +71,15 @@ void JobsScene::onWillAppear() {
 
   _file.close();
 
-  _printBtn = new BitmapButton(Rect(167,190,uiBitmaps.btn_print.width,uiBitmaps.btn_print.height));
-  _printBtn->setBitmap(&uiBitmaps.btn_print);
+  _selectedJob = _jobs[0];
+  _jobFilePath = "/jobs/" + String(_project.index) + "/" + String(_selectedJob.index);
+
+  _printBtn = new BitmapButton(Rect(80,190,uiBitmaps.btn_print_start.width,uiBitmaps.btn_print_start.height));
+  if (SD.exists(_jobFilePath.c_str())) {
+    _printBtn->setBitmap(&uiBitmaps.btn_print_start);
+  } else {
+    _printBtn->setBitmap(&uiBitmaps.btn_print_download);
+  }
   _printBtn->setVisible(true);
   _printBtn->setDelegate(this);
   addView(_printBtn);
@@ -96,10 +103,19 @@ void JobsScene::animationFinished(Animation *animation) {
   float x = Display.getLayoutWidth() * index;
 
   //_printBtn->setIcon(imageOfOpenButton_65_65, Application.getTheme()->getColor(HighlightBackgroundColor), 65, 65);
-  _printBtn->setFrame(Rect((x+167),190,uiBitmaps.btn_print.width,uiBitmaps.btn_print.height));
+
+  // check if local job file exists
+  _selectedJob = _jobs[getPageIndex()];
+  _jobFilePath = "/jobs/" + String(_project.index) + "/" + String(_selectedJob.index);
+
+  _printBtn->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
+  if (SD.exists(_jobFilePath.c_str())) {
+    _printBtn->setBitmap(&uiBitmaps.btn_print_start);
+  } else {
+    _printBtn->setBitmap(&uiBitmaps.btn_print_download);
+  }
   _printBtn->setVisible(true);
   _printBtn->setDelegate(this);
-
 }
 
 void JobsScene::onSidebarButtonTouchUp() {
@@ -110,28 +126,10 @@ void JobsScene::onSidebarButtonTouchUp() {
 void JobsScene::buttonPressed(void *button)
 {
   if (button == _printBtn) {
-
     //Query current Job item
-    Job job = _jobs[getPageIndex()];
-
-    //This does not work as Job structs index field is 8 bytes but filled with content, there is no byte left for the null terminator,
-    //thus this code adds the index and the title to fn (as job.index delivers index+title as index doesn't have a null terminator)
-    //TODO: Change job index structure to 9 bytes for index to give room for null terminator
-    //String fn = String("/jobs/") + String(job.index);
-
-    //We know how long the filename will be, as /jobs/ (6) + project index (8) + "/" (1) + job index (8) have constant width, add +1 for null terminator!
-    //This is a bad hack that shouldn't be necessary as soon as job index is fixed
-
-    String filePath = "/jobs/" + String(_project.index) + "/" + String(job.index);
-
-
-    //memcpy(&filePath[6],job.index,sizeof(char)*8); //Append job index
-
-    bool jobExists = SD.exists(filePath.c_str());
-
-    if (jobExists) {
+    if (SD.exists(_jobFilePath.c_str())) {
       LOG_VALUE("Printing Job-Nr",getPageIndex());
-      PrintStatusScene * scene = new PrintStatusScene(filePath, _project, job, getPageIndex());
+      PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _selectedJob, getPageIndex());
       Application.pushScene(scene);
       //DownloadFileController* scene = new DownloadFileController(String(job.url),filePath);
       //Application.pushScene(scene);
@@ -143,7 +141,7 @@ void JobsScene::buttonPressed(void *button)
         SD.mkdir(_jdir.c_str());
       }
 
-      DownloadFileController* scene = new DownloadFileController(String(job.url),filePath);
+      DownloadFileController* scene = new DownloadFileController(String(_selectedJob.url),_jobFilePath);
       Application.pushScene(scene);
     }
   }
