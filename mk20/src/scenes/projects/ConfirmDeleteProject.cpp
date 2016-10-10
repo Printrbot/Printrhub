@@ -83,7 +83,33 @@ void ConfirmDeleteProject::buttonPressed(void *button)
     ProjectsScene * scene = new ProjectsScene();
     Application.pushScene(scene);
   } else if (button == _yesBtn) {
+
+    // remove project index
     SD.remove(_filePath.c_str());
+
+    // remove job directory and all files in it
+    _filePath.remove(0,9);
+    String jobsFolderPath = String("/jobs" + _filePath);
+
+    if (SD.exists(jobsFolderPath.c_str())) {
+      File jobsFolder = SD.open(jobsFolderPath.c_str());
+
+      while (true) {
+        File jf = jobsFolder.openNextFile();
+        if (!jf) {
+          break;
+        }
+        String jfn = jobsFolderPath + String("/");
+        jfn = jfn + String(jf.name());
+        jf.close();
+        SD.remove(jfn.c_str());
+      }
+
+      // remove now empty directory
+      SD.rmdir(jobsFolderPath.c_str());
+    }
+
+
     ProjectsScene * scene = new ProjectsScene();
     Application.pushScene(scene);
   }
