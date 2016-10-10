@@ -74,23 +74,36 @@ void JobsScene::onWillAppear() {
   _selectedJob = _jobs[0];
   _jobFilePath = "/jobs/" + String(_project.index) + "/" + String(_selectedJob.index);
 
-  _printBtn = new BitmapButton(Rect(80,190,uiBitmaps.btn_print_start.width,uiBitmaps.btn_print_start.height));
+  _printBtnDownload = new BitmapButton(Rect(80,190,uiBitmaps.btn_print_download.width,uiBitmaps.btn_print_download.height));
+  _printBtnStart = new BitmapButton(Rect(80,190,uiBitmaps.btn_print_start.width,uiBitmaps.btn_print_start.height));
+
+  _printBtnStart->setBitmap(&uiBitmaps.btn_print_start);
+  _printBtnDownload->setBitmap(&uiBitmaps.btn_print_download);
+
+  _printBtnStart->setDelegate(this);
+  _printBtnDownload->setDelegate(this);
+
   if (SD.exists(_jobFilePath.c_str())) {
-    _printBtn->setBitmap(&uiBitmaps.btn_print_start);
+    _printBtnStart->setVisible(true);
+    _printBtnDownload->setVisible(false);
   } else {
-    _printBtn->setBitmap(&uiBitmaps.btn_print_download);
+    _printBtnStart->setVisible(true);
+    _printBtnDownload->setVisible(false);
   }
-  _printBtn->setVisible(true);
-  _printBtn->setDelegate(this);
-  addView(_printBtn);
+
+  addView(_printBtnStart);
+  addView(_printBtnDownload);
 
   SidebarSceneController::onWillAppear();
   //Display.drawBitmap(0,0,50,190, imageOfJobsText_50_190,0,0,50,190);
 }
 
 void JobsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
-  if (_printBtn != NULL) {
-    _printBtn->setVisible(false);
+  if (_printBtnStart != NULL) {
+    _printBtnStart->setVisible(false);
+  }
+  if (_printBtnDownload != NULL) {
+    _printBtnDownload->setVisible(false);
   }
   SceneController::handleTouchMoved(point, oldPoint);
 }
@@ -102,20 +115,20 @@ void JobsScene::animationFinished(Animation *animation) {
   int index = getPageIndex();
   float x = Display.getLayoutWidth() * index;
 
-  //_printBtn->setIcon(imageOfOpenButton_65_65, Application.getTheme()->getColor(HighlightBackgroundColor), 65, 65);
-
   // check if local job file exists
   _selectedJob = _jobs[getPageIndex()];
   _jobFilePath = "/jobs/" + String(_project.index) + "/" + String(_selectedJob.index);
 
-  _printBtn->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
+  //_printBtn->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
   if (SD.exists(_jobFilePath.c_str())) {
-    _printBtn->setBitmap(&uiBitmaps.btn_print_start);
+    _printBtnStart->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
+    _printBtnStart->setVisible();
+    _printBtnStart->setDelegate(this);
   } else {
-    _printBtn->setBitmap(&uiBitmaps.btn_print_download);
+    _printBtnDownload->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_download.width, uiBitmaps.btn_print_download.height));
+    _printBtnDownload->setVisible();
+    _printBtnDownload->setDelegate(this);
   }
-  _printBtn->setVisible(true);
-  _printBtn->setDelegate(this);
 }
 
 void JobsScene::onSidebarButtonTouchUp() {
@@ -125,25 +138,23 @@ void JobsScene::onSidebarButtonTouchUp() {
 
 void JobsScene::buttonPressed(void *button)
 {
-  if (button == _printBtn) {
-    //Query current Job item
-    if (SD.exists(_jobFilePath.c_str())) {
-      LOG_VALUE("Printing Job-Nr",getPageIndex());
-      PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _selectedJob, getPageIndex());
-      Application.pushScene(scene);
-      //DownloadFileController* scene = new DownloadFileController(String(job.url),filePath);
-      //Application.pushScene(scene);
-    } else {
-      LOG_VALUE("Need to download file",getPageIndex());
-      // create directory if needed
-      String _jdir = String("/jobs/"+ String(_project.index));
-      if (!SD.exists(_jdir.c_str())) {
-        SD.mkdir(_jdir.c_str());
-      }
-
-      DownloadFileController* scene = new DownloadFileController(String(_selectedJob.url),_jobFilePath);
-      Application.pushScene(scene);
+  if (button == _printBtnStart) {
+    LOG_VALUE("Printing Job-Nr",getPageIndex());
+    PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _selectedJob, getPageIndex());
+    Application.pushScene(scene);
+    //DownloadFileController* scene = new DownloadFileController(String(job.url),filePath);
+    //Application.pushScene(scene);
+  } else if (button == _printBtnDownload) {
+    LOG_VALUE("Need to download file",getPageIndex());
+    // create directory if needed
+    String _jdir = String("/jobs/"+ String(_project.index));
+    if (!SD.exists(_jdir.c_str())) {
+      SD.mkdir(_jdir.c_str());
     }
+
+    DownloadFileController* scene = new DownloadFileController(String(_selectedJob.url),_jobFilePath);
+    Application.pushScene(scene);
   }
+
   SidebarSceneController::buttonPressed(button);
 }

@@ -40,7 +40,8 @@ private:
 	Job _selectedJob;
 
 protected:
-	BitmapButton* _printBtn;
+	BitmapButton* _printBtnDownload;
+  BitmapButton* _printBtnStart;
 };
 
 #endif
