@@ -22,7 +22,7 @@ private:
     virtual void buttonPressed(void *button) override;
 
 protected:
-		BitmapButton* _jobs;
+		BitmapButton* _materials;
 		BitmapButton* _filament;
 	  BitmapButton* _wifi;
     BitmapButton* _calibrate;

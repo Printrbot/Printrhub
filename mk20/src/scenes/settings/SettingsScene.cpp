@@ -50,10 +50,10 @@ void SettingsScene::onWillAppear() {
   _wifi->setDelegate(this);
   addView(_wifi);
 
-  _jobs = new BitmapButton(Rect(22,130,uiBitmaps.btn_jobs.width,uiBitmaps.btn_jobs.height));
-  _jobs->setBitmap(&uiBitmaps.btn_jobs);
-  _jobs->setDelegate(this);
-  addView(_jobs);
+  _materials = new BitmapButton(Rect(22,130,uiBitmaps.btn_materials.width,uiBitmaps.btn_materials.height));
+  _materials->setBitmap(&uiBitmaps.btn_materials);
+  _materials->setDelegate(this);
+  addView(_materials);
 
   _update = new BitmapButton(Rect(102,130,uiBitmaps.btn_update.width,uiBitmaps.btn_update.height));
   _update->setBitmap(&uiBitmaps.btn_update);
@@ -84,7 +84,7 @@ void SettingsScene::buttonPressed(void *button)
     CalibrateScene * scene = new CalibrateScene();
     Application.pushScene(scene);
   }
-  else if (button == _jobs) {
+  else if (button == _materials) {
 
   }
   else if (button == _update) {
