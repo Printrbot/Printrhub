@@ -17,6 +17,7 @@ struct FirmwareUpdateInfo {
 	int buildnr;
 	String mk20_url;
 	String esp_url;
+	String mk20_ui_url;
 };
 
 class ApplicationClass: CommStackDelegate

@@ -27,6 +27,9 @@ public:
     void setBuildNumber(int buildNumber) { _buildNumber = buildNumber; _isAlive = true; _timeout = 0; _numTries = 0; };
     bool isAlive() { return _isAlive; };
     bool needsUpdate() { return FIRMWARE_BUILDNR > _buildNumber; };
+    bool openSDFileForWrite(String targetFilePath, size_t bytesToSend, bool showUI=false);
+    bool sendSDFileData(uint8_t* data, size_t size);
+    bool closeSDFile();
 
 private:
     unsigned long _timeout;

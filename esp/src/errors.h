@@ -19,6 +19,11 @@ enum class DownloadError {
 
     ESPUpdateNoUpdates = 200,
     ESPUpdateFailed = 201
+
+    LocalFileNotFound = 300,
+    LocalFileOpenForReadFailed = 301,
+
+    TargetFileOpenForWriteFailed = 400
 };
 
 enum class FirmwareUpdateError {

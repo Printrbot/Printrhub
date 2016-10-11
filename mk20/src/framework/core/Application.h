@@ -19,6 +19,7 @@
 #include "HAL.h"
 #include "LED.h"
 #include <SoftwareSerial.h>
+#include "BackgroundJob.h"
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
@@ -56,6 +57,10 @@ public:
 	void pushScene(SceneController* scene, bool cancelModal=false);
 	SceneController* currentScene() { return _currentScene; };
 
+#pragma mark Background Jobs
+  void pushJob(BackgroundJob* job);
+	BackgroundJob* currentJob() { return _currentJob; };
+
 #pragma mark Touch Handling
 	void handleTouches();
 
@@ -88,6 +93,8 @@ private:
   int _buildNumber;
   bool _espOK;
   unsigned long _lastESPPing;
+	BackgroundJob* _currentJob;
+	BackgroundJob* _nextJob;
 };
 
 extern ApplicationClass Application;

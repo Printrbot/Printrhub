@@ -12,6 +12,7 @@
 #include "Printr.h"
 #include <ArduinoJson.h>
 #include "../../errors.h"
+#include "../../jobs/ReceiveSDCardFile.h"
 
 ApplicationClass Application;
 
@@ -29,6 +30,7 @@ ApplicationClass::ApplicationClass()
 	_esp = new CommStack(&Serial3,this);
   _espOK = false;
   _lastESPPing = 0;
+  _currentJob = NULL;
 }
 
 ApplicationClass::~ApplicationClass()
@@ -139,6 +141,27 @@ void ApplicationClass::loop()
 	//Clear the display
 	//Display.clear();
 
+  //Handling background jobs
+  if (_nextJob != NULL)
+  {
+    if (_currentJob != NULL) {
+      //Send terminating handler
+      _currentJob->onWillEnd();
+      delete _currentJob;
+    }
+
+    _currentJob = _nextJob;
+    _nextJob = NULL;
+
+    //Send will start event
+    _currentJob->onWillStart();
+  }
+
+  if (_currentJob != NULL) {
+    _currentJob->loop();
+  }
+
+  //UI Handling
 	if (_nextScene != NULL)
 	{
 		//Shut down display to hide the build process of the layout (which is step by step and looks flashy)
@@ -255,6 +278,10 @@ void ApplicationClass::pushScene(SceneController *scene, bool cancelModal)
 	_nextScene = scene;
 }
 
+void ApplicationClass::pushJob(BackgroundJob *job) {
+  _nextJob = job;
+}
+
 ColorTheme* ApplicationClass::getTheme()
 {
 	return &_theme;
@@ -290,6 +317,10 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 		LOG_VALUE("Current scene handles Task with ID",header.getCurrentTask());
 		return _currentScene->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
 	}
+
+  if (_currentJob != NULL && _currentJob->handlesTask(header.getCurrentTask())) {
+    return _currentJob->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
+  }}
 
 	LOG_VALUE("Running Task with ID",header.getCurrentTask());
 	LOG_VALUE("Comm-Type",header.commType);
@@ -433,7 +464,40 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
     //Show Project scene
     ProjectsScene* scene = new ProjectsScene();
     pushScene(scene,true);
+  } else if (header.getCurrentTask() == TaskID::FileOpenForWrite) {
+    if (header.commType == Request) {
+
+      StaticJsonBuffer<500> jsonBuffer;
+      String jsonObject((const char *) data);
+      JsonObject &root = jsonBuffer.parseObject(jsonObject);
+
+      if (root.success()) {
+        String localFilePath = root["localFilePath"];
+        if (localFilePath.length() > 0) {
+          if (SD.exists(localFilePath.c_str())) {
+            *responseDataSize = 0;
+            *sendResponse = true;
+            *success = true;
+
+            size_t fileSize = root["fileSize"];
+
+            ReceiveSDCardFile* job = new ReceiveSDCardFile(localFilePath, fileSize);
+            Application.pushJob(job);
+
+          } else {
+            *responseDataSize = 0;
+            *sendResponse = true;
+            *success = false;
+          }
+        }
+      } else {
+        LOG("Could not parse SaveProjectWithID data package from JSON");
+      }
+
+      //Do not send a response as we will trigger a "mode" change on ESP in the next request
+      *sendResponse = false;
   }
+
 
 
 /*	else if (header.getCurrentTask() == GetJobWithID || header.getCurrentTask() == GetProjectItemWithID)
