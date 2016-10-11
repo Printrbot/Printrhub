@@ -4,6 +4,20 @@ var Jimp = require("jimp")
   , _ = require('underscore')
   , _inJobs = 0;
 
+function toHex(i) {
+    return "0x" + i.toString(16).toUpperCase();
+}
+
+function RGB565(color) {
+  var r = color >> 24 & 0xFF;
+  var g = color >> 16 & 0xFF;
+  var b = color >> 8 & 0xFF;
+  var a = color & 0xFF;
+
+  var rgb565 = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
+  return rgb565;
+}
+
 var imgToBuf = function(img) {
   return new Promise(function(resolve, reject) {
     Jimp.read("./gui/png/"+img).then(function (image) {
@@ -26,33 +40,42 @@ var imgToBuf = function(img) {
 
 var cImgToBuf = function(img) {
   return new Promise(function(resolve, reject) {
-    var currentColor = 0;
+    var lastColor = 0;
     var colorCounter = 0;
+    console.log(img);
     Jimp.read("./gui/png/"+img).then(function (image) {
       var fbuf = new Buffer(0);
-      image.dither565();
       for (var x=0;x<image.bitmap.width;x++) {
         for (var y=0;y<image.bitmap.height;y++) {
+          //Read 32-bit color value from image
           var b = image.getPixelColor(x,y);
-          if (x == 0 && y == 0) {
-            currentColor = b;
-            colorCounter += 1;
+          //Compress to RGB565 format
+          b = RGB565(b);
+
+          if (colorCounter == 0) {
+            lastColor = b;
+            colorCounter++;
           } else {
-            if (b == currentColor) {
-              colorCounter += 1;
-            } else {
-              // write previous color
-              var rgba = Jimp.intToRGBA(currentColor);
-              var _p = rgba.r << 8 | rgba.g << 3 | rgba.b >> 3;
+            //Write to buffer if color is different or colorCounter will overflow (as it's only one byte we can only store up to 255 chunks of data)
+            if (b != lastColor || colorCounter > 255) {
+              //We finished this chunk of data, write to file
               var buf = new Buffer(3);
               buf.writeUInt8(colorCounter);
-              buf.writeUInt16LE(_p, 1);
-              fbuf = Buffer.concat([fbuf, buf]);
-              currentColor = b;
+              buf.writeUInt16LE(lastColor);
+              fbuf = Buffer.concat([fbuf, buf])
               colorCounter = 1;
+              lastColor = b;
             }
           }
         }
+      }
+
+      //Make sure we also store the last chunk of data
+      if (colorCounter > 0) {
+        var buf = new Buffer(3);
+        buf.writeUInt8(colorCounter);
+        buf.writeUInt16LE(lastColor);
+        fbuf = Buffer.concat([fbuf, buf])
       }
       console.info("RESOLVING ", fbuf.length)
       resolve(fbuf);
@@ -65,6 +88,7 @@ var promises = []
   , pngs = [];
 
 fs.openAsync('./gui/ui', 'w')
+fs.openAsync('./gui/ui.min', 'w')
 .then(fs.openAsync('./gui/struct.h', 'w'))
 .then(fs.readdirSync('./gui/png').forEach(function(file) {
   if (file[0] != ".")
