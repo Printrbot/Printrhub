@@ -12,7 +12,7 @@
 
 extern UIBitmaps uiBitmaps;
 
-JobsScene::JobsScene(String projectIndex):
+JobsScene::JobsScene(String projectIndex, int jobOffset):
   SidebarSceneController::SidebarSceneController(),
   _projectIndex(projectIndex),
   _jobs(NULL){
@@ -74,8 +74,8 @@ void JobsScene::onWillAppear() {
   _selectedJob = _jobs[0];
   _jobFilePath = "/jobs/" + String(_project.index) + "/" + String(_selectedJob.index);
 
-  _printBtnDownload = new BitmapButton(Rect(80,190,uiBitmaps.btn_print_download.width,uiBitmaps.btn_print_download.height));
-  _printBtnStart = new BitmapButton(Rect(80,190,uiBitmaps.btn_print_start.width,uiBitmaps.btn_print_start.height));
+  _printBtnDownload = new BitmapButton(Rect(-100,180,uiBitmaps.btn_print_download.width,uiBitmaps.btn_print_download.height));
+  _printBtnStart = new BitmapButton(Rect(-100,180,uiBitmaps.btn_print_start.width,uiBitmaps.btn_print_start.height));
 
   _printBtnStart->setBitmap(&uiBitmaps.btn_print_start);
   _printBtnDownload->setBitmap(&uiBitmaps.btn_print_download);
@@ -84,18 +84,25 @@ void JobsScene::onWillAppear() {
   _printBtnDownload->setDelegate(this);
 
   if (SD.exists(_jobFilePath.c_str())) {
+    _printBtnStart->setFrame(Rect(10, 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
     _printBtnStart->setVisible(true);
     _printBtnDownload->setVisible(false);
   } else {
-    _printBtnStart->setVisible(true);
-    _printBtnDownload->setVisible(false);
+    _printBtnDownload->setFrame(Rect(10, 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
+    _printBtnDownload->setVisible(true);
+    _printBtnStart->setVisible(false);
   }
 
   addView(_printBtnStart);
   addView(_printBtnDownload);
 
   SidebarSceneController::onWillAppear();
-  //Display.drawBitmap(0,0,50,190, imageOfJobsText_50_190,0,0,50,190);
+
+
+  // TODO
+  // if job index is > 0, then shift the display to show that job
+  // ....
+
 }
 
 void JobsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
@@ -121,11 +128,11 @@ void JobsScene::animationFinished(Animation *animation) {
 
   //_printBtn->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
   if (SD.exists(_jobFilePath.c_str())) {
-    _printBtnStart->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
+    _printBtnStart->setFrame(Rect((x + 10), 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
     _printBtnStart->setVisible();
     _printBtnStart->setDelegate(this);
   } else {
-    _printBtnDownload->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_download.width, uiBitmaps.btn_print_download.height));
+    _printBtnDownload->setFrame(Rect((x + 10), 180, uiBitmaps.btn_print_download.width, uiBitmaps.btn_print_download.height));
     _printBtnDownload->setVisible();
     _printBtnDownload->setDelegate(this);
   }
