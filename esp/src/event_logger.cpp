@@ -11,7 +11,7 @@ extern AsyncEventSource events;
 void EventLogger::log(char * msg, ...) {
 
   va_list ap;
-  char buffer[128];
+  char buffer[256];
 
   va_start(ap, msg);
   int ret = vsnprintf(buffer, sizeof buffer, msg, ap);
@@ -30,7 +30,7 @@ void EventLogger::log(char * msg, ...) {
 void EventLogger::log(const char * msg, ...) {
 
     va_list ap;
-    char buffer[128];
+    char buffer[256];
 
     va_start(ap, msg);
     int ret = vsnprintf(buffer, sizeof buffer, msg, ap);
