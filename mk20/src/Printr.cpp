@@ -152,6 +152,7 @@ int Printr::startJob(String filePath) {
   sendLine("G92.1 X0 Y0 Z0 A0 B0");
   runJobStartGCode();
 
+  _totalProgramLines = totalLines;
   return totalLines;
 }
 
@@ -163,8 +164,9 @@ void Printr::runJobStartGCode() {
   _printing = true;
 }
 
-void Printr::runJobEndGCode() {
 
+void Printr::cancelCurrentJob() {
+  programEnd();
 }
 
 

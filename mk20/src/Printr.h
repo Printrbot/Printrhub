@@ -26,7 +26,10 @@ public:
   void turnOffHotend();
 
   int startJob(String filePath);
+  void cancelCurrentJob();
   bool isHomed() { return _homeX && _homeY && _homeZ; };
+  bool isPrinting() { return _printing; };
+  int getTotalJobLines() { return _totalProgramLines; };
 
   void homeX();
   void homeY();
@@ -38,8 +41,6 @@ private:
   void parseResponse();
 
   void runJobStartGCode();
-  void runJobEndGCode();
-
 
   PrintrBuffer readBuffer;
 

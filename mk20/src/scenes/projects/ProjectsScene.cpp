@@ -79,7 +79,7 @@ void ProjectsScene::onWillAppear() {
     return;
   }
 
-  _openBtn = new BitmapButton(Rect(63,190,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
+  _openBtn = new BitmapButton(Rect(10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
   _openBtn->setBitmap(&uiBitmaps.btn_open);
   _openBtn->setVisible(true);
   _openBtn->setDelegate(this);
@@ -113,7 +113,7 @@ void ProjectsScene::animationFinished(Animation *animation) {
   int index = getPageIndex();
   float x = Display.getLayoutWidth() * index;
 
-  _openBtn->setFrame(Rect(x+63,190,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
+  _openBtn->setFrame(Rect(x+10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
   _openBtn->setVisible(true);
   _openBtn->setDelegate(this);
 

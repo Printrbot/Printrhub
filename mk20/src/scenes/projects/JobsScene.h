@@ -19,7 +19,7 @@ class JobsScene: public SidebarSceneController
 {
 
 public:
-  JobsScene(String projectIndex);
+  JobsScene(String projectIndex, int jobOffset = 0);
   virtual ~JobsScene();
 
   virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint) override;
