@@ -3,7 +3,7 @@
 #include "framework/views/ProgressBar.h"
 //#include "layers/SDBitmapLayer.h"
 //#include "layers/TransparentTextLayer.h"
-//#include "PausePrintSceneController.h"
+#include "ConfirmCancelPrint.h"
 #include "Printr.h"
 #include "UIBitmaps.h"
 #include "framework/layers/TransparentTextLayer.h"
@@ -71,8 +71,12 @@ void PrintStatusScene::onWillAppear() {
   _pLayer->setForegroundColor(ILI9341_BLACK);
   Display.addLayer(_pLayer);
 
-  // start the print
-  _totalJobLines = printr.startJob(_jobFilePath);
+  // start the print only if not running already (in case we are returning from CancelPrint scene)
+  if (!printr.isPrinting()) {
+    _totalJobLines = printr.startJob(_jobFilePath);
+  } else {
+    _totalJobLines = printr.getTotalJobLines();
+  }
 
   SidebarSceneController::onWillAppear();
 }
@@ -116,6 +120,7 @@ void PrintStatusScene::loop()
 
 
 void PrintStatusScene::buttonPressed(void *button) {
-  //PausePrintSceneController * scene = new PausePrintSceneController();
-  //Application.pushScene(scene);
+  printr.setListener(nullptr);
+  ConfirmCancelPrint * scene = new ConfirmCancelPrint(_jobFilePath, _project, _job, _jobOffset);
+  Application.pushScene(scene);
 }
