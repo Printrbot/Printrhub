@@ -44,6 +44,13 @@ String PrintStatusScene::getName() {
 
 void PrintStatusScene::onWillAppear() {
 
+  // start the print only if not running already (in case we are returning from CancelPrint scene)
+  if (!printr.isPrinting()) {
+    _totalJobLines = printr.startJob(_jobFilePath);
+  } else {
+    _totalJobLines = printr.getTotalJobLines();
+  }
+
   // display job image
   String _projectFilePath = String("/projects/" + String(_project.index));
   _imageLayer = new SDBitmapLayer(Rect(0,0,270,240));
@@ -54,29 +61,57 @@ void PrintStatusScene::onWillAppear() {
   _nameLayer = new TransparentTextLayer(Rect(15,10,Display.getLayoutWidth()-30,25));
   _nameLayer->setTextAlign(TEXTALIGN_LEFT);
   _nameLayer->setFont(&LiberationSans_14);
-  _nameLayer->setText(String(_job.title));
+  _nameLayer->setText(String("Printing: ") + String(_job.title));
   _nameLayer->setForegroundColor(ILI9341_BLACK);
-   Display.addLayer(_nameLayer);
+  Display.addLayer(_nameLayer);
+
+  // print time
+  _printTime = new TransparentTextLayer(Rect(10,100,Display.getLayoutWidth()-30,60));
+  _printTime->setTextAlign(TEXTALIGN_LEFT);
+  _printTime->setFont(&LiberationSans_12);
+  _printTime->setText(String("Print Time: ") + printr.getPrintTime());
+  _printTime->setForegroundColor(ILI9341_BLACK);
+  Display.addLayer(_printTime);
+
+  // Resolution
+  _resolution = new TransparentTextLayer(Rect(10,120,Display.getLayoutWidth()-30,60));
+  _resolution->setTextAlign(TEXTALIGN_LEFT);
+  _resolution->setFont(&LiberationSans_12);
+  _resolution->setText(String("Resolution: ") + printr.getResolution());
+  _resolution->setForegroundColor(ILI9341_BLACK);
+  Display.addLayer(_resolution);
+
+  // Infill
+  _infill = new TransparentTextLayer(Rect(10,140,Display.getLayoutWidth()-30,60));
+  _infill->setTextAlign(TEXTALIGN_LEFT);
+  _infill->setFont(&LiberationSans_12);
+  _infill->setText(String("Infill: ") + printr.getInfill());
+  _infill->setForegroundColor(ILI9341_BLACK);
+  Display.addLayer(_infill);
+
+  // Support
+  _support = new TransparentTextLayer(Rect(10,160,Display.getLayoutWidth()-30,60));
+  _support->setTextAlign(TEXTALIGN_LEFT);
+  _support->setFont(&LiberationSans_12);
+  _support->setText(String("Print Support: ") + printr.getSupport());
+  _support->setForegroundColor(ILI9341_BLACK);
+  Display.addLayer(_support);
+
+  // Filament required
+  _filament = new TransparentTextLayer(Rect(10,180,Display.getLayoutWidth()-30,60));
+  _filament->setTextAlign(TEXTALIGN_LEFT);
+  _filament->setFont(&LiberationSans_12);
+  _filament->setText(String("Filament required: ") + printr.getFilamentLength());
+  _filament->setForegroundColor(ILI9341_BLACK);
+  Display.addLayer(_filament);
+
 
   // progress bar
   _progressBar = new ProgressBar(Rect(0,228,Display.getLayoutWidth(),12));
   _progressBar->setValue(0.0f);
   addView(_progressBar);
 
-  // printing text above progress bar
-  _pLayer = new TransparentTextLayer(Rect(10,201,Display.getLayoutWidth()-30,20));
-  _pLayer->setTextAlign(TEXTALIGN_LEFT);
-  _pLayer->setFont(&LiberationSans_13);
-  _pLayer->setText("Printing...");
-  _pLayer->setForegroundColor(ILI9341_BLACK);
-  Display.addLayer(_pLayer);
 
-  // start the print only if not running already (in case we are returning from CancelPrint scene)
-  if (!printr.isPrinting()) {
-    _totalJobLines = printr.startJob(_jobFilePath);
-  } else {
-    _totalJobLines = printr.getTotalJobLines();
-  }
 
   SidebarSceneController::onWillAppear();
 }

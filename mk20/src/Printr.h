@@ -30,6 +30,11 @@ public:
   bool isHomed() { return _homeX && _homeY && _homeZ; };
   bool isPrinting() { return _printing; };
   int getTotalJobLines() { return _totalProgramLines; };
+  String getResolution() { return _printResolution; };
+  String getInfill() { return _printInfill; };
+  String getFilamentLength() { return String(String(_printFilamentLength) + String("mm")); };
+  String getSupport() { return _printSupport ? String("Yes") : String("No"); };
+  String getPrintTime() { return _printTimeReadable; }
 
   void homeX();
   void homeY();
@@ -51,7 +56,17 @@ private:
   int _currentAction;
   int _currentProgramLine;
   int _processedProgramLine;
+
   int _totalProgramLines;
+  int _totalPrintTime;
+  int _printVolume;
+  int _printFilamentLength;
+  bool _printSupport;
+  bool _printBrim;
+  String _printResolution;
+  String _printInfill;
+  String _printTimeReadable;
+
   int _lastSentProgramLine;
   float _progress;
   bool _sendNext;

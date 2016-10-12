@@ -27,8 +27,6 @@ private:
   LabelButton* _button;
   ProgressBar* _progressBar;
   SDBitmapLayer* _imageLayer;
-  TextLayer* _nameLayer;
-  TextLayer* _pLayer;
   float _step;
   Project _project;
   Job _job;
@@ -37,6 +35,14 @@ private:
   String _projectIndex;
   int _jobOffset;
   int _totalJobLines;
+
+  TextLayer* _nameLayer;
+  TextLayer* _printTime;
+  TextLayer* _resolution;
+  TextLayer* _infill;
+  TextLayer* _support;
+  TextLayer* _filament;
+
 
 };
 

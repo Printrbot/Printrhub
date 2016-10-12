@@ -129,7 +129,7 @@ void Printr::readSerial() {
 int Printr::startJob(String filePath) {
   _printFile = SD.open(filePath.c_str(), FILE_READ);
 
-  int totalLines = -1;
+  _totalProgramLines = -1;
 
   // read json header (if available)
   char i[2];
@@ -143,7 +143,18 @@ int Printr::startJob(String filePath) {
     JsonObject& h = jb.parseObject(js);
 
     if (h.success()) {
-      totalLines = h["lines"];
+      _totalProgramLines= h["lines"];
+      _totalPrintTime = h["time"];
+      const char * ptr = h["readable"];
+      _printTimeReadable = String(ptr);
+      _printVolume = h["volume"];
+      _printFilamentLength = h["filament"];
+      _printSupport = h["support"];
+      _printBrim = h["brim"];
+      const char * res = h["resolution"];
+      _printResolution = String(res);
+      const char * infill = h["infill"];
+      _printInfill = String(infill);
     }
   }
 
@@ -152,8 +163,7 @@ int Printr::startJob(String filePath) {
   sendLine("G92.1 X0 Y0 Z0 A0 B0");
   runJobStartGCode();
 
-  _totalProgramLines = totalLines;
-  return totalLines;
+  return _totalProgramLines;
 }
 
 void Printr::runJobStartGCode() {
