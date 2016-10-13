@@ -5,7 +5,9 @@
 #include "SDBitmapLayer.h"
 #include "../core/Application.h"
 
-SDBitmapLayer::SDBitmapLayer(Rect frame): Layer(frame)
+SDBitmapLayer::SDBitmapLayer(Rect frame):
+Layer(frame),
+_shadowed(false)
 {
 
 }
@@ -23,6 +25,7 @@ void SDBitmapLayer::setBitmap(const char *filePath, uint16_t width, uint16_t hei
   _needsDisplay = true;
   _file = SD.open(_filePath,FILE_READ);
   _offset = offset;
+  _shadowed = false;
 }
 
 
@@ -39,6 +42,10 @@ void SDBitmapLayer::draw(Rect &invalidationRect)
   renderFrame = prepareRenderFrame(renderFrame);
   if (height > 0 && width > 0)
   {
-    Display.drawFileBitmapByColumn(renderFrame.x,renderFrame.y,width,height,&_file,xs,ys,_width,_height,_offset);
+    if (_shadowed) {
+      Display.drawShadowedFileBitmapByColumn(renderFrame.x,renderFrame.y,width,height,&_file,xs,ys,_width,_height,getBackgroundColor(),_offset);
+    } else {
+      Display.drawFileBitmapByColumn(renderFrame.x,renderFrame.y,width,height,&_file,xs,ys,_width,_height,_offset);
+    }
   }
 }

@@ -49,6 +49,9 @@ void LabelView::display()
 void LabelView::setText(String text)
 {
 	_text = text;
+	if (_layer != NULL) {
+		_layer->setText(text);
+	}
 	setNeedsDisplay();
 }
 

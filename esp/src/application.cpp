@@ -31,6 +31,11 @@ ApplicationClass::ApplicationClass() {
     _firmwareChecked = false;
     _lastMK20Ping = 0;
     _mk20OK = false;
+
+    //Clear system info
+    memset(&_systemInfo,0,sizeof(SystemInfo));
+    _systemInfo.buildNr = FIRMWARE_BUILDNR;
+    strcpy(_systemInfo.firmwareVersion,FIRMWARE_VERSION);
 }
 
 ApplicationClass::~ApplicationClass() {
@@ -368,6 +373,18 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
     {
         //Just ignore it and don't send a response
         *sendResponse = false;
+    }
+    else if (taskID == TaskID::GetSystemInfo)
+    {
+        EventLogger::log("Got SystemInfo Request");
+        if (header.commType == Request)
+        {
+            //Prepare response data by copying SystemInfo into buffer
+            memcpy(responseData,&_systemInfo,sizeof(SystemInfo));
+            *responseDataSize = sizeof(SystemInfo);
+            *sendResponse = true;
+            *success = true;
+        }
     }
 
 	return true;
