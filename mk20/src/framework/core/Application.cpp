@@ -9,9 +9,11 @@
 #include "../../scenes/alerts/ErrorScene.h"
 #include "../../scenes/projects/ProjectsScene.h"
 #include "../../scenes/firmware/ConfirmFirmwareUpdateScene.h"
+#include "../../scenes/firmware/FirmwareInProgressScene.h"
 #include "Printr.h"
 #include <ArduinoJson.h>
 #include "../../errors.h"
+#include "../../jobs/ReceiveSDCardFile.h"
 
 ApplicationClass Application;
 
@@ -29,6 +31,8 @@ ApplicationClass::ApplicationClass()
 	_esp = new CommStack(&Serial3,this);
   _espOK = false;
   _lastESPPing = 0;
+  _currentJob = NULL;
+  _nextJob = NULL;
 }
 
 ApplicationClass::~ApplicationClass()
@@ -129,7 +133,9 @@ void ApplicationClass::loop()
 	_esp->process();
 
 	//run the loop on printr
+  _esp->beginBlockPort();
 	printr.loop();
+  _esp->endBlockPort();
 
 	//Run Animations
 	Animator.update();
@@ -139,8 +145,49 @@ void ApplicationClass::loop()
 	//Clear the display
 	//Display.clear();
 
+  //Handling background jobs
+  if (_nextJob != NULL)
+  {
+    if (_currentJob != NULL) {
+      FLOW_NOTICE("Replacing job %s",_currentJob->getName().c_str());
+      //Send terminating handler
+      _esp->beginBlockPort();
+      _currentJob->onWillEnd();
+      delete _currentJob;
+      _esp->endBlockPort();
+    }
+
+    FLOW_NOTICE("Starting job %s",_nextJob->getName().c_str());
+    _currentJob = _nextJob;
+    _nextJob = NULL;
+
+    //Send will start event
+    _esp->beginBlockPort();
+    _currentJob->onWillStart();
+    _esp->endBlockPort();
+    FLOW_NOTICE("OnWillStart called on job %s",_currentJob->getName().c_str());
+  }
+
+  if (_currentJob != NULL) {
+    _esp->beginBlockPort();
+    _currentJob->loop();
+    _esp->endBlockPort();
+
+    if (_currentJob->isFinished()) {
+      FLOW_NOTICE("Exiting job %s",_currentJob->getName().c_str());
+      _esp->beginBlockPort();
+      _currentJob->onWillEnd();
+      delete _currentJob;
+      _currentJob = NULL;
+      _esp->endBlockPort();
+    }
+  }
+
+  //UI Handling
 	if (_nextScene != NULL)
 	{
+    _esp->beginBlockPort();
+
 		//Shut down display to hide the build process of the layout (which is step by step and looks flashy)
 		Display.fadeOut();
 
@@ -155,6 +202,8 @@ void ApplicationClass::loop()
 		_currentScene = _nextScene;
 		_nextScene = NULL;
 		_firstSceneLoop = true;
+
+    _esp->endBlockPort();
 	}
 
 	//Run current controller
@@ -167,6 +216,8 @@ void ApplicationClass::loop()
 		//The default implementation will clear the display!
 		if (_firstSceneLoop)
 		{
+      _esp->beginBlockPort();
+
 			LOG("First loop");
 			Display.clear();
 
@@ -185,6 +236,7 @@ void ApplicationClass::loop()
 			Display.print("PROJECTS");
 
 			Display.setTextRotation(0);*/
+      _esp->endBlockPort();
 		}
 
 		//Touch handling
@@ -203,14 +255,16 @@ void ApplicationClass::loop()
 		}
 
 		//Run the scenes loop function
+    _esp->beginBlockPort();
 		sceneController->loop();
+    _esp->endBlockPort();
 		_lastTime = millis();
 
 		bool willRefresh = Display.willRefresh();
 		if (willRefresh)
 		{
 			//This should be a good idea as it marks MK20 to be unable to receive data, but this does not work at the moment
-			digitalWrite(COMMSTACK_DATAFLOW_PIN,LOW);
+      _esp->beginBlockPort();
 		}
 
 		//Relayout screen tiles
@@ -228,7 +282,7 @@ void ApplicationClass::loop()
 		if (willRefresh)
 		{
 			//This should be a good idea as it marks MK20 to be unable to receive data, but this does not work at the moment
-			digitalWrite(COMMSTACK_DATAFLOW_PIN,HIGH);
+			_esp->endBlockPort();
 		}
 
 		_firstSceneLoop = false;
@@ -253,6 +307,11 @@ void ApplicationClass::pushScene(SceneController *scene, bool cancelModal)
 	LOG_VALUE("Pushing scene",scene->getName());
 
 	_nextScene = scene;
+}
+
+void ApplicationClass::pushJob(BackgroundJob *job) {
+  FLOW_NOTICE("Pushed job %s",job->getName().c_str());
+  _nextJob = job;
 }
 
 ColorTheme* ApplicationClass::getTheme()
@@ -285,14 +344,20 @@ void ApplicationClass::onCommStackError()
 
 bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)
 {
+  COMMSTACK_SPAM("Application received task with ID %d",header.getCurrentTask());
+
 	if (_currentScene != NULL && _currentScene->handlesTask(header.getCurrentTask()))
 	{
-		LOG_VALUE("Current scene handles Task with ID",header.getCurrentTask());
+    COMMSTACK_SPAM("Sending task with ID %d to scene %s",header.getCurrentTask(),_currentScene->getName().c_str());
 		return _currentScene->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
 	}
 
-	LOG_VALUE("Running Task with ID",header.getCurrentTask());
-	LOG_VALUE("Comm-Type",header.commType);
+  if (_currentJob != NULL && _currentJob->handlesTask(header.getCurrentTask())) {
+    COMMSTACK_SPAM("Sending task with ID %d to job %s",header.getCurrentTask(),_currentJob->getName().c_str());
+    return _currentJob->runTask(header, data, dataSize, responseData, responseDataSize, sendResponse, success);
+  }
+
+  COMMSTACK_NOTICE("Application handles task with ID %d",header.getCurrentTask());
 
 	if (header.getCurrentTask() == TaskID::SaveProjectWithID) {
     if (header.commType == Request) {
@@ -329,21 +394,21 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
       DownloadError errorCode = (DownloadError) error;
 
       if (errorCode == DownloadError::Timeout) {
-        Application.pushScene(new ErrorScene("Timeout"));
+        Application.pushScene(new ErrorScene("Timeout"),true);
       } else if (errorCode == DownloadError::InternalServerError) {
-        Application.pushScene(new ErrorScene("Internal Server Error"));
+        Application.pushScene(new ErrorScene("Internal Server Error"),true);
       } else if (errorCode == DownloadError::FileNotFound) {
-        Application.pushScene(new ErrorScene("File not found"));
+        Application.pushScene(new ErrorScene("File not found"),true);
       } else if (errorCode == DownloadError::Forbidden) {
-        Application.pushScene(new ErrorScene("Forbidden"));
+        Application.pushScene(new ErrorScene("Forbidden"),true);
       } else if (errorCode == DownloadError::UnknownError) {
-        Application.pushScene(new ErrorScene("Unknown Error"));
+        Application.pushScene(new ErrorScene("Unknown Error"),true);
       } else if (errorCode == DownloadError::ConnectionFailed) {
-        Application.pushScene(new ErrorScene("Connection failed"));
+        Application.pushScene(new ErrorScene("Connection failed"),true);
       } else if (errorCode == DownloadError::PrepareDownloadedFileFailed) {
-        Application.pushScene(new ErrorScene("File preparation failed"));
+        Application.pushScene(new ErrorScene("File preparation failed"),true);
       } else if (errorCode == DownloadError::RemoveOldFilesFailed) {
-        Application.pushScene(new ErrorScene("Remove old file failed"));
+        Application.pushScene(new ErrorScene("Remove old file failed"),true);
       }
 
       *sendResponse = false;
@@ -411,6 +476,7 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
     }
   } else if (header.getCurrentTask() == TaskID::ShowFirmwareUpdateNotification) {
     if (header.commType == Request) {
+      COMMSTACK_NOTICE("Received ShowFirmwareUpdateNotification request");
       *sendResponse = false;
 
       ConfirmFirmwareUpdateScene *scene = new ConfirmFirmwareUpdateScene();
@@ -420,6 +486,7 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
     *sendResponse = false;
   } else if (header.getCurrentTask() == TaskID::RestartESP) {
     *sendResponse = false;
+    COMMSTACK_NOTICE("Received RestartESP request, restarting ESP");
 
     //Restart ESP
     resetESP();
@@ -431,9 +498,49 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
     resetESP();
 
     //Show Project scene
-    ProjectsScene* scene = new ProjectsScene();
-    pushScene(scene,true);
+    ProjectsScene *scene = new ProjectsScene();
+    pushScene(scene, true);
+  } else if (header.getCurrentTask() == TaskID::ShowFirmwareUpdateInProgress) {
+    if (header.commType == Request) {
+      FirmwareInProgressScene* scene = new FirmwareInProgressScene();
+      pushScene(scene,true);
+    }
+  } else if (header.getCurrentTask() == TaskID::FileOpenForWrite) {
+    if (header.commType == Request) {
+
+      StaticJsonBuffer<200> jsonBuffer;
+      String jsonObject((const char *) data);
+      JsonObject &root = jsonBuffer.parseObject(jsonObject);
+
+      if (root.success()) {
+        String localFilePath = root["localFilePath"];
+        if (localFilePath.length() > 0) {
+          COMMSTACK_NOTICE("Received FileOpenForWrite request with local file path: %s",localFilePath.c_str());
+
+          *responseDataSize = 0;
+          *sendResponse = true;
+          *success = true;
+
+          size_t fileSize = root["fileSize"];
+          Compression compression = (Compression)(uint8_t)root["compression"];
+
+          ReceiveSDCardFile *job = new ReceiveSDCardFile(localFilePath, fileSize, compression);
+          pushJob(job);
+        } else {
+          COMMSTACK_ERROR("Could not handle FileOpenForWrite as local file path is empty");
+
+          *responseDataSize = 0;
+          *sendResponse = true;
+          *success = false;
+        }
+      } else {
+        COMMSTACK_ERROR("Could not handle FileOpenForWrite as JSON could not be parsed");
+        *sendResponse = true;
+        *success = false;
+      }
+    }
   }
+
 
 
 /*	else if (header.getCurrentTask() == GetJobWithID || header.getCurrentTask() == GetProjectItemWithID)

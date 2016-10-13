@@ -17,6 +17,7 @@ struct FirmwareUpdateInfo {
 	int buildnr;
 	String mk20_url;
 	String esp_url;
+	String mk20_ui_url;
 };
 
 class ApplicationClass: CommStackDelegate
@@ -37,6 +38,8 @@ public:
 	Mode* currentMode() { return _currentMode; };
 	MK20* getMK20Stack() const { return _mk20; };
 	float getDeltaTime();
+	void startFirmwareUpdate();
+    void setMK20Timeout();
 
 	void sendPulse(int length=5, int count=1);
 

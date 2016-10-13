@@ -5,6 +5,7 @@
 #include "controllers/ManageWifi.h"
 #include "controllers/DownloadFile.h"
 #include "controllers/DownloadFileToSDCard.h"
+#include "controllers/PushFileToSDCard.h"
 #include <EEPROM.h>
 #include <controllers/ESPFirmwareUpdate.h>
 #include <controllers/MK20FirmwareUpdate.h>
@@ -234,6 +235,55 @@ void ApplicationClass::handleError(DownloadError error)
     idle();
 }
 
+void ApplicationClass::setMK20Timeout()
+{
+    _mk20OK = false;
+}
+
+void ApplicationClass::startFirmwareUpdate()
+{
+    EventLogger::log("Updating firmware to build number %d with these files:",_firmwareUpdateInfo->buildnr);
+    EventLogger::log("UI: %s",_firmwareUpdateInfo->mk20_ui_url.c_str());
+    EventLogger::log("MK20 Firmware: %s",_firmwareUpdateInfo->mk20_url.c_str());
+    EventLogger::log("ESP Firmware: %s",_firmwareUpdateInfo->esp_url.c_str());
+
+    Mode* firstMode = NULL;
+
+    //Define file names
+    String mk20FirmwareFile("/mk20_100.bin");
+    String mk20UIFile("/ui.min");
+
+    //Define modes
+    DownloadFileToSPIFFs* downloadMK20Firmware = new DownloadFileToSPIFFs(_firmwareUpdateInfo->mk20_url,mk20FirmwareFile);
+    MK20FirmwareUpdate* mk20UpdateFirmware = new MK20FirmwareUpdate(mk20FirmwareFile);
+    DownloadFileToSPIFFs* downloadUI = new DownloadFileToSPIFFs(_firmwareUpdateInfo->mk20_ui_url,mk20UIFile);
+    PushFileToSDCard* pushUIToSDCard = new PushFileToSDCard(mk20UIFile,mk20UIFile,false,Compression::RLE16);
+    ESPFirmwareUpdate* espUpdateFirmware = new ESPFirmwareUpdate(_firmwareUpdateInfo->esp_url);
+
+    //Firmware update is composed of a few basic steps
+    //1) Download ui file from server and push to SD card (only if MK20 is alive)
+    if (_mk20OK) {
+        EventLogger::log("Skipping UI update as MK20 is not alive");
+        firstMode = downloadUI;
+        downloadUI->setNextMode(pushUIToSDCard);
+        pushUIToSDCard->setNextMode(downloadMK20Firmware);
+    }
+
+    //2) Download MK20 firmware and flash MK20
+    downloadMK20Firmware->setNextMode(mk20UpdateFirmware);
+
+    //3) Download ESP firmware and update ESP
+    mk20UpdateFirmware->setNextMode(espUpdateFirmware);
+
+    //Start with MK20 firmware update if no steps before have been defined
+    if (firstMode == NULL) {
+        firstMode = downloadMK20Firmware;
+    }
+
+    //Let's get started
+    Application.pushMode(firstMode);
+}
+
 bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)
 {
 	if (_currentMode != NULL && _currentMode->handlesTask(header.getCurrentTask())) {
@@ -289,20 +339,7 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
         *sendResponse = false;
         *responseDataSize = 0;
 
-        //Prepare files
-        String mk20FirmwareFile("/mk20_100.bin");
-
-        //Prepare modes for subsequent execution
-        MK20FirmwareUpdate* mk20UpdateFirmware = new MK20FirmwareUpdate(mk20FirmwareFile);
-        ESPFirmwareUpdate* espUpdateFirmware = new ESPFirmwareUpdate(_firmwareUpdateInfo->esp_url);
-        DownloadFileToSPIFFs* downloadMK20Firmware = new DownloadFileToSPIFFs(_firmwareUpdateInfo->mk20_url,mk20FirmwareFile);
-
-        //Chain modes together: Download MK20 firmware, flash MK20, update ESP
-        downloadMK20Firmware->setNextMode(mk20UpdateFirmware);
-        mk20UpdateFirmware->setNextMode(espUpdateFirmware);
-
-        //Start with the first one
-        Application.pushMode(downloadMK20Firmware);
+        startFirmwareUpdate();
 
         //ESPFirmwareUpdate* espUpdateFirmware = new ESPFirmwareUpdate(_firmwareUpdateInfo->esp_url);
         //Application.pushMode(espUpdateFirmware );

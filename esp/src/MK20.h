@@ -19,6 +19,7 @@ public:
     bool writeFirmware(File &file);
     bool updateFirmware(String localFilePath);
     void showUpdateFirmwareNotification();
+    void showFirmwareInProgressNotification();
 
     bool isTimedOut() { return !_isAlive && _timeout > 10; };
     void incrementTimeout(float deltaTime) { _timeout += deltaTime; };
@@ -27,6 +28,9 @@ public:
     void setBuildNumber(int buildNumber) { _buildNumber = buildNumber; _isAlive = true; _timeout = 0; _numTries = 0; };
     bool isAlive() { return _isAlive; };
     bool needsUpdate() { return FIRMWARE_BUILDNR > _buildNumber; };
+    bool openSDFileForWrite(String targetFilePath, size_t bytesToSend, bool showUI=false, Compression compression=Compression::None);
+    bool sendSDFileData(uint8_t* data, size_t size);
+    bool closeSDFile();
 
 private:
     unsigned long _timeout;

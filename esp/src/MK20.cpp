@@ -150,3 +150,38 @@ void MK20::showUpdateFirmwareNotification()
     //Wait a bit until the screen has been updated
     delay(200);
 }
+
+bool MK20::openSDFileForWrite(String targetFilePath, size_t bytesToSend, bool showUI, Compression compression)
+{
+    StaticJsonBuffer<500> jsonBuffer;
+    JsonObject& fileInfo = jsonBuffer.createObject();
+    fileInfo["localFilePath"] = targetFilePath;
+    fileInfo["showUI"] = showUI;
+    fileInfo["fileSize"] = bytesToSend;
+    fileInfo["compression"] = (uint8_t)compression;
+
+    //Ask MK20 to show the notification to the user and we are finished here
+    requestTask(TaskID::FileOpenForWrite,fileInfo);
+
+    return true;
+}
+
+void MK20::showFirmwareInProgressNotification()
+{
+    //If MK20 is alive it will show that the firmware update is in progress
+    requestTask(TaskID::ShowFirmwareUpdateInProgress);
+}
+
+bool MK20::sendSDFileData(uint8_t *data, size_t size)
+{
+    Application.getMK20Stack()->requestTask(TaskID::FileSaveData,size, data);
+
+    return true;
+}
+
+bool MK20::closeSDFile()
+{
+    Application.getMK20Stack()->requestTask(TaskID::FileClose);
+
+    return true;
+}

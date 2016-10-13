@@ -12,10 +12,15 @@
 #define COMM_STACK_PACKET_MARKER 0x00
 #define COMM_STACK_BUFFER_SIZE 256
 
+enum class Compression: uint8_t {
+    None = 1,
+    RLE16 = 2
+};
+
 enum CommType : uint8_t {
-    Request = 0,
-    ResponseSuccess = 1,
-    ResponseFailed = 2
+    Request = 1,
+    ResponseSuccess = 2,
+    ResponseFailed = 3
 };
 
 enum PacketType : uint8_t {
@@ -52,7 +57,9 @@ enum class TaskID : uint8_t {
     FirmwareUpdateError = 27,
     DebugLog = 28,
     RestartESP = 29,
-    FirmwareUpdateComplete = 30
+    FirmwareUpdateComplete = 30,
+    DownloadFileToSDCard = 31,
+    ShowFirmwareUpdateInProgress = 32
 };
 
 struct CommHeader {
@@ -60,27 +67,31 @@ public:
     uint8_t taskID;
     uint8_t commType;
     uint8_t contentLength;
+    uint16_t dataCheckSum;
     uint16_t checkSum;
 
 public:
     CommHeader() {
         this->commType = Request;
         this->contentLength = 0;
-        this->checkSum = 0;
+        this->dataCheckSum = 0;
+        updateCheckSum();
     }
 
     CommHeader(TaskID task, uint8_t contentLength) {
         this->taskID = (uint8_t)task;
         this->commType = Request;
         this->contentLength = contentLength;
-        this->checkSum = 0;
+        this->dataCheckSum = 0;
+        updateCheckSum();
     }
 
     CommHeader(TaskID* tasks, uint8_t numberOfTasks, uint8_t contentLength) {
         this->taskID = (uint8_t)tasks[0];
         this->commType = Request;
         this->contentLength = contentLength;
-        this->checkSum = 0;
+        this->dataCheckSum = 0;
+        updateCheckSum();
     }
 
     TaskID getCurrentTask()
@@ -93,9 +104,23 @@ public:
         return (commType == ResponseSuccess || commType == ResponseFailed);
     }
 
-    void setCheckSum(uint16_t checkSum)
+    void setDataCheckSum(uint16_t checkSum)
     {
-        this->checkSum = checkSum;
+        this->dataCheckSum = checkSum;
+        updateCheckSum();
+    }
+
+    bool isOK() {
+        return (checkSum == calculateCheckSum());
+    }
+
+private:
+    uint16_t calculateCheckSum() {
+        return this->taskID + this->commType + this->contentLength + this->dataCheckSum;
+    }
+
+    void updateCheckSum() {
+        this->checkSum = calculateCheckSum();
     }
 };
 
@@ -130,6 +155,9 @@ public:
     bool requestTasks(TaskID* tasks);
     Stream* getPort() const { return _port; };
 
+    void beginBlockPort();
+    void endBlockPort();
+
 private:
     bool readHeader(CommHeader* commHeader);
     bool prepareResponse(CommHeader* commHeader, bool success);
@@ -139,8 +167,8 @@ private:
     size_t encode(const uint8_t* source, size_t size, uint8_t* destination);
     size_t decode(const uint8_t* source, size_t size, uint8_t* destination);
     void runTask(const uint8_t* buffer, size_t size);
-    void onDataPacketFailed(const uint8_t* buffer, size_t size);
-    void send(const uint8_t* buffer, size_t size);
+    void onDataPacketFailed();
+    void send(const uint8_t* buffer, size_t size, bool sendMarker);
     uint16_t getCheckSum(const uint8_t* data, size_t size);
 
 #pragma mark Member Variables
@@ -148,7 +176,8 @@ private:
     Stream* _port;
     CommStackDelegate* _delegate;
     uint8_t _receiveBuffer[COMM_STACK_BUFFER_SIZE];
-    uint8_t _responseBuffer[COMM_STACK_BUFFER_SIZE];
+    uint8_t _sendBuffer[COMM_STACK_BUFFER_SIZE];
+
     size_t _receiveBufferIndex;
     CommHeader _currentHeader;
     PacketType _expectedPacketType;

@@ -19,6 +19,8 @@
 #include "HAL.h"
 #include "LED.h"
 #include <SoftwareSerial.h>
+#include "BackgroundJob.h"
+#include "EventLogger.h"
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
@@ -56,6 +58,10 @@ public:
 	void pushScene(SceneController* scene, bool cancelModal=false);
 	SceneController* currentScene() { return _currentScene; };
 
+#pragma mark Background Jobs
+  void pushJob(BackgroundJob* job);
+	BackgroundJob* currentJob() { return _currentJob; };
+
 #pragma mark Touch Handling
 	void handleTouches();
 
@@ -88,12 +94,15 @@ private:
   int _buildNumber;
   bool _espOK;
   unsigned long _lastESPPing;
+	BackgroundJob* _currentJob;
+	BackgroundJob* _nextJob;
 };
 
 extern ApplicationClass Application;
 extern PHDisplay Display;
 extern Adafruit_FT6206 Touch;
 extern LED StatusLED;
+extern EventLoggerClass EventLogger;
 extern int globalLayerId;
 extern int globalLayersCreated;
 extern int globalLayersDeleted;

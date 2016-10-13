@@ -139,7 +139,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
         //char * fp[_localFilePath.length() + 1];
         //_localFilePath.toCharArray(fp, _localFilePath.length());
         //SD.remove(fp);
-        _file = SD.open(_localFilePath.c_str(),FILE_WRITE);
+        _file = SD.open(_localFilePath.c_str(),O_WRITE | O_CREAT | O_TRUNC);
         if (!_file.available())
         {
           //TODO: We should handle that. For now we will have to read data from ESP to clean the pipe but there should be better ways to handle errors
