@@ -18,7 +18,7 @@ enum class DownloadError {
     MK20UpdateError = 100,
 
     ESPUpdateNoUpdates = 200,
-    ESPUpdateFailed = 201
+    ESPUpdateFailed = 201,
 
     LocalFileNotFound = 300,
     LocalFileOpenForReadFailed = 301,
