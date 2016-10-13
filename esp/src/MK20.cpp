@@ -143,7 +143,6 @@ void MK20::showUpdateFirmwareNotification()
     JsonObject& updateInfo = jsonBuffer.createObject();
     updateInfo["version"] = "0.13";
     updateInfo["buildnr"] = Application.getFirmwareUpdateInfo()->buildnr;
-    updateInfo["mk20_ui_url"] = Application.getFirmwareUpdateInfo()->mk20_ui_url;
 
     //Ask MK20 to show the notification to the user and we are finished here
     requestTask(TaskID::ShowFirmwareUpdateNotification,updateInfo);
@@ -152,12 +151,14 @@ void MK20::showUpdateFirmwareNotification()
     delay(200);
 }
 
-bool MK20::openSDFileForWrite(String targetFilePath, size_t bytesToSend, bool showUI)
+bool MK20::openSDFileForWrite(String targetFilePath, size_t bytesToSend, bool showUI, Compression compression)
 {
     StaticJsonBuffer<500> jsonBuffer;
     JsonObject& fileInfo = jsonBuffer.createObject();
     fileInfo["localFilePath"] = targetFilePath;
+    fileInfo["showUI"] = showUI;
     fileInfo["fileSize"] = bytesToSend;
+    fileInfo["compression"] = (uint8_t)compression;
 
     //Ask MK20 to show the notification to the user and we are finished here
     requestTask(TaskID::FileOpenForWrite,fileInfo);

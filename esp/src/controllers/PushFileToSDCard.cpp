@@ -5,32 +5,16 @@
 #include "PushFileToSDCard.h"
 #include "../event_logger.h"
 
-PushFileToSDCard::PushFileToSDCard(String localFilePath, String targetFilePath, bool showUI):
+PushFileToSDCard::PushFileToSDCard(const String &localFilePath, const String &targetFilePath, bool showUI, Compression compression):
 Mode(),
 _localFilePath(localFilePath),
 _targetFilePath(targetFilePath),
+_showUI(showUI),
 _waitForResponse(false),
-_fileOpen(false)
+_fileOpen(false),
+_compression(compression)
 {
-    EventLogger::log("Request SD file write with path: %s",_targetFilePath.c_str());
 
-    if (!SPIFFS.exists(localFilePath)) {
-        EventLogger::log("Local file does not exist: %s",_localFilePath.c_str());
-        exitWithError(DownloadError::LocalFileNotFound);
-    } else {
-        _localFile = SPIFFS.open(localFilePath,"r");
-        if (!_localFile) {
-            EventLogger::log("Local file could not be opened for read: %s",_localFilePath.c_str());
-            exitWithError(DownloadError::LocalFileOpenForReadFailed)
-        } else {
-            _bytesLeft = _localFile.size();
-            EventLogger::log("File opened successfully: %s, Bytes left to send: %d",_localFilePath.c_str(),_bytesLeft);
-
-            //Request MK20 to store a file on SD card
-            _waitForResponse = true;
-            Application.getMK20Stack()->openSDFileForWrite(_targetFilePath,_bytesLeft, showUI);
-        }
-    }
 }
 
 PushFileToSDCard::~PushFileToSDCard()
@@ -38,8 +22,42 @@ PushFileToSDCard::~PushFileToSDCard()
     _localFile.close();
 }
 
+String PushFileToSDCard::getName()
+{
+    return "PushFileToSDCard";
+}
+
+void PushFileToSDCard::onWillStart()
+{
+    EventLogger::log("Request SD file write with path: %s",_targetFilePath.c_str());
+
+    if (!SPIFFS.exists(_localFilePath)) {
+        EventLogger::log("Local file does not exist: %s",_localFilePath.c_str());
+        exitWithError(DownloadError::LocalFileNotFound);
+    } else {
+        _localFile = SPIFFS.open(_localFilePath,"r");
+        if (!_localFile) {
+            EventLogger::log("Local file could not be opened for read: %s",_localFilePath.c_str());
+            exitWithError(DownloadError::LocalFileOpenForReadFailed);
+        } else {
+            _bytesLeft = _localFile.size();
+            EventLogger::log("File opened successfully: %s, Bytes left to send: %d",_localFilePath.c_str(),_bytesLeft);
+
+            //Request MK20 to store a file on SD card
+            _requestTime = millis();
+            _waitForResponse = true;
+            Application.getMK20Stack()->openSDFileForWrite(_targetFilePath,_bytesLeft, _showUI, _compression);
+        }
+    }
+}
+
 void PushFileToSDCard::loop()
 {
+    if (millis() - _requestTime > 20000) {
+        //Timeouted
+        //exitWithError(DownloadError::Timeout);
+    }
+
     //Just send data once the file is open
     if (!_fileOpen) {
         return;
@@ -50,13 +68,21 @@ void PushFileToSDCard::loop()
         return;
     }
 
-    uint8_t buffer[128];
-    int numReadBytes = _localFile.read(buffer,_bytesLeft > 128 ? 128 : _bytesLeft);
+    //Send 128 bytes with each chunk of data if compression is None
+    uint8_t chunkSize = 128;
+    if (_compression == Compression::RLE16) {
+        //Run length encoding 16 bit consists of 24 bit chunks, 8 bit for the counter and 16-bit for the value, so we choose a packet size dividable by 3
+        chunkSize = 48;
+    }
+
+    uint8_t buffer[chunkSize];
+    int numReadBytes = _localFile.read(buffer,_bytesLeft > chunkSize ? chunkSize : _bytesLeft);
     _bytesLeft -= numReadBytes;
 
     EventLogger::log("Sending %d bytes to SD card, bytes left: %d",numReadBytes, _bytesLeft);
 
     //Send bytes
+    _requestTime = millis();
     _waitForResponse = true;
     Application.getMK20Stack()->sendSDFileData(buffer,numReadBytes);
 

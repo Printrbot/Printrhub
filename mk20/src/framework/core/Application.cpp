@@ -502,35 +502,37 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
   } else if (header.getCurrentTask() == TaskID::FileOpenForWrite) {
     if (header.commType == Request) {
 
-      StaticJsonBuffer<500> jsonBuffer;
+      StaticJsonBuffer<200> jsonBuffer;
       String jsonObject((const char *) data);
       JsonObject &root = jsonBuffer.parseObject(jsonObject);
 
       if (root.success()) {
         String localFilePath = root["localFilePath"];
         if (localFilePath.length() > 0) {
-          if (SD.exists(localFilePath.c_str())) {
-            *responseDataSize = 0;
-            *sendResponse = true;
-            *success = true;
+          COMMSTACK_NOTICE("Received FileOpenForWrite request with local file path: %s",localFilePath.c_str());
 
-            size_t fileSize = root["fileSize"];
+          *responseDataSize = 0;
+          *sendResponse = true;
+          *success = true;
 
-            ReceiveSDCardFile* job = new ReceiveSDCardFile(localFilePath, fileSize);
-            Application.pushJob(job);
+          size_t fileSize = root["fileSize"];
+          Compression compression = (Compression)(uint8_t)root["compression"];
 
-          } else {
-            *responseDataSize = 0;
-            *sendResponse = true;
-            *success = false;
-          }
+          ReceiveSDCardFile *job = new ReceiveSDCardFile(localFilePath, fileSize, compression);
+          pushJob(job);
+        } else {
+          COMMSTACK_ERROR("Could not handle FileOpenForWrite as local file path is empty");
+
+          *responseDataSize = 0;
+          *sendResponse = true;
+          *success = false;
         }
       } else {
-        LOG("Could not parse SaveProjectWithID data package from JSON");
+        COMMSTACK_ERROR("Could not handle FileOpenForWrite as JSON could not be parsed");
+        *sendResponse = true;
+        *success = false;
       }
-
-      //Do not send a response as we will trigger a "mode" change on ESP in the next request
-      *sendResponse = false;
+    }
   }
 
 

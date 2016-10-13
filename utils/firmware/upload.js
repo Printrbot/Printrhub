@@ -28,7 +28,7 @@ function upload(filename) {
   });
 }
 
-var files = ['firmware.json', 'mk20.bin', 'esp.bin'];
+var files = ['firmware.json', 'mk20.bin', 'esp.bin', 'ui.min'];
 
 Promise.reduce(files, function(a, b) {
   console.info("uploading: ",b);

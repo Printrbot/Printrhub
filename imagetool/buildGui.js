@@ -22,7 +22,7 @@ var imgToBuf = function(img) {
   return new Promise(function(resolve, reject) {
     Jimp.read("./gui/png/"+img).then(function (image) {
       var fbuf = new Buffer(0);
-      image.dither565();
+      //image.dither565();
       for (var x=0;x<image.bitmap.width;x++) {
         for (var y=0;y<image.bitmap.height;y++) {
           var b = image.getPixelColor(x,y);
@@ -54,17 +54,21 @@ var cImgToBuf = function(img) {
 
           if (colorCounter == 0) {
             lastColor = b;
-            colorCounter++;
-          } else {
+            colorCounter=1;
+          } else {            
             //Write to buffer if color is different or colorCounter will overflow (as it's only one byte we can only store up to 255 chunks of data)
-            if (b != lastColor || colorCounter > 255) {
+            if (b != lastColor || colorCounter >= 255) {
+              console.log(x + "," + y + ":" + toHex(b) + ":" + toHex(lastColor) + ":" + colorCounter);
               //We finished this chunk of data, write to file
               var buf = new Buffer(3);
-              buf.writeUInt8(colorCounter);
-              buf.writeUInt16LE(lastColor);
+              buf.writeUInt8(colorCounter,0);
+              buf.writeUInt16LE(lastColor,1);
+              console.log(buf);
               fbuf = Buffer.concat([fbuf, buf])
               colorCounter = 1;
               lastColor = b;
+            } else {
+              colorCounter++;
             }
           }
         }
@@ -73,8 +77,8 @@ var cImgToBuf = function(img) {
       //Make sure we also store the last chunk of data
       if (colorCounter > 0) {
         var buf = new Buffer(3);
-        buf.writeUInt8(colorCounter);
-        buf.writeUInt16LE(lastColor);
+        buf.writeUInt8(colorCounter,0);
+        buf.writeUInt16LE(lastColor,1);
         fbuf = Buffer.concat([fbuf, buf])
       }
       console.info("RESOLVING ", fbuf.length)
@@ -92,7 +96,8 @@ fs.openAsync('./gui/ui.min', 'w')
 .then(fs.openAsync('./gui/struct.h', 'w'))
 .then(fs.readdirSync('./gui/png').forEach(function(file) {
   if (file[0] != ".")
-    pngs.push(file);
+    //if (pngs.length < 1)
+      pngs.push(file);
 }))
 .then(function() {
   // reduce here
