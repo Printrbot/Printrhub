@@ -1,15 +1,11 @@
 #include "PrintStatusScene.h"
-
 #include "framework/views/ProgressBar.h"
-//#include "layers/SDBitmapLayer.h"
-//#include "layers/TransparentTextLayer.h"
 #include "ConfirmCancelPrint.h"
 #include "Printr.h"
 #include "UIBitmaps.h"
 #include "framework/layers/TransparentTextLayer.h"
 #include "font_LiberationSans.h"
-//#include "FinishPrintSceneController.h"
-//#include "core/Application.h"
+#include "FinishPrint.h";
 
 #include "scenes/print/PrintStatusScene.h"
 
@@ -111,15 +107,13 @@ void PrintStatusScene::onWillAppear() {
   _progressBar->setValue(0.0f);
   addView(_progressBar);
 
-
-
   SidebarSceneController::onWillAppear();
 }
 
 void PrintStatusScene::printrCallback(const char ctype[], float * fdata, int * idata) {
   if (strcmp(ctype,"end") == 0) {
     printr.setListener(nullptr);
-    ProjectsScene * scene = new ProjectsScene();
+    FinishPrint * scene = new FinishPrint(_jobFilePath, _project, _job, _jobOffset);
     Application.pushScene(scene);
   }
   else if ( _totalJobLines != -1 && strcmp(ctype,"line") == 0) {
@@ -132,24 +126,7 @@ void PrintStatusScene::printrCallback(const char ctype[], float * fdata, int * i
 
 void PrintStatusScene::loop()
 {
-    //Handle print process
-    //Printer::process();
-
-    //Check if we are done
-    /*
-    if (!Printer::printing)
-    {
-        //ProjectsSceneController * scene = new ProjectsSceneController();
-        //Application.pushScene(scene);
-        FinishPrintSceneController * scene = new FinishPrintSceneController();
-        Application.pushScene(scene);
-    } else if (_progressBar != NULL)
-    {
-        _progressBar->setValue(Printer::progress);
-    }
-    */
-
-    SceneController::loop();
+  SceneController::loop();
 }
 
 

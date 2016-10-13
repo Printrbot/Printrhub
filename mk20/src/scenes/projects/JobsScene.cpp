@@ -15,7 +15,8 @@ extern UIBitmaps uiBitmaps;
 JobsScene::JobsScene(String projectIndex, int jobOffset):
   SidebarSceneController::SidebarSceneController(),
   _projectIndex(projectIndex),
-  _jobs(NULL){
+  _jobs(NULL),
+  _jobOffset(jobOffset) {
 }
 
 JobsScene::~JobsScene() {
@@ -98,10 +99,10 @@ void JobsScene::onWillAppear() {
 
   SidebarSceneController::onWillAppear();
 
-
-  // TODO
-  // if job index is > 0, then shift the display to show that job
-  // ....
+  if (_jobOffset > 0) {
+    // TODO
+    // if job index is > 0, then shift the display to show that job
+  }
 
 }
 

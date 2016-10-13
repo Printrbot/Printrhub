@@ -58,7 +58,10 @@ void CalibrateScene::onWillAppear() {
   _offsetText->setTextAlign(TEXTALIGN_CENTERED);
   _offsetText->setForegroundColor(ILI9341_BLACK);
   _offsetText->setBackgroundColor(RGB565(200,200,200));
-  _offsetText->setText(String(_offset));
+
+  char buffer[10];
+  dtostrf(_offset, 3, 1, buffer);
+  _offsetText->setText(String(buffer));
 
   Display.addLayer(_offsetText);
 
@@ -76,6 +79,8 @@ void CalibrateScene::onWillAppear() {
   _saveBtn->setBitmap(&uiBitmaps.btn_save);
   _saveBtn->setDelegate(this);
   addView(_saveBtn);
+
+
 
 
   SidebarSceneController::onWillAppear();

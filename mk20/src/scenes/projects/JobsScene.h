@@ -38,6 +38,7 @@ private:
 	Project _project;
 	String _jobFilePath;
 	Job _selectedJob;
+  int _jobOffset;
 
 protected:
 	BitmapButton* _printBtnDownload;

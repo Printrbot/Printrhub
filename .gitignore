@@ -6,3 +6,11 @@ utils/firmware/node_modules
 imagetool/idx/.DS_Store
 
 imagetool/idx/.DS_Store
+
+utils/firmware/files/esp.bin
+
+utils/firmware/files/esp.bin
+
+utils/firmware/files/firmware.json
+
+utils/firmware/files/mk20.bin
