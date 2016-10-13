@@ -31,6 +31,7 @@ ApplicationClass::ApplicationClass()
   _espOK = false;
   _lastESPPing = 0;
   _currentJob = NULL;
+  _nextJob = NULL;
 }
 
 ApplicationClass::~ApplicationClass()
@@ -131,7 +132,9 @@ void ApplicationClass::loop()
 	_esp->process();
 
 	//run the loop on printr
+  _esp->beginBlockPort();
 	printr.loop();
+  _esp->endBlockPort();
 
 	//Run Animations
 	Animator.update();
@@ -146,24 +149,33 @@ void ApplicationClass::loop()
   {
     if (_currentJob != NULL) {
       //Send terminating handler
+      _esp->beginBlockPort();
       _currentJob->onWillEnd();
       delete _currentJob;
+      _esp->endBlockPort();
     }
 
     _currentJob = _nextJob;
     _nextJob = NULL;
 
     //Send will start event
+    _esp->beginBlockPort();
     _currentJob->onWillStart();
+    _esp->endBlockPort();
   }
 
   if (_currentJob != NULL) {
+    _esp->beginBlockPort();
     _currentJob->loop();
+    _esp->endBlockPort();
+
   }
 
   //UI Handling
 	if (_nextScene != NULL)
 	{
+    _esp->beginBlockPort();
+
 		//Shut down display to hide the build process of the layout (which is step by step and looks flashy)
 		Display.fadeOut();
 
@@ -178,6 +190,8 @@ void ApplicationClass::loop()
 		_currentScene = _nextScene;
 		_nextScene = NULL;
 		_firstSceneLoop = true;
+
+    _esp->endBlockPort();
 	}
 
 	//Run current controller
@@ -190,6 +204,8 @@ void ApplicationClass::loop()
 		//The default implementation will clear the display!
 		if (_firstSceneLoop)
 		{
+      _esp->beginBlockPort();
+
 			LOG("First loop");
 			Display.clear();
 
@@ -208,6 +224,7 @@ void ApplicationClass::loop()
 			Display.print("PROJECTS");
 
 			Display.setTextRotation(0);*/
+      _esp->endBlockPort();
 		}
 
 		//Touch handling
@@ -226,14 +243,16 @@ void ApplicationClass::loop()
 		}
 
 		//Run the scenes loop function
+    _esp->beginBlockPort();
 		sceneController->loop();
+    _esp->endBlockPort();
 		_lastTime = millis();
 
 		bool willRefresh = Display.willRefresh();
 		if (willRefresh)
 		{
 			//This should be a good idea as it marks MK20 to be unable to receive data, but this does not work at the moment
-			digitalWrite(COMMSTACK_DATAFLOW_PIN,LOW);
+      _esp->beginBlockPort();
 		}
 
 		//Relayout screen tiles
@@ -251,7 +270,7 @@ void ApplicationClass::loop()
 		if (willRefresh)
 		{
 			//This should be a good idea as it marks MK20 to be unable to receive data, but this does not work at the moment
-			digitalWrite(COMMSTACK_DATAFLOW_PIN,HIGH);
+			_esp->endBlockPort();
 		}
 
 		_firstSceneLoop = false;

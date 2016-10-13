@@ -134,56 +134,48 @@ size_t CommStack::getEncodedBufferSize(size_t sourceSize)
     return sourceSize + sourceSize / 254 + 1;
 }
 
-void CommStack::send(const uint8_t* buffer, size_t size)
+void CommStack::send(const uint8_t* buffer, size_t size, bool sendMarker)
 {
     if(_port == 0 || buffer == 0 || size == 0) return;
-
-    uint8_t _encodeBuffer[getEncodedBufferSize(size)];
-    size_t numEncoded = encode(buffer, size, _encodeBuffer);
-
-    LOG_VALUE("Sending encoded data with size",size);
-    LOG_VALUE("ReadToSend-Flag",digitalRead(COMMSTACK_DATAFLOW_PIN));
+    if (!isReady()) return;
 
     //Data flow pin is LOW
     if (digitalRead(COMMSTACK_DATAFLOW_PIN) == LOW)
     {
-        //Only wait if it's been previously been HIGH (i.e. CommStack has been initialized on the other side)
-        if (isReady())
+        LOG("Waiting for Ready To Send Signal");
+        while(digitalRead(COMMSTACK_DATAFLOW_PIN) == LOW)
         {
-            LOG("Waiting for Ready To Send Signal");
-            while(digitalRead(COMMSTACK_DATAFLOW_PIN) == LOW)
-            {
-                ESP.wdtFeed();
-                delayMicroseconds(1);
-            }
-            LOG("Signal received, sending...");
+            ESP.wdtFeed();
+            delayMicroseconds(1);
         }
+        LOG("Signal received, sending...");
     }
 
-    int numBytesSent = _port->write(_encodeBuffer, numEncoded);
-    _port->write(_packetMarker);
-    _port->flush();
-    LOG_VALUE("Number of bytes sent",numBytesSent);
+    uint8_t _encodeBuffer[getEncodedBufferSize(size)];
+    size_t numEncoded = encode(buffer, size, _encodeBuffer);
 
-/*    //Wait for MK20 to receive the package
-    while (digitalRead(COMMSTACK_DATAFLOW_PIN) == HIGH)
-    {
-        ESP.wdtFeed();
-        delayMicroseconds(1);
-    }*/
+    LOG("Sending encoded data");
+    _port->write(_encodeBuffer, numEncoded);
+
+    if (sendMarker) {
+        _port->write(_packetMarker);
+    }
+
+    _port->flush();
 }
 
 void CommStack::runTask(const uint8_t* buffer, size_t size)
 {
     LOG("Running task and preparing response buffer");
     //Clear response data buffer
-    memset(_responseBuffer,0,COMM_STACK_BUFFER_SIZE);
+    memset(_sendBuffer,0,COMM_STACK_BUFFER_SIZE);
 
     //Trigger the application to run the task and send responded data
     uint16_t responseDataSize = 0;
+    uint8_t* responseBuffer = &_sendBuffer[sizeof(CommHeader)];
     bool sendResponse = true;
     bool success = true;
-    _delegate->runTask(_currentHeader,buffer,size,_responseBuffer,&responseDataSize,&sendResponse,&success);
+    _delegate->runTask(_currentHeader,buffer,size,responseBuffer,&responseDataSize,&sendResponse,&success);
 
     LOG_VALUE("Running task complete, Response data size",responseDataSize);
     //Prepare header for the response
@@ -200,23 +192,18 @@ void CommStack::runTask(const uint8_t* buffer, size_t size)
 
         //Set size of responded data
         _currentHeader.contentLength = responseDataSize;
-
         uint16_t checkSum = 0;
         if (responseDataSize > 0)
         {
-            checkSum = getCheckSum(_responseBuffer,responseDataSize);
+            checkSum = getCheckSum(responseBuffer,responseDataSize);
         }
-        _currentHeader.setCheckSum(checkSum);
+        _currentHeader.setDataCheckSum(checkSum);
 
-        //Send the header
-        send((uint8_t*)&_currentHeader, sizeof(CommHeader));
+        //Copy the header
+        memcpy(_sendBuffer,&_currentHeader,sizeof(CommHeader));
 
-        //Now send back data if they are available
-        if (responseDataSize > 0)
-        {
-            LOG_VALUE("Sending response data with size",responseDataSize);
-            send(_responseBuffer,responseDataSize);
-        }
+        //Send data
+        send(_sendBuffer,responseDataSize+sizeof(CommHeader),true);
     }
     else
     {
@@ -226,74 +213,28 @@ void CommStack::runTask(const uint8_t* buffer, size_t size)
 
 void CommStack::packetReceived(const uint8_t* buffer, size_t size)
 {
-    LOG_VALUE("Packet received with size",size);
+    //Copy header into struct and test checksum
+    memcpy(&_currentHeader,buffer,sizeof(CommHeader));
 
-    if (_expectedPacketType == Header)
-    {
-        if (size == sizeof(CommHeader))
-        {
-            LOG("Received header");
-            //Copy data into current header
-            memcpy(&_currentHeader,buffer,size);
+    //Now check if calculated checksum is equal that was sent
+    if (_currentHeader.isOK()) {
+        if (_currentHeader.contentLength > 0) {
+            //We have data attached
+            uint8_t* data = (uint8_t*)&buffer[sizeof(CommHeader)];
+            size_t dataSize = size - sizeof(CommHeader);
 
-            LOG_VALUE("Header.currentTask",_currentHeader.getCurrentTask());
-            LOG_VALUE("Header.commType",_currentHeader.commType);
-            LOG_VALUE("Header.contentLength",_currentHeader.contentLength);
-
-            //Check if data are expected to be sent along the header
-            if (_currentHeader.contentLength > 0)
-            {
-                LOG_VALUE("Now expecting data with length",_currentHeader.contentLength);
-                _expectedPacketType = Data;
+            uint16_t checkSum = getCheckSum(data,_currentHeader.contentLength);
+            if (checkSum == _currentHeader.dataCheckSum) {
+                runTask(data, dataSize);
+            } else {
+                EventLogger::log("Data checksums do not match, received malformed packet");
             }
-            else
-            {
-                LOG("No data expected, expecting next package to be a header");
-                //No data will follow this header, we expect an header again next time
-                _expectedPacketType = Header;
-
-                //Run the task as no data will follow
-                LOG("Run task with data less header");
-                runTask(buffer,size);
-            }
+        } else {
+            //We have no data attached
+            runTask(NULL,0);
         }
-        else
-        {
-            LOG("Expected header, but received packet with different size");
-            LOG_VALUE("Expected header size",sizeof(CommHeader));
-            LOG_VALUE("Got packet with size",size);
-        }
-    }
-    else if (_expectedPacketType == Data)
-    {
-        if (size == _currentHeader.contentLength)
-        {
-            LOG("Received data, running task with data");
-
-            //Now check the checksum
-            uint16_t checkSum = getCheckSum(buffer,size);
-            if (checkSum != _currentHeader.checkSum)
-            {
-                LOG("Checksum test failed");
-                LOG_VALUE("Checksum of package",_currentHeader.checkSum);
-                LOG_VALUE("Computed checksum",checkSum);
-            }
-            else
-            {
-                //Everythings fine, we received an header and data with the expected size followed along, run the task
-                runTask(buffer,size);
-            }
-        }
-        else
-        {
-            LOG("Expected data, but received packet with different size than specified in previous header");
-            LOG_VALUE("Expected data size given in header",_currentHeader.contentLength);
-            LOG_VALUE("Got packet with size",size);
-        }
-
-        //Now that the data have been sent/received the next package should be a header
-        LOG("Next packet is expected to be a header");
-        _expectedPacketType = Header;
+    } else {
+        EventLogger::log("Header checksums not ok, received malformed packet");
     }
 }
 
@@ -305,6 +246,10 @@ void CommStack::process()
         if (digitalRead(COMMSTACK_DATAFLOW_PIN) == HIGH)
         {
             _ready = true;
+        }
+        else
+        {
+            return;
         }
     }
 
@@ -349,29 +294,27 @@ uint16_t CommStack::getCheckSum(const uint8_t *data, size_t size)
 
 bool CommStack::sendMessage(CommHeader &header, size_t contentLength, const uint8_t *data)
 {
-    //Don't send as other side is not ready
-    //if (!isReady()) return false;
+    if(_port == 0) return false;
 
+    //Calculate the data checksum and set the checksums of header
+    uint16_t checkSum = getCheckSum(data,contentLength);
+    header.setDataCheckSum(checkSum);
+
+    //Calculate size of packet (header + data)
+    size_t size = contentLength + sizeof(CommHeader);
+
+    EventLogger::log("Sending message with taskID: %d, content length: %d, total size: %d",header.getCurrentTask(),contentLength,size);
+
+    //Prepare packet in memory
+    memcpy(_sendBuffer,&header,sizeof(CommHeader));
     if (contentLength > 0)
     {
-        //Calculate the checksum and set the checksum
-        uint16_t checkSum = getCheckSum(data,contentLength);
-        header.setCheckSum(checkSum);
-
-        //Send the header and data
-        LOG_VALUE("Sending Header and data with size",contentLength);
-        send((uint8_t*)&header, sizeof(CommHeader));
-        delayMicroseconds(5);
-        send(data, contentLength);
-    }
-    else
-    {
-        //Only send the header
-        LOG("Sending the header only (no data)");
-        send((uint8_t*)&header, sizeof(CommHeader));
+        memcpy(&_sendBuffer[sizeof(CommHeader)],data,contentLength);
     }
 
-    LOG("Request sent");
+    //Send data
+    send(_sendBuffer,size,true);
+
     return true;
 }
 
@@ -388,6 +331,10 @@ bool CommStack::requestTask(TaskID task, const JsonObject &object)
     int length = object.measureLength()+1;
     char buffer[length];
     object.printTo(buffer,length);
+
+    EventLogger::log("Sending JSON for Task %d with length: %d",task,length);
+    EventLogger::log(buffer);
+
     return requestTask(task,length,(uint8_t*)buffer);
 }
 
