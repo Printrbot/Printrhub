@@ -21,6 +21,7 @@ public:
 
 #pragma mark Getter/Setter
     virtual void setBitmap(const char *filePath, uint16_t width, uint16_t height, uint32_t offset = 0);
+    virtual void setShadowed(bool shadowed) { _shadowed = shadowed; setNeedsDisplay(); };
 
 #pragma mark Member Variables
 private:
@@ -29,6 +30,7 @@ private:
     uint16_t _width;
     uint16_t _height;
     uint32_t _offset;
+    bool _shadowed;
 };
 
 #endif //TEENSYCMAKE_SDBITMAPLAYER_H

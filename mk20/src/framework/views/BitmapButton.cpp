@@ -71,6 +71,7 @@ void BitmapButton::setBitmap(const uint8_t *bitmap, uint16_t width, uint16_t hei
 
 void BitmapButton::setBitmap(UIBitmap * bitmap) {
   _sdbitmapLayer = new SDBitmapLayer(_frame);
+  _sdbitmapLayer->setBackgroundColor(getBackgroundColor());
   _sdbitmapLayer->setBitmap("ui", bitmap->width, bitmap->height, bitmap->offset);
   _sdbitmapLayer->setContext(getContext());
   addLayer(_sdbitmapLayer);
@@ -88,29 +89,18 @@ void BitmapButton::setFrame(Rect frame, bool updateLayout)
 
 void BitmapButton::updateButton(ButtonState buttonState)
 {
-  /*
+  if (_sdbitmapLayer == NULL) return;
+
   if (buttonState == ButtonState::Off)
   {
-      if (getBaseLayer() != NULL)
-      {
-          getBaseLayer()->setBackgroundColor(getBackgroundColor());
-      }
-
-      getBitmapLayer()->setBackgroundColor(getBackgroundColor());
-      getBitmapLayer()->setColor(getColor());
+      _sdbitmapLayer->setShadowed(false);
   }
   else if (buttonState == ButtonState::On)
   {
-      if (getBaseLayer() != NULL)
-      {
-          getBaseLayer()->setBackgroundColor(getAlternateBackgroundColor());
-      }
-
-      getBitmapLayer()->setBackgroundColor(getAlternateBackgroundColor());
-      getBitmapLayer()->setColor(getAlternateTextColor());
+    _sdbitmapLayer->setShadowed(true);
   }
-  */
-    setNeedsDisplay();
+
+  setNeedsDisplay();
 }
 
 bool BitmapButton::touchDown(TS_Point &point)

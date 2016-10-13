@@ -312,6 +312,58 @@ void PHDisplay::drawFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint1
     }
 }
 
+void PHDisplay::drawShadowedFileBitmapByColumn(uint16_t x, uint16_t y, uint16_t w, uint16_t h, File *file, uint16_t xs,
+                                       uint16_t ys, uint16_t ws, uint16_t hs, uint16_t backgroundColor, uint32_t byteOffset)
+{
+    if (_lockBuffer != NULL)
+    {
+        _lockBuffer->drawFileBitmapByColumn(x,y,w,h,file,xs,ys,ws,hs, byteOffset);
+        return;
+    }
+
+    //TODO: This code will fail if ys > 0 and hs < h as it's not implemented correctly. As it's not needed by the current firmware I leave this comment and resolve it later
+    uint16_t buffer[320];
+    for (uint16_t xb=0;xb<w;xb++)
+    {
+        file->seek((((xb+xs)*hs)*sizeof(uint16_t))+byteOffset);
+
+        file->read(buffer,sizeof(uint16_t)*hs);
+
+        SPI.beginTransaction(SPISettings(SPICLOCK, MSBFIRST, SPI_MODE0));
+        setAddr(x+xb, y, x+xb, y+h-1);
+        writecommand_cont(ILI9341_RAMWR);
+
+        for (uint16_t yb=0;yb<h;yb++)
+        {
+            uint16_t color = buffer[yb+ys];
+
+            //Only dampen colors if other than background color (we don't want the rects to be visible with round buttons)
+            if (color != backgroundColor) {
+              float r = (float)(((((color >> 11) & 0x1F) * 527) + 23) >> 6);
+              float g = (float)(((((color >> 5) & 0x3F) * 259) + 33) >> 6);
+              float b = (float)((((color & 0x1F) * 527) + 23) >> 6);
+              r *= 0.7;
+              g *= 0.7;
+              b *= 0.7;
+              color = (uint16_t)RGB565((uint8_t)r,(uint8_t)g,(uint8_t)b);
+            }
+
+            if (yb == h-1)
+            {
+                //Last pixel
+                writedata16_last(color);
+            }
+            else
+            {
+                //All other pixels
+                writedata16_cont(color);
+            }
+            //drawPixel(x+xb,y+yb,buffer[xb+xs]);
+        }
+        SPI.endTransaction();
+    }
+}
+
 void PHDisplay::setNeedsLayout()
 {
     _needsLayout = true;
