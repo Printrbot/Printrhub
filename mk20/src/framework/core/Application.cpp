@@ -394,21 +394,21 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
       DownloadError errorCode = (DownloadError) error;
 
       if (errorCode == DownloadError::Timeout) {
-        Application.pushScene(new ErrorScene("Timeout"));
+        Application.pushScene(new ErrorScene("Timeout"),true);
       } else if (errorCode == DownloadError::InternalServerError) {
-        Application.pushScene(new ErrorScene("Internal Server Error"));
+        Application.pushScene(new ErrorScene("Internal Server Error"),true);
       } else if (errorCode == DownloadError::FileNotFound) {
-        Application.pushScene(new ErrorScene("File not found"));
+        Application.pushScene(new ErrorScene("File not found"),true);
       } else if (errorCode == DownloadError::Forbidden) {
-        Application.pushScene(new ErrorScene("Forbidden"));
+        Application.pushScene(new ErrorScene("Forbidden"),true);
       } else if (errorCode == DownloadError::UnknownError) {
-        Application.pushScene(new ErrorScene("Unknown Error"));
+        Application.pushScene(new ErrorScene("Unknown Error"),true);
       } else if (errorCode == DownloadError::ConnectionFailed) {
-        Application.pushScene(new ErrorScene("Connection failed"));
+        Application.pushScene(new ErrorScene("Connection failed"),true);
       } else if (errorCode == DownloadError::PrepareDownloadedFileFailed) {
-        Application.pushScene(new ErrorScene("File preparation failed"));
+        Application.pushScene(new ErrorScene("File preparation failed"),true);
       } else if (errorCode == DownloadError::RemoveOldFilesFailed) {
-        Application.pushScene(new ErrorScene("Remove old file failed"));
+        Application.pushScene(new ErrorScene("Remove old file failed"),true);
       }
 
       *sendResponse = false;
