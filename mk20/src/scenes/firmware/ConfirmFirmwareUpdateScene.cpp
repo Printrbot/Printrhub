@@ -59,7 +59,7 @@ void ConfirmFirmwareUpdateScene::onWillAppear() {
 
 void ConfirmFirmwareUpdateScene::onSidebarButtonTouchUp() {
   ProjectsScene* scene = new ProjectsScene();
-  Application.pushScene(scene);
+  Application.pushScene(scene,true);
 }
 
 void ConfirmFirmwareUpdateScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
