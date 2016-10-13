@@ -166,6 +166,12 @@ bool MK20::openSDFileForWrite(String targetFilePath, size_t bytesToSend, bool sh
     return true;
 }
 
+void MK20::showFirmwareInProgressNotification()
+{
+    //If MK20 is alive it will show that the firmware update is in progress
+    requestTask(TaskID::ShowFirmwareUpdateInProgress);
+}
+
 bool MK20::sendSDFileData(uint8_t *data, size_t size)
 {
     Application.getMK20Stack()->requestTask(TaskID::FileSaveData,size, data);

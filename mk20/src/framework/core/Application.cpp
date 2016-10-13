@@ -9,6 +9,7 @@
 #include "../../scenes/alerts/ErrorScene.h"
 #include "../../scenes/projects/ProjectsScene.h"
 #include "../../scenes/firmware/ConfirmFirmwareUpdateScene.h"
+#include "../../scenes/firmware/FirmwareInProgressScene.h"
 #include "Printr.h"
 #include <ArduinoJson.h>
 #include "../../errors.h"
@@ -497,8 +498,13 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
     resetESP();
 
     //Show Project scene
-    ProjectsScene* scene = new ProjectsScene();
-    pushScene(scene,true);
+    ProjectsScene *scene = new ProjectsScene();
+    pushScene(scene, true);
+  } else if (header.getCurrentTask() == TaskID::ShowFirmwareUpdateInProgress) {
+    if (header.commType == Request) {
+      FirmwareInProgressScene* scene = new FirmwareInProgressScene();
+      pushScene(scene,true);
+    }
   } else if (header.getCurrentTask() == TaskID::FileOpenForWrite) {
     if (header.commType == Request) {
 

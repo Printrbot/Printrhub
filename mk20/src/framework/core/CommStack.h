@@ -57,7 +57,9 @@ enum class TaskID : uint8_t {
     FirmwareUpdateError = 27,
     DebugLog = 28,
     RestartESP = 29,
-    FirmwareUpdateComplete = 30
+    FirmwareUpdateComplete = 30,
+    DownloadFileToSDCard = 31,
+    ShowFirmwareUpdateInProgress = 32
 };
 
 struct CommHeader {
