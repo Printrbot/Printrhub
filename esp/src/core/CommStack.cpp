@@ -140,6 +140,7 @@ void CommStack::send(const uint8_t* buffer, size_t size, bool sendMarker)
     if (!isReady()) return;
 
     //Data flow pin is LOW
+    unsigned long startWaitTime = millis();
     if (digitalRead(COMMSTACK_DATAFLOW_PIN) == LOW)
     {
         LOG("Waiting for Ready To Send Signal");
@@ -147,6 +148,13 @@ void CommStack::send(const uint8_t* buffer, size_t size, bool sendMarker)
         {
             ESP.wdtFeed();
             delayMicroseconds(1);
+
+            //Don't wait forever that MK20 comes back
+            if (millis() - startWaitTime > 20000) {
+                _ready = false;
+                Application.setMK20Timeout();
+                break;
+            }
         }
         LOG("Signal received, sending...");
     }

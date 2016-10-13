@@ -38,6 +38,8 @@ public:
 	Mode* currentMode() { return _currentMode; };
 	MK20* getMK20Stack() const { return _mk20; };
 	float getDeltaTime();
+	void startFirmwareUpdate();
+    void setMK20Timeout();
 
 	void sendPulse(int length=5, int count=1);
 

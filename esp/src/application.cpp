@@ -235,6 +235,10 @@ void ApplicationClass::handleError(DownloadError error)
     idle();
 }
 
+void ApplicationClass::setMK20Timeout()
+{
+    _mk20OK = false;
+}
 
 void ApplicationClass::startFirmwareUpdate()
 {
