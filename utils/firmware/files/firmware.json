@@ -2,5 +2,5 @@
   "version": 100,
   "esp_url": "http://static.printrbot.cloud/firmware/simple/esp.bin",
   "mk20_url": "http://static.printrbot.cloud/firmware/simple/mk20.bin",
-  "mk20_ui_url": "http://static.printrbot.cloud/firmware/firmware/simple/ui.min"
+  "mk20_ui_url": "http://www.appfruits.com/files/ui.min"
 }
