@@ -172,6 +172,14 @@ void ApplicationClass::loop()
     _currentJob->loop();
     _esp->endBlockPort();
 
+    if (_currentJob->isFinished()) {
+      FLOW_NOTICE("Exiting job %s",_currentJob->getName().c_str());
+      _esp->beginBlockPort();
+      _currentJob->onWillEnd();
+      delete _currentJob;
+      _currentJob = NULL;
+      _esp->endBlockPort();
+    }
   }
 
   //UI Handling

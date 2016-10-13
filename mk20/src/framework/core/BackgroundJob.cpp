@@ -4,8 +4,9 @@
 
 #include "BackgroundJob.h"
 
-BackgroundJob::BackgroundJob() {
-  _finished = false;
+BackgroundJob::BackgroundJob():
+_finished(false)
+{
 }
 
 BackgroundJob::~BackgroundJob()
@@ -38,4 +39,12 @@ bool BackgroundJob::handlesTask(TaskID taskID)
 bool BackgroundJob::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)
 {
   return true;
+}
+
+bool BackgroundJob::isIndeterminate() {
+  return true;
+}
+
+float BackgroundJob::fractionCompleted() {
+  return 0;
 }
