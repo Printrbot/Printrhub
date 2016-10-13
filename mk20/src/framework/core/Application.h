@@ -20,6 +20,7 @@
 #include "LED.h"
 #include <SoftwareSerial.h>
 #include "BackgroundJob.h"
+#include "EventLogger.h"
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
@@ -101,6 +102,7 @@ extern ApplicationClass Application;
 extern PHDisplay Display;
 extern Adafruit_FT6206 Touch;
 extern LED StatusLED;
+extern EventLoggerClass EventLogger;
 extern int globalLayerId;
 extern int globalLayersCreated;
 extern int globalLayersDeleted;

@@ -148,6 +148,7 @@ void ApplicationClass::loop()
   if (_nextJob != NULL)
   {
     if (_currentJob != NULL) {
+      FLOW_NOTICE("Replacing job %s",_currentJob->getName().c_str());
       //Send terminating handler
       _esp->beginBlockPort();
       _currentJob->onWillEnd();
@@ -155,6 +156,7 @@ void ApplicationClass::loop()
       _esp->endBlockPort();
     }
 
+    FLOW_NOTICE("Starting job %s",_nextJob->getName().c_str());
     _currentJob = _nextJob;
     _nextJob = NULL;
 
@@ -162,6 +164,7 @@ void ApplicationClass::loop()
     _esp->beginBlockPort();
     _currentJob->onWillStart();
     _esp->endBlockPort();
+    FLOW_NOTICE("OnWillStart called on job %s",_currentJob->getName().c_str());
   }
 
   if (_currentJob != NULL) {
@@ -298,6 +301,7 @@ void ApplicationClass::pushScene(SceneController *scene, bool cancelModal)
 }
 
 void ApplicationClass::pushJob(BackgroundJob *job) {
+  FLOW_NOTICE("Pushed job %s",job->getName().c_str());
   _nextJob = job;
 }
 
@@ -331,18 +335,20 @@ void ApplicationClass::onCommStackError()
 
 bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool* sendResponse, bool* success)
 {
+  COMMSTACK_SPAM("Application received task with ID %d",header.getCurrentTask());
+
 	if (_currentScene != NULL && _currentScene->handlesTask(header.getCurrentTask()))
 	{
-		LOG_VALUE("Current scene handles Task with ID",header.getCurrentTask());
+    COMMSTACK_SPAM("Sending task with ID %d to scene %s",header.getCurrentTask(),_currentScene->getName().c_str());
 		return _currentScene->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
 	}
 
   if (_currentJob != NULL && _currentJob->handlesTask(header.getCurrentTask())) {
-    return _currentJob->runTask(header,data,dataSize,responseData,responseDataSize,sendResponse,success);
-  }}
+    COMMSTACK_SPAM("Sending task with ID %d to job %s",header.getCurrentTask(),_currentJob->getName().c_str());
+    return _currentJob->runTask(header, data, dataSize, responseData, responseDataSize, sendResponse, success);
+  }
 
-	LOG_VALUE("Running Task with ID",header.getCurrentTask());
-	LOG_VALUE("Comm-Type",header.commType);
+  COMMSTACK_NOTICE("Application handles task with ID %d",header.getCurrentTask());
 
 	if (header.getCurrentTask() == TaskID::SaveProjectWithID) {
     if (header.commType == Request) {
@@ -461,6 +467,7 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
     }
   } else if (header.getCurrentTask() == TaskID::ShowFirmwareUpdateNotification) {
     if (header.commType == Request) {
+      COMMSTACK_NOTICE("Received ShowFirmwareUpdateNotification request");
       *sendResponse = false;
 
       ConfirmFirmwareUpdateScene *scene = new ConfirmFirmwareUpdateScene();
@@ -470,6 +477,7 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
     *sendResponse = false;
   } else if (header.getCurrentTask() == TaskID::RestartESP) {
     *sendResponse = false;
+    COMMSTACK_NOTICE("Received RestartESP request, restarting ESP");
 
     //Restart ESP
     resetESP();

@@ -29,6 +29,8 @@ UIBitmaps uiBitmaps;
 Printr printr;
 DataStore dataStore;
 
+EventLoggerClass EventLogger;
+
 
 #ifdef DEBUG_USE_SOFTWARE_SERIAL
 SoftwareSerial DebugSerial(DEBUG_SOFTWARE_SERIAL_RX_PIN,DEBUG_SOFTWARE_SERIAL_TX_PIN);
@@ -89,6 +91,9 @@ void setup(void)
         #ifdef DEBUG_SETUP
         DEBUG_SETUP;
         #endif
+
+        EventLogger.setLogContexts(LOG_FLOW|LOG_COMMSTACK);
+        EventLogger.setLogLevel(LOG_NOTICE);
 
         DebugSerial.println("Debug Serial initiated");
     }
