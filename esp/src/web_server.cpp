@@ -101,6 +101,29 @@ void WebServer::begin() {
         request->send(200, "text/plain", "\nupdate of MK20 started, please wait...\n\n");
     });
 
+    server.on("/update_ui", HTTP_GET, [](AsyncWebServerRequest *request) {
+        AsyncWebServerResponse *response = NULL;
+
+        FirmwareUpdateInfo* updateInfo = Application.getFirmwareUpdateInfo();
+        if (updateInfo == NULL) {
+            response = request->beginResponse(200, "text/json", "{'success':'false','error':'Firmware update info not loaded yet'}");
+        } else {
+            response = request->beginResponse(200, "text/json", "{'success':'true'}");
+
+            String uiFilePath("/ui.min");
+            DownloadFileToSPIFFs* downloadUI = new DownloadFileToSPIFFs(updateInfo->mk20_ui_url,uiFilePath);
+            PushFileToSDCard* pushUIFile = new PushFileToSDCard(uiFilePath,uiFilePath,false,Compression::RLE16);
+            downloadUI->setNextMode(pushUIFile);
+            Application.pushMode(downloadUI);
+        }
+
+        if (response != NULL) {
+            EventLogger::log(config.data.name);
+            response->addHeader("Access-Control-Allow-Origin", "*");
+            request->send(response);
+        }
+    });
+
 	server.on("/info", HTTP_GET, [](AsyncWebServerRequest *request) {
 	//	String info = brain.getInfo();
 		AsyncJsonResponse * response = new AsyncJsonResponse();
