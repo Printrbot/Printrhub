@@ -7,6 +7,8 @@
 #include "controllers/MK20FirmwareUpdate.h"
 #include "controllers/ESPFirmwareUpdate.h"
 #include "controllers/ManageWifi.h"
+#include "controllers/DownloadFileToSPIFFs.h"
+#include "controllers/PushFileToSDCard.h"
 #include "core/Mode.h"
 #include "controllers/DownloadFile.h"
 #include "controllers/Idle.h"
@@ -76,7 +78,7 @@ void WebServer::begin() {
 		request->send(200, "text/html", html);
 	});
 
-	server.on("/updatefirmware", HTTP_GET, [](AsyncWebServerRequest *request) {
+	server.on("/update_esp", HTTP_GET, [](AsyncWebServerRequest *request) {
 		AsyncWebParameter* url = request->getParam("url");
 		EventLogger::log(url->value().c_str());
 		Mode* espFU = new ESPFirmwareUpdate(url->value().c_str());
@@ -118,6 +120,30 @@ void WebServer::begin() {
 		EventLogger::log(config.data.name);
 		response->addHeader("Access-Control-Allow-Origin", "*");
 		request->send(response);
+	});
+
+	server.on("/updatefirmware", HTTP_GET, [](AsyncWebServerRequest *request) {
+        FirmwareUpdateInfo* updateInfo = Application.getFirmwareUpdateInfo();
+        AsyncWebServerResponse *response = NULL;
+        if (updateInfo == NULL) {
+            response = request->beginResponse(200, "text/json", "{'success':'false','error':'Firmware update infos not been loaded yet'}");
+        } else {
+            if (updateInfo->buildnr <= FIRMWARE_BUILDNR) {
+                response = request->beginResponse(200, "text/json", "{'success':'false','error':'Latest firmware already installed'}");
+            } else {
+                //Notify MK20 that firmware has started (shows a screen without user interaction)
+                Application.getMK20Stack()->showFirmwareInProgressNotification();
+                Application.startFirmwareUpdate();
+
+                response = request->beginResponse(200, "text/json", "{'success':'true'}");
+            }
+        }
+
+        if (response != NULL) {
+            EventLogger::log(config.data.name);
+            response->addHeader("Access-Control-Allow-Origin", "*");
+            request->send(response);
+        }
 	});
 
 	server.on("/scanwifi", HTTP_GET, [](AsyncWebServerRequest *request) {
