@@ -4,6 +4,7 @@
 #include "../projects/ProjectsScene.h"
 #include "../filament/SelectFilamentAction.h"
 #include "../calibrate/CalibrateScene.h"
+#include "../settings/SystemInfoScene.h"
 
 extern UIBitmaps uiBitmaps;
 
@@ -97,7 +98,8 @@ void SettingsScene::buttonPressed(void *button)
 
   }
   else if (button == _wifi) {
-
+    SystemInfoScene* scene = new SystemInfoScene();
+    Application.pushScene(scene);
   }
   SidebarSceneController::buttonPressed(button);
 }

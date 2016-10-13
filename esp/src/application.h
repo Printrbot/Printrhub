@@ -20,6 +20,23 @@ struct FirmwareUpdateInfo {
 	String mk20_ui_url;
 };
 
+enum class NetworkMode: uint8_t {
+    Unconnected = 0,
+    Client = 1,
+    AccessPoint = 2
+};
+
+struct SystemInfo {
+    char ipaddress[15];         //IPV4
+    NetworkMode networkMode;
+    char SSID[32];              //http://compnetworking.about.com/cs/wireless/g/bldef%5Fssid.htm
+    char printerName[16];
+    char serialNumber[16];
+    char firmwareVersion[5];
+    int16_t buildNr;
+    bool hasPassword;
+};
+
 class ApplicationClass: CommStackDelegate
 {
 
@@ -51,6 +68,7 @@ public:
 	void setFirmwareUpdateInfo(FirmwareUpdateInfo* info) { _firmwareUpdateInfo = info; };
 	bool firmwareUpdateAvailable() { return _firmwareUpdateInfo != NULL; };
 	FirmwareUpdateInfo* getFirmwareUpdateInfo() { return _firmwareUpdateInfo; };
+    SystemInfo* getSystemInfo() { return &_systemInfo; };
 
 public:
 	bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse, bool* success);
@@ -69,6 +87,7 @@ private:
 //	WiFiServer _server;
     int _buildNumber;
 	FirmwareUpdateInfo* _firmwareUpdateInfo;
+    SystemInfo _systemInfo;
     bool _firmwareChecked;
 };
 

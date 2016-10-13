@@ -39,6 +39,23 @@
 #define FIRMWARE_VERSION "0.12"
 #define FIRMWARE_BUILDNR 99
 
+enum class NetworkMode: uint8_t {
+    Unconnected = 0,
+    Client = 1,
+    AccessPoint = 2
+};
+
+struct SystemInfo {
+    char ipaddress[15];         //IPV4
+    NetworkMode networkMode;
+    char SSID[32];              //http://compnetworking.about.com/cs/wireless/g/bldef%5Fssid.htm
+    char printerName[16];
+    char serialNumber[16];
+    char firmwareVersion[5];
+    int16_t buildNr;
+    bool hasPassword;
+};
+
 class SceneController;
 class View;
 

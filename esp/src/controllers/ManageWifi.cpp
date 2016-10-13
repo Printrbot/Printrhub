@@ -130,6 +130,12 @@ void ManageWifi::connectWifiStation() {
     _ipAddress = WiFi.localIP();
     _state = StateConnected;
     MDNS.begin(config.data.name);
+
+    //Set System Info
+    Application.getSystemInfo()->networkMode = NetworkMode::Client;
+    strcpy(Application.getSystemInfo()->ipaddress,_ipAddress.toString().c_str());
+    strcpy(Application.getSystemInfo()->SSID,config.data.wifiSsid);
+    strcpy(Application.getSystemInfo()->printerName,config.data.name);
   }
 }
 
@@ -145,6 +151,16 @@ void ManageWifi::createAP() {
   }
   _ipAddress = WiFi.softAPIP();
   _state = StateConnected;
+
+  //Set System Info
+  Application.getSystemInfo()->networkMode = NetworkMode::AccessPoint;
+  strcpy(Application.getSystemInfo()->ipaddress,_ipAddress.toString().c_str());
+  strcpy(Application.getSystemInfo()->SSID,WiFi.BSSIDstr().c_str());
+  strcpy(Application.getSystemInfo()->printerName,config.data.name);
+
+  if (strlen(config.data.apPassword) > 0) {
+      Application.getSystemInfo()->hasPassword = true;
+  }
 }
 
 
