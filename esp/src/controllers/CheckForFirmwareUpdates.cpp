@@ -70,11 +70,15 @@ void CheckForFirmwareUpdates::onFinished()
             const char* mk20_url = root["mk20_url"];
             const char* mk20_ui_url = root["mk20_ui_url"];
 
+            EventLogger::log("Firmware.json downloaded, setting firmware data");
+
             info->buildnr = buildNumber;
             info->esp_url = String(esp_url);
             info->mk20_url = String(mk20_url);
             info->mk20_ui_url = String(mk20_ui_url);
             Application.setFirmwareUpdateInfo(info);
+
+            EventLogger::log("Firmware Infos registered");
         }
     }
 

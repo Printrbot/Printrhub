@@ -45,15 +45,18 @@ void Mode::exit()
 {
     if (_nextMode == NULL)
     {
+        EventLogger::log("Exiting mode %s to idle",getName().c_str());
         Application.idle();
     }
     else
     {
+        EventLogger::log("Exiting mode %s to %s",getName().c_str(),_nextMode->getName().c_str());
         Application.pushMode(_nextMode);
     }
 }
 
 void Mode::exitWithError(DownloadError error)
 {
+    EventLogger::log("Exiting mode %s with error %d",getName().c_str(),error);
     Application.handleError(error);
 }
