@@ -769,6 +769,7 @@ bool ARMKinetisDebug::Flasher::next()
 	memset(buffer,0,sizeof(uint32_t)*(kFlashSectorSize/4));
 	uint32_t bufferAddress = 0;
 	int sector = 0;
+    bool rest = true;
 
 	for (address=0;address<file->size();address=address+1)
 	{
@@ -781,6 +782,7 @@ bool ARMKinetisDebug::Flasher::next()
 			buffer[bufferAddress] = data;
 			//target.log(LOG_NORMAL, "FLASH: Wrote longword to buffer at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",address,word[0],word[1],word[2],word[3],data);
 			bufferAddress++;
+            rest = true;
 
 			if (bufferAddress >= kFlashSectorSize/4)
 			{
@@ -817,6 +819,7 @@ bool ARMKinetisDebug::Flasher::next()
 				memset(buffer,0,sizeof(uint32_t)*(kFlashSectorSize/4));
 				bufferAddress = 0;
 				sector++;
+                rest = false;
 			}
 
 			memset(word,0,4);
@@ -828,18 +831,22 @@ bool ARMKinetisDebug::Flasher::next()
 		ESP.wdtFeed();
 	}
 
-	if (address % 4 != 0)
-	{
-		address -= address % 4;
-		Serial.print("Wrote ");
-		Serial.print(address);
-		Serial.println(" bytes so far, a few left...");
+    target.log(LOG_NORMAL, "Last sector");
 
-		uint32_t data = (word[3] << 24) + (word[2] << 16) + (word[1] << 8) + word[0];
-		buffer[bufferAddress] = data;
-		target.log(LOG_NORMAL, "FLASH: Wrote longword to buffer at %08x, 0: %02x, 1: %02x, 2: %02x, 3: %02x, Word: %08x",address,word[0],word[1],word[2],word[3],data);
-		bufferAddress++;
-	}
+    //Sector size is 2KB, buffer only 1KB, so we have to erase the section every second time
+    if (sector % 2 == 0)
+    {
+        target.log(LOG_NORMAL, "FLASH: flashSectorErase");
+        if (!target.flashSectorErase((sector*kFlashSectorSize)+REG_APPLICATION_BASE))
+        {
+            target.log(LOG_NORMAL, "FLASH: flashSectorErase failed");
+            return false;
+        }
+        else
+        {
+            target.log(LOG_NORMAL, "Sector %08x erased", (sector*kFlashSectorSize)+REG_APPLICATION_BASE);
+        }
+    }
 
 	//Write buffer to device
 	target.log(LOG_NORMAL,"Writing buffer to FlexRAM");
