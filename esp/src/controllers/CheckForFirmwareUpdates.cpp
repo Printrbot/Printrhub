@@ -29,7 +29,7 @@ bool CheckForFirmwareUpdates::onBeginDownload(uint32_t expectedSize)
 {
     digitalWrite(COMMSTACK_INFO_MARKER_PIN, LOW);
     _size = expectedSize;
-    _content = (uint8_t*)malloc(sizeof(uint8_t)*expectedSize);
+    _content = (uint8_t*)calloc(sizeof(uint8_t),expectedSize+1);
     if (!_content) {
         return false;
     }
