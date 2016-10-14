@@ -58,7 +58,7 @@ void CheckForFirmwareUpdates::onFinished()
 {
     digitalWrite(COMMSTACK_INFO_MARKER_PIN, HIGH);
     if (_content != NULL) {
-        StaticJsonBuffer<500> jsonBuffer;
+        StaticJsonBuffer<1000> jsonBuffer;
         String jsonObject((const char*)_content);
         JsonObject& root = jsonBuffer.parseObject(jsonObject);
 
