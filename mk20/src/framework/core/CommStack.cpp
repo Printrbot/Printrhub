@@ -282,67 +282,6 @@ void CommStack::process()
     }
     digitalWrite(COMMSTACK_DATAFLOW_PIN,HIGH);
   }
-  return;
-
-    while (_port->available() > 0)
-    {
-        int data = _port->read();
-        if (data >= 0)
-        {
-            if (data == COMM_STACK_PACKET_MARKER)
-            {
-              COMMSTACK_SPAM("Received packet marker at buffer index: %d", _receiveBufferIndex);
-
-                digitalWrite(COMMSTACK_DATAFLOW_PIN,LOW);
-                uint8_t _decodeBuffer[_receiveBufferIndex];
-                size_t numDecoded = decode(_receiveBuffer, _receiveBufferIndex, _decodeBuffer);
-
-                if (numDecoded == 0) {
-                  COMMSTACK_ERROR("Decoding of data failed");
-                  digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
-                  _delegate->onCommStackError();
-                  onDataPacketFailed();
-                  digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
-                } else{
-                  COMMSTACK_SPAM("Received packet with size: %d, decoded size: %d",_receiveBufferIndex,numDecoded);
-
-                  //Packet received
-                  digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
-                  packetReceived(_decodeBuffer,numDecoded);
-                  digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
-                }
-
-              _receiveBufferIndex = 0;
-
-                digitalWrite(COMMSTACK_DATAFLOW_PIN,HIGH);
-            }
-            else
-            {
-              DebugSerial.print(_receiveBufferIndex);
-              DebugSerial.print(":");
-              DebugSerial.print((char)data);
-              DebugSerial.print("(");
-              DebugSerial.print(data);
-              DebugSerial.println(")");
-
-                if ((_receiveBufferIndex + 1) < COMM_STACK_BUFFER_SIZE)
-                {
-                    _receiveBuffer[_receiveBufferIndex++] = data;
-                }
-                else
-                {
-                    // Error, buffer overflow if we write.
-                    COMMSTACK_WARNING("Buffer overflow, packet does not fit in memory and will be cut off");
-                }
-            }
-        }
-        else
-        {
-            COMMSTACK_WARNING("Reading from CommStack serial port not possible");
-            //Break and come back later
-            break;
-        }
-    }
 }
 
 uint16_t CommStack::getCheckSum(const uint8_t *data, size_t size)
