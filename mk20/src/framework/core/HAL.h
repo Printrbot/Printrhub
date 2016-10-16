@@ -149,6 +149,9 @@
 
 #define PRINTER_ACTIVE 3
 
+#define CODE_INDICATOR_1 29
+#define CODE_INDICATOR_2 30
+
 #define G2_RESET_PIN 27
 #define G2_ERASE_PIN 28
 

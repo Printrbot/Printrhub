@@ -40,9 +40,10 @@ public:
   void homeY();
   void homeZ();
 
+  void processPrint();
+
 private:
   void programEnd();
-  void readSerial();
   void parseResponse();
 
   void runJobStartGCode();

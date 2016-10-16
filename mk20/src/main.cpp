@@ -92,7 +92,7 @@ void setup(void)
         DEBUG_SETUP;
         #endif
 
-        EventLogger.setLogContexts(LOG_FLOW|LOG_COMMSTACK);
+        EventLogger.setLogContexts(LOG_FLOW|LOG_COMMSTACK|LOG_PRINTER);
         EventLogger.setLogLevel(LOG_NOTICE);
 
         DebugSerial.println("Debug Serial initiated");

@@ -36,8 +36,6 @@ void Printr::init() {
 }
 
 void Printr::loop() {
-  readSerial();
-
   if (!_printing) return;
   if (!_sendNext) return;
 
@@ -93,27 +91,24 @@ void Printr::loop() {
       sendLine("G0 Z1");
       sendLine("G92 A0");
       delay(200);
-
-      int sent = 0;
-      // send 6 lines of job gcode
-      // then wait for responses to send more
-      while(1) {
-        inStr = _printFile.readStringUntil('\n');
-        inStr.trim();
-        char f = inStr[0];
-        if (inStr.length() > 0 && inStr[0] != ';') {
-          sendLine(inStr);
-          sent++;
-        }
-        if (sent > 6)
-          break;
-      }
-      return;
     }
   }
   else if (_currentAction == 2) {
-    if (_printFile.available()) {
-      inStr = _printFile.readStringUntil('\n');
+    processPrint();
+  }
+}
+
+void Printr::processPrint() {
+  //Let's check the outgoing serial buffer first
+  int numBytesAvailableToWrite = Serial1.availableForWrite();
+  if (numBytesAvailableToWrite > 0) {
+    digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
+    //We can send data to the printer
+    uint8_t buffer[numBytesAvailableToWrite];
+    int numBytesReadFromFile = _printFile.readBytes(buffer,numBytesAvailableToWrite);
+    if (numBytesReadFromFile > 0) {
+      //Send bytes to printer
+      Serial1.write(buffer,numBytesAvailableToWrite);
     } else {
       // finished reading the file
       // This is a hack until total line numbers
@@ -121,15 +116,31 @@ void Printr::loop() {
       // when M3 is passed to it, or when _processedProgramLine == _totalProgramLines
       programEnd();
     }
+    digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
   }
 
-  inStr.trim();
-  // send it to printer
-  if (inStr.length() > 0 && inStr[0] != ';') {
-    sendLine(String("N") + String(_lastSentProgramLine) + String(" ") + inStr);
-    _lastSentProgramLine++;
-    _sendNext = false;
+  //Read from Serial
+  if (Serial1.available()) {
+    digitalWrite(CODE_INDICATOR_1,LOW);
+    while (Serial1.available()) {
+      readBuffer.line_buff[readBuffer.line_idx] = Serial1.read();
+      if (readBuffer.line_buff[readBuffer.line_idx] == '\n') {
+        readBuffer.line_buff[readBuffer.line_idx + 1] = '\0';
+        digitalWrite(CODE_INDICATOR_2,LOW);
+        parseResponse();
+        digitalWrite(CODE_INDICATOR_2,HIGH);
+        readBuffer.line_idx = 0;
+        readBuffer.line_buff[0] = '\0';
+
+        //We want to exit to loop once we read a line
+        break;
+      }
+      else
+        readBuffer.line_idx++;
+    }
+    digitalWrite(CODE_INDICATOR_1,HIGH);
   }
+
 }
 
 void Printr::turnOffHotend() {
@@ -139,21 +150,6 @@ void Printr::turnOffHotend() {
 void Printr::stopAndFlush() {
   Serial1.println("!%");
   delay(1000);
-}
-
-void Printr::readSerial() {
-  while (Serial1.available()) {
-
-    readBuffer.line_buff[readBuffer.line_idx] = Serial1.read();
-    if (readBuffer.line_buff[readBuffer.line_idx] == '\n') {
-      readBuffer.line_buff[readBuffer.line_idx + 1] = '\0';
-      parseResponse();
-      readBuffer.line_idx = 0;
-      readBuffer.line_buff[0] = '\0';
-    }
-    else
-      readBuffer.line_idx++;
-  }
 }
 
 int Printr::startJob(String filePath) {
@@ -262,10 +258,13 @@ void Printr::parseResponse() {
     StaticJsonBuffer<512> jsonBuffer;
     StaticJsonBuffer<512> rBuffer;
 
+    PRINTER_NOTICE("%s",line);
+
     JsonObject& o = jsonBuffer.parseObject(line);
 
     if (!o.success()) {
       // failed...
+      PRINTER_ERROR("Could not parse printer response: %s",line);
     } else {
 
       // parse sr

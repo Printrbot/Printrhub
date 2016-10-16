@@ -98,6 +98,12 @@ void ApplicationClass::setup()
   pinMode(PRINTER_ACTIVE,OUTPUT);
   digitalWrite(PRINTER_ACTIVE,HIGH);
 
+  pinMode(CODE_INDICATOR_1, OUTPUT);
+  digitalWrite(CODE_INDICATOR_1, HIGH);
+
+  pinMode(CODE_INDICATOR_2, OUTPUT);
+  digitalWrite(CODE_INDICATOR_2, HIGH);
+
   //Make sure we have a jobs folder
   //TODO: Decide if this is necessary or if the SD card is setup with this path during production
   if (!SD.exists("/jobs"))
