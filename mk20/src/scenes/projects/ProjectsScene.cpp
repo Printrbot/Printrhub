@@ -11,6 +11,8 @@
 #include "NoProjects.h"
 
 extern UIBitmaps uiBitmaps;
+extern int lastProjectIndex;
+extern int lastJobIndex;
 
 ProjectsScene::ProjectsScene(): SidebarSceneController::SidebarSceneController(),
 _totalProjects(0) {
@@ -79,13 +81,22 @@ void ProjectsScene::onWillAppear() {
     return;
   }
 
-  _openBtn = new BitmapButton(Rect(10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
+  // return to the last viewed project index
+  if (lastProjectIndex > 0) {
+    float x = Display.getLayoutWidth() * lastProjectIndex;
+    _openBtn = new BitmapButton(Rect(x+10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
+    _deleteBtn = new BitmapButton(Rect(x+220,190,50,50));
+    addScrollOffset(-x);
+  } else{
+    _openBtn = new BitmapButton(Rect(10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
+    _deleteBtn = new BitmapButton(Rect(220,190,50,50));
+  }
+
   _openBtn->setBitmap(&uiBitmaps.btn_open);
   _openBtn->setVisible(true);
   _openBtn->setDelegate(this);
   addView(_openBtn);
 
-  _deleteBtn = new BitmapButton(Rect(220,190,50,50));
   _deleteBtn->setBitmap(&uiBitmaps.btn_trash);
   _deleteBtn->setVisible(true);
   _deleteBtn->setDelegate(this);
@@ -110,8 +121,10 @@ void ProjectsScene::animationFinished(Animation *animation) {
   SceneController::animationFinished(animation);
 
   //We should have stopped at a defined slot index, use that to position the button
-  int index = getPageIndex();
-  float x = Display.getLayoutWidth() * index;
+  lastProjectIndex = getPageIndex();
+  lastJobIndex = 0;
+
+  float x = Display.getLayoutWidth() * lastProjectIndex;
 
   _openBtn->setFrame(Rect(x+10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
   _openBtn->setVisible(true);

@@ -45,6 +45,9 @@ int globalLayersDeleted = 0;
 
 int globR = 0;
 
+int lastProjectIndex = 0;
+int lastJobIndex = 0;
+
 void testImage(void)
 {
     Display.fillScreen(ILI9341_WHITE);

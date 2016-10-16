@@ -105,6 +105,7 @@ void BitmapButton::updateButton(ButtonState buttonState)
 
 bool BitmapButton::touchDown(TS_Point &point)
 {
+  if (!this->isVisible()) return false;
     updateButton(ButtonState::On);
 
     return true;
@@ -112,6 +113,8 @@ bool BitmapButton::touchDown(TS_Point &point)
 
 bool BitmapButton::touchUp(TS_Point &point)
 {
+  if (!this->isVisible()) return false;
+
     if (_type == ButtonType::Toggle)
     {
         _state = (ButtonState) !_state;

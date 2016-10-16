@@ -11,12 +11,11 @@ extern UIBitmaps uiBitmaps;
 extern Printr printr;
 
 
-FinishPrint::FinishPrint(String jobFilePath, Project project, Job job, uint16_t jobOffset):
+FinishPrint::FinishPrint(String jobFilePath, Project project, Job job):
     SidebarSceneController::SidebarSceneController(),
     _jobFilePath(jobFilePath),
     _project(project),
-    _job(job),
-    _jobOffset(jobOffset){
+    _job(job){
 }
 
 FinishPrint::~FinishPrint() {
@@ -68,7 +67,7 @@ void FinishPrint::onWillAppear() {
 
 
 void FinishPrint::onSidebarButtonTouchUp() {
-  PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _job, _jobOffset);
+  PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _job);
   Application.pushScene(scene);
 }
 
@@ -95,7 +94,7 @@ void FinishPrint::buttonPressed(void *button)
   printr.sendLine("M100({_leds:4})"); //switch to blue light
 
   String pi = String("/projects/") + String(_project.index);
-  JobsScene * js = new JobsScene(pi, _jobOffset);
+  JobsScene * js = new JobsScene(pi);
   Application.pushScene(js);
 
   //SidebarSceneController::buttonPressed(button);

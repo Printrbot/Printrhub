@@ -11,13 +11,13 @@
 
 extern UIBitmaps uiBitmaps;
 extern Printr printr;
+extern int lastJobIndex;
 
-PrintStatusScene::PrintStatusScene(String jobFilePath, Project project, Job job, uint16_t jobOffset):
+PrintStatusScene::PrintStatusScene(String jobFilePath, Project project, Job job):
   SidebarSceneController::SidebarSceneController(),
   _jobFilePath(jobFilePath),
   _project(project),
-  _job(job),
-  _jobOffset(jobOffset){
+  _job(job) {
   printr.setListener(this);
 }
 
@@ -50,7 +50,7 @@ void PrintStatusScene::onWillAppear() {
   // display job image
   String _projectFilePath = String("/projects/" + String(_project.index));
   _imageLayer = new SDBitmapLayer(Rect(0,0,270,240));
-  _imageLayer->setBitmap(_projectFilePath.c_str(), 270,240,  129675 + (129899 * _jobOffset) + 299);
+  _imageLayer->setBitmap(_projectFilePath.c_str(), 270,240,  129675 + (129899 * lastJobIndex) + 299);
   Display.setFixedBackgroundLayer(_imageLayer);
 
   // job title
@@ -113,7 +113,7 @@ void PrintStatusScene::onWillAppear() {
 void PrintStatusScene::printrCallback(const char ctype[], float * fdata, int * idata) {
   if (strcmp(ctype,"end") == 0) {
     printr.setListener(nullptr);
-    FinishPrint * scene = new FinishPrint(_jobFilePath, _project, _job, _jobOffset);
+    FinishPrint * scene = new FinishPrint(_jobFilePath, _project, _job);
     Application.pushScene(scene);
   }
   else if ( _totalJobLines != -1 && strcmp(ctype,"line") == 0) {
@@ -133,6 +133,6 @@ void PrintStatusScene::loop()
 
 void PrintStatusScene::buttonPressed(void *button) {
   printr.setListener(nullptr);
-  ConfirmCancelPrint * scene = new ConfirmCancelPrint(_jobFilePath, _project, _job, _jobOffset);
+  ConfirmCancelPrint * scene = new ConfirmCancelPrint(_jobFilePath, _project, _job);
   Application.pushScene(scene);
 }

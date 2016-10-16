@@ -13,7 +13,7 @@ class PrintStatusScene: public SidebarSceneController, public ButtonDelegate {
 
 public:
   virtual void loop() override;
-  PrintStatusScene(String jobFilePath, Project project, Job job, uint16_t offset);
+  PrintStatusScene(String jobFilePath, Project project, Job job);
   virtual ~PrintStatusScene();
 
 private:
@@ -33,7 +33,6 @@ private:
 
   String _jobFilePath;
   String _projectIndex;
-  int _jobOffset;
   int _totalJobLines;
 
   TextLayer* _nameLayer;

@@ -11,12 +11,12 @@
 //#include "font_AwesomeF000.h"
 
 extern UIBitmaps uiBitmaps;
+extern int lastJobIndex;
 
-JobsScene::JobsScene(String projectIndex, int jobOffset):
+JobsScene::JobsScene(String projectIndex):
   SidebarSceneController::SidebarSceneController(),
   _projectIndex(projectIndex),
-  _jobs(NULL),
-  _jobOffset(jobOffset) {
+  _jobs(NULL) {
 }
 
 JobsScene::~JobsScene() {
@@ -81,15 +81,19 @@ void JobsScene::onWillAppear() {
   _printBtnStart->setBitmap(&uiBitmaps.btn_print_start);
   _printBtnDownload->setBitmap(&uiBitmaps.btn_print_download);
 
-  _printBtnStart->setDelegate(this);
-  _printBtnDownload->setDelegate(this);
+  float x = lastJobIndex * Display.getLayoutWidth();
+  if (lastJobIndex > 0) {
+    addScrollOffset(-x);
+  }
 
   if (SD.exists(_jobFilePath.c_str())) {
-    _printBtnStart->setFrame(Rect(10, 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
+    _printBtnStart->setFrame(Rect(x+10, 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
     _printBtnStart->setVisible(true);
     _printBtnDownload->setVisible(false);
+    _printBtnDownload->setDelegate(this);
   } else {
-    _printBtnDownload->setFrame(Rect(10, 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
+    _printBtnDownload->setFrame(Rect(x+10, 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
+    _printBtnStart->setDelegate(this);
     _printBtnDownload->setVisible(true);
     _printBtnStart->setVisible(false);
   }
@@ -98,12 +102,6 @@ void JobsScene::onWillAppear() {
   addView(_printBtnDownload);
 
   SidebarSceneController::onWillAppear();
-
-  if (_jobOffset > 0) {
-    // TODO
-    // if job index is > 0, then shift the display to show that job
-  }
-
 }
 
 void JobsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
@@ -120,8 +118,8 @@ void JobsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
 void JobsScene::animationFinished(Animation *animation) {
   SceneController::animationFinished(animation);
   //We should have stopped at a defined slot index, use that to position the button
-  int index = getPageIndex();
-  float x = Display.getLayoutWidth() * index;
+  lastJobIndex = getPageIndex();
+  float x = Display.getLayoutWidth() * lastJobIndex;
 
   // check if local job file exists
   _selectedJob = _jobs[getPageIndex()];
@@ -130,12 +128,14 @@ void JobsScene::animationFinished(Animation *animation) {
   //_printBtn->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
   if (SD.exists(_jobFilePath.c_str())) {
     _printBtnStart->setFrame(Rect((x + 10), 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
-    _printBtnStart->setVisible();
+    _printBtnStart->setVisible(true);
     _printBtnStart->setDelegate(this);
+    _printBtnDownload->setVisible(false);
   } else {
     _printBtnDownload->setFrame(Rect((x + 10), 180, uiBitmaps.btn_print_download.width, uiBitmaps.btn_print_download.height));
-    _printBtnDownload->setVisible();
+    _printBtnDownload->setVisible(true);
     _printBtnDownload->setDelegate(this);
+    _printBtnStart->setVisible(false);
   }
 }
 
@@ -148,7 +148,7 @@ void JobsScene::buttonPressed(void *button)
 {
   if (button == _printBtnStart) {
     LOG_VALUE("Printing Job-Nr",getPageIndex());
-    PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _selectedJob, getPageIndex());
+    PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _selectedJob);
     Application.pushScene(scene);
     //DownloadFileController* scene = new DownloadFileController(String(job.url),filePath);
     //Application.pushScene(scene);
@@ -159,7 +159,7 @@ void JobsScene::buttonPressed(void *button)
     if (!SD.exists(_jdir.c_str())) {
       SD.mkdir(_jdir.c_str());
     }
-
+    // return to job after done...
     DownloadFileController* scene = new DownloadFileController(String(_selectedJob.url),_jobFilePath);
     Application.pushScene(scene);
   }

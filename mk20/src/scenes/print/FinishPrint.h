@@ -10,7 +10,7 @@
 class FinishPrint: public SidebarSceneController {
 public:
 
-  FinishPrint(String jobFilePath, Project project, Job job, uint16_t offset);
+  FinishPrint(String jobFilePath, Project project, Job job);
   virtual ~FinishPrint();
 
   virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint) override;
@@ -29,7 +29,6 @@ private:
   Job _job;
   String _jobFilePath;
   String _projectIndex;
-  int _jobOffset;
   Project _project;
 
 protected:

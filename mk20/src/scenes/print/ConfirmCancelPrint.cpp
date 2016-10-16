@@ -11,12 +11,11 @@ extern UIBitmaps uiBitmaps;
 extern Printr printr;
 
 
-ConfirmCancelPrint::ConfirmCancelPrint(String jobFilePath, Project project, Job job, uint16_t jobOffset):
+ConfirmCancelPrint::ConfirmCancelPrint(String jobFilePath, Project project, Job job):
     SidebarSceneController::SidebarSceneController(),
     _jobFilePath(jobFilePath),
     _project(project),
-    _job(job),
-    _jobOffset(jobOffset){
+    _job(job) {
 }
 
 ConfirmCancelPrint::~ConfirmCancelPrint() {
@@ -68,7 +67,7 @@ void ConfirmCancelPrint::onWillAppear() {
 
 
 void ConfirmCancelPrint::onSidebarButtonTouchUp() {
-  PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _job, _jobOffset);
+  PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _job);
   Application.pushScene(scene);
 }
 
@@ -79,12 +78,12 @@ void ConfirmCancelPrint::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
 void ConfirmCancelPrint::buttonPressed(void *button)
 {
   if (button == _btnBack) {
-    PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _job, _jobOffset);
+    PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _job);
     Application.pushScene(scene);
   } else if (button == _btnCancelPrint) {
     printr.cancelCurrentJob();
     String pi = String("/projects/") + String(_project.index);
-    JobsScene * js = new JobsScene(pi, _jobOffset);
+    JobsScene * js = new JobsScene(pi);
     Application.pushScene(js);
   }
 
