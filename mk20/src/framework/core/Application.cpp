@@ -95,6 +95,9 @@ void ApplicationClass::setup()
 	pinMode(LED_PIN, OUTPUT);
 	printr.init();
 
+  pinMode(PRINTER_ACTIVE,OUTPUT);
+  digitalWrite(PRINTER_ACTIVE,HIGH);
+
   //Make sure we have a jobs folder
   //TODO: Decide if this is necessary or if the SD card is setup with this path during production
   if (!SD.exists("/jobs"))
