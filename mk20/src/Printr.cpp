@@ -25,7 +25,7 @@ void Printr::init() {
   Serial1.begin(115200);
   Serial1.attachCts(CTS_PIN);
   Serial1.attachRts(RTS_PIN);
-
+  delay(200);
   sendLine("{sr:{line:t,he1t:t,he1st:t,he1at:t,stat:t}}");
   delay(200);
   sendLine("{_leds:4}");
@@ -55,15 +55,44 @@ void Printr::loop() {
       // close the start gcode file
       _startGCodeFile.close();
 
+      // reset all
+      sendLine("G92.1 X0 Y0 Z0 A0 B0 E0");
+      sendLine("G28.2 X0 Y0");
+      sendLine("G0 X110");
+      sendLine("M100({_leds:2})");
+      sendLine("M101 ({he1at:t})");
+      sendLine("M100({_leds:3})");
+      sendLine("G28.2 Z0");
+      sendLine("G0 Z6");
+      sendLine("G38.2 Z-10 F200");
+      sendLine("G0 Z5");
+      sendLine("M100({_leds:5})");
+      sendLine("G0 X210 Y75");
+      sendLine("G38.2 Z-10 F200");
+      sendLine("G0 Z5");
+      sendLine("M100({_leds:6})");
+      sendLine("G0 X0 Y0");
+      sendLine("G38.2 Z-10 F200");
+      sendLine("G0 Z5");
+      sendLine("M100({_leds:3})");
+      sendLine("M100 ({tram:1})");
+      sendLine("G92 A0");
 
+      // switch to white light
       sendLine("M100({_leds:1})");
       sendLine("G0 Z5");
 
+      // apply hotend offset
       float headOffset = 5.0 - dataStore.getHeadOffset();
       String gco = String("G92 Z") + String(headOffset);
+      sendLine(gco);
 
-
-      sendLine(gco); // offset should come from eeprom
+      // clean the nozzle
+      sendLine("G0 X0 Y0 Z0.3 A2");
+      sendLine("G1 X220.000 A10 F1200");
+      sendLine("G0 Z1");
+      sendLine("G92 A0");
+      delay(200);
 
       int sent = 0;
       // send 6 lines of job gcode
@@ -120,6 +149,7 @@ void Printr::readSerial() {
       readBuffer.line_buff[readBuffer.line_idx + 1] = '\0';
       parseResponse();
       readBuffer.line_idx = 0;
+      readBuffer.line_buff[0] = '\0';
     }
     else
       readBuffer.line_idx++;
@@ -176,7 +206,11 @@ void Printr::runJobStartGCode() {
 
 
 void Printr::cancelCurrentJob() {
+  stopAndFlush();
+  delay(1500);
   programEnd();
+  sendLine("G0 X110 Y150");
+  sendLine("M100({_leds:4})"); //switch to blue light
 }
 
 
@@ -200,7 +234,7 @@ void Printr::programEnd() {
   if (!_printing)
     return;
 
-  sendLine("M100({_leds:4})");
+  //sendLine("M100({_leds:4})");
 
   _printFile.close();
   _printing = false;
