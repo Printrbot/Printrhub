@@ -65,6 +65,7 @@ public:
   UIBitmap upgrade_wait_scene = {1434036,129600,270,240};
   UIBitmap upgrading_scene = {1563636,129600,270,240};
 
+
 };
 
 
