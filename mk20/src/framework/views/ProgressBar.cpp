@@ -85,7 +85,7 @@ void ProgressBar::setValue(float value)
 
 	//Only refresh if there is something to draw
 	int trackWidth = (int)((float)_frame.width * value);
-	if (trackWidth != _currentTrackWidth)
+	if (trackWidth != _currentTrackWidth && trackWidth > 0)
 	{
 		setNeedsDisplay();
 	}
