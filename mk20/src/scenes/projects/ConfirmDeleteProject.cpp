@@ -5,6 +5,8 @@
 #include "ProjectsScene.h"
 
 extern UIBitmaps uiBitmaps;
+extern int lastProjectIndex;
+extern int lastJobIndex;
 
 ConfirmDeleteProject::ConfirmDeleteProject(String filePath):
   SidebarSceneController::SidebarSceneController(),
@@ -109,6 +111,8 @@ void ConfirmDeleteProject::buttonPressed(void *button)
       SD.rmdir(jobsFolderPath.c_str());
     }
 
+    lastJobIndex = 0;
+    lastProjectIndex = 0;
 
     ProjectsScene * scene = new ProjectsScene();
     Application.pushScene(scene);

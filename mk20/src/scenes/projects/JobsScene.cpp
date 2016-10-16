@@ -89,11 +89,11 @@ void JobsScene::onWillAppear() {
   if (SD.exists(_jobFilePath.c_str())) {
     _printBtnStart->setFrame(Rect(x+10, 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
     _printBtnStart->setVisible(true);
+    _printBtnStart->setDelegate(this);
     _printBtnDownload->setVisible(false);
-    _printBtnDownload->setDelegate(this);
   } else {
     _printBtnDownload->setFrame(Rect(x+10, 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
-    _printBtnStart->setDelegate(this);
+    _printBtnDownload->setDelegate(this);
     _printBtnDownload->setVisible(true);
     _printBtnStart->setVisible(false);
   }
@@ -105,12 +105,14 @@ void JobsScene::onWillAppear() {
 }
 
 void JobsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
+  /*
   if (_printBtnStart != NULL) {
     _printBtnStart->setVisible(false);
   }
   if (_printBtnDownload != NULL) {
     _printBtnDownload->setVisible(false);
   }
+   */
   SceneController::handleTouchMoved(point, oldPoint);
 }
 

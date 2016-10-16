@@ -112,8 +112,8 @@ void ProjectsScene::onSidebarButtonTouchUp() {
 }
 
 void ProjectsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
-  _openBtn->setVisible(false);
-  _deleteBtn->setVisible(false);
+  //_openBtn->setVisible(false);
+  //_deleteBtn->setVisible(false);
   SceneController::handleTouchMoved(point, oldPoint);
 }
 
