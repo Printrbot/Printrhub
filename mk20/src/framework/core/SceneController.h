@@ -53,8 +53,9 @@ public:
 	virtual uint16_t getBackgroundColor();
 
 #pragma mark Scrolling
-private:
+protected:
 	void addScrollOffset(float scrollOffset);
+private:
 	virtual void setDecelerationRate(const float decelerationRate) { _decelerationRate = decelerationRate; };
 public:
 	virtual void setScrollSnap(const float scrollSnap, const SnapMode snapMode) { _scrollSnap = scrollSnap; _snapMode = snapMode; };
