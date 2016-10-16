@@ -11,7 +11,7 @@ String BitmapView::getDescription() {
 
 void BitmapView::setBitmap(UIBitmap * bitmap) {
   _sdbitmapLayer = new SDBitmapLayer(_frame);
-  _sdbitmapLayer->setBitmap("ui", bitmap->width, bitmap->height, bitmap->offset);
+  _sdbitmapLayer->setBitmap("ui.min", bitmap->width, bitmap->height, bitmap->offset);
   _sdbitmapLayer->setContext(getContext());
   addLayer(_sdbitmapLayer);
 }

@@ -72,7 +72,7 @@ void BitmapButton::setBitmap(const uint8_t *bitmap, uint16_t width, uint16_t hei
 void BitmapButton::setBitmap(UIBitmap * bitmap) {
   _sdbitmapLayer = new SDBitmapLayer(_frame);
   _sdbitmapLayer->setBackgroundColor(getBackgroundColor());
-  _sdbitmapLayer->setBitmap("ui", bitmap->width, bitmap->height, bitmap->offset);
+  _sdbitmapLayer->setBitmap("ui.min", bitmap->width, bitmap->height, bitmap->offset);
   _sdbitmapLayer->setContext(getContext());
   addLayer(_sdbitmapLayer);
 }

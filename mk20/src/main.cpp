@@ -63,7 +63,7 @@ void testImage(void)
 
 void showSplashScreen()
 {
-    File file = SD.open("ui", FILE_READ);
+    File file = SD.open("ui.min", FILE_READ);
     Display.drawFileBitmapByColumn(0,0,320,240,&file,0,0,320,240, uiBitmaps.splash.offset);
     file.close();
 

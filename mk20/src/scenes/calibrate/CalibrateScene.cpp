@@ -45,11 +45,11 @@ void CalibrateScene::onWillAppear() {
   addView(hb);*/
 
   SDBitmapLayer* hotendLayer = new SDBitmapLayer(Rect(16,10,121,uiBitmaps.hotend.height));
-  hotendLayer->setBitmap("ui",121,uiBitmaps.hotend.height,uiBitmaps.hotend.offset);
+  hotendLayer->setBitmap("ui.min",121,uiBitmaps.hotend.height,uiBitmaps.hotend.offset);
   Display.addLayer(hotendLayer);
 
   SDBitmapLayer* offsetLayer = new SDBitmapLayer(Rect(137,75,uiBitmaps.hotend.width-121,uiBitmaps.hotend.height-64));
-  offsetLayer->setBitmap("ui",uiBitmaps.hotend.width-121,uiBitmaps.hotend.height-64,uiBitmaps.hotend.offset);
+  offsetLayer->setBitmap("ui.min",uiBitmaps.hotend.width-121,uiBitmaps.hotend.height-64,uiBitmaps.hotend.offset);
   Display.addLayer(offsetLayer);
 
   _offset = dataStore.getHeadOffset();
@@ -110,7 +110,7 @@ void CalibrateScene::buttonPressed(void *button)
 
     return;
   }
-  
+
   //Convert float to string and set to text field
   char buffer[10];
   dtostrf(_offset, 3, 1, buffer);
