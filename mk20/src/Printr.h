@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "SD.h"
 #include "framework/core/SceneController.h"
+#include "framework/core/MemoryStream.h"
 
 struct PrintrBuffer {
   char line_buff[512];
@@ -21,7 +22,7 @@ public:
   void init();
   void loop();
   void setListener(SceneController * listener) { _listener = listener;};
-  void sendLine(String line);
+  void sendLine(String line, bool buffered=true);
   void stopAndFlush();
   void turnOffHotend();
 
@@ -35,6 +36,8 @@ public:
   String getFilamentLength() { return String(String(_printFilamentLength) + String("mm")); };
   String getSupport() { return _printSupport ? String("Yes") : String("No"); };
   String getPrintTime() { return _printTimeReadable; }
+
+  void reset();
 
   void homeX();
   void homeY();
@@ -73,11 +76,11 @@ private:
   bool _sendNext;
   bool _printing;
   File _printFile;
-  File _startGCodeFile;
-  File _endGCodeFile;
   bool _homeX;
   bool _homeY;
   bool _homeZ;
+  MemoryStream *_setupCode;
+  Stream* _currentStream;
 
 };
 

@@ -111,6 +111,7 @@ void PrintStatusScene::onWillAppear() {
 }
 
 void PrintStatusScene::printrCallback(const char ctype[], float * fdata, int * idata) {
+  PRINTER_NOTICE("Got printer callback: %s",ctype);
   if (strcmp(ctype,"end") == 0) {
     printr.setListener(nullptr);
     FinishPrint * scene = new FinishPrint(_jobFilePath, _project, _job);

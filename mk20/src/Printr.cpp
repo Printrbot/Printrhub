@@ -15,108 +15,99 @@ _homeX(false),
 _homeY(false),
 _homeZ(false),
 _currentAction(0){
-
+  _setupCode = new MemoryStream(64);
+  _currentStream = _setupCode;
 }
 
 Printr::~Printr() {
+  delete _setupCode;
 }
 
 void Printr::init() {
   Serial1.begin(115200);
   Serial1.attachCts(CTS_PIN);
   Serial1.attachRts(RTS_PIN);
-  delay(200);
-  sendLine("{sr:{line:t,he1t:t,he1st:t,he1at:t,stat:t}}");
-  delay(200);
-  sendLine("{_leds:4}");
-  delay(200);
-  sendLine("{sv:1}");
 
-  //Serial1.println("{sr:{line:t},_leds:4}");
+  reset();
+}
+
+void Printr::reset() {
+  _printing = false;
+  _setupCode->flush();
+  _currentStream = _setupCode;
+
+  sendLine("{sr:{line:t,he1t:t,he1st:t,he1at:t,stat:t}}");
+  sendLine("{_leds:4}");
+  //sendLine("M100({_leds:4})",false); //switch to blue light
+  sendLine("{sv:1}");
 }
 
 void Printr::loop() {
-  if (!_printing) return;
-  if (!_sendNext) return;
-
-  String inStr;
-
-  // check if we are in startup sequence
-  if (_currentAction == 1) {
-    if (_startGCodeFile.available()) {
-      inStr = _startGCodeFile.readStringUntil('\n');
-    } else {
-      // done with startup gcode, start the main job file
-      _currentAction = 2;
-      _lastSentProgramLine = 1;
-      _processedProgramLine = 0;
-      // close the start gcode file
-      _startGCodeFile.close();
-
-      // reset all
-      sendLine("G92.1 X0 Y0 Z0 A0 B0 E0");
-      sendLine("G28.2 X0 Y0");
-      sendLine("G0 X110");
-      sendLine("M100({_leds:2})");
-      sendLine("M101 ({he1at:t})");
-      sendLine("M100({_leds:3})");
-      sendLine("G28.2 Z0");
-      sendLine("G0 Z6");
-      sendLine("G38.2 Z-10 F200");
-      sendLine("G0 Z5");
-      sendLine("M100({_leds:5})");
-      sendLine("G0 X210 Y75");
-      sendLine("G38.2 Z-10 F200");
-      sendLine("G0 Z5");
-      sendLine("M100({_leds:6})");
-      sendLine("G0 X0 Y0");
-      sendLine("G38.2 Z-10 F200");
-      sendLine("G0 Z5");
-      sendLine("M100({_leds:3})");
-      sendLine("M100 ({tram:1})");
-      sendLine("G92 A0");
-
-      // switch to white light
-      sendLine("M100({_leds:1})");
-      sendLine("G0 Z5");
-
-      // apply hotend offset
-      float headOffset = 5.0 - dataStore.getHeadOffset();
-      String gco = String("G92 Z") + String(headOffset);
-      sendLine(gco);
-
-      // clean the nozzle
-      sendLine("G0 X0 Y0 Z0.3 A2");
-      sendLine("G1 X220.000 A10 F1200");
-      sendLine("G0 Z1");
-      sendLine("G92 A0");
-      delay(200);
-    }
-  }
-  else if (_currentAction == 2) {
-    processPrint();
-  }
+  processPrint();
 }
 
 void Printr::processPrint() {
-  //Let's check the outgoing serial buffer first
-  int numBytesAvailableToWrite = Serial1.availableForWrite();
-  if (numBytesAvailableToWrite > 0) {
-    digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
-    //We can send data to the printer
-    uint8_t buffer[numBytesAvailableToWrite];
-    int numBytesReadFromFile = _printFile.readBytes(buffer,numBytesAvailableToWrite);
-    if (numBytesReadFromFile > 0) {
-      //Send bytes to printer
-      Serial1.write(buffer,numBytesAvailableToWrite);
-    } else {
-      // finished reading the file
-      // This is a hack until total line numbers
-      // is implemented, then program will end
-      // when M3 is passed to it, or when _processedProgramLine == _totalProgramLines
-      programEnd();
+  if (_sendNext) {
+    //Let's check the outgoing serial buffer first, can we send?
+    int numBytesAvailableToWrite = Serial1.availableForWrite();
+    if (numBytesAvailableToWrite > 0) {
+      //We can send data to the printer
+      digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
+      uint8_t buffer[numBytesAvailableToWrite];
+      size_t bufferLength = 0;
+
+      //Read the current input stream (setup code buffer or file) and read as long as we have filled the send buffer or until we are at the end of the line
+      while (bufferLength < numBytesAvailableToWrite) {
+        int byte = _currentStream->read();
+        if (byte < 0) {
+          //Only switch to print file if we are printing
+          if (_printing) {
+            //We are finished with the current stream, switch to next
+            if (_currentStream == _setupCode) {
+              PRINTER_NOTICE("Setup code complete, now printing file");
+
+              //Free memory used by setup buffer and clear its content
+              _setupCode->flush();
+
+              //Switch to file as input stream
+              _currentStream = &_printFile;
+            } else {
+              PRINTER_NOTICE("File complete, finishing print");
+              // finished reading the file
+              // This is a hack until total line numbers
+              // is implemented, then program will end
+              // when M3 is passed to it, or when _processedProgramLine == _totalProgramLines
+              programEnd();
+            }
+          } else {
+            //Nothing to read in setup code
+
+            break;
+          }
+        } else {
+          buffer[bufferLength++] = byte;
+          if (byte == '\n') {
+            //This is the last byte of the current line and buffer now contains the last part of the current line, so we break out here now
+
+            //Wait for the response
+            if (bufferLength > 0) {
+              _sendNext = false;
+            }
+            break;
+          }
+        }
+      }
+
+      //Send the buffer to the printer
+      if (bufferLength > 0) {
+        Serial1.write(buffer,bufferLength);
+        DebugSerial.print("Sending buffer: ");
+        DebugSerial.write(buffer,bufferLength);
+        DebugSerial.println();
+      }
+
+      digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
     }
-    digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
   }
 
   //Read from Serial
@@ -144,15 +135,15 @@ void Printr::processPrint() {
 }
 
 void Printr::turnOffHotend() {
-  Serial1.println("M100({he1st:0})");
+  sendLine("M100({he1st:0})");
 }
 
 void Printr::stopAndFlush() {
-  Serial1.println("!%");
-  delay(1000);
+  sendLine("!%");
 }
 
 int Printr::startJob(String filePath) {
+  PRINTER_NOTICE("Printing file: %s",filePath.c_str());
   _printFile = SD.open(filePath.c_str(), FILE_READ);
 
   _totalProgramLines = -1;
@@ -184,31 +175,71 @@ int Printr::startJob(String filePath) {
     }
   }
 
-  // TODO: set the temperature based on material selected
-  sendLine("M100({he1st:195})");
-  sendLine("G92.1 X0 Y0 Z0 A0 B0");
+  //Setup printer and run the file
   runJobStartGCode();
 
   return _totalProgramLines;
 }
 
 void Printr::runJobStartGCode() {
-  _startGCodeFile = SD.open("/gc/start", FILE_READ);
+  _printing = true;
+
   _lastSentProgramLine = 1;
   _processedProgramLine = 0;
-  _currentAction = 1;
-  _printing = true;
+
+  // TODO: set the temperature based on material selected
+  sendLine("M100({he1st:195})");
+  sendLine("G92.1 X0 Y0 Z0 A0 B0");
+
+  // reset all
+  sendLine("G92.1 X0 Y0 Z0 A0 B0 E0");
+  sendLine("G28.2 X0 Y0");
+  sendLine("G0 X110");
+  sendLine("M100({_leds:2})");
+  sendLine("M101 ({he1at:t})");
+  sendLine("M100({_leds:3})");
+  sendLine("G28.2 Z0");
+  sendLine("G0 Z6");
+  sendLine("G38.2 Z-10 F200");
+  sendLine("G0 Z5");
+  sendLine("M100({_leds:5})");
+  sendLine("G0 X210 Y75");
+  sendLine("G38.2 Z-10 F200");
+  sendLine("G0 Z5");
+  sendLine("M100({_leds:6})");
+  sendLine("G0 X0 Y0");
+  sendLine("G38.2 Z-10 F200");
+  sendLine("G0 Z5");
+  sendLine("M100({_leds:3})");
+  sendLine("M100 ({tram:1})");
+  sendLine("G92 A0");
+
+  // switch to white light
+  sendLine("M100({_leds:1})");
+  sendLine("G0 Z5");
+
+  // apply hotend offset
+  float headOffset = 5.0 - dataStore.getHeadOffset();
+  String gco = String("G92 Z") + String(headOffset);
+  sendLine(gco);
+
+  // clean the nozzle
+  sendLine("G0 X0 Y0 Z0.3 A2");
+  sendLine("G1 X220.000 A10 F1200");
+  sendLine("G0 Z1");
+  sendLine("G92 A0");
+
+  //Make sure we start with startup buffer
+  _currentStream = _setupCode;
 }
 
 
 void Printr::cancelCurrentJob() {
   stopAndFlush();
-  delay(1500);
   programEnd();
   sendLine("G0 X110 Y150");
   sendLine("M100({_leds:4})"); //switch to blue light
 }
-
 
 void Printr::homeX() {
   sendLine("G28.2 X0");
@@ -221,7 +252,7 @@ void Printr::homeY() {
 }
 
 void Printr::homeZ() {
-  sendLine("G28.2 Z0");
+  sendLine("G28.2 Z0",false);
   _homeZ = true;
 }
 
@@ -231,6 +262,9 @@ void Printr::programEnd() {
     return;
 
   //sendLine("M100({_leds:4})");
+
+  //Reset the printer and prepare memory buffers
+  reset();
 
   _printFile.close();
   _printing = false;
@@ -244,8 +278,13 @@ void Printr::programEnd() {
     _listener->printrCallback("end", nullptr, nullptr);
 }
 
-void Printr::sendLine(String line) {
-  Serial1.println(line);
+void Printr::sendLine(String line, bool buffered) {
+  if (buffered) {
+    _setupCode->println(line);
+  } else {
+    Serial1.println(line);
+    _sendNext = false;
+  }
 }
 
 void Printr::parseResponse() {
@@ -254,11 +293,11 @@ void Printr::parseResponse() {
 
   _sendNext = true;
 
+  PRINTER_NOTICE("Received line: %s",line);
+
   if (line[0] == '{') {
     StaticJsonBuffer<512> jsonBuffer;
     StaticJsonBuffer<512> rBuffer;
-
-    PRINTER_NOTICE("%s",line);
 
     JsonObject& o = jsonBuffer.parseObject(line);
 
