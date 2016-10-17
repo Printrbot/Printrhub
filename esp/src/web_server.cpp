@@ -37,6 +37,9 @@ void doUpdateConfig(AsyncWebServerRequest *request) {
 		strcpy(config.data.wifiSsid, ssid->value().c_str());
 		AsyncWebParameter* wp = request->getParam("wifipassword", true);
 		strcpy(config.data.wifiPassword, wp->value().c_str());
+
+        //Request MK20 to show the WiFi settings screen
+        Application.getMK20Stack()->showWiFiInfo();
 	}
 
 	if (request->hasParam("locked", true) && request->hasParam("password", true)) {

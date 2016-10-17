@@ -31,6 +31,7 @@ public:
     bool openSDFileForWrite(String targetFilePath, size_t bytesToSend, bool showUI=false, Compression compression=Compression::None);
     bool sendSDFileData(uint8_t* data, size_t size);
     bool closeSDFile();
+    void showWiFiInfo();
 
 private:
     unsigned long _timeout;

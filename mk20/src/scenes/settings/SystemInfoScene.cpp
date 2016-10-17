@@ -98,8 +98,28 @@ void SystemInfoScene::onWillAppear() {
 
   SidebarSceneController::onWillAppear();
 
-  //Request system info
-  Application.getESPStack()->requestTask(TaskID::GetSystemInfo);
+  //Prepare requesting data
+  _dataReceived = false;
+  _lastPing = 0;
+}
+
+void SystemInfoScene::queryData() {
+  if (_dataReceived == true) {
+    return;
+  }
+
+  if (_lastPing == 0) {
+    _lastPing = millis();
+  }
+
+  //Query each second until we got our data
+  if ((millis() - _lastPing) > 1000) {
+    Application.getESPStack()->requestTask(TaskID::GetSystemInfo);
+  }
+}
+
+void SystemInfoScene::loop() {
+  queryData();
 }
 
 bool SystemInfoScene::handlesTask(TaskID taskID) {
@@ -109,9 +129,17 @@ bool SystemInfoScene::handlesTask(TaskID taskID) {
   return false;
 }
 
+bool SystemInfoScene::isModal() {
+  return true;
+}
+
 bool SystemInfoScene::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool *sendResponse, bool *success) {
   if (header.getCurrentTask() == TaskID::GetSystemInfo) {
     if (header.commType == ResponseSuccess) {
+
+      //Stop querying data
+      _dataReceived = true;
+
       //Read System info struct from data
       memcpy(&_systemInfo,data,sizeof(SystemInfo));
 

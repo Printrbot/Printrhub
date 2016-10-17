@@ -185,3 +185,8 @@ bool MK20::closeSDFile()
 
     return true;
 }
+
+void MK20::showWiFiInfo()
+{
+    Application.getMK20Stack()->requestTask(TaskID::ShowWiFiInfo);
+}

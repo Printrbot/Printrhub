@@ -10,6 +10,7 @@
 #include "../../scenes/projects/ProjectsScene.h"
 #include "../../scenes/firmware/ConfirmFirmwareUpdateScene.h"
 #include "../../scenes/firmware/FirmwareInProgressScene.h"
+#include "../../scenes/settings/SystemInfoScene.h"
 #include "Printr.h"
 #include <ArduinoJson.h>
 #include "../../errors.h"
@@ -547,6 +548,13 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
         *sendResponse = true;
         *success = false;
       }
+    }
+  } else if (header.getCurrentTask() == TaskID::ShowWiFiInfo) {
+    if (header.commType == Request) {
+      SystemInfoScene *scene = new SystemInfoScene();
+      pushScene(scene, true);
+
+      *sendResponse = false;
     }
   }
 

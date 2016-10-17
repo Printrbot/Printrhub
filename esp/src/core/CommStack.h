@@ -63,7 +63,8 @@ enum class TaskID : uint8_t {
   FirmwareUpdateComplete = 30,
   DownloadFileToSDCard = 31,
   ShowFirmwareUpdateInProgress = 32,
-  GetSystemInfo = 33
+  GetSystemInfo = 33,
+  ShowWiFiInfo = 34
 };
 
 struct CommHeader {

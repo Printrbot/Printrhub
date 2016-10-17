@@ -25,11 +25,14 @@ private:
     virtual void onWillAppear() override;
     String getName() override;
     virtual void buttonPressed(void *button) override;
+    virtual void loop() override;
+    virtual bool isModal() override;
 
     virtual bool runTask(CommHeader& header, const uint8_t* data, size_t dataSize, uint8_t* responseData, uint16_t* responseDataSize, bool* sendResponse, bool* success);
     virtual bool handlesTask(TaskID taskID);
 
     void configureLabelView(LabelView* labelView);
+    void queryData();
 
 private:
     LabelView* _printerNameLabel;
@@ -45,6 +48,8 @@ private:
     LabelView* _networkModeLabel;
     LabelView* _networkMode;
     SystemInfo _systemInfo;
+    bool _dataReceived;
+    unsigned long _lastPing;
 };
 
 #endif //MK20_SYSTEMINFO_H
