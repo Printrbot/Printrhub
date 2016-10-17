@@ -188,16 +188,16 @@ void Printr::runJobStartGCode() {
   _processedProgramLine = 0;
 
   // TODO: set the temperature based on material selected
-  sendLine("M100({he1st:195})");
-  sendLine("G92.1 X0 Y0 Z0 A0 B0");
+  sendLine("M100({he1st:195})", false);
+  sendLine("G92.1 X0 Y0 Z0 A0 B0", false);
 
   // reset all
-  sendLine("G92.1 X0 Y0 Z0 A0 B0 E0");
-  sendLine("G28.2 X0 Y0");
-  sendLine("G0 X110");
-  sendLine("M100({_leds:2})");
-  sendLine("M101 ({he1at:t})");
-  sendLine("M100({_leds:3})");
+  sendLine("G92.1 X0 Y0 Z0 A0 B0 E0", false);
+  sendLine("G28.2 X0 Y0", false);
+  sendLine("G0 X110", false);
+  sendLine("M100({_leds:2})", false);
+  sendLine("M101 ({he1at:t})", false);
+  sendLine("M100({_leds:3})", false);
   sendLine("G28.2 Z0");
   sendLine("G0 Z6");
   sendLine("G38.2 Z-10 F200");

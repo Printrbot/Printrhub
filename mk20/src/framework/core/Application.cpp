@@ -94,10 +94,11 @@ void ApplicationClass::setup()
 {
 	//Configure LED pin
 	pinMode(LED_PIN, OUTPUT);
-	printr.init();
 
   pinMode(PRINTER_ACTIVE,OUTPUT);
   digitalWrite(PRINTER_ACTIVE,HIGH);
+
+  printr.init();
 
   pinMode(CODE_INDICATOR_1, OUTPUT);
   digitalWrite(CODE_INDICATOR_1, HIGH);
