@@ -1,7 +1,6 @@
 #include "web_server.h"
 #include "Hash.h"
 #include <ESPAsyncTCP.h>
-#include <ESPAsyncWebServer.h>
 #include "config.h"
 #include "event_logger.h"
 #include "controllers/MK20FirmwareUpdate.h"
@@ -53,6 +52,21 @@ void doUpdateConfig(AsyncWebServerRequest *request) {
 
 	delay(1000);
 	ESP.restart();
+}
+
+bool WebServer::validateAuthentication(AsyncWebServerRequest *request)
+{
+    EventLogger::log("Authenticating with username: %s, password: %s",config.data.name,config.data.password);
+    if (strlen(config.data.password) <= 0) return true;
+    if (!request->authenticate(config.data.name,config.data.password)) {
+        AsyncWebServerResponse* response = request->beginResponse(403, "text/json", "{'success':'false','error':'Authentication failed'}");
+        EventLogger::log("Authentication failed");
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        request->send(response);
+        return false;
+    }
+
+    return true;
 }
 
 void WebServer::begin() {
@@ -128,6 +142,11 @@ void WebServer::begin() {
     });
 
 	server.on("/info", HTTP_GET, [](AsyncWebServerRequest *request) {
+        //Validate request
+        if (!webserver.validateAuthentication(request)) {
+            return;
+        }
+
 	//	String info = brain.getInfo();
 		AsyncJsonResponse * response = new AsyncJsonResponse();
 		response->addHeader("Access-Control-Allow-Origin", "*");
