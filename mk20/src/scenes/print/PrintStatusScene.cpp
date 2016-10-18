@@ -57,7 +57,7 @@ void PrintStatusScene::onWillAppear() {
   _nameLayer = new TransparentTextLayer(Rect(15,10,Display.getLayoutWidth()-30,25));
   _nameLayer->setTextAlign(TEXTALIGN_LEFT);
   _nameLayer->setFont(&LiberationSans_14);
-  _nameLayer->setText(String("Printing: ") + String(_job.title));
+  _nameLayer->setText(String(_job.title));
   _nameLayer->setForegroundColor(ILI9341_BLACK);
   Display.addLayer(_nameLayer);
 
