@@ -17,6 +17,8 @@ _homeZ(false),
 _currentAction(0){
   _setupCode = new MemoryStream(64);
   _currentStream = _setupCode;
+  _firstChar = true;
+  _newLine = true;
 }
 
 Printr::~Printr() {
@@ -32,6 +34,8 @@ void Printr::init() {
 }
 
 void Printr::reset() {
+  //Start by sending in 4 lines before waiting for a response
+  _linesToSend = 1;
   _printing = false;
   _setupCode->flush();
   _currentStream = _setupCode;
@@ -71,6 +75,10 @@ void Printr::processPrint() {
 
               //Switch to file as input stream
               _currentStream = &_printFile;
+
+              //Blast
+              _linesToSend = 4;
+              _newLine = true;
             } else {
               PRINTER_NOTICE("File complete, finishing print");
               // finished reading the file
@@ -88,18 +96,33 @@ void Printr::processPrint() {
           buffer[bufferLength++] = byte;
           if (byte == '\n') {
             //This is the last byte of the current line and buffer now contains the last part of the current line, so we break out here now
+            _newLine = true;
 
             //Wait for the response
-            if (bufferLength > 0) {
-              _sendNext = false;
+            if (bufferLength > 1) {
+              if (_firstChar != ';') {
+                _linesToSend--;
+              } else {
+                PRINTER_NOTICE("Line is comment, don't decrement _linesToSend");
+              }
+
+              PRINTER_NOTICE("Lines to send before waiting for a response: %d",_linesToSend);
+              if (_linesToSend <= 0) {
+                PRINTER_NOTICE("Waiting for a response now");
+                _sendNext = false;
+                _linesToSend = 1;
+              }
             }
             break;
+          } else if (_newLine) {
+            _firstChar = byte;
+            _newLine = false;
           }
         }
       }
 
       //Send the buffer to the printer
-      if (bufferLength > 0) {
+      if (bufferLength > 1) {
         Serial1.write(buffer,bufferLength);
         DebugSerial.print("Sending buffer: ");
         DebugSerial.write(buffer,bufferLength);
@@ -117,9 +140,7 @@ void Printr::processPrint() {
       readBuffer.line_buff[readBuffer.line_idx] = Serial1.read();
       if (readBuffer.line_buff[readBuffer.line_idx] == '\n') {
         readBuffer.line_buff[readBuffer.line_idx + 1] = '\0';
-        digitalWrite(CODE_INDICATOR_2,LOW);
         parseResponse();
-        digitalWrite(CODE_INDICATOR_2,HIGH);
         readBuffer.line_idx = 0;
         readBuffer.line_buff[0] = '\0';
 
@@ -186,6 +207,9 @@ void Printr::runJobStartGCode() {
 
   _lastSentProgramLine = 1;
   _processedProgramLine = 0;
+
+  //Send 4 lines to make sure buffer is filled
+  _linesToSend = 4;
 
   // TODO: set the temperature based on material selected
   sendLine("M100({he1st:195})", false);
@@ -291,9 +315,7 @@ void Printr::parseResponse() {
 
   char * line = readBuffer.line_buff;
 
-  _sendNext = true;
-
-  PRINTER_NOTICE("Received line: %s",line);
+  PRINTER_SPAM("Received line: %s",line);
 
   if (line[0] == '{') {
     StaticJsonBuffer<512> jsonBuffer;
@@ -304,12 +326,19 @@ void Printr::parseResponse() {
     if (!o.success()) {
       // failed...
       PRINTER_ERROR("Could not parse printer response: %s",line);
-    } else {
+      digitalWrite(CODE_INDICATOR_2,LOW);
+      delayMicroseconds(5);
+      digitalWrite(CODE_INDICATOR_2,HIGH);
 
+      //Make sure we proceed sending data so we don't stall
+      _sendNext = true;
+    } else {
       // parse sr
       String sr = o["sr"];
+      String r = o["r"];
 
       if (sr.length() > 0) {
+        PRINTER_SPAM("Got a sr message");
         JsonObject& _sr = rBuffer.parseObject(sr);
         // {sr: {stat:0}}
         // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
@@ -354,6 +383,9 @@ void Printr::parseResponse() {
             _listener->printrCallback("line", nullptr, &_processedProgramLine);
 
         }
+      } else if (r.length() > 0) {
+        PRINTER_SPAM("Got a r message, sending next line");
+        _sendNext = true;
       }
     }
   }

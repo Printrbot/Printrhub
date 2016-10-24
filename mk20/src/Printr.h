@@ -81,6 +81,9 @@ private:
   bool _homeZ;
   MemoryStream *_setupCode;
   Stream* _currentStream;
+  int _linesToSend;
+  int _firstChar;
+  bool _newLine;
 
 };
 
