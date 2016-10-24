@@ -49,9 +49,7 @@ size_t MemoryStream::write(uint8_t byte) {
 }
 
 int MemoryStream::peek() {
-  if (_posRead >= _len) {
-    return -1;
-  }
+  if (!available()) return -1;
 
   return _buffer[_posRead];
 }
