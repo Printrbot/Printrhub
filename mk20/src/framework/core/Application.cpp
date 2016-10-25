@@ -34,6 +34,7 @@ ApplicationClass::ApplicationClass()
   _lastESPPing = 0;
   _currentJob = NULL;
   _nextJob = NULL;
+  _awake = false;
 }
 
 ApplicationClass::~ApplicationClass()
@@ -97,8 +98,6 @@ void ApplicationClass::setup()
 
   pinMode(PRINTER_ACTIVE,OUTPUT);
   digitalWrite(PRINTER_ACTIVE,HIGH);
-
-  printr.init();
 
   pinMode(CODE_INDICATOR_1, OUTPUT);
   digitalWrite(CODE_INDICATOR_1, HIGH);
@@ -305,6 +304,12 @@ void ApplicationClass::loop()
 		//delay(16);
 	}
 
+  if (!_awake) {
+    //This is the first time we ran through a complete loop, this should also be the time where the initial screen is sent to the display
+    _awake = true;
+
+    printr.init();
+  }
 }
 
 void ApplicationClass::pushScene(SceneController *scene, bool cancelModal)

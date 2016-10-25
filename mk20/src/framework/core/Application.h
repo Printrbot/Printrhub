@@ -113,6 +113,7 @@ private:
   unsigned long _lastESPPing;
 	BackgroundJob* _currentJob;
 	BackgroundJob* _nextJob;
+	bool _awake;
 };
 
 extern ApplicationClass Application;
