@@ -18,7 +18,7 @@ class ProjectsScene: public SidebarSceneController
 {
 
 public:
-  ProjectsScene();
+  ProjectsScene(const char* initialIndex = NULL);
   virtual ~ProjectsScene();
 
   virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint) override;
@@ -36,6 +36,7 @@ private:
 protected:
 	BitmapButton* _openBtn;
 	BitmapButton* _deleteBtn;
+	char _initialIndex[9];
 };
 
 #endif

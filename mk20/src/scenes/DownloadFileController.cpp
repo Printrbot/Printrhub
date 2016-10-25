@@ -15,13 +15,14 @@
 
 extern UIBitmaps uiBitmaps;
 
-DownloadFileController::DownloadFileController(String url, String localFilePath) :
+DownloadFileController::DownloadFileController(String url, String localFilePath, SceneController* nextScene) :
   SidebarSceneController::SidebarSceneController(),
   _fileSize(0),
   _bytesRead(0),
   _previousPercent(0),
   _localFilePath(localFilePath),
-  _url(url)
+  _url(url),
+  _nextScene(nextScene)
 {
 
 }
@@ -178,13 +179,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 
       if (percent != _previousPercent)
       {
-        if (percent % 5 == 0)
-        {
-          //Only update the progress bar once in a while as the communication is blocked while doing so and we don't want to loose too much speed
-
-          // TODO: Currently locks up the communication, disabled until fixed
-          _progressBar->setValue(fraction);
-        }
+        _progressBar->setValue(fraction);
       }
 
       _previousPercent = percent;
@@ -198,8 +193,12 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
     _file.close();
 
     //PrintStatusSceneController* scene = new PrintStatusSceneController();
-    ProjectsScene* scene = new ProjectsScene();
-    Application.pushScene(scene);
+    if (_nextScene == NULL) {
+      ProjectsScene* scene = new ProjectsScene();
+      Application.pushScene(scene);
+    } else {
+      Application.pushScene(_nextScene);
+    }
   }
   else if (header.getCurrentTask() == TaskID::SaveProjectWithID)
   {

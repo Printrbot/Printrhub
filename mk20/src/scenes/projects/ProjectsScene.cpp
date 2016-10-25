@@ -14,8 +14,13 @@ extern UIBitmaps uiBitmaps;
 extern int lastProjectIndex;
 extern int lastJobIndex;
 
-ProjectsScene::ProjectsScene(): SidebarSceneController::SidebarSceneController(),
-_totalProjects(0) {
+ProjectsScene::ProjectsScene(const char* initialIndex): SidebarSceneController::SidebarSceneController(),
+_totalProjects(0)
+{
+  memset(_initialIndex,0,9);
+  if (initialIndex != NULL) {
+    strcpy(_initialIndex,initialIndex);
+  }
 }
 
 ProjectsScene::~ProjectsScene() {
@@ -67,6 +72,11 @@ void ProjectsScene::onWillAppear() {
     String img = pdirname;
     img += "/";
     img += pfile.name();
+
+    //Check if we should show this project as the first project
+    if (strcasecmp((const char*)pfile.name(),(const char*)_initialIndex) == 0) {
+      lastProjectIndex = cnt;
+    }
 
     imageView->setIndexFileName(img.c_str());
     addView(imageView);

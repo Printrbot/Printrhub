@@ -16,7 +16,7 @@ class DownloadFileController: public SidebarSceneController
 public:
 	virtual void onSidebarButtonTouchUp() override;
 
-	DownloadFileController(String url, String localFilePath);
+	DownloadFileController(String url, String localFilePath, SceneController* nextScene=NULL);
 	DownloadFileController();
 	virtual ~DownloadFileController();
 
@@ -42,6 +42,7 @@ protected:
 	int _previousPercent;
 	String _url;
 	String _localFilePath;
+	SceneController* _nextScene;
 };
 
 

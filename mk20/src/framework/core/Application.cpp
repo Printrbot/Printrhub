@@ -392,7 +392,9 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
             SD.remove(localFilePath.c_str());
           }
 
-          DownloadFileController *dfc = new DownloadFileController(url, localFilePath);
+          //This specific project should be shown at first so we configure it and send it along the DownloadFileController
+          ProjectsScene* projectScene = new ProjectsScene(root["id"].asString());
+          DownloadFileController *dfc = new DownloadFileController(url, localFilePath, projectScene);
           Application.pushScene(dfc);
         }
       } else {
