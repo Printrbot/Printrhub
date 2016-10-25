@@ -13,6 +13,7 @@
 extern UIBitmaps uiBitmaps;
 extern int lastProjectIndex;
 extern int lastJobIndex;
+extern int totalProjects;
 
 ProjectsScene::ProjectsScene(): SidebarSceneController::SidebarSceneController(),
 _totalProjects(0) {
@@ -75,6 +76,7 @@ void ProjectsScene::onWillAppear() {
     _totalProjects++;
   }
 
+  totalProjects = _totalProjects;
   if (_totalProjects == 0) {
     NoProjects * scene = new NoProjects();
     Application.pushScene(scene);

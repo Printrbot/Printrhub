@@ -12,11 +12,35 @@
 
 extern UIBitmaps uiBitmaps;
 extern int lastJobIndex;
+extern int lastProjectIndex;
 
 JobsScene::JobsScene(String projectIndex):
-  SidebarSceneController::SidebarSceneController(),
-  _projectIndex(projectIndex),
-  _jobs(NULL) {
+    SidebarSceneController::SidebarSceneController(),
+    _projectIndex(projectIndex),
+    _jobs(NULL) {
+}
+
+JobsScene::JobsScene():
+    SidebarSceneController::SidebarSceneController(),
+    _jobs(NULL) {
+  const char * pdirname = "/projects";
+  File pdir = SD.open(pdirname);
+  pdir.rewindDirectory();
+
+
+  for (int cnt = 0; true; ++cnt) {
+
+    File pfile = pdir.openNextFile();
+    if (!pfile) break;
+
+    if (pfile.isDirectory()) continue;
+
+    if (lastProjectIndex == cnt) {
+      _projectIndex = pdirname;
+      _projectIndex += "/";
+      _projectIndex += pfile.name();
+    }
+  }
 }
 
 JobsScene::~JobsScene() {
@@ -162,7 +186,7 @@ void JobsScene::buttonPressed(void *button)
       SD.mkdir(_jdir.c_str());
     }
     // return to job after done...
-    DownloadFileController* scene = new DownloadFileController(String(_selectedJob.url),_jobFilePath);
+    DownloadFileController* scene = new DownloadFileController(String(_selectedJob.url), _jobFilePath, _jobFilePath, _project, _selectedJob);
     Application.pushScene(scene);
   }
 

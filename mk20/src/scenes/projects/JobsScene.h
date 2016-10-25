@@ -19,8 +19,9 @@ class JobsScene: public SidebarSceneController
 {
 
 public:
-  JobsScene(String projectIndex);
-  virtual ~JobsScene();
+	JobsScene(String projectIndex);
+	JobsScene();
+	virtual ~JobsScene();
 
   virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint) override;
   virtual void animationFinished(Animation *animation) override;

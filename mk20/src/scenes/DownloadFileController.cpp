@@ -5,6 +5,8 @@
 #include "DownloadFileController.h"
 #include "SD.h"
 #include "projects/ProjectsScene.h"
+#include "projects/JobsScene.h"
+#include "print/PrintStatusScene.h"
 //#include "print/PrintStatusSceneController.h"
 //#include "print/CleanPlasticSceneController.h"
 //#include "ConfirmSceneController.h"
@@ -15,22 +17,43 @@
 
 extern UIBitmaps uiBitmaps;
 
+extern int lastProjectIndex;
+extern int lastJobIndex;
+extern int totalProjects;
+
 DownloadFileController::DownloadFileController(String url, String localFilePath) :
-  SidebarSceneController::SidebarSceneController(),
-  _fileSize(0),
-  _bytesRead(0),
-  _previousPercent(0),
-  _localFilePath(localFilePath),
-  _url(url)
+    SidebarSceneController::SidebarSceneController(),
+    _fileSize(0),
+    _bytesRead(0),
+    _previousPercent(0),
+    _localFilePath(localFilePath),
+    _url(url),
+    _nextScene(NextScene::NewProject)
 {
 
 }
 
+DownloadFileController::DownloadFileController(String url, String localFilePath, String jobFilePath, Project project, Job job) :
+    SidebarSceneController::SidebarSceneController(),
+    _fileSize(0),
+    _bytesRead(0),
+    _previousPercent(0),
+    _localFilePath(localFilePath),
+    _url(url),
+    _jobFilePath(jobFilePath),
+    _project(project),
+    _job(job),
+    _nextScene(NextScene::StartPrint)
+{
+
+}
+
+
 DownloadFileController::DownloadFileController() :
-  SidebarSceneController::SidebarSceneController(),
-  _fileSize(0),
-  _bytesRead(0),
-  _previousPercent(0)
+    SidebarSceneController::SidebarSceneController(),
+    _fileSize(0),
+    _bytesRead(0),
+    _previousPercent(0)
 {
 
 }
@@ -69,7 +92,7 @@ void DownloadFileController::onWillAppear()
 
   _progressBar = new ProgressBar(Rect(0,228,270,12));
   //_progressBar->setTrackColor(ILI9341_WHITE);
-	_progressBar->setTrackColor(Application.getTheme()->getColor(HighlightBackgroundColor));
+  _progressBar->setTrackColor(Application.getTheme()->getColor(HighlightBackgroundColor));
   _progressBar->setValue(0.0f);
   addView(_progressBar);
 
@@ -197,9 +220,19 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
     LOG_VALUE("Bytes read",_bytesRead);
     _file.close();
 
-    //PrintStatusSceneController* scene = new PrintStatusSceneController();
-    ProjectsScene* scene = new ProjectsScene();
-    Application.pushScene(scene);
+    if(_nextScene ==  NextScene::StartPrint) {
+      PrintStatusScene *scene = new PrintStatusScene(_jobFilePath, _project, _job);
+      Application.pushScene(scene);
+    }
+
+    if (_nextScene == NextScene::NewProject) {
+
+      totalProjects++;
+      lastProjectIndex = totalProjects;
+
+      ProjectsScene* scene = new ProjectsScene();
+      Application.pushScene(scene);
+    }
   }
   else if (header.getCurrentTask() == TaskID::SaveProjectWithID)
   {
@@ -215,6 +248,8 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
 
     *sendResponse = true;
     *responseDataSize = 0;
+
+    _nextScene = NextScene::NewProject;
   }
 
   return true;

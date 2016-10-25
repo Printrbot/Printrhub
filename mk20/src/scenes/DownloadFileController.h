@@ -9,6 +9,13 @@
 #include "framework/views/BitmapButton.h"
 #include "framework/views/LabelButton.h"
 #include "framework/views/ProgressBar.h"
+#include "projects/ProjectsScene.h"
+#include "projects/JobsScene.h"
+
+typedef enum NextScene {
+	StartPrint = 0,
+	NewProject = 1
+};
 
 class DownloadFileController: public SidebarSceneController
 {
@@ -17,6 +24,7 @@ public:
 	virtual void onSidebarButtonTouchUp() override;
 
 	DownloadFileController(String url, String localFilePath);
+	DownloadFileController(String url, String localFilePath, String jobFilePath, Project project, Job job);
 	DownloadFileController();
 	virtual ~DownloadFileController();
 
@@ -42,6 +50,10 @@ protected:
 	int _previousPercent;
 	String _url;
 	String _localFilePath;
+	NextScene _nextScene;
+	String _jobFilePath;
+	Project _project;
+	Job _job;
 };
 
 
