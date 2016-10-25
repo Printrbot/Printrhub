@@ -47,6 +47,7 @@ int globR = 0;
 
 int lastProjectIndex = 0;
 int lastJobIndex = 0;
+int totalProjects = 0;
 
 void testImage(void)
 {
