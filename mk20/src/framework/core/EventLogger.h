@@ -27,6 +27,7 @@
 #define FLOW_NOTICE(X, ...) EventLogger.log(LOG_FLOW,LOG_NOTICE,X,##__VA_ARGS__)
 #define FLOW_ERROR(X, ...) EventLogger.log(LOG_FLOW,LOG_ERROR,X,##__VA_ARGS__)
 #define FLOW_SPAM(X, ...) EventLogger.log(LOG_FLOW,LOG_SPAM,X,##__VA_ARGS__)
+#define FLOW_ALWAYS(X, ...) EventLogger.log(LOG_FLOW,LOG_ALWAYS,X,##__VA_ARGS__)
 
 #define PRINTER_NOTICE(X, ...) EventLogger.log(LOG_PRINTER,LOG_NOTICE,X,##__VA_ARGS__)
 #define PRINTER_WARNING(X, ...) EventLogger.log(LOG_PRINTER,LOG_WARNING,X,##__VA_ARGS__)
