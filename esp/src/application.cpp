@@ -126,7 +126,7 @@ void ApplicationClass::loop()
 
                     //We have a bricked MK20 a WiFi connection and latest firmware infos, download firmware and flash MK20
                     _firmwareChecked = true;
-                    String mk20FirmwareFile("/mk20_100.bin");
+                    String mk20FirmwareFile("/mk20.bin");
 
                     //Prepare modes for subsequent execution
                     MK20FirmwareUpdate* mk20UpdateFirmware = new MK20FirmwareUpdate(mk20FirmwareFile);
@@ -255,7 +255,7 @@ void ApplicationClass::startFirmwareUpdate()
     Mode* firstMode = NULL;
 
     //Define file names
-    String mk20FirmwareFile("/mk20_100.bin");
+    String mk20FirmwareFile("/mk20.bin");
     String mk20UIFile("/ui.min");
 
     //Define modes
