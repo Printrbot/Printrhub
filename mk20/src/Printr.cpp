@@ -54,11 +54,21 @@ void Printr::processPrint() {
   if (_sendNext) {
     //Let's check the outgoing serial buffer first, can we send?
     int numBytesAvailableToWrite = Serial1.availableForWrite();
-    if (numBytesAvailableToWrite > 0) {
+    if (numBytesAvailableToWrite > 5) {
       //We can send data to the printer
       digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
       uint8_t buffer[numBytesAvailableToWrite];
       size_t bufferLength = 0;
+
+      char pl[20];
+      if (_newLine && _printing && _currentStream == &_printFile) {
+        _lastSentProgramLine++;
+        sprintf(pl,"N%d", _lastSentProgramLine);
+        int _c = strlen(pl);
+        memcpy(buffer, pl, _c);
+        bufferLength += _c;
+        numBytesAvailableToWrite -= _c;
+      }
 
       //Read the current input stream (setup code buffer or file) and read as long as we have filled the send buffer or until we are at the end of the line
       while (bufferLength < numBytesAvailableToWrite) {
@@ -80,12 +90,7 @@ void Printr::processPrint() {
               _linesToSend = 4;
               _newLine = true;
             } else {
-              PRINTER_NOTICE("File complete, finishing print");
-              // finished reading the file
-              // This is a hack until total line numbers
-              // is implemented, then program will end
-              // when M3 is passed to it, or when _processedProgramLine == _totalProgramLines
-              programEnd();
+              PRINTER_NOTICE("File complete, waiting for system report with status 4 to complete the print");
             }
           } else {
             //Nothing to read in setup code
@@ -123,10 +128,12 @@ void Printr::processPrint() {
 
       //Send the buffer to the printer
       if (bufferLength > 1) {
-        Serial1.write(buffer,bufferLength);
-        DebugSerial.print("Sending buffer: ");
-        DebugSerial.write(buffer,bufferLength);
-        DebugSerial.println();
+        if (buffer[0] != 59) { // skip comments
+          Serial1.write(buffer, bufferLength);
+          DebugSerial.print("Sending buffer: ");
+          DebugSerial.write(buffer, bufferLength);
+          DebugSerial.println();
+        }
       }
 
       digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
@@ -212,26 +219,26 @@ void Printr::runJobStartGCode() {
   _linesToSend = 4;
 
   // TODO: set the temperature based on material selected
-  sendLine("M100({he1st:195})", false);
-  sendLine("G92.1 X0 Y0 Z0 A0 B0", false);
+  sendLine("M100({he1st:195})");
+  sendLine("G92.1 X0 Y0 Z0 A0 B0");
 
   // reset all
-  sendLine("G92.1 X0 Y0 Z0 A0 B0 E0", false);
-  sendLine("G28.2 X0 Y0", false);
-  sendLine("G0 X110", false);
-  sendLine("M100({_leds:2})", false);
-  sendLine("M101 ({he1at:t})", false);
-  sendLine("M100({_leds:3})", false);
+  sendLine("G92.1 X0 Y0 Z0 A0 B0 E0");
+  sendLine("G28.2 X0 Y0");
+  sendLine("G0 X110");
+  sendLine("M100({_leds:2})");
+  sendLine("M101 ({he1at:t})");
+  sendLine("M100({_leds:3})");
   sendLine("G28.2 Z0");
-  sendLine("G0 Z6");
+  sendLine("G0 X0 Y145 Z6");
   sendLine("G38.2 Z-10 F200");
   sendLine("G0 Z5");
   sendLine("M100({_leds:5})");
-  sendLine("G0 X210 Y75");
+  sendLine("G0 X210 Y65");
   sendLine("G38.2 Z-10 F200");
   sendLine("G0 Z5");
   sendLine("M100({_leds:6})");
-  sendLine("G0 X0 Y0");
+  sendLine("G0 X0 Y10");
   sendLine("G38.2 Z-10 F200");
   sendLine("G0 Z5");
   sendLine("M100({_leds:3})");
@@ -248,7 +255,7 @@ void Printr::runJobStartGCode() {
   sendLine(gco);
 
   // clean the nozzle
-  sendLine("G0 X0 Y0 Z0.3 A2");
+  sendLine("G0 X0 Y0 Z0.3");
   sendLine("G1 X220.000 A10 F1200");
   sendLine("G0 Z1");
   sendLine("G92 A0");
