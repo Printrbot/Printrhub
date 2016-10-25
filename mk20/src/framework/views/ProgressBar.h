@@ -43,6 +43,7 @@ private:
 	RectangleLayer* _trackLayer;
 	uint16_t _trackColor;
 	int _currentTrackWidth;
+	unsigned long _lastUpdate;
 };
 
 
