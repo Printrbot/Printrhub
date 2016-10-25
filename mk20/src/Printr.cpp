@@ -36,20 +36,21 @@ void Printr::init() {
   Serial1.attachRts(RTS_PIN);
 
   reset();
-}
 
-void Printr::reset() {
-  //Start by sending in 4 lines before waiting for a response
-  _printing = false;
-  _setupCode->flush();
-  _currentStream = _setupCode;
-
+  //When we init we wait for the printer to send the first status response
   _linesToSend = 0;
-
   sendLine("{sr:{line:t,he1t:t,he1st:t,he1at:t,stat:t}}");
   sendLine("{_leds:4}");
   //sendLine("M100({_leds:4})",false); //switch to blue light
   sendLine("{sv:1}");
+}
+
+void Printr::reset() {
+  _printing = false;
+  _setupCode->flush();
+  _currentStream = _setupCode;
+
+  _linesToSend = 1;
 }
 
 void Printr::loop() {
@@ -96,7 +97,9 @@ void Printr::processPrint() {
               // This is a hack until total line numbers
               // is implemented, then program will end
               // when M3 is passed to it, or when _processedProgramLine == _totalProgramLines
-              programEnd();
+
+              //Set back current stream to setupCode
+              _currentStream = _setupCode;
             }
           } else {
             //Nothing to read in setup code
@@ -369,6 +372,7 @@ void Printr::parseResponse() {
             case 4:
               // program end via M2, M30
               // finish print if printing
+              PRINTER_NOTICE("Printer finished, closing");
               programEnd();
               break;
           }
