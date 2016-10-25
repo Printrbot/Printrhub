@@ -52,7 +52,7 @@ void SceneController::loop()
 			_scrollVelocity = 0;
 		}
 
-		if(_scrollVelocity != 0)
+		if(_scrollVelocity != 0 && !isnan(_scrollVelocity))
 		{
 			addScrollOffset(_scrollVelocity);
 		}
@@ -304,6 +304,9 @@ void SceneController::handleTouchMoved(TS_Point point, TS_Point oldPoint)
 	if (Application.getDeltaTime() > 0)
 	{
 		_scrollVelocity = (point.x - oldPoint.x)/Application.getDeltaTime();
+		if (isnan(_scrollVelocity)) {
+			_scrollVelocity = 0;
+		}
 	}
 
 	LOG_VALUE("Point.X: ",point.x);
