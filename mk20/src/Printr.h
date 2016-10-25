@@ -14,6 +14,13 @@ struct PrintrBuffer {
   }
 };
 
+class PrintrListener {
+public:
+    virtual void onNewNozzleTemperature(float temp) = 0;
+    virtual void onPrintProgress(float progress) = 0;
+    virtual void onPrintComplete(bool success) = 0;
+};
+
 class Printr {
 public:
 	Printr();
@@ -21,7 +28,7 @@ public:
 
   void init();
   void loop();
-  void setListener(SceneController * listener) { _listener = listener;};
+  void setListener(PrintrListener * listener) { _listener = listener;};
   void sendLine(String line, bool buffered=true);
   void stopAndFlush();
   void turnOffHotend();
@@ -53,7 +60,7 @@ private:
 
   PrintrBuffer readBuffer;
 
-  SceneController * _listener;
+  PrintrListener * _listener;
   float _hotend1Temp;
   float _bedTemp;
   int _stat;
@@ -84,6 +91,9 @@ private:
   int _linesToSend;
   int _firstChar;
   bool _newLine;
+
+  String _currentLine;
+  MemoryStream *_lineBuffer;
 
 };
 

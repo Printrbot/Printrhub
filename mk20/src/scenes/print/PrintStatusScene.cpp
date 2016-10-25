@@ -110,20 +110,19 @@ void PrintStatusScene::onWillAppear() {
   SidebarSceneController::onWillAppear();
 }
 
-void PrintStatusScene::printrCallback(const char ctype[], float * fdata, int * idata) {
-  PRINTER_NOTICE("Got printer callback: %s",ctype);
-  if (strcmp(ctype,"end") == 0) {
-    printr.setListener(nullptr);
-    FinishPrint * scene = new FinishPrint(_jobFilePath, _project, _job);
-    Application.pushScene(scene);
-  }
-  else if ( _totalJobLines != -1 && strcmp(ctype,"line") == 0) {
-    // update the progress bar here...
-    float _v = (float) *idata / (float) _totalJobLines;
-    _progressBar->setValue(_v);
-  }
+void PrintStatusScene::onNewNozzleTemperature(float temp) {
+
 }
 
+void PrintStatusScene::onPrintProgress(float progress) {
+  _progressBar->setValue(progress);
+}
+
+void PrintStatusScene::onPrintComplete(bool success) {
+  printr.setListener(nullptr);
+  FinishPrint * scene = new FinishPrint(_jobFilePath, _project, _job);
+  Application.pushScene(scene);
+}
 
 void PrintStatusScene::loop()
 {
@@ -137,3 +136,4 @@ void PrintStatusScene::buttonPressed(void *button) {
   ConfirmCancelPrint * scene = new ConfirmCancelPrint(_jobFilePath, _project, _job);
   Application.pushScene(scene);
 }
+

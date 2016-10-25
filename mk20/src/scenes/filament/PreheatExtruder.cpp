@@ -77,12 +77,11 @@ void PreheatExtruder::onWillAppear() {
   SidebarSceneController::onWillAppear();
 }
 
-void PreheatExtruder::printrCallback(const char ctype[], float * fdata, int * idata) {
-  if (strcmp(ctype,"he1t") == 0) {
-    float _v = *fdata / 200;
-    _progressBar->setValue(_v);
-  } else if (strcmp(ctype,"line") == 0) {
-    // show instruction scene with pullout text
+void PreheatExtruder::onNewNozzleTemperature(float temp) {
+  float v = temp/200.0f;
+  _progressBar->setValue(v);
+
+  if (temp >= 200.0f) {
     if (_nextScene == 1) {
       UnloadFilament * scene = new UnloadFilament();
       Application.pushScene(scene);
@@ -99,6 +98,11 @@ void PreheatExtruder::printrCallback(const char ctype[], float * fdata, int * id
   }
 }
 
+void PreheatExtruder::onPrintProgress(float progress) {
+}
+
+void PreheatExtruder::onPrintComplete(bool success) {
+}
 
 void PreheatExtruder::onSidebarButtonTouchUp() {
   // flush the queue

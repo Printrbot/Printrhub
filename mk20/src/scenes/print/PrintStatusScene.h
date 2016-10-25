@@ -8,13 +8,18 @@
 #include "framework/views/LabelButton.h"
 #include "scenes/projects/ProjectsScene.h"
 #include "scenes/projects/JobsScene.h"
+#include "../../Printr.h"
 
-class PrintStatusScene: public SidebarSceneController, public ButtonDelegate {
+class PrintStatusScene: public SidebarSceneController, public ButtonDelegate, public PrintrListener {
 
 public:
   virtual void loop() override;
   PrintStatusScene(String jobFilePath, Project project, Job job);
   virtual ~PrintStatusScene();
+
+  virtual void onNewNozzleTemperature(float temp);
+  virtual void onPrintProgress(float progress);
+  virtual void onPrintComplete(bool success);
 
 private:
   virtual UIBitmap * getSidebarBitmap() override;
@@ -22,7 +27,6 @@ private:
 
   String getName();
   virtual void onWillAppear() override;
-  virtual void printrCallback(const char ctype[], float * fdata, int * idata) override;
   virtual void buttonPressed(void *button) override;
   LabelButton* _button;
   ProgressBar* _progressBar;
