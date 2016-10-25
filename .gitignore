@@ -14,3 +14,12 @@ utils/firmware/files/esp.bin
 utils/firmware/files/firmware.json
 
 utils/firmware/files/mk20.bin
+utils/imagetool/node_modules
+
+mk20/.idea/workspace.xml
+
+mk20/.idea/misc.xml
+
+CMakeLists.txt
+
+CMakeListsPrivate.txt
