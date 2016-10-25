@@ -107,7 +107,7 @@ void WebServer::begin() {
         AsyncWebParameter* url = request->getParam("url");
         EventLogger::log(url->value().c_str());
 
-        String mk20FirmwareFile("/mk20_100.bin");
+        String mk20FirmwareFile("/mk20.bin");
         FirmwareUpdateInfo* updateInfo = Application.getFirmwareUpdateInfo();
         DownloadFileToSPIFFs* downloadMK20Firmware = new DownloadFileToSPIFFs(updateInfo->mk20_url,mk20FirmwareFile);
         MK20FirmwareUpdate* mk20UpdateFirmware = new MK20FirmwareUpdate(mk20FirmwareFile);
@@ -116,6 +116,20 @@ void WebServer::begin() {
         Application.pushMode(downloadMK20Firmware);
 
         request->send(200, "text/plain", "\nupdate of MK20 started, please wait...\n\n");
+    });
+
+    server.on("/format_spiffs", HTTP_GET, [](AsyncWebServerRequest *request) {
+        AsyncWebServerResponse *response = NULL;
+        if (SPIFFS.format()) {
+            response = request->beginResponse(200, "text/json", "{'success':'yes'}");
+            EventLogger::log("Formatting SPIFFS successfull");
+        } else {
+            response = request->beginResponse(200, "text/json", "{'success':'no'}");
+            EventLogger::log("Formatting SPIFFS failed");
+        }
+
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        request->send(response);
     });
 
     server.on("/update_ui", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -127,8 +141,10 @@ void WebServer::begin() {
         } else {
             response = request->beginResponse(200, "text/json", "{'success':'true'}");
 
+			String url("http://www.appfruits.com/files/ui.min");
+
             String uiFilePath("/ui.min");
-            DownloadFileToSPIFFs* downloadUI = new DownloadFileToSPIFFs(updateInfo->mk20_ui_url,uiFilePath);
+            DownloadFileToSPIFFs* downloadUI = new DownloadFileToSPIFFs(url,uiFilePath);
             PushFileToSDCard* pushUIFile = new PushFileToSDCard(uiFilePath,uiFilePath,false,Compression::RLE16);
             downloadUI->setNextMode(pushUIFile);
             Application.pushMode(downloadUI);
