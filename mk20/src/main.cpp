@@ -98,6 +98,7 @@ void setup(void)
         EventLogger.setLogContexts(LOG_FLOW|LOG_PRINTER);
         EventLogger.setLogLevel(LOG_SPAM);
 
+        DebugSerial.println("============================================================================================================");
         DebugSerial.println("Debug Serial initiated");
     }
 #endif
