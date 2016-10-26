@@ -72,7 +72,7 @@ void PreheatExtruder::onWillAppear() {
     printr.homeZ();
   }
   printr.sendLine("G0 Z40");
-  printr.sendLine("N10 G0 Y30");
+  printr.sendLine("G0 Y30");
 
   SidebarSceneController::onWillAppear();
 }

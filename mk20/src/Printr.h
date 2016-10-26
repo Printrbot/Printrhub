@@ -94,6 +94,7 @@ private:
 
   String _currentLine;
   MemoryStream *_lineBuffer;
+  bool _printerReady;
 
 };
 

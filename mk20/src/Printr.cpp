@@ -16,7 +16,8 @@ _homeY(false),
 _homeZ(false),
 _progress(0.0),
 _processedProgramLine(0),
-_currentAction(0)
+_currentAction(0),
+_printerReady(false)
 {
   _setupCode = new MemoryStream(64);
   _lineBuffer = new MemoryStream(20);
@@ -38,7 +39,7 @@ void Printr::init() {
   reset();
 
   //When we init we wait for the printer to send the first status response
-  _linesToSend = 0;
+  _linesToSend = 4;
   sendLine("{sr:{line:t,he1t:t,he1st:t,he1at:t,stat:t}}");
   sendLine("{_leds:4}");
   //sendLine("M100({_leds:4})",false); //switch to blue light
@@ -50,15 +51,17 @@ void Printr::reset() {
   _setupCode->flush();
   _currentStream = _setupCode;
 
-  _linesToSend = 1;
+  _linesToSend = 4;
 }
 
 void Printr::loop() {
+  int numBytesAvailableToWrite = Serial1.availableForWrite();
+  PRINTER_SPAM("Num bytes to write: %d",numBytesAvailableToWrite);
   processPrint();
 }
 
 void Printr::processPrint() {
-  if (_linesToSend > 0) {
+  if (_printerReady && _linesToSend > 0) {
     //Let's check the outgoing serial buffer first, can we send?
     int numBytesAvailableToWrite = Serial1.availableForWrite();
     if (numBytesAvailableToWrite > 0) {
@@ -314,7 +317,15 @@ void Printr::programEnd() {
 
 void Printr::sendLine(String line, bool buffered) {
   if (buffered) {
+    if (line.charAt(0) != '{') {
+      _setupCode->print("N0 ");
+    }
     _setupCode->println(line);
+
+    //Make sure that this line is processed even after the printer has been idle for some time
+    if (_linesToSend == 0) {
+      _linesToSend = 1;
+    }
   } else {
     Serial1.println(line);
     _sendNext = false;
@@ -421,6 +432,7 @@ void Printr::parseResponse() {
           if (statusCode == 0) {
             if (_linesToSend > lineBufferSpace) {
               _linesToSend = lineBufferSpace;
+              _printerReady = true;
             } else {
               _linesToSend++;
             }
