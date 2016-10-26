@@ -16,19 +16,21 @@ _homeY(false),
 _homeZ(false),
 _progress(0.0),
 _processedProgramLine(0),
-_currentAction(0),
-_printerReady(false)
+_currentAction(0)
 {
   _setupCode = new MemoryStream(64);
-  _lineBuffer = new MemoryStream(20);
-  _currentStream = _setupCode;
-  _firstChar = true;
-  _newLine = true;
+  _waiting = false;
+  _waitStart = 0;
+
+  _printrCurrentStatus = PRINTR_STATUS_INITIALIZING;
+  _currentMode == PrintrMode::ImmediateMode;
+  _lineSent = true;
+  _currentLineBuffer = new MemoryStream(255);
 }
 
 Printr::~Printr() {
   delete _setupCode;
-  delete _lineBuffer;
+  delete _currentLineBuffer;
 }
 
 void Printr::init() {
@@ -42,113 +44,178 @@ void Printr::init() {
   _linesToSend = 4;
   sendLine("{sr:{line:t,he1t:t,he1st:t,he1at:t,stat:t}}");
   sendLine("{_leds:4}");
+  sendWaitCommand(500);
+  sendLine("{_leds:1}");
+  sendWaitCommand(500);
+  sendLine("{_leds:2}");
+  sendWaitCommand(500);
+  sendLine("{_leds:3}");
+  sendWaitCommand(500);
+  sendLine("{_leds:4}");
   //sendLine("M100({_leds:4})",false); //switch to blue light
   sendLine("{sv:1}");
+
 }
 
 void Printr::reset() {
+  _currentMode = PrintrMode::ImmediateMode;
   _printing = false;
   _setupCode->flush();
-  _currentStream = _setupCode;
 
   _linesToSend = 4;
 }
 
 void Printr::loop() {
-  int numBytesAvailableToWrite = Serial1.availableForWrite();
-  PRINTER_SPAM("Num bytes to write: %d",numBytesAvailableToWrite);
-  processPrint();
+
+  if (_printrCurrentStatus == PRINTR_STATUS_INITIALIZING) {
+    //We only read and wait for status to become OK
+    readResponses();
+  } else if (_printrCurrentStatus == PRINTR_STATUS_OK) {
+    //First Send Commands
+    sendCommands();
+    //Then read responses
+    readResponses();
+  } else {
+    //Any other status is considered an error
+
+  }
 }
 
-void Printr::processPrint() {
-  if (_printerReady && _linesToSend > 0) {
-    //Let's check the outgoing serial buffer first, can we send?
-    int numBytesAvailableToWrite = Serial1.availableForWrite();
-    if (numBytesAvailableToWrite > 0) {
-      //We can send data to the printer
-      digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,LOW);
-      uint8_t buffer[numBytesAvailableToWrite];
-      size_t bufferLength = 0;
+bool Printr::queryCurrentLine(Stream* stream, int lineNumber) {
+  if (!stream->available()) {
+    //Nothing to read from the stream
+    return false;
+  }
 
-      //Read the current input stream (setup code buffer or file) and read as long as we have filled the send buffer or until we are at the end of the line
-      while (bufferLength < numBytesAvailableToWrite) {
-        int byte = 0;
-        if (_lineBuffer->available()) {
-          byte = _lineBuffer->read();
-        } else {
-          byte = _currentStream->read();
-        }
+  //Add a line number if necessary
+  if (lineNumber > 0) {
+    _currentLineBuffer->print("N");
+    _currentLineBuffer->print(lineNumber);
+    _currentLineBuffer->print(" ");
+  }
 
-        if (byte < 0) {
-          //Only switch to print file if we are printing
-          if (_printing) {
-            //We are finished with the current stream, switch to next
-            if (_currentStream == _setupCode) {
-              PRINTER_NOTICE("Setup code complete, now printing file");
-
-              //Free memory used by setup buffer and clear its content
-              _setupCode->flush();
-
-              //Switch to file as input stream
-              _currentStream = &_printFile;
-
-              _newLine = true;
-              _lastSentProgramLine = 1;
-            } else {
-              PRINTER_NOTICE("File complete, finishing print");
-              // finished reading the file
-              // This is a hack until total line numbers
-              // is implemented, then program will end
-              // when M3 is passed to it, or when _processedProgramLine == _totalProgramLines
-
-              //Set back current stream to setupCode
-              _currentStream = _setupCode;
-            }
-          } else {
-            //Nothing to read in setup code
-
-            break;
-          }
-        } else {
-          buffer[bufferLength++] = byte;
-          if (byte == '\n') {
-            //This is the last byte of the current line and buffer now contains the last part of the current line, so we break out here now
-            _newLine = true;
-            break;
-          } else if (_newLine) {
-            _firstChar = byte;
-            _newLine = false;
-          }
-        }
+  //Now try to read the line
+  bool lineRead = false;
+  while (stream->available() > 0) {
+    int byte = stream->read();
+    if (byte < 0) {
+      //Stream is EOF
+      break;
+    } else {
+      _currentLineBuffer->write(byte);
+      if (byte == '\n') {
+        //This is the end of the line
+        lineRead = true;
+        break;
       }
-
-      //Send the buffer to the printer
-      if (bufferLength > 1) {
-        Serial1.write(buffer,bufferLength);
-        DebugSerial.print("Sending buffer: ");
-        DebugSerial.write(buffer,bufferLength);
-
-        if (_newLine) {
-          DebugSerial.println("Line complete");
-          _linesToSend--;
-
-          if (_currentStream == &_printFile) {
-            //Add line numbers when printing G-Codes from file
-            _lastSentProgramLine++;
-
-            //Write the line info in the line buffer
-            _lineBuffer->flush();
-            _lineBuffer->print("N");
-            _lineBuffer->print(_lastSentProgramLine);
-            _lineBuffer->print(" ");
-          }
-        }
-      }
-
-      digitalWrite(COMMSTACK_DATALOSS_MARKER_PIN,HIGH);
     }
   }
 
+  //We did not read a line, so flush the current line buffer
+  if (!lineRead) {
+    _currentLineBuffer->flush();
+  } else {
+    //Mark this line to not been sent yet
+    _lineSent = false;
+  }
+
+  return lineRead;
+}
+
+void Printr::handlePBCode(const char* pbcode) {
+  String code(pbcode);
+  if (code.startsWith(";PBCODE;wait;")) {
+    String durationString = code.replace(";PBCODE;wait;","");
+    int duration = durationString.toInt();
+    PRINTER_SPAM("Got a wait command: %d",duration);
+
+    _waiting = true;
+    _waitStart = millis();
+    _waitDuration = duration;
+  }
+}
+
+void Printr::sendCommands() {
+  if (_linesToSend <= 0) {
+    return;
+  }
+
+  //We had a wait command, let's wait if necessary
+  if (_waiting) {
+    if ((millis() - _waitStart) > _waitDuration) {
+      _waiting = false;
+    } else {
+      return;
+    }
+  }
+
+  if (_lineSent) {
+    //The current line has been sent, get a new one
+    if (_currentMode == PrintrMode::ImmediateMode) {
+      //Only send commands from the buffer
+      if (queryCurrentLine(_setupCode)) {
+        PRINTER_SPAM("Immediate-Mode: Queried new line from setupCode: %s",_currentLineBuffer->c_str());
+      }
+    } else if (_currentMode == PrintrMode::PrintMode) {
+      //If we are in print mode, we work through the setup buffer, after that we switch to the file
+      if (queryCurrentLine(_setupCode)) {
+        PRINTER_SPAM("Print-Mode: Queried new line from setupCode: %s",_currentLineBuffer->c_str());
+      } else {
+        //Setup buffer has been sent, switch to file
+        if (_printFile) {
+          if (queryCurrentLine(&_printFile,_lastSentProgramLine)) {
+            PRINTER_SPAM("Print-Mode: Queried new line from print file: %s",_currentLineBuffer->c_str());
+            _lastSentProgramLine++;
+          }
+        }
+      }
+    }
+  } else {
+    //Line has not been sent yet, try to send it now
+    if (_currentLineBuffer->available() <= 0) {
+      _lineSent = true;
+    } else if (_currentLineBuffer->peek() == ';') {
+      if (strncmp(";PBCODE;", _currentLineBuffer->c_str(), strlen(";PBCODE;")) == 0) {
+        //We got a PB code, do something about it
+        PRINTER_SPAM("Got a PBCODE: %s", _currentLineBuffer->c_str());
+        handlePBCode(_currentLineBuffer->c_str());
+      } else {
+        //This is a comment, skip that
+        PRINTER_SPAM("Skipped comment: %s", _currentLineBuffer->c_str());
+      }
+
+      _lineSent = true;
+      _currentLineBuffer->flush();
+    } else if (_currentLineBuffer->peek() == '\n') {
+      PRINTER_SPAM("Just got a newline");
+      _lineSent = true;
+      _currentLineBuffer->flush();
+    } else {
+      //This line is ok, send it to the printer if enough space is in the buffer
+      while (true) {
+        if (Serial1.availableForWrite() <= 0) {
+          //We cannot send anything now, break out
+          break;
+        } else {
+          int byte = _currentLineBuffer->read();
+          if (byte < 0) {
+            //This line has been sent completely
+            _lineSent = true;
+            _currentLineBuffer->flush();
+            _linesToSend--;
+            PRINTER_SPAM("Line sent, lines left to send: %d",_linesToSend);
+            break;
+          } else {
+            //Write the byte we just read to the printr
+            Serial1.write(byte);
+          }
+        }
+      }
+    }
+  }
+}
+
+void Printr::readResponses() {
   //Read from Serial
   if (Serial1.available()) {
     digitalWrite(CODE_INDICATOR_1,LOW);
@@ -168,7 +235,6 @@ void Printr::processPrint() {
     }
     digitalWrite(CODE_INDICATOR_1,HIGH);
   }
-
 }
 
 void Printr::turnOffHotend() {
@@ -219,6 +285,7 @@ int Printr::startJob(String filePath) {
 }
 
 void Printr::runJobStartGCode() {
+  _currentMode = PrintrMode::PrintMode;
   _printing = true;
 
   _lastSentProgramLine = 1;
@@ -264,16 +331,18 @@ void Printr::runJobStartGCode() {
   sendLine("G1 X220.000 A10 F1200");
   sendLine("G0 Z1");
   sendLine("G92 A0");
-
-  //Make sure we start with startup buffer
-  _currentStream = _setupCode;
 }
 
 
 void Printr::cancelCurrentJob() {
+  _currentMode = PrintrMode::ImmediateMode;
+  _currentLineBuffer->flush();
+
   stopAndFlush();
-  programEnd();
-  sendLine("G0 X110 Y150");
+  sendLine("G91");             //Relative mode
+  sendLine("G0 Z10");          //Move up
+  sendLine("G90");             //Back to absolute mode
+  sendLine("G0 X110 Y150");    //Home back with bed centered
   sendLine("M100({_leds:4})"); //switch to blue light
 }
 
@@ -288,11 +357,11 @@ void Printr::homeY() {
 }
 
 void Printr::homeZ() {
-  sendLine("G28.2 Z0",false);
+  sendLine("G28.2 Z0");
   _homeZ = true;
 }
 
-void Printr::programEnd() {
+void Printr::programEnd(bool success) {
 
   if (!_printing)
     return;
@@ -311,25 +380,20 @@ void Printr::programEnd() {
   turnOffHotend();
 
   if (_listener != nullptr) {
-    _listener->onPrintComplete(true);
+    _listener->onPrintComplete(success);
   }
 }
 
-void Printr::sendLine(String line, bool buffered) {
-  if (buffered) {
-    if (line.charAt(0) != '{') {
-      _setupCode->print("N0 ");
-    }
-    _setupCode->println(line);
-
-    //Make sure that this line is processed even after the printer has been idle for some time
-    if (_linesToSend == 0) {
-      _linesToSend = 1;
-    }
-  } else {
-    Serial1.println(line);
-    _sendNext = false;
+void Printr::sendLine(String line) {
+  if (_setupCode->println(line) <= 0) {
+    PRINTER_ERROR("Could not send line: %s",line.c_str());
   }
+}
+
+void Printr::sendWaitCommand(int millis) {
+  String line(";PBCODE;wait;");
+  line = line + millis;
+  sendLine(line);
 }
 
 void Printr::parseResponse() {
@@ -355,20 +419,19 @@ void Printr::parseResponse() {
       //Make sure we proceed sending data so we don't stall
       _sendNext = true;
     } else {
-      // parse sr
+      // Parse status response
       String sr = o["sr"];
       String r = o["r"];
       String f = o["f"];
 
       if (sr.length() > 0) {
-        PRINTER_SPAM("Got a sr message");
         JsonObject& _sr = rBuffer.parseObject(sr);
         // {sr: {stat:0}}
         // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
         if (_sr["stat"]) {
           _stat = _sr["stat"];
           switch(_stat) {
-            case 2:
+            case PRINTR_STAT_ALARM:
               // hmmmm ... need to handle this better
               // alarm
               Display.fillRect(0,0,320,240,ILI9341_RED);
@@ -380,11 +443,17 @@ void Printr::parseResponse() {
               Display.fadeIn();
               break;
 
-            case 4:
+            case PRINTR_STAT_PROGRAM_STOP:
+              programEnd(false);
+              _totalProgramLines = _lastSentProgramLine;
+              PRINTER_NOTICE("Printer got stopped, closing");
+              break;
+
+            case PRINTR_STAT_PROGRAM_END:
               // program end via M2, M30
               // finish print if printing
               PRINTER_NOTICE("Printer finished, closing");
-              programEnd();
+              programEnd(true);
               break;
           }
         }
@@ -409,6 +478,7 @@ void Printr::parseResponse() {
         }
       }
 
+      //Parse line response
       if (r.length() > 0) {
         JsonObject& _r = rBuffer.parseObject(r);
         if (_r["n"]) {
@@ -419,28 +489,23 @@ void Printr::parseResponse() {
           }
         }
 
+        //We got a r-response, so increment number of lines that can be sent
+        _linesToSend++;
+
         PRINTER_SPAM("Got a r message, line-nr: %d, progress: %d",_processedProgramLine,(int)(_progress*100.0f));
       }
 
+      //Parse status
       if (f.length() > 0) {
         JsonArray& _f = fBuffer.parseArray(f);
-        uint8_t lineBufferSpace = 0;
-        uint8_t statusCode = 0;
-        if (_f.size() > 0) {
-          lineBufferSpace = _f[2];
-          statusCode = _f[1];
-          if (statusCode == 0) {
-            if (_linesToSend > lineBufferSpace) {
-              _linesToSend = lineBufferSpace;
-              _printerReady = true;
-            } else {
-              _linesToSend++;
-            }
-          }
-          PRINTER_SPAM("Got status: %s, Status-Code: %d, Available line buffer: %d, Lines to send: %d",f.c_str(),statusCode,lineBufferSpace,_linesToSend);
-        } else {
-          _linesToSend++;
+        if (_f.size() <= 0) {
+          //Parsing failed
           PRINTER_ERROR("Got status array, but could not parse it: %s",f.c_str());
+        } else {
+          //Parsing successful, save values
+          _printrCurrentStatus = _f[1];
+          _printrBufferSize = _f[2];
+          PRINTER_SPAM("Got status: %s, Status-Code: %d, Available line buffer: %d, Lines to send: %d",f.c_str(),_printrCurrentStatus,_printrBufferSize,_linesToSend);
         }
       }
     }

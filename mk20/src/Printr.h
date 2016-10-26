@@ -14,11 +14,25 @@ struct PrintrBuffer {
   }
 };
 
+#define PRINTR_STATUS_OK 0
+#define PRINTR_STATUS_INITIALIZING 15
+
+#define PRINTR_STAT_INITIALIZING 0
+#define PRINTR_STAT_READY 1
+#define PRINTR_STAT_ALARM 2
+#define PRINTR_STAT_PROGRAM_STOP 3
+#define PRINTR_STAT_PROGRAM_END 4
+
 class PrintrListener {
 public:
     virtual void onNewNozzleTemperature(float temp) = 0;
     virtual void onPrintProgress(float progress) = 0;
     virtual void onPrintComplete(bool success) = 0;
+};
+
+enum class PrintrMode: uint8_t {
+    ImmediateMode = 0,
+    PrintMode = 1
 };
 
 class Printr {
@@ -29,7 +43,8 @@ public:
   void init();
   void loop();
   void setListener(PrintrListener * listener) { _listener = listener;};
-  void sendLine(String line, bool buffered=true);
+  void sendLine(String line);
+  void sendWaitCommand(int millis);
   void stopAndFlush();
   void turnOffHotend();
 
@@ -51,9 +66,13 @@ public:
   void homeZ();
 
   void processPrint();
+  void sendCommands();
+  void readResponses();
+  bool queryCurrentLine(Stream* stream, int lineNumber=0);
+  void handlePBCode(const char* pbcode);
 
 private:
-  void programEnd();
+  void programEnd(bool success);
   void parseResponse();
 
   void runJobStartGCode();
@@ -87,14 +106,17 @@ private:
   bool _homeY;
   bool _homeZ;
   MemoryStream *_setupCode;
-  Stream* _currentStream;
   int _linesToSend;
-  int _firstChar;
-  bool _newLine;
 
-  String _currentLine;
-  MemoryStream *_lineBuffer;
-  bool _printerReady;
+  MemoryStream *_currentLineBuffer;
+  int _printrCurrentStatus;
+  int _printrBufferSize;
+  PrintrMode _currentMode;
+  bool _lineSent;
+
+  bool _waiting;
+  unsigned long _waitStart;
+  int _waitDuration;
 
 };
 
