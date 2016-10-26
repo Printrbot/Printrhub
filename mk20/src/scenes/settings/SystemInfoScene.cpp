@@ -160,7 +160,7 @@ bool SystemInfoScene::runTask(CommHeader &header, const uint8_t *data, size_t da
 
 void SystemInfoScene::onSidebarButtonTouchUp() {
   SettingsScene * scene = new SettingsScene();
-  Application.pushScene(scene);
+  Application.pushScene(scene, true);
 }
 
 void SystemInfoScene::buttonPressed(void *button)
