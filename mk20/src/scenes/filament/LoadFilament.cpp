@@ -71,8 +71,10 @@ void LoadFilament::buttonPressed(void *button)
 {
   if (button == _doneBtn) {
     // stop the extruder
-    printr.turnOffHotend();
     printr.stopAndFlush();
+    printr.sendWaitCommand(1000);
+    printr.turnOffHotend();
+    printr.sendWaitCommand(1000);
     printr.sendLine("G0 Y120");
     printr.sendLine("G0 Z30");
     printr.setListener(NULL);
