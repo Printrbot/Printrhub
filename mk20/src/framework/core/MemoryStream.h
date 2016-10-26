@@ -17,9 +17,9 @@ public:
 
     void setChunkSize(uint16_t chunkSize) { _chunkSize = chunkSize; };
 
-    operator const uint8_t *() const { return _buffer; };
-    operator const char *() const { return (const char*)_buffer; };
     const size_t length() const { return _posWrite; };
+
+    const char* c_str();
 
     virtual size_t write(uint8_t byte);
     virtual int read();
@@ -37,6 +37,7 @@ private:
     size_t _posWrite;
     size_t _posRead;
     uint16_t _chunkSize;
+    bool _autoFlush;
 };
 
 
