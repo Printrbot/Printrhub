@@ -8,8 +8,10 @@ MemoryStream::MemoryStream() {
   _posRead = 0;
   _posWrite = 0;
   _chunkSize = 64;
+  _autoFlush = true;
   _buffer = (uint8_t*)malloc(sizeof(uint8_t)*_chunkSize);
   _len = _chunkSize;
+  clearBuffer();
 }
 
 MemoryStream::MemoryStream(size_t initialLength) {
@@ -18,6 +20,8 @@ MemoryStream::MemoryStream(size_t initialLength) {
   _posRead = 0;
   _posWrite = 0;
   _chunkSize = 64;
+  _autoFlush = true;
+  clearBuffer();
 }
 
 MemoryStream::MemoryStream(uint8_t *buffer, size_t len) {
@@ -27,6 +31,8 @@ MemoryStream::MemoryStream(uint8_t *buffer, size_t len) {
   _posWrite = len;
   _len = len;
   _chunkSize = 64;
+  _autoFlush = true;
+  clearBuffer();
 }
 
 MemoryStream::~MemoryStream() {
@@ -58,6 +64,13 @@ int MemoryStream::read() {
   int byte = peek();
   if (byte >= 0) {
     _posRead++;
+  } else {
+    //If we cannot read because nothing is left, auto purge it by flushing it back to default
+    if (_autoFlush) {
+      if (_posWrite == _posRead && _posWrite > 0) {
+        flush();
+      }
+    }
   }
 
   return byte;
@@ -88,13 +101,17 @@ void MemoryStream::clearBuffer() {
   }
 }
 
+const char* MemoryStream::c_str() {
+  return (const char*)_buffer;
+}
+
 void MemoryStream::flush() {
   if (_len > _chunkSize) {
-    if (resizeBuffer(_chunkSize)) {
-      clearBuffer();
-    }
+    resizeBuffer(_chunkSize);
   }
 
   _posRead = 0;
   _posWrite = 0;
+
+  clearBuffer();
 }

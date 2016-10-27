@@ -48,12 +48,12 @@ void CalibrateScene::onWillAppear() {
   hotendLayer->setBitmap("ui.min",121,uiBitmaps.hotend.height,uiBitmaps.hotend.offset);
   Display.addLayer(hotendLayer);
 
-  SDBitmapLayer* offsetLayer = new SDBitmapLayer(Rect(137,75,uiBitmaps.hotend.width-121,uiBitmaps.hotend.height-64));
-  offsetLayer->setBitmap("ui.min",uiBitmaps.hotend.width-121,uiBitmaps.hotend.height-64,uiBitmaps.hotend.offset);
+  SDBitmapLayer* offsetLayer = new SDBitmapLayer(Rect(137,75,uiBitmaps.hotend_offset.width,uiBitmaps.hotend_offset.height));
+  offsetLayer->setBitmap("ui.min",uiBitmaps.hotend_offset.width,uiBitmaps.hotend_offset.height,uiBitmaps.hotend_offset.offset);
   Display.addLayer(offsetLayer);
 
   _offset = dataStore.getHeadOffset();
-  _offsetText = new TextLayer(Rect(137,13, 112, 62));
+  _offsetText = new TextLayer(Rect(137,13, 113, 62));
   _offsetText->setFont(&LiberationSans_32);
   _offsetText->setTextAlign(TEXTALIGN_CENTERED);
   _offsetText->setForegroundColor(ILI9341_BLACK);
@@ -112,7 +112,7 @@ void CalibrateScene::buttonPressed(void *button)
   }
 
   //Convert float to string and set to text field
-  char buffer[10];
+  char buffer[4];
   dtostrf(_offset, 3, 1, buffer);
   _offsetText->setText(String(buffer));
 

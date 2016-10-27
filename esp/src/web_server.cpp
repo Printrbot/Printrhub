@@ -41,11 +41,6 @@ void doUpdateConfig(AsyncWebServerRequest *request) {
         Application.getMK20Stack()->showWiFiInfo();
 	}
 
-	if (request->hasParam("locked", true) && request->hasParam("password", true)) {
-		AsyncWebParameter* pp = request->getParam("password", true);
-		strcpy(config.data.password, pp->value().c_str());
-	}
-
 	config.data.blank = false;
 	config.save();
 	EventLogger::log("Done updating config, restarting ESP");
@@ -56,6 +51,8 @@ void doUpdateConfig(AsyncWebServerRequest *request) {
 
 bool WebServer::validateAuthentication(AsyncWebServerRequest *request)
 {
+		return true;// temp until this is fully implemented
+
     EventLogger::log("Authenticating with username: %s, password: %s",config.data.name,config.data.password);
     if (strlen(config.data.password) <= 0) return true;
     if (!request->authenticate(config.data.name,config.data.password)) {

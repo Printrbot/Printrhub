@@ -15,6 +15,7 @@
 #include <ArduinoJson.h>
 #include "../../errors.h"
 #include "../../jobs/ReceiveSDCardFile.h"
+#include "EventLogger.h"
 
 ApplicationClass Application;
 
@@ -92,6 +93,10 @@ void ApplicationClass::handleTouches()
 
 void ApplicationClass::setup()
 {
+#ifdef TEENSYDUINO
+  FLOW_ALWAYS("Using Teensyduino %d",(int)TEENSYDUINO);
+#endif
+
 	//Configure LED pin
 	pinMode(LED_PIN, OUTPUT);
 

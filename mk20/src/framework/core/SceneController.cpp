@@ -340,10 +340,6 @@ void SceneController::animationUpdated(Animation *animation, float currentValue,
 	}
 }
 
-void SceneController::printrCallback(const char ctype[], float * fdata, int * idata) {
-}
-
-
 void SceneController::animationFinished(Animation *animation)
 {
 	if (animation == _scrollAnimation)

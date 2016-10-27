@@ -23,6 +23,7 @@ public:
 	void setValue(float value);
 	uint16_t getTrackColor() const { return _trackColor; }
 	void setTrackColor(uint16_t trackColor) { _trackColor = trackColor; }
+	void setBackgroundColor(uint16_t backgroundColor) { _backgroundColor = backgroundColor; _progressLayer->setBackgroundColor(_backgroundColor); }
 
 #pragma mark View
 	virtual String getDescription() override;

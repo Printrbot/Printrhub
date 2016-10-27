@@ -37,7 +37,7 @@
 #endif
 
 #define FIRMWARE_VERSION "0.12"
-#define FIRMWARE_BUILDNR 99
+#define FIRMWARE_BUILDNR 103
 
 enum class NetworkMode: uint8_t {
     Unconnected = 0,

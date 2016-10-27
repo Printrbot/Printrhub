@@ -4,8 +4,9 @@
 #include "../SidebarSceneController.h"
 #include "framework/views/BitmapButton.h"
 #include "framework/views/ProgressBar.h"
+#include "../../Printr.h"
 
-class PreheatExtruder: public SidebarSceneController {
+class PreheatExtruder: public SidebarSceneController, public PrintrListener {
 public:
 
 	PreheatExtruder();
@@ -14,7 +15,11 @@ public:
 	virtual uint16_t getBackgroundColor() override;
 	virtual UIBitmap * getSidebarBitmap() override;
 	virtual UIBitmap * getSidebarIcon() override;
-	virtual void printrCallback(const char ctype[], float * fdata, int * idata) override;
+
+	virtual void onNewNozzleTemperature(float temp);
+	virtual void onPrintProgress(float progress);
+	virtual void onPrintComplete(bool success);
+
 	void setNextScene(uint8_t scene) {_nextScene = scene;};
 
 private:
