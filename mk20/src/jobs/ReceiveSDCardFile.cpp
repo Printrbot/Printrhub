@@ -61,7 +61,7 @@ bool ReceiveSDCardFile::writeToFile(const uint8_t* data, size_t size) {
   int numBytesWritten = _localFile.write(data, size);
   _bytesLeft -= numBytesWritten;
 
-  FLOW_SPAM("ReceiveSDCardFile: Writing data to file, bytes left: %d",_bytesLeft);
+  COMMSTACK_SPAM("ReceiveSDCardFile: Writing data to file, bytes left: %d",_bytesLeft);
 
   return true;
 }
@@ -86,7 +86,7 @@ bool ReceiveSDCardFile::RLE16Deflate(const uint8_t* data, size_t size) {
       memcpy(&buffer[c*sizeof(uint16_t)],&value,sizeof(uint16_t));
     }
 
-    FLOW_SPAM("ReceiveSDCardFile: Decompressed %d 16-bit values (%d) and writing them to the file",counter,value);
+    COMMSTACK_SPAM("ReceiveSDCardFile: Decompressed %d 16-bit values (%d) and writing them to the file",counter,value);
 
 /*    for (int s=0;s<(sizeof(uint16_t)*counter);s++) {
       DebugSerial.print(s);
@@ -117,7 +117,7 @@ bool ReceiveSDCardFile::runTask(CommHeader &header, const uint8_t *data, size_t 
 
   if (header.getCurrentTask() == TaskID::FileSaveData) {
     if (header.commType == Request) {
-      FLOW_SPAM("ReceiveSDCardFile: Received data with size: %d",dataSize);
+      COMMSTACK_SPAM("ReceiveSDCardFile: Received data with size: %d",dataSize);
       if (onDataReceived(data,dataSize)) {
         //Send a response success
         *sendResponse = true;
