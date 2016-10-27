@@ -141,7 +141,7 @@ void WebServer::begin() {
         } else {
             response = request->beginResponse(200, "text/json", "{'success':'true'}");
 
-			String url("http://www.appfruits.com/files/ui.min");
+			String url("http://static.printrbot.cloud/firmware/simple/ui.min");
 
             String uiFilePath("/ui.min");
             DownloadFileToSPIFFs* downloadUI = new DownloadFileToSPIFFs(url,uiFilePath);
