@@ -10,7 +10,7 @@
 ColorTheme::ColorTheme():
 		_colors({RGB565(100,100,100),	//SpacerColor
 				 RGB565(241,241,241),	//BackgroundColor
-				 RGB565(96,96,96),		//HighlightBackgroundColor
+				 RGB565(181,181,181),		//HighlightBackgroundColor
 				 RGB565(255,255,255),	//HighlightTextColor
 				 RGB565(233,154,36),		//HighlightBackgroundColor
 				 RGB565(190,190,190),	//HighlightTextColor

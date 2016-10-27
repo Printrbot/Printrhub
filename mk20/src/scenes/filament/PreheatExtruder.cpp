@@ -55,16 +55,16 @@ void PreheatExtruder::onWillAppear() {
   Display.addLayer(textLayer);
 */
   _progressBar = new ProgressBar(Rect(0,228,270,12));
-	_progressBar->setTrackColor(ILI9341_RED);
+	_progressBar->setBackgroundColor(RGB565(255,56,38));
 	_progressBar->setValue(0.0f);
 	addView(_progressBar);
 
   //printr.sendLine("G28.2 X0 Y0 Z0\nM100 ({he1st:50});\nM101 ({he1at:t});\nG0 Z40\nG0 X100 Y50\nM2");
 
   printr.homeY();
-  printr.homeX();
+  //printr.homeX();
 
-  printr.sendLine("G0 X105");
+  //printr.sendLine("G0 X105");
   printr.sendLine("M100({he1st:200})");
   printr.sendLine("M100({_leds:2})");
   printr.sendLine("M101({he1at:t})");
@@ -107,8 +107,9 @@ void PreheatExtruder::onPrintComplete(bool success) {
 void PreheatExtruder::onSidebarButtonTouchUp() {
   // flush the queue
   printr.stopAndFlush();
-  printr.sendLine("M100({_leds:1})");
-  printr.sendLine("G0 Y120");
+  printr.sendWaitCommand(1000);
+  printr.sendLine("M100({_leds:4})");
+  printr.sendLine("G0 Y150");
   printr.turnOffHotend();
 
   SelectFilamentAction * scene = new SelectFilamentAction();
