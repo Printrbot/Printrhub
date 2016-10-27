@@ -112,7 +112,7 @@ void CalibrateScene::buttonPressed(void *button)
   }
 
   //Convert float to string and set to text field
-  char buffer[10];
+  char buffer[4];
   dtostrf(_offset, 3, 1, buffer);
   _offsetText->setText(String(buffer));
 
