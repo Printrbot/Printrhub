@@ -105,6 +105,7 @@ void PrintStatusScene::onWillAppear() {
   // progress bar
   _progressBar = new ProgressBar(Rect(0,228,Display.getLayoutWidth(),12));
   _progressBar->setValue(0.0f);
+  _progressBar->setBackgroundColor(RGB565(233, 154, 36));
   addView(_progressBar);
 
   SidebarSceneController::onWillAppear();
