@@ -495,12 +495,14 @@ void PHDisplay::setScrollOffset(float scrollOffset, bool update)
         FLOW_ERROR("Scroll-Offset is NaN");
         scrollOffset = 0;
     }
-
+  /*
+    int w = (_foregroundLayer->getFrame().width-1)-getLayoutWidth();
    // LOG_VALUE("Layout-Width: ",(_foregroundLayer->getFrame().width-1));
-    if (scrollOffset < -((_foregroundLayer->getFrame().width-1)-getLayoutWidth()))
+    if (scrollOffset < -(w))
     {
-        scrollOffset = -((_foregroundLayer->getFrame().width-1)-getLayoutWidth());
+        scrollOffset = -(w);
     }
+     */
     if (scrollOffset > 0)
     {
         scrollOffset = 0;
