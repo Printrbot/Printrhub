@@ -79,6 +79,7 @@ void ProgressBar::setNeedsDisplay()
 
 void ProgressBar::setValue(float value)
 {
+	if (isnan(value)) value = 0.0f;
 	if (this->_value == value) return;
 	if (value > _maxValue) value = _maxValue;
 	if (value < _minValue) value = _minValue;
