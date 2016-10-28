@@ -83,16 +83,8 @@ void ProjectsScene::onWillAppear() {
     return;
   }
 
-  // return to the last viewed project index
-  if (lastProjectIndex > 0) {
-    float x = Display.getLayoutWidth() * lastProjectIndex;
-    _openBtn = new BitmapButton(Rect(x+10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
-    _deleteBtn = new BitmapButton(Rect(x+220,190,50,50));
-    addScrollOffset(-x);
-  } else{
-    _openBtn = new BitmapButton(Rect(10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
-    _deleteBtn = new BitmapButton(Rect(220,190,50,50));
-  }
+  _openBtn = new BitmapButton(Rect(10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
+  _deleteBtn = new BitmapButton(Rect(220,190,50,50));
 
   _openBtn->setBitmap(&uiBitmaps.btn_open);
   _openBtn->setVisible(true);
@@ -107,6 +99,16 @@ void ProjectsScene::onWillAppear() {
   SidebarSceneController::onWillAppear();
 }
 
+void ProjectsScene::onDidAppear() {
+  // return to the last viewed project index
+  if (lastProjectIndex > 0) {
+    float x = Display.getLayoutWidth() * lastProjectIndex;
+    addScrollOffset(-x);
+  }
+
+  updateButtons();
+}
+
 
 void ProjectsScene::onSidebarButtonTouchUp() {
   SettingsScene * scene = new SettingsScene();
@@ -119,13 +121,7 @@ void ProjectsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
   SceneController::handleTouchMoved(point, oldPoint);
 }
 
-void ProjectsScene::animationFinished(Animation *animation) {
-  SceneController::animationFinished(animation);
-
-  //We should have stopped at a defined slot index, use that to position the button
-  lastProjectIndex = getPageIndex();
-  lastJobIndex = 0;
-
+void ProjectsScene::updateButtons() {
   float x = Display.getLayoutWidth() * lastProjectIndex;
 
   _openBtn->setFrame(Rect(x+10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
@@ -135,6 +131,16 @@ void ProjectsScene::animationFinished(Animation *animation) {
   _deleteBtn->setFrame(Rect(x+220,190,50,50));
   _deleteBtn->setVisible(true);
   _deleteBtn->setDelegate(this);
+}
+
+void ProjectsScene::animationFinished(Animation *animation) {
+  SceneController::animationFinished(animation);
+
+  //We should have stopped at a defined slot index, use that to position the button
+  lastProjectIndex = getPageIndex();
+  lastJobIndex = 0;
+
+  updateButtons();
 }
 
 void ProjectsScene::buttonPressed(void *button)

@@ -286,6 +286,12 @@ void ApplicationClass::loop()
 		//Relayout screen tiles
 		Display.layoutIfNeeded();
 
+    if (_firstSceneLoop)
+    {
+      //Inform scene controller that it's visible now
+      _currentScene->onDidAppear();
+    }
+
 		//Update display
 		Display.dispatch();
 

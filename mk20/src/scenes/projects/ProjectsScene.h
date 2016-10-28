@@ -29,9 +29,13 @@ public:
 
 private:
 	virtual void onWillAppear() override;
+	virtual void onDidAppear() override;
 	String getName() override;
 	virtual void buttonPressed(void *button) override;
+  void updateButtons();
+
 	uint16_t _totalProjects;
+
 
 protected:
 	BitmapButton* _openBtn;

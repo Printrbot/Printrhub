@@ -29,6 +29,7 @@ public:
 #pragma mark Application Flow
 	virtual void loop();
 	virtual void onWillAppear();
+  virtual void onDidAppear();
 	virtual void setupDisplay();
 	virtual void onWillDisappear();
 	virtual bool handlesTask(TaskID taskID);

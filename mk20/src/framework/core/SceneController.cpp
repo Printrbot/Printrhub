@@ -74,6 +74,11 @@ void SceneController::onWillAppear()
 	}
 }
 
+void SceneController::onDidAppear()
+{
+
+}
+
 void SceneController::setupDisplay()
 {
 	Display.setScrollInsets(0,0);
