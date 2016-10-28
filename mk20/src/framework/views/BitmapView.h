@@ -15,9 +15,12 @@ public:
 	virtual String getDescription() override;
   virtual void setBitmap(UIBitmap * bitmap);
 
+  virtual void display() override;
+
 private:
   BitmapLayer * _bitmapLayer;
 	SDBitmapLayer* _sdbitmapLayer;
+	UIBitmap* _bitmap;
 };
 
 
