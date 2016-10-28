@@ -9,7 +9,11 @@
 
 extern UIBitmaps uiBitmaps;
 
-SidebarSceneController::SidebarSceneController(): SceneController() {
+SidebarSceneController::SidebarSceneController():
+SceneController(),
+_actionButton(NULL),
+_sidebarImage(NULL)
+{
 
 }
 
@@ -49,6 +53,10 @@ void SidebarSceneController::setupDisplay() {
 void SidebarSceneController::onWillAppear() {
 	setupSidebar();
 	SceneController::onWillAppear();
+}
+
+void SidebarSceneController::onDidAppear() {
+	_sidebarImage->setNeedsDisplay();
 }
 
 void SidebarSceneController::onSidebarButtonTouchUp() {

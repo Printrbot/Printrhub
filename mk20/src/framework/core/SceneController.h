@@ -55,6 +55,7 @@ public:
 #pragma mark Scrolling
 protected:
 	void addScrollOffset(float scrollOffset);
+	void setScrollOffset(float scrollOffset);
 private:
 	virtual void setDecelerationRate(const float decelerationRate) { _decelerationRate = decelerationRate; };
 public:

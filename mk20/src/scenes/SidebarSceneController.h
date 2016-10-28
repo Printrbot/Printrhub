@@ -22,6 +22,7 @@ public:
 	virtual BitmapButton* getSidebarButton() const { return _actionButton; };
 	virtual void onSidebarButtonTouchUp();
 	virtual void onWillAppear() override;
+	virtual void onDidAppear() override;
 
 private:
 	void setupSidebar();

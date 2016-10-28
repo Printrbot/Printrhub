@@ -247,6 +247,11 @@ void SceneController::handleTouchUp(TS_Point &point)
 	}
 }
 
+void SceneController::setScrollOffset(float scrollOffset) {
+	Display.setScrollOffset(scrollOffset,false);
+	_scrollOffset = Display.getScrollOffset();
+}
+
 void SceneController::addScrollOffset(float scrollOffset)
 {
 	if (scrollOffset == 0) return;

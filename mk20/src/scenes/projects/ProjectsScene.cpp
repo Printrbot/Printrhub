@@ -103,10 +103,12 @@ void ProjectsScene::onDidAppear() {
   // return to the last viewed project index
   if (lastProjectIndex > 0) {
     float x = Display.getLayoutWidth() * lastProjectIndex;
-    addScrollOffset(-x);
+    setScrollOffset(-x);
   }
 
   updateButtons();
+
+  SidebarSceneController::onDidAppear();
 }
 
 

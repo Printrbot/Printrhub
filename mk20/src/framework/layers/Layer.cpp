@@ -293,7 +293,7 @@ void Layer::display(Layer* backgroundLayer)
             //LOG("No comparison layer found, just draw the layer");
             if (_needsDisplay)
             {
-                if (isVisible())
+                if (getContext() == Fixed || isVisible())
                 {
                     //if (Display.debug) LOG("Drawing");
                     draw(_frame);
@@ -312,7 +312,7 @@ void Layer::display(Layer* backgroundLayer)
                 //LOG("No valid comparisonlayer found, just draw");
                 if (_needsDisplay)
                 {
-                    if (isVisible())
+                    if (getContext() == Fixed || isVisible())
                     {
                         //if (Display.debug) LOG("Drawing");
                         draw(_frame);
