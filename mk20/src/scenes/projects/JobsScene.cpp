@@ -114,7 +114,7 @@ void JobsScene::onWillAppear() {
 void JobsScene::onDidAppear() {
   if (lastJobIndex > 0) {
     float x = lastJobIndex * Display.getLayoutWidth();
-    addScrollOffset(-x);
+    setScrollOffset(-x);
   }
   updateButtons();
 }
