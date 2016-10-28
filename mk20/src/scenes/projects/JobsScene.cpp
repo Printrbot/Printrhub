@@ -97,7 +97,7 @@ void JobsScene::onWillAppear() {
   _file.close();
 
   _selectedJob = _jobs[0];
-  _jobFilePath = "/jobs/" + String(_project.index) + "/" + String(_selectedJob.index);
+
 
   _printBtnDownload = new BitmapButton(Rect(-100,180,uiBitmaps.btn_print_download.width,uiBitmaps.btn_print_download.height));
   _printBtnStart = new BitmapButton(Rect(-100,180,uiBitmaps.btn_print_start.width,uiBitmaps.btn_print_start.height));
@@ -105,53 +105,24 @@ void JobsScene::onWillAppear() {
   _printBtnStart->setBitmap(&uiBitmaps.btn_print_start);
   _printBtnDownload->setBitmap(&uiBitmaps.btn_print_download);
 
-  float x = lastJobIndex * Display.getLayoutWidth();
-  if (lastJobIndex > 0) {
-    addScrollOffset(-x);
-  }
-
-  if (SD.exists(_jobFilePath.c_str())) {
-    _printBtnStart->setFrame(Rect(x+10, 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
-    _printBtnStart->setVisible(true);
-    _printBtnStart->setDelegate(this);
-    _printBtnDownload->setVisible(false);
-  } else {
-    _printBtnDownload->setFrame(Rect(x+10, 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
-    _printBtnDownload->setDelegate(this);
-    _printBtnDownload->setVisible(true);
-    _printBtnStart->setVisible(false);
-  }
-
   addView(_printBtnStart);
   addView(_printBtnDownload);
 
   SidebarSceneController::onWillAppear();
 }
 
-void JobsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
-  /*
-  if (_printBtnStart != NULL) {
-    _printBtnStart->setVisible(false);
+void JobsScene::onDidAppear() {
+  if (lastJobIndex > 0) {
+    float x = lastJobIndex * Display.getLayoutWidth();
+    addScrollOffset(-x);
   }
-  if (_printBtnDownload != NULL) {
-    _printBtnDownload->setVisible(false);
-  }
-   */
-  SceneController::handleTouchMoved(point, oldPoint);
+  updateButtons();
 }
 
-
-void JobsScene::animationFinished(Animation *animation) {
-  SceneController::animationFinished(animation);
-  //We should have stopped at a defined slot index, use that to position the button
-  lastJobIndex = getPageIndex();
+void JobsScene::updateButtons() {
   float x = Display.getLayoutWidth() * lastJobIndex;
-
-  // check if local job file exists
-  _selectedJob = _jobs[getPageIndex()];
   _jobFilePath = "/jobs/" + String(_project.index) + "/" + String(_selectedJob.index);
-
-  //_printBtn->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
+//_printBtn->setFrame(Rect((x + 80), 190, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
   if (SD.exists(_jobFilePath.c_str())) {
     _printBtnStart->setFrame(Rect((x + 10), 180, uiBitmaps.btn_print_start.width, uiBitmaps.btn_print_start.height));
     _printBtnStart->setVisible(true);
@@ -163,6 +134,21 @@ void JobsScene::animationFinished(Animation *animation) {
     _printBtnDownload->setDelegate(this);
     _printBtnStart->setVisible(false);
   }
+}
+
+void JobsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
+  SceneController::handleTouchMoved(point, oldPoint);
+}
+
+
+void JobsScene::animationFinished(Animation *animation) {
+  SceneController::animationFinished(animation);
+  //We should have stopped at a defined slot index, use that to position the button
+  lastJobIndex = getPageIndex();
+  // check if local job file exists
+  _selectedJob = _jobs[getPageIndex()];
+
+  updateButtons();
 }
 
 void JobsScene::onSidebarButtonTouchUp() {
