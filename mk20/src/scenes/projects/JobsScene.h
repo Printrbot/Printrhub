@@ -32,6 +32,7 @@ public:
 
 private:
 	virtual void onWillAppear() override;
+	virtual void onDidAppear() override;
 	String getName() override;
 	virtual void buttonPressed(void *button) override;
 	String _projectIndex;
@@ -39,6 +40,7 @@ private:
 	Project _project;
 	String _jobFilePath;
 	Job _selectedJob;
+	void updateButtons();
 
 protected:
 	BitmapButton* _printBtnDownload;
