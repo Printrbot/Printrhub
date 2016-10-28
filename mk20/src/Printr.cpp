@@ -250,6 +250,7 @@ int Printr::startJob(String filePath) {
   _printFile = SD.open(filePath.c_str(), FILE_READ);
 
   _totalProgramLines = -1;
+  _progress = 0.0;
 
   // read json header (if available)
   char i[2];
