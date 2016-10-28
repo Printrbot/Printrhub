@@ -13,7 +13,7 @@ extern Printr printr;
 PreheatExtruder::PreheatExtruder():
   SidebarSceneController::SidebarSceneController()
 {
-  printr.setListener(this);
+
 }
 
 PreheatExtruder::~PreheatExtruder() {
@@ -73,6 +73,9 @@ void PreheatExtruder::onWillAppear() {
   }
   printr.sendLine("G0 Z40");
   printr.sendLine("G0 Y30");
+
+  //Set as Printr listener
+  printr.setListener(this);
 
   SidebarSceneController::onWillAppear();
 }
