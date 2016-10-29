@@ -15,6 +15,7 @@ LoadFilament::LoadFilament():
 }
 
 LoadFilament::~LoadFilament() {
+
 }
 
 
@@ -38,23 +39,15 @@ uint16_t LoadFilament::getBackgroundColor()
 }
 
 void LoadFilament::onWillAppear() {
-
-/*
-  BitmapView* icon = new BitmapView(Rect(100,24,uiBitmaps.icon_load_filmanet.width, uiBitmaps.icon_load_filmanet.height));
-  icon->setBitmap(&uiBitmaps.icon_load_filmanet);
+  BitmapView* icon = new BitmapView(Rect(10,24,uiBitmaps.load_scene.width, uiBitmaps.load_scene.height));
+  icon->setBitmap(&uiBitmaps.load_scene);
   addView(icon);
 
-  TextLayer* textLayer = new TextLayer(Rect(10,118, 250, 20));
-  textLayer->setFont(&LiberationSans_12);
-  textLayer->setTextAlign(TEXTALIGN_CENTERED);
-  textLayer->setForegroundColor(ILI9341_WHITE);
-  textLayer->setText("Start feeding the filament into extruder.\nPress DONE when you see filament coming\n out of the nozzle.");
-  Display.addLayer(textLayer);
-*/
-  _doneBtn = new BitmapButton(Rect(80,178, uiBitmaps.btn_done.width, uiBitmaps.btn_done.height));
+  _doneBtn = new BitmapButton(Rect(15,178, uiBitmaps.btn_done.width, uiBitmaps.btn_done.height));
   _doneBtn->setBitmap(&uiBitmaps.btn_done);
   _doneBtn->setDelegate(this);
   addView(_doneBtn);
+
   printr.sendLine("M100({_leds:1})");
   printr.sendLine("G1 A1000 F2000");
 
@@ -63,29 +56,20 @@ void LoadFilament::onWillAppear() {
 
 
 void LoadFilament::onSidebarButtonTouchUp() {
-  SettingsScene * scene = new SettingsScene();
-  Application.pushScene(scene);
+
 }
 
 void LoadFilament::buttonPressed(void *button)
 {
-  if (button == _doneBtn) {
-    // stop the extruder
-    printr.sendLine("M100({_leds:4})");
-    printr.stopAndFlush();
-    printr.sendWaitCommand(1000);
-    printr.turnOffHotend();
-    printr.sendWaitCommand(1000);
-    printr.sendLine("G0 Y150");
-    printr.sendLine("G0 Z30");
-    printr.sendWaitCommand(1000);
+  printr.stopAndFlush();
+  printr.sendWaitCommand(1000);
+  printr.sendLine("M100({_leds:4})");
+  printr.sendLine("G0 Y150");
+  printr.sendLine("G0 Z30");
+  printr.turnOffHotend();
 
-    printr.setListener(NULL);
+  SettingsScene * scene = new SettingsScene();
+  Application.pushScene(scene);
 
-    SettingsScene * scene = new SettingsScene();
-    Application.pushScene(scene);
-    return;
-  }
-
-  SidebarSceneController::buttonPressed(button);
+  //SidebarSceneController::buttonPressed(button);
 }

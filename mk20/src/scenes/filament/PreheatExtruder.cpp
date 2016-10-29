@@ -61,13 +61,21 @@ void PreheatExtruder::onWillAppear() {
 
   //printr.sendLine("G28.2 X0 Y0 Z0\nM100 ({he1st:50});\nM101 ({he1at:t});\nG0 Z40\nG0 X100 Y50\nM2");
 
-  printr.homeY();
-  //printr.homeX();
 
-  //printr.sendLine("G0 X105");
+
+  SidebarSceneController::onWillAppear();
+}
+
+void PreheatExtruder::onDidAppear() {
+  printr.setListener(this);
+  printr.reset();
+  printr.sendWaitCommand(1000);
+  printr.homeY();
+
   printr.sendLine("M100({he1st:200})");
-  printr.sendLine("M100({_leds:2})");
+  printr.sendLine("M100({_leds:2})"); // red
   printr.sendLine("M101({he1at:t})");
+
   if (!printr.isHomed()) {
     printr.homeZ();
   }
@@ -75,9 +83,9 @@ void PreheatExtruder::onWillAppear() {
   printr.sendLine("G0 Y30");
 
   //Set as Printr listener
-  printr.setListener(this);
 
-  SidebarSceneController::onWillAppear();
+
+  SidebarSceneController::onDidAppear();
 }
 
 void PreheatExtruder::onNewNozzleTemperature(float temp) {

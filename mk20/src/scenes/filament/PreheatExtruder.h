@@ -24,6 +24,7 @@ public:
 
 private:
   virtual void onWillAppear() override;
+	virtual void onDidAppear() override;
   String getName() override;
   virtual void buttonPressed(void *button) override;
 
