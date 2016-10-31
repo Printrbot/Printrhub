@@ -25,11 +25,11 @@ String FirmwareInProgressScene::getName() {
 
 
 UIBitmap * FirmwareInProgressScene::getSidebarIcon() {
-  return NULL;
+  return &uiBitmaps.sidebar_blank;
 }
 
 UIBitmap * FirmwareInProgressScene::getSidebarBitmap() {
-  return NULL;
+  return &uiBitmaps.btn_sidebar_blank;
 }
 
 
