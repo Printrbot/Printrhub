@@ -14,33 +14,11 @@ extern UIBitmaps uiBitmaps;
 extern int lastJobIndex;
 extern int lastProjectIndex;
 
-JobsScene::JobsScene(String projectIndex):
+JobsScene::JobsScene(Project project):
     SidebarSceneController::SidebarSceneController(),
-    _projectIndex(projectIndex),
+    _project(project),
     _jobs(NULL) {
-}
 
-JobsScene::JobsScene():
-    SidebarSceneController::SidebarSceneController(),
-    _jobs(NULL) {
-  const char * pdirname = "/projects";
-  File pdir = SD.open(pdirname);
-  pdir.rewindDirectory();
-
-
-  for (int cnt = 0; true; ++cnt) {
-
-    File pfile = pdir.openNextFile();
-    if (!pfile) break;
-
-    if (pfile.isDirectory()) continue;
-
-    if (lastProjectIndex == cnt) {
-      _projectIndex = pdirname;
-      _projectIndex += "/";
-      _projectIndex += pfile.name();
-    }
-  }
 }
 
 JobsScene::~JobsScene() {
@@ -72,10 +50,9 @@ void JobsScene::onWillAppear() {
   Display.disableAutoLayout();
 
   // open the file
-  File _file = SD.open(_projectIndex.c_str(), FILE_READ);
+  String path = String(IndexDb::projectFolderName) + _project.index;
 
-  _file.seek(32);
-  _file.read(&_project, sizeof(Project));
+  File _file = SD.open(path.c_str(), FILE_READ);
 
   ImageView* imageView;
 
@@ -90,7 +67,7 @@ void JobsScene::onWillAppear() {
     _file.read(&_jobs[cnt],299);
 
     imageView->setImageTitle(_jobs[cnt].title);
-    imageView->setIndexFileName(_projectIndex.c_str());
+    imageView->setIndexFileName(path);
     addView(imageView);
   }
 

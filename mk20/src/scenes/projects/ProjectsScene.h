@@ -6,13 +6,8 @@
 #include "framework/views/LabelView.h"
 #include "framework/views/LabelButton.h"
 #include "ImageView.h"
+#include "IndexDb.h"
 
-typedef struct Project {
-  char index[9];
-  uint8_t rev;
-  char title[32];
-  uint8_t jobs;
-} Project;
 
 class ProjectsScene: public SidebarSceneController
 {
@@ -33,10 +28,7 @@ private:
 	String getName() override;
 	virtual void buttonPressed(void *button) override;
   void updateButtons();
-
-	uint16_t _totalProjects;
-
-
+  IndexDb * projectIndexDb;
 protected:
 	BitmapButton* _openBtn;
 	BitmapButton* _deleteBtn;

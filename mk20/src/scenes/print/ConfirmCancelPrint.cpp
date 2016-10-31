@@ -82,8 +82,7 @@ void ConfirmCancelPrint::buttonPressed(void *button)
     Application.pushScene(scene);
   } else if (button == _btnCancelPrint) {
     printr.cancelCurrentJob();
-    String pi = String("/projects/") + String(_project.index);
-    JobsScene * js = new JobsScene(pi);
+    JobsScene * js = new JobsScene(_project);
     Application.pushScene(js);
   }
 

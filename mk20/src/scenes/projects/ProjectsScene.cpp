@@ -9,17 +9,19 @@
 #include "ConfirmDeleteProject.h"
 #include "JobsScene.h"
 #include "NoProjects.h"
+#include "IndexDb.h"
 
 extern UIBitmaps uiBitmaps;
 extern int lastProjectIndex;
 extern int lastJobIndex;
 extern int totalProjects;
 
-ProjectsScene::ProjectsScene(): SidebarSceneController::SidebarSceneController(),
-_totalProjects(0) {
+ProjectsScene::ProjectsScene(): SidebarSceneController::SidebarSceneController()
+{
 }
 
 ProjectsScene::~ProjectsScene() {
+  delete projectIndexDb;
 }
 
 
@@ -39,48 +41,18 @@ void ProjectsScene::onWillAppear() {
 
   setScrollSnap(Display.getLayoutWidth(), SnapMode::Flick);
 
+  projectIndexDb = new IndexDb();
   //As the model views are distributed as opaque, seamless tiles we don't need auto layout as we don't have spaces where
   //background shines through
   Display.disableAutoLayout();
 
-  // loop through the projects directory
-  const char * pdirname = "/projects";
-  File pdir = SD.open(pdirname);
-  pdir.rewindDirectory();
-
-  ImageView* imageView;
-
-  for (int cnt = 0; true; ++cnt) {
-
-    File pfile = pdir.openNextFile();
-    if (!pfile) break;
-
-    if (pfile.isDirectory()) continue;
-
-    imageView = new ImageView(Rect(270 * cnt,0,270,240), 73);
-
-    char _pname[32];
-    pfile.seek(42);
-    pfile.read(_pname, 32);
-
-    imageView->setImageTitle(_pname);
-
-    String img = pdirname;
-    img += "/";
-    img += pfile.name();
-
-    imageView->setIndexFileName(img.c_str());
+  for (uint8_t i = 0; i<projectIndexDb->getTotalProjects(); i++) {
+    Project * p = projectIndexDb->getProjectAt(i);
+    ImageView* imageView;
+    imageView = new ImageView(Rect(270 * i,0,270,240), 73);
+    imageView->setImageTitle(String(p->title));
+    imageView->setIndexFileName(String(projectIndexDb->projectFolderName) + p->index);
     addView(imageView);
-    pfile.close();
-
-    _totalProjects++;
-  }
-
-  totalProjects = _totalProjects;
-  if (_totalProjects == 0) {
-    NoProjects * scene = new NoProjects();
-    Application.pushScene(scene);
-    return;
   }
 
   _openBtn = new BitmapButton(Rect(10,180,uiBitmaps.btn_open.width,uiBitmaps.btn_open.height));
@@ -100,6 +72,13 @@ void ProjectsScene::onWillAppear() {
 }
 
 void ProjectsScene::onDidAppear() {
+
+  if (projectIndexDb->getTotalProjects() == 0) {
+    NoProjects * scene = new NoProjects();
+    Application.pushScene(scene);
+    return;
+  }
+
   // return to the last viewed project index
   if (lastProjectIndex > 0) {
     float x = Display.getLayoutWidth() * lastProjectIndex;
@@ -147,38 +126,12 @@ void ProjectsScene::animationFinished(Animation *animation) {
 
 void ProjectsScene::buttonPressed(void *button)
 {
-
   if (button == _openBtn) {
-
-    ImageView * v = (ImageView *) getView(getPageIndex());
-    String fn = v->getIndexFileName();
-
-    JobsScene * js = new JobsScene(fn);
+    JobsScene * js = new JobsScene(*projectIndexDb->getProjectAt(getPageIndex()));
     Application.pushScene(js);
-
-/*
-    getView(getPageIndex());
-
-    bool jobExists = false;
-
-    if (jobExists) {
-      LOG_VALUE("Printing Job-Nr",getPageIndex());
-      PrintStatusSceneController * scene = new PrintStatusSceneController();
-      Application.pushScene(scene);
-    } else {
-      LOG_VALUE("Need to download file",getPageIndex());
-      DownloadFileController* scene = new DownloadFileController("http://printrapp.s3-us-west-1.amazonaws.com/u/1526cae4477c387ffc07bd6cad001614/p/26c8a30b51efe91ceb507d443600d6d7/f631d66d1df76827a25776fcd9e3ed14.raw", "feet.png");
-      Application.pushScene(scene);
-    }
-    */
-
   } else if (button == _deleteBtn) {
-    ImageView * v = (ImageView *) getView(getPageIndex());
-    String fn = v->getIndexFileName();
-
-    ConfirmDeleteProject * scene = new ConfirmDeleteProject(fn);
+    ConfirmDeleteProject * scene = new ConfirmDeleteProject(*projectIndexDb->getProjectAt(getPageIndex()));
     Application.pushScene(scene);
   }
-
   SidebarSceneController::buttonPressed(button);
 }

@@ -21,16 +21,19 @@ extern int lastProjectIndex;
 extern int lastJobIndex;
 extern int totalProjects;
 
-DownloadFileController::DownloadFileController(String url, String localFilePath) :
+DownloadFileController::DownloadFileController(String url, String fileName) :
     SidebarSceneController::SidebarSceneController(),
     _fileSize(0),
     _bytesRead(0),
     _previousPercent(0),
-    _localFilePath(localFilePath),
     _url(url),
+    _fileName(fileName),
     _nextScene(NextScene::NewProject)
 {
-
+  _localFilePath = String(IndexDb::projectFolderName) + fileName;
+  if (SD.exists(_localFilePath.c_str())) {
+    SD.remove(_localFilePath.c_str());
+  }
 }
 
 DownloadFileController::DownloadFileController(String url, String localFilePath, String jobFilePath, Project project, Job job) :
@@ -226,9 +229,11 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
     }
 
     if (_nextScene == NextScene::NewProject) {
-
-      totalProjects++;
-      lastProjectIndex = totalProjects;
+      // add project to the indexdb
+      IndexDb * idb = new IndexDb();
+      idb->addProjectFile(_fileName);
+      delete idb;
+      lastProjectIndex = 0;
 
       ProjectsScene* scene = new ProjectsScene();
       Application.pushScene(scene);
@@ -240,7 +245,7 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
     memset(_fp, 0, header.contentLength+1);
     memcpy(_fp, data, header.contentLength);
     _localFilePath = String(_fp);
-    _localFilePath = "/projects/" + _localFilePath;
+    _localFilePath = String(IndexDb::projectFolderName) + _localFilePath;
     //Open a file on SD card
     SD.remove(_fp);
     //SD.remove(_localFilePath.c_str());

@@ -391,14 +391,8 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
       if (root.success()) {
         String url = root["url"];
         if (url.length() > 0) {
-          String localFilePath("/projects/");
-          localFilePath += root["id"].asString();
-
-          if (SD.exists(localFilePath.c_str())) {
-            SD.remove(localFilePath.c_str());
-          }
-
-          DownloadFileController *dfc = new DownloadFileController(url, localFilePath);
+          String idx = root["id"].asString();
+          DownloadFileController *dfc = new DownloadFileController(url, idx);
           Application.pushScene(dfc);
         }
       } else {

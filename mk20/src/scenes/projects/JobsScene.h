@@ -6,6 +6,7 @@
 #include "framework/views/LabelView.h"
 #include "framework/views/LabelButton.h"
 #include "ProjectsScene.h"
+#include "IndexDb.h"
 
 typedef struct Job {
   char index[9];
@@ -19,8 +20,7 @@ class JobsScene: public SidebarSceneController
 {
 
 public:
-	JobsScene(String projectIndex);
-	JobsScene();
+	JobsScene(Project project);
 	virtual ~JobsScene();
 
   virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint) override;

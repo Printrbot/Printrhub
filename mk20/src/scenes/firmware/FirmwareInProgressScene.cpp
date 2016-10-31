@@ -29,7 +29,7 @@ UIBitmap * FirmwareInProgressScene::getSidebarIcon() {
 }
 
 UIBitmap * FirmwareInProgressScene::getSidebarBitmap() {
-  return &uiBitmaps.sidebar_update;
+  return NULL;
 }
 
 

@@ -93,8 +93,7 @@ void FinishPrint::buttonPressed(void *button)
   printr.sendLine("G0 Y150"); // move head out of the way
   printr.sendLine("M100({_leds:4})"); //switch to blue light
 
-  String pi = String("/projects/") + String(_project.index);
-  JobsScene * js = new JobsScene(pi);
+  JobsScene * js = new JobsScene(_project);
   Application.pushScene(js);
 
   //SidebarSceneController::buttonPressed(button);

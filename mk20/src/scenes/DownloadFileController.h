@@ -46,6 +46,7 @@ protected:
 	ProgressBar* _progressBar;
 	File _file;
 	uint32_t _fileSize;
+  String _fileName;
 	uint32_t _bytesRead;
 	int _previousPercent;
 	String _url;
