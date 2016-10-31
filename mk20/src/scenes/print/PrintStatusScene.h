@@ -24,10 +24,10 @@ public:
 private:
   virtual UIBitmap * getSidebarBitmap() override;
   virtual UIBitmap * getSidebarIcon() override;
-
-  String getName();
+  virtual bool isModal() override;
   virtual void onWillAppear() override;
   virtual void buttonPressed(void *button) override;
+  String getName();
   LabelButton* _button;
   ProgressBar* _progressBar;
   SDBitmapLayer* _imageLayer;

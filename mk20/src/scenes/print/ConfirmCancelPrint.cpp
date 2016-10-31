@@ -35,6 +35,10 @@ UIBitmap * ConfirmCancelPrint::getSidebarBitmap() {
   return &uiBitmaps.sidebar_printing;
 }
 
+bool ConfirmCancelPrint::isModal() {
+  return true;
+}
+
 uint16_t ConfirmCancelPrint::getBackgroundColor()
 {
   return Application.getTheme()->getColor(BackgroundColor);
@@ -63,7 +67,7 @@ void ConfirmCancelPrint::onWillAppear() {
 
 void ConfirmCancelPrint::onSidebarButtonTouchUp() {
   PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _job);
-  Application.pushScene(scene);
+  Application.pushScene(scene, true);
 }
 
 
@@ -75,11 +79,11 @@ void ConfirmCancelPrint::buttonPressed(void *button)
 {
   if (button == _btnBack) {
     PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _job);
-    Application.pushScene(scene);
+    Application.pushScene(scene, true);
   } else if (button == _btnCancelPrint) {
     printr.cancelCurrentJob();
     JobsScene * js = new JobsScene(_project);
-    Application.pushScene(js);
+    Application.pushScene(js, true);
   }
 
   SidebarSceneController::buttonPressed(button);

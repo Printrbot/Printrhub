@@ -31,9 +31,7 @@ DownloadFileController::DownloadFileController(String url, String fileName) :
     _nextScene(NextScene::NewProject)
 {
   _localFilePath = String(IndexDb::projectFolderName) + fileName;
-  if (SD.exists(_localFilePath.c_str())) {
-    SD.remove(_localFilePath.c_str());
-  }
+
 }
 
 DownloadFileController::DownloadFileController(String url, String localFilePath, String jobFilePath, Project project, Job job) :
@@ -89,6 +87,13 @@ UIBitmap * DownloadFileController::getSidebarBitmap() {
 
 void DownloadFileController::onWillAppear()
 {
+
+  if (_nextScene == NextScene::NewProject) {
+    if (SD.exists(_localFilePath.c_str())) {
+      SD.remove(_localFilePath.c_str());
+    }
+  }
+
   BitmapView* icon = new BitmapView(Rect(0,0,uiBitmaps.downloading_scene.width, uiBitmaps.downloading_scene.height));
   icon->setBitmap(&uiBitmaps.downloading_scene);
   addView(icon);

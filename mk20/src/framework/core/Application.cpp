@@ -391,9 +391,15 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
       if (root.success()) {
         String url = root["url"];
         if (url.length() > 0) {
-          String idx = root["id"].asString();
-          DownloadFileController *dfc = new DownloadFileController(url, idx);
-          Application.pushScene(dfc);
+
+          // check if we can run download now
+          if (_currentScene->isModal()) {
+             LOG("Hub is busy can can not start download");
+          } else {
+            String idx = root["id"].asString();
+            DownloadFileController *dfc = new DownloadFileController(url, idx);
+            Application.pushScene(dfc);
+          }
         }
       } else {
         LOG("Could not parse SaveProjectWithID data package from JSON");

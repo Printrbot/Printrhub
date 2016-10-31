@@ -23,6 +23,7 @@ private:
   virtual void onDidAppear() override;
   String getName() override;
   virtual void buttonPressed(void *button) override;
+  virtual bool isModal() override;
 
 protected:
   Job _job;

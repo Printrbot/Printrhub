@@ -59,12 +59,12 @@ void ProjectsScene::onWillAppear() {
   _deleteBtn = new BitmapButton(Rect(220,190,50,50));
 
   _openBtn->setBitmap(&uiBitmaps.btn_open);
-  _openBtn->setVisible(true);
+  _openBtn->setVisible(false);
   _openBtn->setDelegate(this);
   addView(_openBtn);
 
   _deleteBtn->setBitmap(&uiBitmaps.btn_trash);
-  _deleteBtn->setVisible(true);
+  _deleteBtn->setVisible(false);
   _deleteBtn->setDelegate(this);
   addView(_deleteBtn);
 

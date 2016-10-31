@@ -38,6 +38,10 @@ String PrintStatusScene::getName() {
   return "PrintStatusScene";
 }
 
+bool PrintStatusScene::isModal() {
+  return true;
+}
+
 void PrintStatusScene::onWillAppear() {
 
   // start the print only if not running already (in case we are returning from CancelPrint scene)
@@ -122,7 +126,7 @@ void PrintStatusScene::onPrintProgress(float progress) {
 void PrintStatusScene::onPrintComplete(bool success) {
   printr.setListener(NULL);
   FinishPrint * scene = new FinishPrint(_jobFilePath, _project, _job);
-  Application.pushScene(scene);
+  Application.pushScene(scene, true);
 }
 
 void PrintStatusScene::loop()
@@ -135,6 +139,5 @@ void PrintStatusScene::loop()
 void PrintStatusScene::buttonPressed(void *button) {
   printr.setListener(NULL);
   ConfirmCancelPrint * scene = new ConfirmCancelPrint(&_jobFilePath, &_project, &_job);
-  Application.pushScene(scene);
+  Application.pushScene(scene, true);
 }
-
