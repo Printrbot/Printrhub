@@ -57,11 +57,9 @@ IndexDb::~IndexDb() {
 }
 
 Project * IndexDb::getProjectAt(uint16_t idx) {
-  Serial2.println(sizeof(IndexDbInfo) + (idx * 9));
   _indexFile.seek(sizeof(IndexDbInfo) + (idx * 9));
   Project * p = (Project*) malloc(sizeof(Project));
   String path = _indexFile.readString((size_t) 9);
-  Serial2.println(path);
 
   path = IndexDb::projectFolderName + path;
   File pf = SD.open(path.c_str(), FILE_READ);

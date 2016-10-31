@@ -287,7 +287,7 @@ int Printr::startJob(String filePath) {
 
 void Printr::runJobStartGCode() {
   _currentMode = PrintrMode::PrintMode;
-  _printing = true;
+
 
   _lastSentProgramLine = 1;
   _processedProgramLine = 0;
@@ -295,6 +295,7 @@ void Printr::runJobStartGCode() {
   // TODO: set the temperature based on material selected
   sendLine("M100({he1st:195})");
   sendLine("G92.1 X0 Y0 Z0 A0 B0");
+  _printing = true;
 
   // reset all
   sendLine("G28.2 X0 Y0");
@@ -369,6 +370,9 @@ void Printr::homeZ() {
 void Printr::programEnd(bool success) {
 
   if (!_printing)
+    return;
+
+  if (_currentMode != PrintrMode::PrintMode)
     return;
 
   //sendLine("M100({_leds:4})");
@@ -449,7 +453,11 @@ void Printr::parseResponse() {
               break;
 
             case PRINTR_STAT_PROGRAM_STOP:
-              programEnd(false);
+              // stat 3 should not end the program
+              // since it can happen in the middle of the print
+              // if G2 queue is emptied before new data comes in
+
+              //programEnd(false);
               _totalProgramLines = _lastSentProgramLine;
               PRINTER_NOTICE("Printer got stopped, closing");
               break;

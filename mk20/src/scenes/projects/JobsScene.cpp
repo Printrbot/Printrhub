@@ -142,8 +142,6 @@ void JobsScene::buttonPressed(void *button)
     LOG_VALUE("Printing Job-Nr",getPageIndex());
     PrintStatusScene * scene = new PrintStatusScene(_jobFilePath, _project, _selectedJob);
     Application.pushScene(scene);
-    //DownloadFileController* scene = new DownloadFileController(String(job.url),filePath);
-    //Application.pushScene(scene);
   } else if (button == _printBtnDownload) {
     LOG_VALUE("Need to download file",getPageIndex());
     // create directory if needed
