@@ -28,11 +28,11 @@ String FinishPrint::getName() {
 
 
 UIBitmap * FinishPrint::getSidebarIcon() {
-  return NULL;
+  return &uiBitmaps.btn_exit;
 }
 
 UIBitmap * FinishPrint::getSidebarBitmap() {
-  return NULL;
+  return &uiBitmaps.sidebar_printing;
 }
 
 void FinishPrint::animationFinished(Animation *animation) {
