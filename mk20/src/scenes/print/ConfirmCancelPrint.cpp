@@ -11,11 +11,11 @@ extern UIBitmaps uiBitmaps;
 extern Printr printr;
 
 
-ConfirmCancelPrint::ConfirmCancelPrint(String jobFilePath, Project project, Job job):
+ConfirmCancelPrint::ConfirmCancelPrint(String * jobFilePath, Project * project, Job * job):
     SidebarSceneController::SidebarSceneController(),
-    _jobFilePath(jobFilePath),
-    _project(project),
-    _job(job) {
+    _jobFilePath(*jobFilePath),
+    _project(*project),
+    _job(*job) {
 }
 
 ConfirmCancelPrint::~ConfirmCancelPrint() {
@@ -32,11 +32,7 @@ UIBitmap * ConfirmCancelPrint::getSidebarIcon() {
 }
 
 UIBitmap * ConfirmCancelPrint::getSidebarBitmap() {
-  return NULL;
-}
-
-void ConfirmCancelPrint::animationFinished(Animation *animation) {
-  SceneController::animationFinished(animation);
+  return &uiBitmaps.sidebar_printing;
 }
 
 uint16_t ConfirmCancelPrint::getBackgroundColor()
@@ -45,7 +41,6 @@ uint16_t ConfirmCancelPrint::getBackgroundColor()
 }
 
 void ConfirmCancelPrint::onWillAppear() {
-
 
   BitmapView* icon = new BitmapView(Rect(100,24,uiBitmaps.icon_alert.width, uiBitmaps.icon_alert.height));
   icon->setBitmap(&uiBitmaps.icon_alert);
@@ -71,8 +66,9 @@ void ConfirmCancelPrint::onSidebarButtonTouchUp() {
   Application.pushScene(scene);
 }
 
-void ConfirmCancelPrint::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
-  SceneController::handleTouchMoved(point, oldPoint);
+
+void ConfirmCancelPrint::onDidAppear() {
+  SidebarSceneController::onDidAppear();
 }
 
 void ConfirmCancelPrint::buttonPressed(void *button)

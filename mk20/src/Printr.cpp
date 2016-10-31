@@ -340,11 +340,15 @@ void Printr::cancelCurrentJob() {
   _currentLineBuffer->flush();
 
   stopAndFlush();
+  sendWaitCommand(1000);
+  reset();
+  turnOffHotend();
+  sendLine("M100({_leds:4})"); //switch to blue light
   sendLine("G91");             //Relative mode
   sendLine("G0 Z10");          //Move up
   sendLine("G90");             //Back to absolute mode
   sendLine("G0 X110 Y150");    //Home back with bed centered
-  sendLine("M100({_leds:4})"); //switch to blue light
+
 }
 
 void Printr::homeX() {

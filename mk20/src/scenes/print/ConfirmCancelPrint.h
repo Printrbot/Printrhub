@@ -10,28 +10,25 @@
 class ConfirmCancelPrint: public SidebarSceneController {
 public:
 
-  ConfirmCancelPrint(String jobFilePath, Project project, Job job);
+  ConfirmCancelPrint(String * jobFilePath, Project * project, Job * job);
   virtual ~ConfirmCancelPrint();
 
-  virtual void handleTouchMoved(TS_Point point, TS_Point oldPoint) override;
-  virtual void animationFinished(Animation *animation) override;
-  virtual void onSidebarButtonTouchUp() override;
-
   virtual uint16_t getBackgroundColor() override;
+  virtual void onSidebarButtonTouchUp() override;
   virtual UIBitmap * getSidebarBitmap() override;
   virtual UIBitmap * getSidebarIcon() override;
 
 private:
   virtual void onWillAppear() override;
+  virtual void onDidAppear() override;
   String getName() override;
   virtual void buttonPressed(void *button) override;
 
+protected:
   Job _job;
   String _jobFilePath;
   String _projectIndex;
   Project _project;
-
-protected:
   BitmapButton *_btnCancelPrint;
   BitmapButton *_btnBack;
 };

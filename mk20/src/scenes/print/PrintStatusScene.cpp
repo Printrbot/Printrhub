@@ -120,7 +120,7 @@ void PrintStatusScene::onPrintProgress(float progress) {
 }
 
 void PrintStatusScene::onPrintComplete(bool success) {
-  printr.setListener(nullptr);
+  printr.setListener(NULL);
   FinishPrint * scene = new FinishPrint(_jobFilePath, _project, _job);
   Application.pushScene(scene);
 }
@@ -133,8 +133,8 @@ void PrintStatusScene::loop()
 
 
 void PrintStatusScene::buttonPressed(void *button) {
-  printr.setListener(nullptr);
-  ConfirmCancelPrint * scene = new ConfirmCancelPrint(_jobFilePath, _project, _job);
+  printr.setListener(NULL);
+  ConfirmCancelPrint * scene = new ConfirmCancelPrint(&_jobFilePath, &_project, &_job);
   Application.pushScene(scene);
 }
 

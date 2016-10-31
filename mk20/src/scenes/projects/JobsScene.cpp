@@ -73,7 +73,10 @@ void JobsScene::onWillAppear() {
 
   _file.close();
 
-  _selectedJob = _jobs[0];
+  if (lastJobIndex <= _project.jobs)
+    _selectedJob = _jobs[lastJobIndex];
+  else
+    _selectedJob = _jobs[0];
 
 
   _printBtnDownload = new BitmapButton(Rect(-100,180,uiBitmaps.btn_print_download.width,uiBitmaps.btn_print_download.height));
