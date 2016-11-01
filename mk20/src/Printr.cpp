@@ -350,6 +350,7 @@ void Printr::cancelCurrentJob() {
   sendLine("G90");             //Back to absolute mode
   sendLine("G0 X110 Y150");    //Home back with bed centered
 
+  _printing = false;
 }
 
 void Printr::homeX() {
