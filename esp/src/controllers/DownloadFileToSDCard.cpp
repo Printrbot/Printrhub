@@ -11,7 +11,7 @@
 DownloadFileToSDCard::DownloadFileToSDCard(String url):
         DownloadURL(url),
         _waitForResponse(false),
-        _retries(0)
+        _errorTime(0)
 {}
 
 DownloadFileToSDCard::~DownloadFileToSDCard()
@@ -26,10 +26,15 @@ String DownloadFileToSDCard::getName()
 bool DownloadFileToSDCard::onBeginDownload(uint32_t expectedSize)
 {
     Application.getMK20Stack()->responseTask(TaskID::DownloadFile,sizeof(uint32_t),(uint8_t*)&expectedSize,true);
+    _errorTime = 0;
 }
 
 bool DownloadFileToSDCard::onDataReceived(uint8_t *data, uint16_t size)
 {
+    //Save last data
+    memcpy(_lastData,data,size);
+    _lastDataSize = size;
+
     //We send the data to MK20 and wait for the response
     _waitForResponse = true;
     Application.getMK20Stack()->requestTask(TaskID::FileSaveData,size, data);
@@ -73,14 +78,24 @@ bool DownloadFileToSDCard::runTask(CommHeader &header, const uint8_t *data, size
         if (header.commType == ResponseSuccess)
         {
             _waitForResponse = false;
-            _retries = 0;
+            _errorTime = 0;
         }
         else if (header.commType == ResponseFailed)
         {
-            //Only try sending packet again for a limited time, then just fail
-            _retries++;
-            if (_retries > 3)
-            {
+            if (_errorTime <= 0) {
+                _errorTime = millis();
+            }
+
+            //Try 10 seconds to test
+            if ((millis() - _errorTime) < 10000) {
+                EventLogger::log("Response failed sending data, sending data again. Time spent retrying so far: %d",(millis() - _errorTime));
+
+                //Sending data has failed, just send the packet again
+                _waitForResponse = true;
+                Application.getMK20Stack()->requestTask(TaskID::FileSaveData,_lastDataSize,_lastData);
+            } else {
+                EventLogger::log("Response failed timeout, canceling download");
+
                 uint8_t errorCode = (uint8_t)DownloadError::UnknownError;
                 Application.getMK20Stack()->requestTask(TaskID::DownloadError,sizeof(uint8_t),&errorCode);
 
@@ -88,9 +103,6 @@ bool DownloadFileToSDCard::runTask(CommHeader &header, const uint8_t *data, size
                 Application.pushMode(mode);
                 return false;
             }
-
-            //Sending data has failed, just send the packet again
-            onDataReceived(getBuffer(),getBufferIndex());
         }
     }
 

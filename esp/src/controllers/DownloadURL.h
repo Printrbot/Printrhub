@@ -10,6 +10,8 @@
 #include "../core/FasterWiFiClient.h"
 #include "../errors.h"
 
+#define DOWNLOADURL_BUFFER_SIZE 128
+
 class DownloadURL: public Mode
 {
 private:
@@ -44,7 +46,6 @@ public:
 
 #pragma mark Getter and Setter
     uint8_t* getBuffer() { return _buffer; };
-    int getBufferIndex() { return _bufferIndex; };
 
 #pragma mark private member variables
 private:
@@ -52,13 +53,11 @@ private:
     DownloadError _error;
     WiFiClient* _stream;
     HTTPClient _httpClient;
-    static const int _bufferSize = 128;
+    static const int _bufferSize = DOWNLOADURL_BUFFER_SIZE;
     uint8_t _buffer[_bufferSize];
-    int _bufferIndex;
     int _numChunks;
     int _bytesToDownload;
     unsigned long _lastBytesReadTimeStamp;
-    uint8_t _retries;
 
     int _port;
     String _url;

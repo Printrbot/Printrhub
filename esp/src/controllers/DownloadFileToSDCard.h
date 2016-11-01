@@ -34,7 +34,10 @@ public:
 #pragma mark Member Variables
 private:
     bool _waitForResponse;
-    uint8_t _retries;
+    unsigned long _errorTime;
+    uint8_t _lastData[DOWNLOADURL_BUFFER_SIZE];
+    size_t _lastDataSize;
+
 };
 
 

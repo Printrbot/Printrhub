@@ -19,9 +19,7 @@ DownloadURL::DownloadURL(String url):
         _stream(NULL)
 {
     memset(_buffer,0,_bufferSize);
-    _bufferIndex = 0;
     _numChunks = 0;
-    _retries = 0;
 }
 
 DownloadURL::~DownloadURL()
@@ -149,9 +147,10 @@ void DownloadURL::loop()
                 int c = _stream->readBytes(_buffer, ((size > _bufferSize) ? _bufferSize : size));
 
                 //EventLogger::log("Data received, size: %d, bytes left: %d",c,_bytesToDownload);
-
-                onDataReceived(_buffer,c);
-                _bytesToDownload -= c;
+                if (c > 0) {
+                    onDataReceived(_buffer,c);
+                    _bytesToDownload -= c;
+                }
 
                 _lastBytesReadTimeStamp = millis();
 
