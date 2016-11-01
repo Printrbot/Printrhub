@@ -787,7 +787,7 @@ void ARMDebug::wireReadTurnaround()
 
 void ARMDebug::log(int level, const char *fmt, ...)
 {
-    if (level <= logLevel && Serial) {
+    if (level <= logLevel) {
         va_list ap;
         char buffer[256];
 
@@ -803,7 +803,7 @@ void ARMDebug::hexDump(uint32_t addr, unsigned count, int level)
 {
     // Hex dump target memory to the log
 
-    if (level <= logLevel && Serial) {
+    if (level <= logLevel) {
         va_list ap;
         char buffer[32];
         LogLevel oldLogLevel;
@@ -812,22 +812,20 @@ void ARMDebug::hexDump(uint32_t addr, unsigned count, int level)
 
         while (count) {
             snprintf(buffer, sizeof buffer, "%08x:", addr);
-            Serial.print(buffer);
+            EventLogger::log(buffer);
 
             for (unsigned x = 0; count && x < 4; x++) {
                 uint32_t word;
                 if (memLoad(addr, word)) {
                     snprintf(buffer, sizeof buffer, " %08x", word);
-                    Serial.print(buffer);
+                    EventLogger::log(buffer);
                 } else {
-                    Serial.print(" (error )");
+                    EventLogger::log(" (error )");
                 }
 
                 count--;
                 addr += 4;
             }
-
-            Serial.println();
         }
 
         setLogLevel(oldLogLevel);
