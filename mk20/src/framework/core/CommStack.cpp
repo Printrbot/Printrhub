@@ -275,7 +275,7 @@ void CommStack::process()
       _delegate->onCommStackError();
       onDataPacketFailed();
     } else{
-      COMMSTACK_SPAM("Received packet with size: %d, decoded size: %d",_receiveBufferIndex,numDecoded);
+      COMMSTACK_SPAM("Received packet with size: %d, decoded size: %d",numBytesRead,numDecoded);
 
       //Packet received
       packetReceived(_decodeBuffer,numDecoded);
