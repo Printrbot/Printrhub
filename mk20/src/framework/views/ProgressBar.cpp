@@ -70,11 +70,14 @@ float ProgressBar::getValue()
 void ProgressBar::setNeedsDisplay()
 {
 	if (_progressLayer == NULL || _trackLayer == NULL) return;
+	if ((millis() - _lastUpdate) < 1000) return;
 
-  FLOW_SPAM("Drawing Progress Bar: %d",(int)(_value*100));
+	FLOW_SPAM("Drawing Progress Bar: %d",(int)(_value*100));
 
 	_progressLayer->setFrame(getLeftRect(),false);
 	_trackLayer->setFrame(getRightRect(),false);
+
+	_lastUpdate = millis();
 }
 
 void ProgressBar::setValue(float value)
