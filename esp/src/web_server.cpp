@@ -101,18 +101,19 @@ void WebServer::begin() {
 	});
 
     server.on("/update_mk20", HTTP_GET, [](AsyncWebServerRequest *request) {
-        AsyncWebParameter* url = request->getParam("url");
-        EventLogger::log(url->value().c_str());
-
         String mk20FirmwareFile("/mk20_100.bin");
         FirmwareUpdateInfo* updateInfo = Application.getFirmwareUpdateInfo();
-        DownloadFileToSPIFFs* downloadMK20Firmware = new DownloadFileToSPIFFs(updateInfo->mk20_url,mk20FirmwareFile);
-        MK20FirmwareUpdate* mk20UpdateFirmware = new MK20FirmwareUpdate(mk20FirmwareFile);
-        downloadMK20Firmware->setNextMode(mk20UpdateFirmware);
+        if (updateInfo != NULL) {
+            DownloadFileToSPIFFs* downloadMK20Firmware = new DownloadFileToSPIFFs(updateInfo->mk20_url,mk20FirmwareFile);
+            MK20FirmwareUpdate* mk20UpdateFirmware = new MK20FirmwareUpdate(mk20FirmwareFile);
+            downloadMK20Firmware->setNextMode(mk20UpdateFirmware);
 
-        Application.pushMode(downloadMK20Firmware);
+            Application.pushMode(downloadMK20Firmware);
 
-        request->send(200, "text/plain", "\nupdate of MK20 started, please wait...\n\n");
+            request->send(200, "text/plain", "\nupdate of MK20 started, please wait...\n\n");
+        } else {
+            request->send(200, "text/plain", "\nupdate of MK20 failed, please wait until firmware data have been loaded and try again...\n\n");
+        }
     });
 
 	server.on("/format_spiffs", HTTP_GET, [](AsyncWebServerRequest *request) {
