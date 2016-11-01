@@ -13,11 +13,22 @@ enum class DownloadError {
     FileNotFound = 4,
     InternalServerError = 5,
     RemoveOldFilesFailed = 6,
-    PrepareDownloadedFileFailed = 7
+    PrepareDownloadedFileFailed = 7,
+
+    MK20UpdateError = 100,
+
+    ESPUpdateNoUpdates = 200,
+    ESPUpdateFailed = 201,
+
+    LocalFileNotFound = 300,
+    LocalFileOpenForReadFailed = 301,
+
+    TargetFileOpenForWriteFailed = 400
 };
 
 enum class FirmwareUpdateError {
-    UnknownError = 0
+    UnknownError = 0,
 };
+
 
 #endif //MK20_ERRORS_H
