@@ -115,7 +115,21 @@ void WebServer::begin() {
         request->send(200, "text/plain", "\nupdate of MK20 started, please wait...\n\n");
     });
 
-    server.on("/update_ui", HTTP_GET, [](AsyncWebServerRequest *request) {
+	server.on("/format_spiffs", HTTP_GET, [](AsyncWebServerRequest *request) {
+		AsyncWebServerResponse *response = NULL;
+		if (SPIFFS.format()) {
+			response = request->beginResponse(200, "text/json", "{'success':'yes'}");
+			EventLogger::log("Formatting SPIFFS successfull");
+		} else {
+			response = request->beginResponse(200, "text/json", "{'success':'no'}");
+			EventLogger::log("Formatting SPIFFS failed");
+		}
+
+		response->addHeader("Access-Control-Allow-Origin", "*");
+		request->send(response);
+	});
+
+	server.on("/update_ui", HTTP_GET, [](AsyncWebServerRequest *request) {
         AsyncWebServerResponse *response = NULL;
 
         FirmwareUpdateInfo* updateInfo = Application.getFirmwareUpdateInfo();
