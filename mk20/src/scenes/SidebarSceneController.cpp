@@ -56,7 +56,9 @@ void SidebarSceneController::onWillAppear() {
 }
 
 void SidebarSceneController::onDidAppear() {
-	_sidebarImage->setNeedsDisplay();
+  if (_sidebarImage != NULL) {
+    _sidebarImage->setNeedsDisplay();
+  }
 }
 
 void SidebarSceneController::onSidebarButtonTouchUp() {
