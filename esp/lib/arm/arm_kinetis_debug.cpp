@@ -646,11 +646,11 @@ bool ARMKinetisDebug::Flasher::installFirmware(File *file)
 {
     this->file = file;
 
-    Serial.println("Initialize flash process");
+    target.log(LOG_NORMAL,"Initialize flash process");
     if (!begin()) return false;
     ESP.wdtFeed();
 
-    Serial.println("Begin Flashing");
+    target.log(LOG_NORMAL,"Begin Flashing");
 /*    while (next())
     {
         address += sectorSizeInBytes;
@@ -659,7 +659,7 @@ bool ARMKinetisDebug::Flasher::installFirmware(File *file)
 	next();
     ESP.wdtFeed();
 
-	Serial.println("End flashing");
+    target.log(LOG_NORMAL,"End flashing");
 
 /*	if (!target.reset())
 	{
