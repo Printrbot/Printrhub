@@ -568,6 +568,10 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 
       *sendResponse = false;
     }
+  } else if (header.getCurrentTask() == TaskID::SetPassword) {
+    if (header.commType == ResponseSuccess) {
+      FLOW_NOTICE("Setting/Clearing password successful");
+    }
   }
 
 

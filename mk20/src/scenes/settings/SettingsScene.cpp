@@ -5,6 +5,8 @@
 #include "../filament/SelectFilamentAction.h"
 #include "../calibrate/CalibrateScene.h"
 #include "../settings/SystemInfoScene.h"
+#include "../settings/VirtualKeyboardSceneController.h"
+#include "SetPasswordHandler.h"
 
 extern UIBitmaps uiBitmaps;
 
@@ -95,7 +97,9 @@ void SettingsScene::buttonPressed(void *button)
 
   }
   else if (button == _password) {
-
+    SetPasswordHandler* handler = new SetPasswordHandler();
+    VirtualKeyboardSceneController* scene = new VirtualKeyboardSceneController(handler,"Password:");
+    Application.pushScene(scene);
   }
   else if (button == _wifi) {
     SystemInfoScene* scene = new SystemInfoScene();

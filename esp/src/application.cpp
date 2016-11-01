@@ -385,6 +385,36 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
             *sendResponse = true;
             *success = true;
         }
+    } else if (taskID == TaskID::SetPassword)
+    {
+        if (header.commType == Request)
+        {
+            if (dataSize == 0)
+            {
+                EventLogger::log("Clear password");
+
+                config.data.locked = false;
+                memset(config.data.password,0,50);
+                config.save();
+
+                *sendResponse = true;
+                *success = true;
+                *responseDataSize = 0;
+            }
+            else
+            {
+                config.data.locked = true;
+                memcpy(config.data.password,data,dataSize);
+                config.data.password[dataSize] = 0;
+                config.save();
+
+                EventLogger::log("Setting password, length: %d",strlen(config.data.password));
+
+                *sendResponse = true;
+                *success = true;
+                *responseDataSize = 0;
+            }
+        }
     }
 
 	return true;
