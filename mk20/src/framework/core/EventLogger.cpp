@@ -28,7 +28,14 @@ void EventLoggerClass::log(uint8_t logContext, uint8_t logLevel, char * msg, ...
     } else {
       DebugSerial.print("Log: ");
     }
-    DebugSerial.println(buffer);
+
+    if (strlen(buffer) > 0 && buffer[strlen(buffer)-1] == '\n') {
+      //We already have a newline in the buffer
+      DebugSerial.print(buffer);
+    } else {
+      DebugSerial.println(buffer);
+    }
+
     DebugSerial.flush();
   }
 
@@ -61,7 +68,13 @@ void EventLoggerClass::log(uint8_t logContext, uint8_t logLevel, const char * ms
       DebugSerial.print("Log: ");
     }
 
-    DebugSerial.println(buffer);
+    if (strlen(buffer) > 0 && buffer[strlen(buffer)-1] == '\n') {
+      //We already have a newline in the buffer
+      DebugSerial.print(buffer);
+    } else {
+      DebugSerial.println(buffer);
+    }
+
     DebugSerial.flush();
   }
 
