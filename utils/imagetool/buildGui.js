@@ -22,7 +22,7 @@ var imgToBuf = function(img) {
   return new Promise(function(resolve, reject) {
     Jimp.read("./gui/png/"+img).then(function (image) {
       var fbuf = new Buffer(0);
-      //image.dither565();
+      image.dither565();
       for (var x=0;x<image.bitmap.width;x++) {
         for (var y=0;y<image.bitmap.height;y++) {
           var b = image.getPixelColor(x,y);
