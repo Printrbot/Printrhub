@@ -153,7 +153,10 @@ void WebServer::begin() {
 
     server.on("/info", HTTP_OPTIONS, [](AsyncWebServerRequest *request) {
         AsyncWebServerResponse* response = request->beginResponse(200, "text/json");
-        response->addHeader("Allow", "GET,OPTIONS");
+        response->addHeader("Allow", "GET,POST,OPTIONS");
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        response->addHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+        response->addHeader("Access-Control-Allow-Credentials", "true");
         request->send(response);
     });
 
