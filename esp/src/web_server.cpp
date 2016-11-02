@@ -64,6 +64,18 @@ bool WebServer::validateAuthentication(AsyncWebServerRequest *request)
     return true;
 }
 
+void WebServer::addOptionsRequest(String path)
+{
+    server.on(path.c_str(), HTTP_OPTIONS, [](AsyncWebServerRequest *request) {
+        AsyncWebServerResponse* response = request->beginResponse(200, "text/json");
+        response->addHeader("Allow", "GET,POST,OPTIONS");
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        response->addHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+        response->addHeader("Access-Control-Allow-Credentials", "true");
+        request->send(response);
+    });
+}
+
 void WebServer::begin() {
 
 	server.addHandler(&events);
@@ -90,6 +102,7 @@ void WebServer::begin() {
 		request->send(200, "text/html", html);
 	});
 
+    webserver.addOptionsRequest("/update_esp");
 	server.on("/update_esp", HTTP_GET, [](AsyncWebServerRequest *request) {
 		AsyncWebParameter* url = request->getParam("url");
 		EventLogger::log(url->value().c_str());
@@ -98,6 +111,7 @@ void WebServer::begin() {
 		request->send(200, "text/plain", "\nupdate started, please wait...\n\n");
 	});
 
+    webserver.addOptionsRequest("/update_mk20");
     server.on("/update_mk20", HTTP_GET, [](AsyncWebServerRequest *request) {
         String mk20FirmwareFile("/mk20_100.bin");
         FirmwareUpdateInfo* updateInfo = Application.getFirmwareUpdateInfo();
@@ -114,6 +128,7 @@ void WebServer::begin() {
         }
     });
 
+    webserver.addOptionsRequest("/format_spiffs");
 	server.on("/format_spiffs", HTTP_GET, [](AsyncWebServerRequest *request) {
 		AsyncWebServerResponse *response = NULL;
 		if (SPIFFS.format()) {
@@ -128,6 +143,7 @@ void WebServer::begin() {
 		request->send(response);
 	});
 
+    webserver.addOptionsRequest("/update_ui");
 	server.on("/update_ui", HTTP_GET, [](AsyncWebServerRequest *request) {
         AsyncWebServerResponse *response = NULL;
 
@@ -151,21 +167,43 @@ void WebServer::begin() {
         }
     });
 
-    server.on("/info", HTTP_OPTIONS, [](AsyncWebServerRequest *request) {
-        AsyncWebServerResponse* response = request->beginResponse(200, "text/json");
-        response->addHeader("Allow", "GET,POST,OPTIONS");
-        response->addHeader("Access-Control-Allow-Origin", "*");
-        response->addHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-        response->addHeader("Access-Control-Allow-Credentials", "true");
-        request->send(response);
-    });
-
-	server.on("/info", HTTP_GET, [](AsyncWebServerRequest *request) {
+    webserver.addOptionsRequest("/status");
+    server.on("/status", HTTP_GET, [](AsyncWebServerRequest *request) {
         //Validate request
         if (!webserver.validateAuthentication(request)) {
             return;
         }
 
+        //	String info = brain.getInfo();
+        AsyncJsonResponse * response = new AsyncJsonResponse();
+        response->addHeader("Access-Control-Allow-Origin", "*");
+
+        JsonObject& root = response->getRoot();
+
+        root["name"] = config.data.name;
+        root["locked"] = config.data.locked;
+        root["ssid"] = config.data.wifiSsid;
+        root["firmware"] = FIRMWARE_BUILDNR;
+        root["mk20"] = Application.isMK20Available();
+        root["ipaddress"] = WiFi.localIP().toString();
+        root["softapip"] = WiFi.softAPIP().toString();
+
+        if (Application.getFirmwareUpdateInfo() != NULL) {
+            root["fw_update"] = true;
+            root["fw_info_sent"] = Application.firmwareUpdateNotified();
+            root["fw_cloud_buildnr"] = Application.getFirmwareUpdateInfo()->buildnr;
+        }
+        else
+        {
+            root["fw_update"] = false;
+        }
+
+        response->setLength();
+        request->send(response);
+    });
+
+    webserver.addOptionsRequest("/info");
+	server.on("/info", HTTP_GET, [](AsyncWebServerRequest *request) {
 	//	String info = brain.getInfo();
 		AsyncJsonResponse * response = new AsyncJsonResponse();
 		response->addHeader("Access-Control-Allow-Origin", "*");
@@ -174,26 +212,14 @@ void WebServer::begin() {
 
 		root["name"] = config.data.name;
 		root["locked"] = config.data.locked;
-		root["ssid"] = config.data.wifiSsid;
 		root["firmware"] = FIRMWARE_BUILDNR;
 		root["mk20"] = Application.isMK20Available();
-		root["ipaddress"] = WiFi.localIP().toString();
-		root["softapip"] = WiFi.softAPIP().toString();
-
-		if (Application.getFirmwareUpdateInfo() != NULL) {
-			root["fw_update"] = true;
-			root["fw_info_sent"] = Application.firmwareUpdateNotified();
-			root["fw_cloud_buildnr"] = Application.getFirmwareUpdateInfo()->buildnr;
-		}
-		else
-		{
-			root["fw_update"] = false;
-		}
 
 		response->setLength();
 		request->send(response);
 	});
 
+    webserver.addOptionsRequest("/test");
 	server.on("/test", HTTP_GET, [](AsyncWebServerRequest *request) {
 		AsyncWebServerResponse *response = request->beginResponse(200, "text/json", "{'sup':'yo'}");
 		EventLogger::log(config.data.name);
@@ -201,7 +227,13 @@ void WebServer::begin() {
 		request->send(response);
 	});
 
+    webserver.addOptionsRequest("/updatefirmware");
 	server.on("/updatefirmware", HTTP_GET, [](AsyncWebServerRequest *request) {
+        //Validate request
+        if (!webserver.validateAuthentication(request)) {
+            return;
+        }
+
         FirmwareUpdateInfo* updateInfo = Application.getFirmwareUpdateInfo();
         AsyncWebServerResponse *response = NULL;
         if (updateInfo == NULL) {
@@ -225,7 +257,13 @@ void WebServer::begin() {
         }
 	});
 
+    webserver.addOptionsRequest("/scanwifi");
 	server.on("/scanwifi", HTTP_GET, [](AsyncWebServerRequest *request) {
+        //Validate request
+        if (!webserver.validateAuthentication(request)) {
+            return;
+        }
+
 		AsyncJsonResponse * response = new AsyncJsonResponse();
 		response->addHeader("Access-Control-Allow-Origin", "*");
 		JsonObject& root = response->getRoot();
@@ -239,42 +277,58 @@ void WebServer::begin() {
 		request->send(response);
 	});
 
+    webserver.addOptionsRequest("/networks");
 	server.on("/networks", HTTP_GET, [](AsyncWebServerRequest *request) {
+        //Validate request
+        if (!webserver.validateAuthentication(request)) {
+            return;
+        }
+
 		AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/net.json");
 		response->addHeader("Access-Control-Allow-Origin", "*");
 		request->send(response);
 	});
 
+    webserver.addOptionsRequest("/fetch");
 	server.on("/fetch", HTTP_GET, [](AsyncWebServerRequest *request) {
-	//	String info = brain.getInfo();
-		//AsyncWebServerResponse *response = request->beginResponse(200, "text/json", "{'name':'printrbot'}");
-		AsyncJsonResponse * response = new AsyncJsonResponse();
-		response->addHeader("Access-Control-Allow-Origin", "*");
+        //Validate request
+        if (!webserver.validateAuthentication(request)) {
+            return;
+        }
 
-		JsonObject& root = response->getRoot();
+        AsyncJsonResponse * response = new AsyncJsonResponse();
+        response->addHeader("Access-Control-Allow-Origin", "*");
 
-		if (request->hasParam("url") && request->hasParam("id")) {
-			AsyncWebParameter* url = request->getParam("url");
-			AsyncWebParameter* id = request->getParam("id");
-			AsyncWebParameter* ftype = request->getParam("type");
-            
-			root["url"] = url->value();
-			root["id"] = id->value();
-			root["type"] = ftype->value();
+        JsonObject& root = response->getRoot();
+
+        if (request->hasParam("url") && request->hasParam("id")) {
+            AsyncWebParameter* url = request->getParam("url");
+            AsyncWebParameter* id = request->getParam("id");
+            AsyncWebParameter* ftype = request->getParam("type");
+
+            root["url"] = url->value();
+            root["id"] = id->value();
+            root["type"] = ftype->value();
 
             int length = root.measureLength()+1;
             char buffer[length];
             root.printTo(buffer,length);
             Application.getMK20Stack()->requestTask(TaskID::SaveProjectWithID,length,(uint8_t*)buffer);
 
-			response->setLength();
-			request->send(response);
-		} else {
-			request->send(500, "text/plain", "Invalid request");
-		}
+            response->setLength();
+            request->send(response);
+        } else {
+            request->send(500, "text/plain", "Invalid request");
+        }
 	});
 
+    webserver.addOptionsRequest("/updateconfig");
 	server.on("/updateconfig", HTTP_POST, [](AsyncWebServerRequest *request) {
+        //Validate request
+        if (!webserver.validateAuthentication(request)) {
+            return;
+        }
+
 		if(request->hasParam("name", true) && request->hasParam("ssid", true)) {
 			request->send(200, "text/plain", "config updated...");
 			//delay(100);
@@ -284,7 +338,13 @@ void WebServer::begin() {
 		}
 	});
 
+    webserver.addOptionsRequest("/wifi");
 	server.on("/wifi", HTTP_POST, [](AsyncWebServerRequest *request) {
+        //Validate request
+        if (!webserver.validateAuthentication(request)) {
+            return;
+        }
+        
 		AsyncJsonResponse * response = new AsyncJsonResponse();
 		response->addHeader("Access-Control-Allow-Origin", "*");
 		JsonObject& root = response->getRoot();

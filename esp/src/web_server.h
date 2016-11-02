@@ -13,6 +13,7 @@ public:
 
 private:
   bool validateAuthentication(AsyncWebServerRequest *request);
+  void addOptionsRequest(String path);
 };
 
 
