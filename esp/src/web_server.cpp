@@ -51,10 +51,8 @@ void doUpdateConfig(AsyncWebServerRequest *request) {
 
 bool WebServer::validateAuthentication(AsyncWebServerRequest *request)
 {
-		return true;// temp until this is fully implemented
-
     EventLogger::log("Authenticating with username: %s, password: %s",config.data.name,config.data.password);
-    if (strlen(config.data.password) <= 0) return true;
+    if (!config.data.locked) return true;
     if (!request->authenticate(config.data.name,config.data.password)) {
         AsyncWebServerResponse* response = request->beginResponse(403, "text/json", "{'success':'false','error':'Authentication failed'}");
         EventLogger::log("Authentication failed");
@@ -151,6 +149,12 @@ void WebServer::begin() {
             response->addHeader("Access-Control-Allow-Origin", "*");
             request->send(response);
         }
+    });
+
+    server.on("/info", HTTP_OPTIONS, [](AsyncWebServerRequest *request) {
+        AsyncWebServerResponse* response = request->beginResponse(200, "text/json");
+        response->addHeader("Allow", "GET,OPTIONS");
+        request->send(response);
     });
 
 	server.on("/info", HTTP_GET, [](AsyncWebServerRequest *request) {
