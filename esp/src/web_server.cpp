@@ -113,7 +113,7 @@ void WebServer::begin() {
 
     webserver.addOptionsRequest("/update_mk20");
     server.on("/update_mk20", HTTP_GET, [](AsyncWebServerRequest *request) {
-        String mk20FirmwareFile("/mk20_100.bin");
+        String mk20FirmwareFile("/mk20.bin");
         FirmwareUpdateInfo* updateInfo = Application.getFirmwareUpdateInfo();
         if (updateInfo != NULL) {
             DownloadFileToSPIFFs* downloadMK20Firmware = new DownloadFileToSPIFFs(updateInfo->mk20_url,mk20FirmwareFile);
