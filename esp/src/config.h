@@ -24,6 +24,7 @@ public:
   ConfigData data;
   void save();
   void load();
+  void clear();
 private:
   void write(int &pos, uint8_t* value, uint8_t size);
   void read(int &pos, uint8_t* value, uint8_t size);

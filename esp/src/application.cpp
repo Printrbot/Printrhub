@@ -43,6 +43,27 @@ ApplicationClass::~ApplicationClass() {
 	_mk20 = NULL;
 }
 
+void ApplicationClass::initializeHub()
+{
+    EventLogger::log("Clearing config");
+    //First thing we need to do is clear the config so everything is false and text is empty
+    config.clear();
+
+    EventLogger::log("Flashing MK20 with /firmware/mk20.bin");
+    if (_mk20->updateFirmware("/firmware/mk20.bin")) {
+        if (SPIFFS.remove("/factory.txt")) {
+            EventLogger::log("Firmware successfully applied, factory.txt file removed");
+
+            //Restart ESP
+            ESP.restart();
+        } else {
+            EventLogger::log("Could not remove /firmware/factory.txt");
+        }
+    } else {
+        EventLogger::log("Could not apply MK20 firmware");
+    }
+}
+
 void ApplicationClass::setup() {
 
     //Start with MK20 timeout at current time
@@ -56,6 +77,17 @@ void ApplicationClass::setup() {
 
 	Serial.begin(COMMSTACK_BAUDRATE);
 	SPIFFS.begin();
+
+    //Check if we are in factory settings
+    if (SPIFFS.exists("/factory.txt")) {
+        //OK, we have that factory file
+        if (SPIFFS.exists("/firmware/mk20.bin")) {
+            EventLogger::log("Factory.txt and mk20.bin file found, flashing MK20 now");
+            initializeHub();
+        } else {
+            EventLogger::log("FATAL ERROR: factory.txt file found, but mk20.bin firmware missing in folder /firmware");
+        }
+    }
 
 	Mode* manageWifi = new ManageWifi();
 	Application.pushMode(manageWifi);
@@ -126,7 +158,7 @@ void ApplicationClass::loop()
 
                     //We have a bricked MK20 a WiFi connection and latest firmware infos, download firmware and flash MK20
                     _firmwareChecked = true;
-                    String mk20FirmwareFile("/mk20_100.bin");
+                    String mk20FirmwareFile("/mk20.bin");
 
                     //Prepare modes for subsequent execution
                     MK20FirmwareUpdate* mk20UpdateFirmware = new MK20FirmwareUpdate(mk20FirmwareFile);
@@ -255,7 +287,7 @@ void ApplicationClass::startFirmwareUpdate()
     Mode* firstMode = NULL;
 
     //Define file names
-    String mk20FirmwareFile("/mk20_100.bin");
+    String mk20FirmwareFile("/mk20.bin");
     String mk20UIFile("/ui.min");
 
     //Define modes

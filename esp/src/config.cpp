@@ -7,13 +7,14 @@
 ConfigData data = ConfigData();
 
 #define EEPROM_OFFSET 0
+#define EEPROM_SIZE 512
 
 #define STORE_VAR(pos, value) write(pos, (uint8_t*)&value, sizeof(value))
 #define READ_VAR(pos, value) read(pos, (uint8_t*)&value, sizeof(value))
 
 Config::Config():
 data(ConfigData()) {
-  EEPROM.begin(512);
+  EEPROM.begin(EEPROM_SIZE);
   load();
 }
 
@@ -51,6 +52,21 @@ void Config::save() {
   STORE_VAR(i, data.wifiPassword);
   STORE_VAR(i, data.jwt);
   EEPROM.commit();
+}
+
+void Config::clear()
+{
+  for (int i=EEPROM_OFFSET;i<EEPROM_OFFSET+EEPROM_SIZE;i++) {
+    EEPROM.write(i,0);
+  }
+
+  //Setup default data
+  data.blank = false;
+  data.accessPoint = false;
+  strcpy(data.name,"printrbot");
+  data.locked = false;
+
+  save();
 }
 
 void Config::write(int &pos, uint8_t* value, uint8_t size) {
