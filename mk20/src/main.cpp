@@ -106,6 +106,19 @@ void setup(void)
 
     LOG("Printrhub - LCD Controller and Hub for Printrbots!");
 
+    if (!SD.begin(15))
+    {
+      Display.fillRect(0,0,320,240,ILI9341_WHITE);
+      Display.setCursor(10,10);
+      Display.setTextColor(ILI9341_BLACK);
+      Display.println("Couldn't start SD card!");
+      Display.fadeIn();
+
+      LOG("Couldn't start SD card");
+      StatusLED.on();
+      while (1);
+    }
+    LOG("Started SD card interface");
 
     //Initiate communication pipeline to ESP8266
     Serial3.begin(COMMSTACK_BAUDRATE);
@@ -128,20 +141,6 @@ void setup(void)
     //Rotate to landscape
     Display.setRotation(ILI9341_ORIENTATION_LANDSCAPE_LEFT);
     Display.setScroll(0);
-
-    if (!SD.begin(15))
-    {
-        Display.fillRect(0,0,320,240,ILI9341_WHITE);
-        Display.setCursor(10,10);
-        Display.setTextColor(ILI9341_BLACK);
-        Display.println("Couldn't start SD card!");
-        Display.fadeIn();
-
-        LOG("Couldn't start SD card");
-        StatusLED.on();
-        while (1);
-    }
-    LOG("Started SD card interface");
 
     showSplashScreen();
 
