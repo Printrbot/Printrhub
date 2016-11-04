@@ -65,7 +65,8 @@ enum class TaskID : uint8_t {
   ShowFirmwareUpdateInProgress = 32,
   GetSystemInfo = 33,
   ShowWiFiInfo = 34,
-  SetPassword = 35
+  SetPassword = 35,
+  SaveMaterials = 36
 };
 
 struct CommHeader {
