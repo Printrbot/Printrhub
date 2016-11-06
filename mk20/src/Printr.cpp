@@ -452,17 +452,7 @@ void Printr::parseResponse() {
               Display.println(_stat);
               Display.fadeIn();
               break;
-
-            case PRINTR_STAT_PROGRAM_STOP:
-              // stat 3 should not end the program
-              // since it can happen in the middle of the print
-              // if G2 queue is emptied before new data comes in
-
-              //programEnd(false);
-              _totalProgramLines = _lastSentProgramLine;
-              PRINTER_NOTICE("Printer got stopped, closing");
-              break;
-
+              
             case PRINTR_STAT_PROGRAM_END:
               // program end via M2, M30
               // finish print if printing
