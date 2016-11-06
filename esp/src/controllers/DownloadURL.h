@@ -10,7 +10,7 @@
 #include "../core/FasterWiFiClient.h"
 #include "../errors.h"
 
-#define DOWNLOADURL_BUFFER_SIZE 128
+#define DOWNLOADURL_BUFFER_SIZE 60
 
 class DownloadURL: public Mode
 {
