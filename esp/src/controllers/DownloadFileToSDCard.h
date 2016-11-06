@@ -22,6 +22,7 @@ public:
     virtual bool onDataReceived(uint8_t* data, uint16_t size);
     virtual void onError(DownloadError errorCode);
     virtual void onFinished();
+    virtual void onCancelled();
     virtual bool readNextData();
 
 #pragma mark Communication with MK20

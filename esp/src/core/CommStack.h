@@ -66,7 +66,8 @@ enum class TaskID : uint8_t {
   GetSystemInfo = 33,
   ShowWiFiInfo = 34,
   SetPassword = 35,
-  SaveMaterials = 36
+  SaveMaterials = 36,
+  CancelDownload = 37
 };
 
 struct CommHeader {

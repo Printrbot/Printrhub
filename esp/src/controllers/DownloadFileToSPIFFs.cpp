@@ -47,6 +47,12 @@ void DownloadFileToSPIFFs::onError(DownloadError errorCode)
     Application.pushMode(error);
 }
 
+void DownloadFileToSPIFFs::onCancelled()
+{
+    _file.close();
+    exit();
+}
+
 void DownloadFileToSPIFFs::onFinished()
 {
     _file.close();

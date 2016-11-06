@@ -113,6 +113,13 @@ void DownloadFileController::onWillAppear()
 
 void DownloadFileController::onSidebarButtonTouchUp()
 {
+  //Send cancel download message to ESP to stop download
+  Application.getESPStack()->requestTask(TaskID::CancelDownload);
+
+  //Close file and remove download fragments
+  _file.close();
+  SD.remove(_localFilePath.c_str());
+
   ProjectsScene* scene = new ProjectsScene();
   Application.pushScene(scene);
 }

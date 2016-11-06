@@ -199,6 +199,18 @@ void DownloadURL::loop()
         onFinished();
         return;
     }
+
+    if (mode == StateCancelled)
+    {
+        EventLogger::log("Download cancelled");
+        onCancelled();
+        return;
+    }
+}
+
+void DownloadURL::cancelDownload()
+{
+    mode = StateCancelled;
 }
 
 bool DownloadURL::handlesTask(TaskID taskID)

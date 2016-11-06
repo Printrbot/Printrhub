@@ -61,9 +61,18 @@ void DownloadFileToSDCard::onFinished()
     exit();
 }
 
+void DownloadFileToSDCard::onCancelled()
+{
+    exit();
+}
+
 bool DownloadFileToSDCard::handlesTask(TaskID taskID)
 {
     if (taskID == TaskID::FileSaveData)
+    {
+        return true;
+    }
+    else if (taskID == TaskID::CancelDownload)
     {
         return true;
     }
@@ -103,6 +112,14 @@ bool DownloadFileToSDCard::runTask(CommHeader &header, const uint8_t *data, size
                 Application.pushMode(mode);
                 return false;
             }
+        }
+    }
+    else if (header.getCurrentTask() == TaskID::CancelDownload)
+    {
+        if (header.commType == Request)
+        {
+            cancelDownload();
+            *sendResponse = false;
         }
     }
 

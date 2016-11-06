@@ -86,3 +86,10 @@ void CheckForFirmwareUpdates::onFinished()
     Idle* idle = new Idle();
     Application.pushMode(idle);
 }
+
+void CheckForFirmwareUpdates::onCancelled()
+{
+    //TODO: Decide if and what to show the user in this case, today we just do nothing at all
+    Idle* idle = new Idle();
+    Application.pushMode(idle);
+}

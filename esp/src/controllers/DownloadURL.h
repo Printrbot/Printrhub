@@ -19,7 +19,8 @@ private:
         StateRequest = 0,
         StateDownload = 1,
         StateSuccess = 2,
-        StateError = 3
+        StateError = 3,
+        StateCancelled = 4
     };
 
 #pragma mark Constructor
@@ -42,7 +43,9 @@ public:
     virtual bool onDataReceived(uint8_t* data, uint16_t size) = 0;
     virtual void onError(DownloadError errorCode) = 0;
     virtual void onFinished() = 0;
+    virtual void onCancelled() = 0;
     virtual bool readNextData();
+    virtual void cancelDownload();
 
 #pragma mark Getter and Setter
     uint8_t* getBuffer() { return _buffer; };

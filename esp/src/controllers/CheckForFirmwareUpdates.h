@@ -20,6 +20,7 @@ public:
     virtual bool onDataReceived(uint8_t* data, uint16_t size);
     virtual void onError(DownloadError errorCode);
     virtual void onFinished();
+    virtual void onCancelled();
 
 #pragma mark Mode
     virtual String getName();
