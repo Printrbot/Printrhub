@@ -329,18 +329,23 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
 	}
 
     TaskID taskID = header.getCurrentTask();
-	if (taskID == TaskID::DownloadFile || taskID == TaskID::GetProjectItemWithID || taskID == TaskID::GetJobWithID)
+	if (taskID == TaskID::DownloadFile)
     {
-        EventLogger::log("GET PROJECT WITH ID TASK");
-        char _url[header.contentLength+1];
-        memset(_url,0,header.contentLength+1);
-        memcpy(_url,data,header.contentLength);
-        //Send the response later when we know how large the file is
-        *sendResponse = false;
-        //Initiate mode for file download
-        EventLogger::log(_url);
-        DownloadFileToSDCard* df = new DownloadFileToSDCard(String(_url));
-        Application.pushMode(df);
+        if (header.commType == Request) {
+            EventLogger::log("DownloadFile Task received");
+            if (header.contentLength <= 0) {
+                EventLogger::log("URL parameter missing");
+            }
+            char _url[header.contentLength+1];
+            memset(_url,0,header.contentLength+1);
+            memcpy(_url,data,header.contentLength);
+            //Send the response later when we know how large the file is
+            *sendResponse = false;
+            //Initiate mode for file download
+            EventLogger::log("Download-URL: %s",_url);
+            DownloadFileToSDCard* df = new DownloadFileToSDCard(String(_url));
+            Application.pushMode(df);
+        }
     }
     else if (taskID == TaskID::Ping)
     {
