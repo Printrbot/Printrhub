@@ -5,6 +5,7 @@
 #include "../filament/SelectFilamentAction.h"
 #include "../calibrate/CalibrateScene.h"
 #include "../settings/SystemInfoScene.h"
+#include "../materials/MaterialsScene.h"
 #include "../settings/VirtualKeyboardSceneController.h"
 #include "SetPasswordHandler.h"
 
@@ -88,7 +89,8 @@ void SettingsScene::buttonPressed(void *button)
     Application.pushScene(scene);
   }
   else if (button == _materials) {
-
+    MaterialsScene * scene = new MaterialsScene();
+    Application.pushScene(scene);
   }
   else if (button == _update) {
     Application.getESPStack()->requestTask(TaskID::StartFirmwareUpdate);

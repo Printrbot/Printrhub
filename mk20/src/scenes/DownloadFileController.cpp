@@ -6,6 +6,7 @@
 #include "SD.h"
 #include "projects/ProjectsScene.h"
 #include "projects/JobsScene.h"
+#include "materials/MaterialsScene.h"
 #include "print/PrintStatusScene.h"
 //#include "print/PrintStatusSceneController.h"
 //#include "print/CleanPlasticSceneController.h"
@@ -31,7 +32,18 @@ DownloadFileController::DownloadFileController(String url, String fileName) :
     _nextScene(NextScene::NewProject)
 {
   _localFilePath = String(IndexDb::projectFolderName) + fileName;
+}
 
+
+DownloadFileController::DownloadFileController(String url) :
+    SidebarSceneController::SidebarSceneController(),
+    _fileSize(0),
+    _bytesRead(0),
+    _previousPercent(0),
+    _url(url),
+    _nextScene(NextScene::Materials)
+{
+  _localFilePath = String("matlib");
 }
 
 DownloadFileController::DownloadFileController(String url, String localFilePath, String jobFilePath, Project project, Job job) :
@@ -93,14 +105,18 @@ void DownloadFileController::onWillAppear()
       SD.remove(_localFilePath.c_str());
     }
   }
+  if (_nextScene == NextScene::Materials) {
+    if (SD.exists(_localFilePath.c_str())) {
+      SD.remove(_localFilePath.c_str());
+    }
+  }
 
   BitmapView* icon = new BitmapView(Rect(0,0,uiBitmaps.downloading_scene.width, uiBitmaps.downloading_scene.height));
   icon->setBitmap(&uiBitmaps.downloading_scene);
   addView(icon);
 
   _progressBar = new ProgressBar(Rect(0,228,270,12));
-  //_progressBar->setTrackColor(ILI9341_WHITE);
-  _progressBar->setTrackColor(Application.getTheme()->getColor(HighlightBackgroundColor));
+  _progressBar->setBackgroundColor(RGB565(75,165,232));
   _progressBar->setValue(0.0f);
   addView(_progressBar);
 
@@ -131,6 +147,7 @@ bool DownloadFileController::handlesTask(TaskID taskID)
     case TaskID::FileSaveData:
     case TaskID::FileClose:
     case TaskID::SaveProjectWithID:
+    case TaskID::SaveMaterials:
     case TaskID::FileSetSize:
     case TaskID::Error:
     case TaskID::DownloadFile:
@@ -242,6 +259,11 @@ bool DownloadFileController::runTask(CommHeader &header, const uint8_t *data, si
       lastProjectIndex = 0;
 
       ProjectsScene* scene = new ProjectsScene();
+      Application.pushScene(scene);
+    }
+
+    if (_nextScene == NextScene::Materials) {
+      MaterialsScene* scene = new MaterialsScene();
       Application.pushScene(scene);
     }
   }

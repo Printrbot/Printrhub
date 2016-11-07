@@ -55,6 +55,7 @@ void PrintStatusScene::onWillAppear() {
   String _projectFilePath = String("/projects/" + String(_project.index));
   _imageLayer = new SDBitmapLayer(Rect(0,0,270,240));
   _imageLayer->setBitmap(_projectFilePath.c_str(), 270,240,  129675 + (129899 * lastJobIndex) + 299);
+
   Display.setFixedBackgroundLayer(_imageLayer);
 
   // job title

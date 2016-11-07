@@ -51,8 +51,12 @@ void doUpdateConfig(AsyncWebServerRequest *request) {
 
 bool WebServer::validateAuthentication(AsyncWebServerRequest *request)
 {
-  EventLogger::log("Authenticating with username: %s, password: %s",config.data.name,config.data.password);
-  if (!config.data.locked) return true;
+	if (config.data.locked == false) {
+		EventLogger::log("Authentication not enabled");
+		return true;
+	} else {
+		EventLogger::log("Authenticating with username: %s, password: %s",config.data.name,config.data.password);
+	}
   if (!request->authenticate("printrbot",config.data.password)) {
     AsyncWebServerResponse* response = request->beginResponse(403, "text/json", "{'success':'false','error':'Authentication failed'}");
     EventLogger::log("Authentication failed");

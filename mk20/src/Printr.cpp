@@ -292,8 +292,13 @@ void Printr::runJobStartGCode() {
   _lastSentProgramLine = 1;
   _processedProgramLine = 0;
 
-  // TODO: set the temperature based on material selected
-  sendLine("M100({he1st:195})");
+  Material * _selectedMaterial = dataStore.getLoadedMaterial();
+  char tempCmd[20];
+  sprintf(tempCmd, "M100({he1st:%d})", _selectedMaterial->temperature);
+  String tc = tempCmd;
+
+  //sendLine("M100({he1st:195})");
+  sendLine(tc);
   sendLine("G92.1 X0 Y0 Z0 A0 B0");
   _printing = true;
 

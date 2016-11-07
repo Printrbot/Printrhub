@@ -408,7 +408,35 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
       //Do not send a response as we will trigger a "mode" change on ESP in the next request
       *sendResponse = false;
     }
-  } else if (header.getCurrentTask() == TaskID::DownloadError) {
+  }
+  else if (header.getCurrentTask() == TaskID::SaveMaterials) {
+    if (header.commType == Request) {
+
+      StaticJsonBuffer<500> jsonBuffer;
+      String jsonObject((const char *) data);
+      JsonObject &root = jsonBuffer.parseObject(jsonObject);
+
+      if (root.success()) {
+        String url = root["url"];
+        if (url.length() > 0) {
+
+          // check if we can run download now
+          if (_currentScene->isModal()) {
+            LOG("Hub is busy can can not start download");
+          } else {
+            DownloadFileController *dfc = new DownloadFileController(url);
+            Application.pushScene(dfc);
+          }
+        }
+      } else {
+        LOG("Could not parse SaveProjectWithID data package from JSON");
+      }
+
+      //Do not send a response as we will trigger a "mode" change on ESP in the next request
+      *sendResponse = false;
+    }
+  }
+  else if (header.getCurrentTask() == TaskID::DownloadError) {
     if (header.commType == Request) {
 
       //Cast data into local error code variable

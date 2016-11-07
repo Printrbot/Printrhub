@@ -14,15 +14,18 @@
 
 typedef enum NextScene {
 	StartPrint = 0,
-	NewProject = 1
+	NewProject = 1,
+	Materials = 2
 };
 
 class DownloadFileController: public SidebarSceneController
 {
 
 public:
+
 	virtual void onSidebarButtonTouchUp() override;
 
+  DownloadFileController(String url);
 	DownloadFileController(String url, String localFilePath);
 	DownloadFileController(String url, String localFilePath, String jobFilePath, Project project, Job job);
 	DownloadFileController();

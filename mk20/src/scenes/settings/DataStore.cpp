@@ -30,3 +30,17 @@ float DataStore::getHeadOffset() {
 
   return _data.headOffset;
 };
+
+void DataStore::setLoadedMaterial(Material material) {
+  _data.material = material;
+}
+
+Material * DataStore::getLoadedMaterial() {
+  // check if we have valid data
+
+  if (isnan(_data.material.temperature)) {
+    _data.material.temperature = 200;
+  }
+
+  return &_data.material;
+}
