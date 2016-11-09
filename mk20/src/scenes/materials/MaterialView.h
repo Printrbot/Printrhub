@@ -14,8 +14,8 @@ typedef struct Material {
   char type[12];
   char brand[32];
   int16_t temperature;
-  float speed;
-  bool retraction;
+  int16_t speed;
+  uint8_t retraction;
 } Material;
 
 
