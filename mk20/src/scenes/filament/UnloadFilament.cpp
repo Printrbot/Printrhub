@@ -40,7 +40,7 @@ uint16_t UnloadFilament::getBackgroundColor()
 
 void UnloadFilament::onWillAppear() {
 
-  BitmapView* icon = new BitmapView(Rect(10,24,uiBitmaps.unload_scene.width, uiBitmaps.unload_scene.height));
+  BitmapView* icon = new BitmapView(Rect(0,0,uiBitmaps.unload_scene.width, uiBitmaps.unload_scene.height));
   icon->setBitmap(&uiBitmaps.unload_scene);
   addView(icon);
 
@@ -48,7 +48,9 @@ void UnloadFilament::onWillAppear() {
   _doneBtn->setBitmap(&uiBitmaps.btn_done);
   _doneBtn->setDelegate(this);
   addView(_doneBtn);
-
+  // increase max feed on A to be able to retract
+  // filament quickly
+  printr.sendLine("M100({afr:6480})");
   printr.sendLine("G92 A0");
   printr.sendLine("G1 A5 F6000");
   printr.sendLine("G1 A-200 F9000");
