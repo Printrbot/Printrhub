@@ -42,7 +42,8 @@ void Printr::init() {
 
   //When we init we wait for the printer to send the first status response
   _linesToSend = 4;
-  sendLine("{sr:{line:t,he1t:t,he1st:t,he1at:t,stat:t}}");
+  //sendLine("{sr:{line:t,he1t:t,he1st:t,he1at:t,stat:t}}");
+  stopListening();
   sendLine("{_leds:4}");
   sendWaitCommand(500);
   sendLine("{_leds:1}");
@@ -55,6 +56,16 @@ void Printr::init() {
   //sendLine("M100({_leds:4})",false); //switch to blue light
   sendLine("{sv:1}");
 
+}
+
+void Printr::startListening() {
+  sendLine("M100({sr:{line:t,he1t:t,he1st:t,he1at:t,stat:t}})");
+  sendWaitCommand(500);
+}
+
+void Printr::stopListening() {
+  sendLine("M100({sr:{line:t}})");
+  sendWaitCommand(500);
 }
 
 void Printr::reset() {
@@ -279,6 +290,7 @@ int Printr::startJob(String filePath) {
     }
   }
 
+  startListening();
   //Setup printer and run the file
   runJobStartGCode();
 
@@ -293,12 +305,19 @@ void Printr::runJobStartGCode() {
   _processedProgramLine = 0;
 
   Material * _selectedMaterial = dataStore.getLoadedMaterial();
+  // set temperature
   char tempCmd[20];
   sprintf(tempCmd, "M100({he1st:%d})", _selectedMaterial->temperature);
   String tc = tempCmd;
-
-  //sendLine("M100({he1st:195})");
   sendLine(tc);
+
+  // adjust speed
+  // we will use 1620 as 100% maximum extruder speed
+  char speedCmd[20];
+  int aJm = 1620 * (float) (_selectedMaterial->speed/100.0);
+  sprintf(speedCmd, "M100({afr:%d})", aJm);
+  sendLine(speedCmd);
+
   sendLine("G92.1 X0 Y0 Z0 A0 B0");
   _printing = true;
 
@@ -344,17 +363,16 @@ void Printr::runJobStartGCode() {
 void Printr::cancelCurrentJob() {
   _currentMode = PrintrMode::ImmediateMode;
   _currentLineBuffer->flush();
-
   stopAndFlush();
   sendWaitCommand(1000);
   reset();
   turnOffHotend();
+  stopListening();
   sendLine("M100({_leds:4})"); //switch to blue light
   sendLine("G91");             //Relative mode
   sendLine("G0 Z10");          //Move up
   sendLine("G90");             //Back to absolute mode
   sendLine("G0 X110 Y150");    //Home back with bed centered
-
   _printing = false;
 }
 
@@ -393,7 +411,7 @@ void Printr::programEnd(bool success) {
   _totalProgramLines = 0;
   // turn off the hotend just in case
   turnOffHotend();
-
+  stopListening();
   if (_listener != nullptr) {
     _listener->onPrintComplete(success);
   }

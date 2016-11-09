@@ -47,6 +47,8 @@ public:
   void sendWaitCommand(int millis);
   void stopAndFlush();
   void turnOffHotend();
+  void startListening();
+  void stopListening();
 
   int startJob(String filePath);
   void cancelCurrentJob();
