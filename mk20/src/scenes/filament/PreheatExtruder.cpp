@@ -20,8 +20,6 @@ PreheatExtruder::~PreheatExtruder() {
   printr.setListener(nullptr);
 }
 
-
-
 String PreheatExtruder::getName() {
   return "PreheatExtruder";
 }
@@ -71,7 +69,9 @@ void PreheatExtruder::onDidAppear() {
   printr.reset();
   printr.sendWaitCommand(1000);
   printr.homeY();
-
+  // start listening for temperature
+  printr.startListening();
+  printr.sendWaitCommand(500);
   printr.sendLine("M100({he1st:200})");
   printr.sendLine("M100({_leds:2})"); // red
   printr.sendLine("M101({he1at:t})");
@@ -122,6 +122,7 @@ void PreheatExtruder::onSidebarButtonTouchUp() {
   printr.sendLine("M100({_leds:4})");
   printr.sendLine("G0 Y150");
   printr.turnOffHotend();
+  printr.stopListening();
 
   SelectFilamentAction * scene = new SelectFilamentAction();
   Application.pushScene(scene);
