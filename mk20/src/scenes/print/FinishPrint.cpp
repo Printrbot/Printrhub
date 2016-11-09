@@ -45,24 +45,16 @@ uint16_t FinishPrint::getBackgroundColor()
 }
 
 void FinishPrint::onWillAppear() {
-
-
   BitmapView* icon = new BitmapView(Rect(26,18,uiBitmaps.job_finish_scene.width, uiBitmaps.job_finish_scene.height));
   icon->setBitmap(&uiBitmaps.job_finish_scene);
   addView(icon);
 
-  _btnNo = new BitmapButton(Rect(16,176, uiBitmaps.btn_no.width, uiBitmaps.btn_no.height));
-  _btnNo->setBitmap(&uiBitmaps.btn_no);
-  _btnNo->setDelegate(this);
-  addView(_btnNo);
-
-  _btnYes = new BitmapButton(Rect(138,176, uiBitmaps.btn_yes.width, uiBitmaps.btn_yes.height));
-  _btnYes->setDelegate(this);
-  _btnYes->setBitmap(&uiBitmaps.btn_yes);
-  addView(_btnYes);
+  _btnDone = new BitmapButton(Rect(16,176, uiBitmaps.btn_done.width, uiBitmaps.btn_done.height));
+  _btnDone->setBitmap(&uiBitmaps.btn_done);
+  _btnDone->setDelegate(this);
+  addView(_btnDone);
 
   SidebarSceneController::onWillAppear();
-
 }
 
 
@@ -78,19 +70,8 @@ void FinishPrint::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
 void FinishPrint::buttonPressed(void *button)
 {
   // move print head out of the way
-
-  // set the light to blue
-
-  if (button == _btnYes) {
-    // update project index and mark job as printed
-    // TODO
-  } else if (button == _btnNo) {
-    // hit printrbot cloud if available and report
-    // print failure
-    // TODO
-  }
-
   printr.sendLine("G0 Y150"); // move head out of the way
+  // set the light to blue
   printr.sendLine("M100({_leds:4})"); //switch to blue light
 
   JobsScene * js = new JobsScene(_project);

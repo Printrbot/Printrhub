@@ -32,8 +32,7 @@ private:
   Project _project;
 
 protected:
-  BitmapButton *_btnYes;
-  BitmapButton *_btnNo;
+  BitmapButton *_btnDone;
 };
 
 #endif
