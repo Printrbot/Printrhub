@@ -49,6 +49,8 @@ void UnloadFilament::onWillAppear() {
   _doneBtn->setDelegate(this);
   addView(_doneBtn);
 
+  printr.sendLine("G92 A0");
+  printr.sendLine("G1 A5 F6000");
   printr.sendLine("G1 A-200 F9000");
 
   SidebarSceneController::onWillAppear();
