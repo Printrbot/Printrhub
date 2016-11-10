@@ -59,6 +59,8 @@ void MaterialsScene::onWillAppear() {
     addView(materialView);
   }
 
+  _selectedMaterial = _materials[0];
+
   _file.close();
   _selectButton = new BitmapButton(Rect(18,178,uiBitmaps.btn_select.width,uiBitmaps.btn_select.height));
   _selectButton->setBitmap(&uiBitmaps.btn_select);
