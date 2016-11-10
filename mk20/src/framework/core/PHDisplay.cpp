@@ -60,11 +60,11 @@ void PHDisplay::setupBuffers()
         _backgroundLayer = NULL;
     }
 
-    _foregroundLayer = new RectangleLayer(Rect(0,0,650,240));
+    _foregroundLayer = new RectangleLayer(Rect(0,0,getLayoutWidth(),240));
     _foregroundLayer->setBackgroundColor(ILI9341_WHITE);
     _foregroundLayer->setStrokeWidth(0);
 
-    _backgroundLayer = new RectangleLayer(Rect(0,0,650,240));
+    _backgroundLayer = new RectangleLayer(Rect(0,0,getLayoutWidth(),240));
     _backgroundLayer->setBackgroundColor(ILI9341_WHITE);
     _backgroundLayer->setStrokeWidth(0);
 }
