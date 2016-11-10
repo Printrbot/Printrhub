@@ -354,7 +354,9 @@ void Printr::runJobStartGCode() {
 
   // clean the nozzle
   sendLine("G0 X0 Y0 Z0.3");
-  sendLine("G1 X220.000 A10 F1200");
+  sendLine("G1 X220.000 A12 F1200");
+  sendLine("G0 Y0.4");
+  sendLine("G1 X110.000 A18");
   sendLine("G0 Z1");
   sendLine("G92 A0");
 }
