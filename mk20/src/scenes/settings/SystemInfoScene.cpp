@@ -9,6 +9,7 @@
 #include "../filament/SelectFilamentAction.h"
 #include "../calibrate/CalibrateScene.h"
 #include "../settings/SettingsScene.h"
+#include "font_LiberationSans.h"
 
 extern UIBitmaps uiBitmaps;
 
@@ -38,7 +39,7 @@ uint16_t SystemInfoScene::getBackgroundColor()
 
 void SystemInfoScene::configureLabelView(LabelView* labelView) {
   labelView->setTextAlign(TEXTALIGN_LEFT);
-  labelView->setFont(&PTSansNarrow_12);
+  labelView->setFont(&LiberationSans_11);
   labelView->setBackgroundColor(getBackgroundColor());
   addView(labelView);
 }
@@ -82,19 +83,23 @@ void SystemInfoScene::onWillAppear() {
   configureLabelView(_ssid);
   y += labelHeight + yGap;
 
-  //Serial Number
-  _serialNumberLabel = new LabelView("Serial:",Rect(xLabel,y,labelWidth,labelHeight));
-  _serialNumber = new LabelView("Loading Info",Rect(xLabel+labelWidth+10,y,270-(xLabel+labelWidth+10+10),labelHeight));
-  configureLabelView(_serialNumberLabel);
-  configureLabelView(_serialNumber);
-  y += labelHeight + yGap;
-
   //Firmware version
   _firmwareVersionLabel = new LabelView("Firmware:",Rect(xLabel,y,labelWidth,labelHeight));
   _firmwareVersion = new LabelView("Loading Info",Rect(xLabel+labelWidth+10,y,270-(xLabel+labelWidth+10+10),labelHeight));
   configureLabelView(_firmwareVersionLabel);
   configureLabelView(_firmwareVersion);
   y += labelHeight + yGap;
+
+  //Serial Number
+  _serialNumberLabel = new LabelView("Serial:",Rect(xLabel,y,labelWidth,labelHeight));
+  _serialNumber = new LabelView("Loading Info",Rect(xLabel,y + labelHeight + 4, 260,labelHeight));
+
+  configureLabelView(_serialNumberLabel);
+  configureLabelView(_serialNumber);
+  _serialNumber->setFont(&LiberationSans_8);
+  y += labelHeight + yGap;
+
+
 
   SidebarSceneController::onWillAppear();
 
@@ -143,12 +148,23 @@ bool SystemInfoScene::runTask(CommHeader &header, const uint8_t *data, size_t da
       //Read System info struct from data
       memcpy(&_systemInfo,data,sizeof(SystemInfo));
 
+      // read serial number from sd card
+      String path = "/serial";
+
+      if (SD.exists(path.c_str())) {
+        File _file = SD.open(path.c_str(), FILE_READ);
+        _file.read(_systemInfo.serialNumber, 36);
+        _systemInfo.serialNumber[37] = '\0';
+      } else {
+        strcpy(_systemInfo.serialNumber, "Missing!");
+      }
+
       _printerName->setText(_systemInfo.printerName);
       if (_systemInfo.networkMode == NetworkMode::AccessPoint) {
         _networkMode->setText("AccessPoint");
       }
       else if (_systemInfo.networkMode == NetworkMode::Client) {
-        _networkMode->setText("Connected to local network");
+        _networkMode->setText("Local network");
       }
       _ipaddress->setText(_systemInfo.ipaddress);
       _ssid->setText(_systemInfo.SSID);

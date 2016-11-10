@@ -31,7 +31,7 @@ struct SystemInfo {
     NetworkMode networkMode;
     char SSID[32];              //http://compnetworking.about.com/cs/wireless/g/bldef%5Fssid.htm
     char printerName[16];
-    char serialNumber[16];
+    char serialNumber[37];
     char firmwareVersion[5];
     int16_t buildNr;
     bool hasPassword;
