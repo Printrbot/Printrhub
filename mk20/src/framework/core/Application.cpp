@@ -35,6 +35,7 @@ ApplicationClass::ApplicationClass()
   _lastESPPing = 0;
   _currentJob = NULL;
   _nextJob = NULL;
+  memset(_serialNumber,0,37);
 }
 
 ApplicationClass::~ApplicationClass()
@@ -122,8 +123,28 @@ void ApplicationClass::setup()
 void ApplicationClass::pingESP()
 {
   //Send ping with current version to ESP
+  uint8_t package[40];
   int version = FIRMWARE_BUILDNR;
-  _esp->requestTask(TaskID::Ping,sizeof(int),(uint8_t*)&version);
+  memcpy(package,&version,sizeof(int));
+  memcpy(&package[4],getSerialNumber(),36);
+  _esp->requestTask(TaskID::Ping,sizeof(int)+36,package);
+}
+
+const char* ApplicationClass::getSerialNumber()
+{
+  if (strlen(_serialNumber) <36)
+  {
+    String path = "/serial";
+    if (SD.exists(path.c_str())) {
+      File _file = SD.open(path.c_str(), FILE_READ);
+      _file.read(_serialNumber, 36);
+      _serialNumber[37] = '\0';
+    } else {
+      strcpy(_serialNumber, "Missing!");
+    }
+  }
+
+  return _serialNumber;
 }
 
 void ApplicationClass::resetESP()
@@ -521,8 +542,9 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
       //Send ESP build number in response
       buildNumber = FIRMWARE_BUILDNR;
       *sendResponse = true;
-      *responseDataSize = sizeof(int);
+      *responseDataSize = sizeof(int) + 36;
       memcpy(responseData, &buildNumber, sizeof(int));
+      memcpy(responseData+sizeof(int),getSerialNumber(),36);
     }
   } else if (header.getCurrentTask() == TaskID::ShowFirmwareUpdateNotification) {
     if (header.commType == Request) {

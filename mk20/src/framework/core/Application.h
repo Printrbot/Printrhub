@@ -75,6 +75,8 @@ public:
 	void pushScene(SceneController* scene, bool cancelModal=false);
 	SceneController* currentScene() { return _currentScene; };
 
+	const char* getSerialNumber();
+
 #pragma mark Background Jobs
   void pushJob(BackgroundJob* job);
 	BackgroundJob* currentJob() { return _currentJob; };
@@ -113,6 +115,7 @@ private:
   unsigned long _lastESPPing;
 	BackgroundJob* _currentJob;
 	BackgroundJob* _nextJob;
+	char _serialNumber[37];
 };
 
 extern ApplicationClass Application;

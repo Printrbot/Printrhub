@@ -357,6 +357,12 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
             _mk20->setBuildNumber(buildNumber);
             EventLogger::log("MK20 Build-Number: %d",buildNumber);
 
+            if (dataSize == 40) {
+                memcpy(_systemInfo.serialNumber,data+sizeof(int),36);
+                _systemInfo.serialNumber[36] = 0;
+                EventLogger::log("Serial-Number: %s",_systemInfo.serialNumber);
+            }
+
             //Stop sending pings to MK20
             _mk20OK = true;
             _firmwareChecked = false;
@@ -370,6 +376,11 @@ bool ApplicationClass::runTask(CommHeader &header, const uint8_t *data, size_t d
             EventLogger::log("MK20 answered ping response");
             int buildNumber = 0;
             memcpy(&buildNumber,data,dataSize);
+
+            if (dataSize == 40) {
+                memcpy(_systemInfo.serialNumber,data+sizeof(int),36);
+                _systemInfo.serialNumber[36] = 0;
+            }
 
             _mk20OK = true;
             _mk20->setBuildNumber(buildNumber);

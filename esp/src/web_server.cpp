@@ -187,6 +187,7 @@ void WebServer::begin() {
     root["mk20"] = Application.isMK20Available();
     root["ipaddress"] = WiFi.localIP().toString();
     root["softapip"] = WiFi.softAPIP().toString();
+	root["serialnr"] = Application.getSystemInfo()->serialNumber;
 
     if (Application.getFirmwareUpdateInfo() != NULL) {
       root["fw_update"] = true;
