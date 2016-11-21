@@ -1,3 +1,37 @@
+/*
+ * Handles the communication and state handling with the g2 printer board. It needs to
+ * handle this communication without blocking the main loop. This results in a somewhat
+ * more complicated code. It's also important that g2 gets new GCodes all the time, so
+ * timing is important
+ *
+ * More Info and documentation:
+ * http://www.appfruits.com/2016/11/behind-the-scenes-printrbot-simple-2016/
+ *
+ * Copyright (c) 2016 Printrbot Inc.
+ * Author: Mick Balaban, Phillip Schuster
+ * https://github.com/Printrbot/Printrhub
+ *
+ * Developed in cooperation with Phillip Schuster (@appfruits) from appfruits.com
+ * http://www.appfruits.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 #include "Printr.h"
 #include <ArduinoJson.h>
 #include "SD.h"
@@ -6,18 +40,17 @@
 
 extern DataStore dataStore;
 
-Printr::Printr():
-readBuffer(PrintrBuffer()),
-_sendNext(true),
-_printing(false),
-_listener(NULL),
-_homeX(false),
-_homeY(false),
-_homeZ(false),
-_progress(0.0),
-_processedProgramLine(0),
-_currentAction(0)
-{
+Printr::Printr() :
+	readBuffer(PrintrBuffer()),
+	_sendNext(true),
+	_printing(false),
+	_listener(NULL),
+	_homeX(false),
+	_homeY(false),
+	_homeZ(false),
+	_progress(0.0),
+	_processedProgramLine(0),
+	_currentAction(0) {
   _setupCode = new MemoryStream(64);
   _waiting = false;
   _waitStart = 0;
@@ -79,172 +112,171 @@ void Printr::reset() {
 void Printr::loop() {
 
   if (_printrCurrentStatus == PRINTR_STATUS_INITIALIZING) {
-    //We only read and wait for status to become OK
-    readResponses();
+	//We only read and wait for status to become OK
+	readResponses();
   } else if (_printrCurrentStatus == PRINTR_STATUS_OK) {
-    //First Send Commands
-    sendCommands();
-    //Then read responses
-    readResponses();
+	//First Send Commands
+	sendCommands();
+	//Then read responses
+	readResponses();
   } else {
-    //Any other status is considered an error
+	//Any other status is considered an error
 
   }
 }
 
-bool Printr::queryCurrentLine(Stream* stream, int lineNumber) {
+bool Printr::queryCurrentLine(Stream *stream, int lineNumber) {
   if (!stream->available()) {
-    //Nothing to read from the stream
-    return false;
+	//Nothing to read from the stream
+	return false;
   }
 
   //Add a line number if necessary
   if (lineNumber > 0) {
-    _currentLineBuffer->print("N");
-    _currentLineBuffer->print(lineNumber);
-    _currentLineBuffer->print(" ");
+	_currentLineBuffer->print("N");
+	_currentLineBuffer->print(lineNumber);
+	_currentLineBuffer->print(" ");
   }
 
   //Now try to read the line
   bool lineRead = false;
   while (stream->available() > 0) {
-    int byte = stream->read();
-    if (byte < 0) {
-      //Stream is EOF
-      break;
-    } else {
-      _currentLineBuffer->write(byte);
-      if (byte == '\n') {
-        //This is the end of the line
-        lineRead = true;
-        break;
-      }
-    }
+	int byte = stream->read();
+	if (byte < 0) {
+	  //Stream is EOF
+	  break;
+	} else {
+	  _currentLineBuffer->write(byte);
+	  if (byte == '\n') {
+		//This is the end of the line
+		lineRead = true;
+		break;
+	  }
+	}
   }
 
   //We did not read a line, so flush the current line buffer
   if (!lineRead) {
-    _currentLineBuffer->flush();
+	_currentLineBuffer->flush();
   } else {
-    //Mark this line to not been sent yet
-    _lineSent = false;
+	//Mark this line to not been sent yet
+	_lineSent = false;
   }
 
   return lineRead;
 }
 
-void Printr::handlePBCode(const char* pbcode) {
+void Printr::handlePBCode(const char *pbcode) {
   String code(pbcode);
   if (code.startsWith(";PBCODE;wait;")) {
-    String durationString = code.replace(";PBCODE;wait;","");
-    int duration = durationString.toInt();
-    PRINTER_SPAM("Got a wait command: %d",duration);
+	String durationString = code.replace(";PBCODE;wait;", "");
+	int duration = durationString.toInt();
+	PRINTER_SPAM("Got a wait command: %d", duration);
 
-    _waiting = true;
-    _waitStart = millis();
-    _waitDuration = duration;
+	_waiting = true;
+	_waitStart = millis();
+	_waitDuration = duration;
   }
 }
 
 void Printr::sendCommands() {
   if (_linesToSend <= 0) {
-    return;
+	return;
   }
 
   //We had a wait command, let's wait if necessary
   if (_waiting) {
-    if ((millis() - _waitStart) > _waitDuration) {
-      _waiting = false;
-    } else {
-      return;
-    }
+	if ((millis() - _waitStart) > _waitDuration) {
+	  _waiting = false;
+	} else {
+	  return;
+	}
   }
 
   if (_lineSent) {
-    //The current line has been sent, get a new one
-    if (_currentMode == PrintrMode::ImmediateMode) {
-      //Only send commands from the buffer
-      if (queryCurrentLine(_setupCode)) {
-        PRINTER_SPAM("Immediate-Mode: Queried new line from setupCode: %s",_currentLineBuffer->c_str());
-      }
-    } else if (_currentMode == PrintrMode::PrintMode) {
-      //If we are in print mode, we work through the setup buffer, after that we switch to the file
-      if (queryCurrentLine(_setupCode)) {
-        PRINTER_SPAM("Print-Mode: Queried new line from setupCode: %s",_currentLineBuffer->c_str());
-      } else {
-        //Setup buffer has been sent, switch to file
-        if (_printFile) {
-          if (queryCurrentLine(&_printFile,_lastSentProgramLine)) {
-            PRINTER_SPAM("Print-Mode: Queried new line from print file: %s",_currentLineBuffer->c_str());
-            _lastSentProgramLine++;
-          }
-        }
-      }
-    }
+	//The current line has been sent, get a new one
+	if (_currentMode == PrintrMode::ImmediateMode) {
+	  //Only send commands from the buffer
+	  if (queryCurrentLine(_setupCode)) {
+		PRINTER_SPAM("Immediate-Mode: Queried new line from setupCode: %s", _currentLineBuffer->c_str());
+	  }
+	} else if (_currentMode == PrintrMode::PrintMode) {
+	  //If we are in print mode, we work through the setup buffer, after that we switch to the file
+	  if (queryCurrentLine(_setupCode)) {
+		PRINTER_SPAM("Print-Mode: Queried new line from setupCode: %s", _currentLineBuffer->c_str());
+	  } else {
+		//Setup buffer has been sent, switch to file
+		if (_printFile) {
+		  if (queryCurrentLine(&_printFile, _lastSentProgramLine)) {
+			PRINTER_SPAM("Print-Mode: Queried new line from print file: %s", _currentLineBuffer->c_str());
+			_lastSentProgramLine++;
+		  }
+		}
+	  }
+	}
   } else {
-    //Line has not been sent yet, try to send it now
-    if (_currentLineBuffer->available() <= 0) {
-      _lineSent = true;
-    } else if (_currentLineBuffer->peek() == ';') {
-      if (strncmp(";PBCODE;", _currentLineBuffer->c_str(), strlen(";PBCODE;")) == 0) {
-        //We got a PB code, do something about it
-        PRINTER_SPAM("Got a PBCODE: %s", _currentLineBuffer->c_str());
-        handlePBCode(_currentLineBuffer->c_str());
-      } else {
-        //This is a comment, skip that
-        PRINTER_SPAM("Skipped comment: %s", _currentLineBuffer->c_str());
-      }
+	//Line has not been sent yet, try to send it now
+	if (_currentLineBuffer->available() <= 0) {
+	  _lineSent = true;
+	} else if (_currentLineBuffer->peek() == ';') {
+	  if (strncmp(";PBCODE;", _currentLineBuffer->c_str(), strlen(";PBCODE;")) == 0) {
+		//We got a PB code, do something about it
+		PRINTER_SPAM("Got a PBCODE: %s", _currentLineBuffer->c_str());
+		handlePBCode(_currentLineBuffer->c_str());
+	  } else {
+		//This is a comment, skip that
+		PRINTER_SPAM("Skipped comment: %s", _currentLineBuffer->c_str());
+	  }
 
-      _lineSent = true;
-      _currentLineBuffer->flush();
-    } else if (_currentLineBuffer->peek() == '\n') {
-      PRINTER_SPAM("Just got a newline");
-      _lineSent = true;
-      _currentLineBuffer->flush();
-    } else {
-      //This line is ok, send it to the printer if enough space is in the buffer
-      while (true) {
-        if (Serial1.availableForWrite() <= 0) {
-          //We cannot send anything now, break out
-          break;
-        } else {
-          int byte = _currentLineBuffer->read();
-          if (byte < 0) {
-            //This line has been sent completely
-            _lineSent = true;
-            _currentLineBuffer->flush();
-            _linesToSend--;
-            PRINTER_SPAM("Line sent, lines left to send: %d",_linesToSend);
-            break;
-          } else {
-            //Write the byte we just read to the printr
-            Serial1.write(byte);
-          }
-        }
-      }
-    }
+	  _lineSent = true;
+	  _currentLineBuffer->flush();
+	} else if (_currentLineBuffer->peek() == '\n') {
+	  PRINTER_SPAM("Just got a newline");
+	  _lineSent = true;
+	  _currentLineBuffer->flush();
+	} else {
+	  //This line is ok, send it to the printer if enough space is in the buffer
+	  while (true) {
+		if (Serial1.availableForWrite() <= 0) {
+		  //We cannot send anything now, break out
+		  break;
+		} else {
+		  int byte = _currentLineBuffer->read();
+		  if (byte < 0) {
+			//This line has been sent completely
+			_lineSent = true;
+			_currentLineBuffer->flush();
+			_linesToSend--;
+			PRINTER_SPAM("Line sent, lines left to send: %d", _linesToSend);
+			break;
+		  } else {
+			//Write the byte we just read to the printr
+			Serial1.write(byte);
+		  }
+		}
+	  }
+	}
   }
 }
 
 void Printr::readResponses() {
   //Read from Serial
   if (Serial1.available()) {
-    digitalWrite(CODE_INDICATOR_1,LOW);
-    while (Serial1.available()) {
-      readBuffer.line_buff[readBuffer.line_idx] = Serial1.read();
-      if (readBuffer.line_buff[readBuffer.line_idx] == '\n') {
-        readBuffer.line_buff[readBuffer.line_idx + 1] = '\0';
-        parseResponse();
-        readBuffer.line_idx = 0;
-        readBuffer.line_buff[0] = '\0';
+	digitalWrite(CODE_INDICATOR_1, LOW);
+	while (Serial1.available()) {
+	  readBuffer.line_buff[readBuffer.line_idx] = Serial1.read();
+	  if (readBuffer.line_buff[readBuffer.line_idx] == '\n') {
+		readBuffer.line_buff[readBuffer.line_idx + 1] = '\0';
+		parseResponse();
+		readBuffer.line_idx = 0;
+		readBuffer.line_buff[0] = '\0';
 
-        //We want to exit to loop once we read a line
-        break;
-      }
-      else
-        readBuffer.line_idx++;
-    }
-    digitalWrite(CODE_INDICATOR_1,HIGH);
+		//We want to exit to loop once we read a line
+		break;
+	  } else
+		readBuffer.line_idx++;
+	}
+	digitalWrite(CODE_INDICATOR_1, HIGH);
   }
 }
 
@@ -257,7 +289,7 @@ void Printr::stopAndFlush() {
 }
 
 int Printr::startJob(String filePath) {
-  PRINTER_NOTICE("Printing file: %s",filePath.c_str());
+  PRINTER_NOTICE("Printing file: %s", filePath.c_str());
   _printFile = SD.open(filePath.c_str(), FILE_READ);
 
   _totalProgramLines = -1;
@@ -267,27 +299,27 @@ int Printr::startJob(String filePath) {
   char i[2];
   _printFile.read(&i, 2);
   if (i[0] == ';' && i[1] == '{') {
-    // found json string in header, parse it now
-    _printFile.seek(1);
-    String js = _printFile.readStringUntil('\n');
+	// found json string in header, parse it now
+	_printFile.seek(1);
+	String js = _printFile.readStringUntil('\n');
 
-    StaticJsonBuffer<512> jb;
-    JsonObject& h = jb.parseObject(js);
+	StaticJsonBuffer<512> jb;
+	JsonObject &h = jb.parseObject(js);
 
-    if (h.success()) {
-      _totalProgramLines= h["lines"];
-      _totalPrintTime = h["time"];
-      const char * ptr = h["readable"];
-      _printTimeReadable = String(ptr);
-      _printVolume = h["volume"];
-      _printFilamentLength = h["filament"];
-      _printSupport = h["support"];
-      _printBrim = h["brim"];
-      const char * res = h["resolution"];
-      _printResolution = String(res);
-      const char * infill = h["infill"];
-      _printInfill = String(infill);
-    }
+	if (h.success()) {
+	  _totalProgramLines = h["lines"];
+	  _totalPrintTime = h["time"];
+	  const char *ptr = h["readable"];
+	  _printTimeReadable = String(ptr);
+	  _printVolume = h["volume"];
+	  _printFilamentLength = h["filament"];
+	  _printSupport = h["support"];
+	  _printBrim = h["brim"];
+	  const char *res = h["resolution"];
+	  _printResolution = String(res);
+	  const char *infill = h["infill"];
+	  _printInfill = String(infill);
+	}
   }
 
   startListening();
@@ -300,11 +332,10 @@ int Printr::startJob(String filePath) {
 void Printr::runJobStartGCode() {
   _currentMode = PrintrMode::PrintMode;
 
-
   _lastSentProgramLine = 1;
   _processedProgramLine = 0;
 
-  Material * _selectedMaterial = dataStore.getLoadedMaterial();
+  Material *_selectedMaterial = dataStore.getLoadedMaterial();
   // set temperature
   char tempCmd[20];
   sprintf(tempCmd, "M100({he1st:%d})", _selectedMaterial->temperature);
@@ -314,7 +345,7 @@ void Printr::runJobStartGCode() {
   // adjust speed
   // we will use 1620 as 100% maximum extruder speed
   char speedCmd[20];
-  int aJm = 1620 * (float) (_selectedMaterial->speed/100.0);
+  int aJm = 1620 * (float) (_selectedMaterial->speed / 100.0);
   sprintf(speedCmd, "M100({afr:%d})", aJm);
   sendLine(speedCmd);
 
@@ -361,7 +392,6 @@ void Printr::runJobStartGCode() {
   sendLine("G92 A0");
 }
 
-
 void Printr::cancelCurrentJob() {
   _currentMode = PrintrMode::ImmediateMode;
   _currentLineBuffer->flush();
@@ -396,10 +426,10 @@ void Printr::homeZ() {
 void Printr::programEnd(bool success) {
 
   if (!_printing)
-    return;
+	return;
 
   if (_currentMode != PrintrMode::PrintMode)
-    return;
+	return;
 
   //sendLine("M100({_leds:4})");
 
@@ -415,13 +445,13 @@ void Printr::programEnd(bool success) {
   turnOffHotend();
   stopListening();
   if (_listener != nullptr) {
-    _listener->onPrintComplete(success);
+	_listener->onPrintComplete(success);
   }
 }
 
 void Printr::sendLine(String line) {
   if (_setupCode->println(line) <= 0) {
-    PRINTER_ERROR("Could not send line: %s",line.c_str());
+	PRINTER_ERROR("Could not send line: %s", line.c_str());
   }
 }
 
@@ -433,110 +463,110 @@ void Printr::sendWaitCommand(int millis) {
 
 void Printr::parseResponse() {
 
-  char * line = readBuffer.line_buff;
+  char *line = readBuffer.line_buff;
 
-  PRINTER_SPAM("Received line: %s",line);
+  PRINTER_SPAM("Received line: %s", line);
 
   if (line[0] == '{') {
-    StaticJsonBuffer<512> jsonBuffer;
-    StaticJsonBuffer<512> rBuffer;
-    StaticJsonBuffer<512> fBuffer;
+	StaticJsonBuffer<512> jsonBuffer;
+	StaticJsonBuffer<512> rBuffer;
+	StaticJsonBuffer<512> fBuffer;
 
-    JsonObject& o = jsonBuffer.parseObject(line);
+	JsonObject &o = jsonBuffer.parseObject(line);
 
-    if (!o.success()) {
-      // failed...
-      PRINTER_ERROR("Could not parse printer response: %s",line);
-      digitalWrite(CODE_INDICATOR_2,LOW);
-      delayMicroseconds(5);
-      digitalWrite(CODE_INDICATOR_2,HIGH);
+	if (!o.success()) {
+	  // failed...
+	  PRINTER_ERROR("Could not parse printer response: %s", line);
+	  digitalWrite(CODE_INDICATOR_2, LOW);
+	  delayMicroseconds(5);
+	  digitalWrite(CODE_INDICATOR_2, HIGH);
 
-      //Make sure we proceed sending data so we don't stall
-      _sendNext = true;
-    } else {
-      // Parse status response
-      String sr = o["sr"];
-      String r = o["r"];
-      String f = o["f"];
+	  //Make sure we proceed sending data so we don't stall
+	  _sendNext = true;
+	} else {
+	  // Parse status response
+	  String sr = o["sr"];
+	  String r = o["r"];
+	  String f = o["f"];
 
-      if (sr.length() > 0) {
-        JsonObject& _sr = rBuffer.parseObject(sr);
-        // {sr: {stat:0}}
-        // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
-        if (_sr["stat"]) {
-          _stat = _sr["stat"];
-          switch(_stat) {
-            case PRINTR_STAT_ALARM:
-              // hmmmm ... need to handle this better
-              // alarm
-              Display.fillRect(0,0,320,240,ILI9341_RED);
-              Display.setCursor(10,10);
-              Display.setTextColor(ILI9341_WHITE);
-              Display.println("ALARM: machine is in alarm state!");
-              Display.setCursor(10,30);
-              Display.println(_stat);
-              Display.fadeIn();
-              break;
-              
-            case PRINTR_STAT_PROGRAM_END:
-              // program end via M2, M30
-              // finish print if printing
-              PRINTER_NOTICE("Printer finished, closing");
-              programEnd(true);
-              break;
-          }
-        }
+	  if (sr.length() > 0) {
+		JsonObject &_sr = rBuffer.parseObject(sr);
+		// {sr: {stat:0}}
+		// https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
+		if (_sr["stat"]) {
+		  _stat = _sr["stat"];
+		  switch (_stat) {
+			case PRINTR_STAT_ALARM:
+			  // hmmmm ... need to handle this better
+			  // alarm
+			  Display.fillRect(0, 0, 320, 240, ILI9341_RED);
+			  Display.setCursor(10, 10);
+			  Display.setTextColor(ILI9341_WHITE);
+			  Display.println("ALARM: machine is in alarm state!");
+			  Display.setCursor(10, 30);
+			  Display.println(_stat);
+			  Display.fadeIn();
+			  break;
+
+			case PRINTR_STAT_PROGRAM_END:
+			  // program end via M2, M30
+			  // finish print if printing
+			  PRINTER_NOTICE("Printer finished, closing");
+			  programEnd(true);
+			  break;
+		  }
+		}
 
 
-        // parse hotend 1 temperature
-        if (_sr["he1t"]) {
-          _hotend1Temp = (float) _sr["he1t"];
-          if (_listener != NULL) {
-            _listener->onNewNozzleTemperature(_hotend1Temp);
-          }
-        }
+		// parse hotend 1 temperature
+		if (_sr["he1t"]) {
+		  _hotend1Temp = (float) _sr["he1t"];
+		  if (_listener != NULL) {
+			_listener->onNewNozzleTemperature(_hotend1Temp);
+		  }
+		}
 
-        if (_sr["line"]) {
-          _sendNext = true;
-          _processedProgramLine = _sr["line"];
+		if (_sr["line"]) {
+		  _sendNext = true;
+		  _processedProgramLine = _sr["line"];
 
-          _progress = ((float)_processedProgramLine / (float)_totalProgramLines);
-          if (_listener != NULL) {
-            _listener->onPrintProgress(_progress);
-          }
-        }
-      }
+		  _progress = ((float) _processedProgramLine / (float) _totalProgramLines);
+		  if (_listener != NULL) {
+			_listener->onPrintProgress(_progress);
+		  }
+		}
+	  }
 
-      //Parse line response
-      if (r.length() > 0) {
-        JsonObject& _r = rBuffer.parseObject(r);
-        if (_r["n"]) {
-          _processedProgramLine = _r["n"];
-          _progress = ((float)_processedProgramLine / (float)_totalProgramLines);
-          if (_listener != NULL) {
-            _listener->onPrintProgress(_progress);
-          }
-        }
+	  //Parse line response
+	  if (r.length() > 0) {
+		JsonObject &_r = rBuffer.parseObject(r);
+		if (_r["n"]) {
+		  _processedProgramLine = _r["n"];
+		  _progress = ((float) _processedProgramLine / (float) _totalProgramLines);
+		  if (_listener != NULL) {
+			_listener->onPrintProgress(_progress);
+		  }
+		}
 
-        //We got a r-response, so increment number of lines that can be sent
-        _linesToSend++;
+		//We got a r-response, so increment number of lines that can be sent
+		_linesToSend++;
 
-        PRINTER_SPAM("Got a r message, line-nr: %d, progress: %d",_processedProgramLine,(int)(_progress*100.0f));
-      }
+		PRINTER_SPAM("Got a r message, line-nr: %d, progress: %d", _processedProgramLine, (int) (_progress * 100.0f));
+	  }
 
-      //Parse status
-      if (f.length() > 0) {
-        JsonArray& _f = fBuffer.parseArray(f);
-        if (_f.size() <= 0) {
-          //Parsing failed
-          PRINTER_ERROR("Got status array, but could not parse it: %s",f.c_str());
-        } else {
-          //Parsing successful, save values
-          _printrCurrentStatus = _f[1];
-          _printrBufferSize = _f[2];
-          PRINTER_SPAM("Got status: %s, Status-Code: %d, Available line buffer: %d, Lines to send: %d",f.c_str(),_printrCurrentStatus,_printrBufferSize,_linesToSend);
-        }
-      }
-    }
+	  //Parse status
+	  if (f.length() > 0) {
+		JsonArray &_f = fBuffer.parseArray(f);
+		if (_f.size() <= 0) {
+		  //Parsing failed
+		  PRINTER_ERROR("Got status array, but could not parse it: %s", f.c_str());
+		} else {
+		  //Parsing successful, save values
+		  _printrCurrentStatus = _f[1];
+		  _printrBufferSize = _f[2];
+		  PRINTER_SPAM("Got status: %s, Status-Code: %d, Available line buffer: %d, Lines to send: %d", f.c_str(), _printrCurrentStatus, _printrBufferSize, _linesToSend);
+		}
+	  }
+	}
   }
 }

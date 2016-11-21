@@ -1,3 +1,35 @@
+/*
+ * Shows user details about the print and a progress bar, handles main printer
+ * communication
+ *
+ * More Info and documentation:
+ * http://www.appfruits.com/2016/11/behind-the-scenes-printrbot-simple-2016/
+ *
+ * Copyright (c) 2016 Printrbot Inc.
+ * Author: Mick Balaban
+ * https://github.com/Printrbot/Printrhub
+ *
+ * Developed in cooperation with Phillip Schuster (@appfruits) from appfruits.com
+ * http://www.appfruits.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 #include "PrintStatusScene.h"
 #include "framework/views/ProgressBar.h"
 #include "ConfirmCancelPrint.h"
@@ -13,11 +45,11 @@ extern UIBitmaps uiBitmaps;
 extern Printr printr;
 extern int lastJobIndex;
 
-PrintStatusScene::PrintStatusScene(String jobFilePath, Project project, Job job):
-  SidebarSceneController::SidebarSceneController(),
-  _jobFilePath(jobFilePath),
-  _project(project),
-  _job(job) {
+PrintStatusScene::PrintStatusScene(String jobFilePath, Project project, Job job) :
+	SidebarSceneController::SidebarSceneController(),
+	_jobFilePath(jobFilePath),
+	_project(project),
+	_job(job) {
   printr.setListener(this);
 }
 
@@ -25,12 +57,11 @@ PrintStatusScene::~PrintStatusScene() {
   printr.setListener(nullptr);
 }
 
-UIBitmap * PrintStatusScene::getSidebarBitmap() {
+UIBitmap *PrintStatusScene::getSidebarBitmap() {
   return &uiBitmaps.sidebar_printing;
 }
 
-
-UIBitmap * PrintStatusScene::getSidebarIcon() {
+UIBitmap *PrintStatusScene::getSidebarIcon() {
   return &uiBitmaps.btn_exit;
 }
 
@@ -46,20 +77,20 @@ void PrintStatusScene::onWillAppear() {
 
   // start the print only if not running already (in case we are returning from CancelPrint scene)
   if (!printr.isPrinting()) {
-    _totalJobLines = printr.startJob(_jobFilePath);
+	_totalJobLines = printr.startJob(_jobFilePath);
   } else {
-    _totalJobLines = printr.getTotalJobLines();
+	_totalJobLines = printr.getTotalJobLines();
   }
 
   // display job image
   String _projectFilePath = String("/projects/" + String(_project.index));
-  _imageLayer = new SDBitmapLayer(Rect(0,0,270,240));
-  _imageLayer->setBitmap(_projectFilePath.c_str(), 270,240,  129675 + (129899 * lastJobIndex) + 299);
+  _imageLayer = new SDBitmapLayer(Rect(0, 0, 270, 240));
+  _imageLayer->setBitmap(_projectFilePath.c_str(), 270, 240, 129675 + (129899 * lastJobIndex) + 299);
 
   Display.setFixedBackgroundLayer(_imageLayer);
 
   // job title
-  _nameLayer = new TransparentTextLayer(Rect(15,10,Display.getLayoutWidth()-30,25));
+  _nameLayer = new TransparentTextLayer(Rect(15, 10, Display.getLayoutWidth() - 30, 25));
   _nameLayer->setTextAlign(TEXTALIGN_LEFT);
   _nameLayer->setFont(&LiberationSans_14);
   _nameLayer->setText(String(_job.title));
@@ -67,7 +98,7 @@ void PrintStatusScene::onWillAppear() {
   Display.addLayer(_nameLayer);
 
   // print time
-  _printTime = new TransparentTextLayer(Rect(10,100,Display.getLayoutWidth()-30,60));
+  _printTime = new TransparentTextLayer(Rect(10, 100, Display.getLayoutWidth() - 30, 60));
   _printTime->setTextAlign(TEXTALIGN_LEFT);
   _printTime->setFont(&LiberationSans_12);
   _printTime->setText(String("Print Time: ") + printr.getPrintTime());
@@ -75,7 +106,7 @@ void PrintStatusScene::onWillAppear() {
   Display.addLayer(_printTime);
 
   // Resolution
-  _resolution = new TransparentTextLayer(Rect(10,120,Display.getLayoutWidth()-30,60));
+  _resolution = new TransparentTextLayer(Rect(10, 120, Display.getLayoutWidth() - 30, 60));
   _resolution->setTextAlign(TEXTALIGN_LEFT);
   _resolution->setFont(&LiberationSans_12);
   _resolution->setText(String("Resolution: ") + printr.getResolution());
@@ -83,7 +114,7 @@ void PrintStatusScene::onWillAppear() {
   Display.addLayer(_resolution);
 
   // Infill
-  _infill = new TransparentTextLayer(Rect(10,140,Display.getLayoutWidth()-30,60));
+  _infill = new TransparentTextLayer(Rect(10, 140, Display.getLayoutWidth() - 30, 60));
   _infill->setTextAlign(TEXTALIGN_LEFT);
   _infill->setFont(&LiberationSans_12);
   _infill->setText(String("Infill: ") + printr.getInfill());
@@ -91,7 +122,7 @@ void PrintStatusScene::onWillAppear() {
   Display.addLayer(_infill);
 
   // Support
-  _support = new TransparentTextLayer(Rect(10,160,Display.getLayoutWidth()-30,60));
+  _support = new TransparentTextLayer(Rect(10, 160, Display.getLayoutWidth() - 30, 60));
   _support->setTextAlign(TEXTALIGN_LEFT);
   _support->setFont(&LiberationSans_12);
   _support->setText(String("Print Support: ") + printr.getSupport());
@@ -99,7 +130,7 @@ void PrintStatusScene::onWillAppear() {
   Display.addLayer(_support);
 
   // Filament required
-  _filament = new TransparentTextLayer(Rect(10,180,Display.getLayoutWidth()-30,60));
+  _filament = new TransparentTextLayer(Rect(10, 180, Display.getLayoutWidth() - 30, 60));
   _filament->setTextAlign(TEXTALIGN_LEFT);
   _filament->setFont(&LiberationSans_12);
   _filament->setText(String("Filament required: ") + printr.getFilamentLength());
@@ -108,7 +139,7 @@ void PrintStatusScene::onWillAppear() {
 
 
   // progress bar
-  _progressBar = new ProgressBar(Rect(0,228,Display.getLayoutWidth(),12));
+  _progressBar = new ProgressBar(Rect(0, 228, Display.getLayoutWidth(), 12));
   _progressBar->setValue(0.0f);
   _progressBar->setBackgroundColor(RGB565(233, 154, 36));
   addView(_progressBar);
@@ -126,19 +157,16 @@ void PrintStatusScene::onPrintProgress(float progress) {
 
 void PrintStatusScene::onPrintComplete(bool success) {
   printr.setListener(NULL);
-  FinishPrint * scene = new FinishPrint(_jobFilePath, _project, _job);
+  FinishPrint *scene = new FinishPrint(_jobFilePath, _project, _job);
   Application.pushScene(scene, true);
 }
 
-void PrintStatusScene::loop()
-{
+void PrintStatusScene::loop() {
   SceneController::loop();
 }
 
-
-
 void PrintStatusScene::buttonPressed(void *button) {
   printr.setListener(NULL);
-  ConfirmCancelPrint * scene = new ConfirmCancelPrint(&_jobFilePath, &_project, &_job);
+  ConfirmCancelPrint *scene = new ConfirmCancelPrint(&_jobFilePath, &_project, &_job);
   Application.pushScene(scene, true);
 }

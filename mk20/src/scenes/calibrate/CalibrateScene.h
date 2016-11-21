@@ -1,3 +1,35 @@
+/*
+ * Shows a user interface that allows the user to calibrate the printers z
+ * position.
+ *
+ * More Info and documentation:
+ * http://www.appfruits.com/2016/11/behind-the-scenes-printrbot-simple-2016/
+ *
+ * Copyright (c) 2016 Printrbot Inc.
+ * Author: Mick Balaban
+ * https://github.com/Printrbot/Printrhub
+ *
+ * Developed in cooperation with Phillip Schuster (@appfruits) from appfruits.com
+ * http://www.appfruits.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 #ifndef CALIBRATE_SCENE_H
 #define CALIBRATE_SCENE_H
 
@@ -5,29 +37,29 @@
 #include "framework/views/BitmapButton.h"
 #include "framework/layers/TextLayer.h"
 
-class CalibrateScene: public SidebarSceneController {
-public:
+class CalibrateScene : public SidebarSceneController {
+ public:
 
-	CalibrateScene();
+  CalibrateScene();
   virtual ~CalibrateScene();
 
-	virtual void onSidebarButtonTouchUp() override;
+  virtual void onSidebarButtonTouchUp() override;
 
-	virtual uint16_t getBackgroundColor() override;
-	virtual UIBitmap * getSidebarBitmap() override;
-	virtual UIBitmap * getSidebarIcon() override;
+  virtual uint16_t getBackgroundColor() override;
+  virtual UIBitmap *getSidebarBitmap() override;
+  virtual UIBitmap *getSidebarIcon() override;
 
-private:
+ private:
   virtual void onWillAppear() override;
   String getName() override;
   virtual void buttonPressed(void *button) override;
-	float _offset;
+  float _offset;
 
-protected:
-	TextLayer* _offsetText;
-	BitmapButton* _saveBtn;
-	BitmapButton* _plusBtn;
-	BitmapButton* _minusBtn;
+ protected:
+  TextLayer *_offsetText;
+  BitmapButton *_saveBtn;
+  BitmapButton *_plusBtn;
+  BitmapButton *_minusBtn;
 
 };
 
