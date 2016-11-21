@@ -1,8 +1,31 @@
+/*
+ * Updates the ESP firmware over the air (using WiFi)
+ *
+ * Copyright (c) 2016 Printrbot Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+
 #include <EEPROM.h>
 #include "config.h"
 //#include "card.h"
 #include "Arduino.h"
-
 
 ConfigData data = ConfigData();
 
@@ -12,8 +35,8 @@ ConfigData data = ConfigData();
 #define STORE_VAR(pos, value) write(pos, (uint8_t*)&value, sizeof(value))
 #define READ_VAR(pos, value) read(pos, (uint8_t*)&value, sizeof(value))
 
-Config::Config():
-data(ConfigData()) {
+Config::Config() :
+	data(ConfigData()) {
   EEPROM.begin(EEPROM_SIZE);
   load();
 }
@@ -54,34 +77,33 @@ void Config::save() {
   EEPROM.commit();
 }
 
-void Config::clear()
-{
-  for (int i=EEPROM_OFFSET;i<EEPROM_OFFSET+EEPROM_SIZE;i++) {
-    EEPROM.write(i,0);
+void Config::clear() {
+  for (int i = EEPROM_OFFSET; i < EEPROM_OFFSET + EEPROM_SIZE; i++) {
+	EEPROM.write(i, 0);
   }
 
   //Setup default data
   data.blank = false;
   data.accessPoint = false;
-  strcpy(data.name,"printrbot");
+  strcpy(data.name, "printrbot");
   data.locked = false;
 
   save();
 }
 
-void Config::write(int &pos, uint8_t* value, uint8_t size) {
-  for (uint8_t i=0; i<size; i++) {
-    EEPROM.write(pos, *value);
-    pos++;
-    value++;
-    delay(20);
+void Config::write(int &pos, uint8_t *value, uint8_t size) {
+  for (uint8_t i = 0; i < size; i++) {
+	EEPROM.write(pos, *value);
+	pos++;
+	value++;
+	delay(20);
   }
 }
 
-void Config::read(int &pos, uint8_t* value, uint8_t size) {
-  for (uint8_t i=0; i<size; i++) {
-    *value = EEPROM.read(pos);
-    pos++;
-    value++;
+void Config::read(int &pos, uint8_t *value, uint8_t size) {
+  for (uint8_t i = 0; i < size; i++) {
+	*value = EEPROM.read(pos);
+	pos++;
+	value++;
   }
 }
