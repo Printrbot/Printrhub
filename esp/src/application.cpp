@@ -3,7 +3,6 @@
 #include "hal.h"
 #include "config.h"
 #include "controllers/ManageWifi.h"
-#include "controllers/DownloadFile.h"
 #include "controllers/DownloadFileToSDCard.h"
 #include "controllers/PushFileToSDCard.h"
 #include <EEPROM.h>

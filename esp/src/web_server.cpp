@@ -9,7 +9,6 @@
 #include "controllers/DownloadFileToSPIFFs.h"
 #include "controllers/PushFileToSDCard.h"
 #include "core/Mode.h"
-#include "controllers/DownloadFile.h"
 #include "controllers/Idle.h"
 #include "Application.h"
 #include "AsyncJson.h"
