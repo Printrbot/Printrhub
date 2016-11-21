@@ -5,7 +5,6 @@
 #include <SoftwareSerial.h>
 #include "Adafruit_FT6206.h"
 #include "scenes/IdleSceneController.h"
-#include "scenes/MainSceneController.h"
 //#include "SD/SD_t3.h"
 #include "scenes/projects/ProjectsScene.h"
 

@@ -12,7 +12,6 @@
 //#include "print/CleanPlasticSceneController.h"
 //#include "ConfirmSceneController.h"
 #include "framework/views/ProgressBar.h"
-#include "MainSceneController.h"
 #include "UIBitmaps.h"
 #include "font_LiberationSans.h"
 
