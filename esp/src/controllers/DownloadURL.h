@@ -3,7 +3,12 @@
  * request and response details and calls a few functions that must be
  * overridden by the subclass to handle incoming data and errors.
  *
+  * More Info and documentation:
+ * http://www.appfruits.com/2016/11/behind-the-scenes-printrbot-simple-2016/
+ *
  * Copyright (c) 2016 Printrbot Inc.
+ * Author: Phillip Schuster
+ * https://github.com/Printrbot/Printrhub
  *
  * Developed in cooperation by Phillip Schuster (@appfruits) from appfruits.com
  * http://www.appfruits.com

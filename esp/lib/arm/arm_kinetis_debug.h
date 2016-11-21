@@ -22,6 +22,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/*
+ * Added longword programming and Flasher class that adds support for Teensy 3.1/3.2
+ *
+ * Phillip Schuster (@appfruits)
+ * http://www.appfruits.com
+ *
+ * Developed for Printrbot Simple 2016
+ * http://www.printrbot.com
+ */
+
 #pragma once
 #include "arm_debug.h"
 #include "FS.h"

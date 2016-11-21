@@ -2,7 +2,12 @@
  * Web server that is initiated and permits users and the cloud to trigger certain
  * actions from the outside by just starting a GET request with a specific URL
  *
+ * More Info and documentation:
+ * http://www.appfruits.com/2016/11/printrbot-simple-2016-commstack-explained
+ *
  * Copyright (c) 2016 Printrbot Inc.
+ * Author: Mick Balaban, Phillip Schuster
+ * https://github.com/Printrbot/Printrhub
  *
  * Developed in cooperation with Phillip Schuster (@appfruits) from appfruits.com
  * http://www.appfruits.com

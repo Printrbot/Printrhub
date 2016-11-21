@@ -2,10 +2,12 @@
  * Bidirectional, asynchronous, fast , reliable request/response based protocol
  * based on UART (Serial) connections
  *
- * Documentation and more info can be found here:
- * http://www.appfruits.com/commstack
+ * More Info and documentation:
+ * http://www.appfruits.com/2016/11/printrbot-simple-2016-commstack-explained
  *
  * Copyright (c) 2016 Printrbot Inc.
+ * Author: Phillip Schuster
+ * https://github.com/Printrbot/Printrhub
  *
  * Developed in cooperation by Phillip Schuster (@appfruits) from appfruits.com
  * http://www.appfruits.com

@@ -4,7 +4,12 @@
  * falls back to access port mode where ESP creates a small HTTP server that can
  * be used to configure the WiFi connection settings.
  *
+ * More Info and documentation:
+ * http://www.appfruits.com/2016/11/behind-the-scenes-printrbot-simple-2016/
+ *
  * Copyright (c) 2016 Printrbot Inc.
+ * Author: Mick Balaban
+ * https://github.com/Printrbot/Printrhub
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
