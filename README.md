@@ -4,7 +4,7 @@ Welcome and thank you for your interest in our Printrhub technology. In this rep
 
 ## Purpose of the Printrhub
 
-The Printrhub is the display component of the printer and thus is the main user interface. The user can select, start, modify and pause prints or setup the printer with it. A fluid user interface controlled by touch as you know it from your smartphone let's anyone can start a print. The Hub also controls the printer and handles communication with the Printrbot cloud.
+The Printrhub is the display component of our 3D printer Simple 2016 (http://printrbot.com/new-2016-simple/) and thus is the main user interface. The user can select, start, modify and pause prints or setup the printer with it. A fluid user interface controlled by touch as you know it from your smartphone let's anyone can start a print. The Hub also controls the printer and handles communication with the Printrbot cloud.
 
 The Printrhub contains these components that form the final hardware
 
