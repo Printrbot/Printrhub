@@ -18,11 +18,11 @@ As our board hosts two MCUs we need two different firmware, one for the ESP-12E 
 
 ## Organization of this repository
 
-/esp: The firmware for the ESP-12E WiFi module
-/mk20: Contains the firmware for the main processor
-/pcb: Revisions 0.1, and 0.4 (final revision) of the PCB as Eagle and Copper files (for BOM and 3D views)
-/utils: The image tool that we use to build the ui.min file that contains all images used by the firmware combined in one file
-/sdcard: The initial content of the SD card that we ship with your printer (contains firmware images and root folder structure)
+* **/esp**: The firmware for the ESP-12E WiFi module
+* **/mk20**: Contains the firmware for the main processor
+* **/pcb**: Revisions 0.1, and 0.4 (final revision) of the PCB as Eagle and Copper files (for BOM and 3D views)
+* **/utils**: The image tool that we use to build the ui.min file that contains all images used by the firmware combined in one file
+* **/sdcard**: The initial content of the SD card that we ship with your printer (contains firmware images and root folder structure)
  
 ## Documentation
   
