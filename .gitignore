@@ -1,0 +1,12 @@
+esp/lib/ESP*
+esp/lib/HttpClient
+esp/.pioenvs
+mk20/.pioenvs
+utils/firmware/node_modules
+imagetool/idx/.DS_Store
+utils/firmware/*
+utils/imagetool/node_modules
+mk20/.idea/*
+CMakeLists.txt
+CMakeListsPrivate.txt
+*.bin

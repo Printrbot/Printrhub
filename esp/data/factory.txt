@@ -1,0 +1,5 @@
+ESP firmware will check for this file. If it does exist ESP will do this:
+
+1. Clear EEPROM to 0 bytes from 0 - 512
+2. Flash MK20 with firmware found in /firmware/mk20.bin
+3. Remove factory.txt from /firmware folder

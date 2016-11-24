@@ -1,0 +1,1 @@
+cp .pioenvs/esp12e/firmware.bin ../utils/firmware/files/esp.bin

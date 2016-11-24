@@ -1,0 +1,6 @@
+{
+  "version": 103,
+  "esp_url": "http://static.printrbot.cloud/firmware/simple/esp.bin",
+  "mk20_url": "http://static.printrbot.cloud/firmware/simple/mk20.bin",
+  "mk20_ui_url": "http://static.printrbot.cloud/firmware/simple/ui.min"
+}

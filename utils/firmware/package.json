@@ -1,0 +1,15 @@
+{
+  "name": "firmware",
+  "version": "1.0.0",
+  "description": "",
+  "main": "upload.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.6.6",
+    "bluebird": "^3.4.6"
+  }
+}
