@@ -89,7 +89,7 @@ bool WebServer::validateAuthentication(AsyncWebServerRequest *request) {
   }
   if (!request->authenticate("printrbot", config.data.password)) {
 	AsyncWebServerResponse
-		*response = request->beginResponse(403, "text/json", "{'success':'false','error':'Authentication failed'}");
+		*response = request->beginResponse(403, "text/json", "{\"success\":\"false\",\"error\":\"Authentication failed\"}");
 	EventLogger::log("Authentication failed");
 	response->addHeader("Access-Control-Allow-Origin", "*");
 	request->send(response);
@@ -163,10 +163,10 @@ void WebServer::begin() {
   server.on("/format_spiffs", HTTP_GET, [](AsyncWebServerRequest *request) {
 	AsyncWebServerResponse *response = NULL;
 	if (SPIFFS.format()) {
-	  response = request->beginResponse(200, "text/json", "{'success':'yes'}");
+	  response = request->beginResponse(200, "text/json", "{\"success\":\"yes\"}");
 	  EventLogger::log("Formatting SPIFFS successfull");
 	} else {
-	  response = request->beginResponse(200, "text/json", "{'success':'no'}");
+	  response = request->beginResponse(200, "text/json", "{\"success\":\"no\"}");
 	  EventLogger::log("Formatting SPIFFS failed");
 	}
 
@@ -181,9 +181,9 @@ void WebServer::begin() {
 	FirmwareUpdateInfo *updateInfo = Application.getFirmwareUpdateInfo();
 	if (updateInfo == NULL) {
 	  response =
-		  request->beginResponse(200, "text/json", "{'success':'false','error':'Firmware update info not loaded yet'}");
+		  request->beginResponse(200, "text/json", "{\"success\":\"false\",\"error\":\"Firmware update info not loaded yet\"}");
 	} else {
-	  response = request->beginResponse(200, "text/json", "{'success':'true'}");
+	  response = request->beginResponse(200, "text/json", "{\"success\":\"true\"}");
 	  String uiFilePath("/ui.min");
 	  DownloadFileToSPIFFs *downloadUI = new DownloadFileToSPIFFs(updateInfo->mk20_ui_url, uiFilePath);
 	  PushFileToSDCard *pushUIFile = new PushFileToSDCard(uiFilePath, uiFilePath, false, Compression::RLE16);
@@ -251,7 +251,7 @@ void WebServer::begin() {
 
   webserver.addOptionsRequest("/test");
   server.on("/test", HTTP_GET, [](AsyncWebServerRequest *request) {
-	AsyncWebServerResponse *response = request->beginResponse(200, "text/json", "{'sup':'yo'}");
+	AsyncWebServerResponse *response = request->beginResponse(200, "text/json", "{\"sup\":\"yo\"}");
 	EventLogger::log(config.data.name);
 	response->addHeader("Access-Control-Allow-Origin", "*");
 	request->send(response);
@@ -268,17 +268,17 @@ void WebServer::begin() {
 	AsyncWebServerResponse *response = NULL;
 	if (updateInfo == NULL) {
 	  response =
-		  request->beginResponse(200, "text/json", "{'success':'false','error':'Firmware update infos not been loaded yet'}");
+		  request->beginResponse(200, "text/json", "{\"success\":\"false\",\"error\":\"Firmware update infos not been loaded yet\"}");
 	} else {
 	  if (updateInfo->buildnr <= FIRMWARE_BUILDNR) {
 		response =
-			request->beginResponse(200, "text/json", "{'success':'false','error':'Latest firmware already installed'}");
+			request->beginResponse(200, "text/json", "{\"success\":\"false\",\"error\":\"Latest firmware already installed\"}");
 	  } else {
 		//Notify MK20 that firmware has started (shows a screen without user interaction)
 		Application.getMK20Stack()->showFirmwareInProgressNotification();
 		Application.startFirmwareUpdate();
 
-		response = request->beginResponse(200, "text/json", "{'success':'true'}");
+		response = request->beginResponse(200, "text/json", "{\"success\":\"true\"}");
 	  }
 	}
 
