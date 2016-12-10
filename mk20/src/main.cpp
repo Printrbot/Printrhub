@@ -4,7 +4,6 @@
 #include <Wire.h>      // this is needed for FT6206
 #include <SoftwareSerial.h>
 #include "Adafruit_FT6206.h"
-#include "scenes/IdleSceneController.h"
 //#include "SD/SD_t3.h"
 #include "scenes/projects/ProjectsScene.h"
 
@@ -164,8 +163,6 @@ void setup(void)
     LOG("Starting MainMenu");
     //mainController = new MainSceneController();
     //Application.pushScene(mainController);
-    //idleScene = new IdleSceneController();
-    //Application.pushScene(idleScene);
     //wifiController = new WiFiSetupSceneController();
     //Application.pushScene(wifiController);
 
