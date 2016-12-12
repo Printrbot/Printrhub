@@ -73,7 +73,7 @@ uint16_t ConfirmCancelPrint::getBackgroundColor() {
 
 void ConfirmCancelPrint::onWillAppear() {
 
-  BitmapView *icon = new BitmapView(Rect(100, 24, uiBitmaps.icon_alert.width, uiBitmaps.icon_alert.height));
+  BitmapView* icon = new BitmapView(Rect(95,14,uiBitmaps.icon_alert.width, uiBitmaps.icon_alert.height));
   icon->setBitmap(&uiBitmaps.icon_alert);
   addView(icon);
 
