@@ -61,8 +61,8 @@
 #define LOG_VALUE(m, v)
 #endif
 
-#define FIRMWARE_VERSION "0.13"
-#define FIRMWARE_BUILDNR 106
+#define FIRMWARE_VERSION "0.15"
+#define FIRMWARE_BUILDNR 108
 
 enum class NetworkMode : uint8_t {
   Unconnected = 0,
