@@ -35,9 +35,10 @@
 #include "../projects/ProjectsScene.h"
 #include "../filament/SelectFilamentAction.h"
 #include "../calibrate/CalibrateScene.h"
-#include "../settings/SystemInfoScene.h"
+#include "SystemInfoScene.h"
 #include "../materials/MaterialsScene.h"
-#include "../settings/VirtualKeyboardSceneController.h"
+#include "VirtualKeyboardSceneController.h"
+#include "LightScene.h"
 #include "SetPasswordHandler.h"
 
 extern UIBitmaps uiBitmaps;
@@ -88,10 +89,10 @@ void SettingsScene::onWillAppear() {
   _materials->setDelegate(this);
   addView(_materials);
 
-  _update = new BitmapButton(Rect(102, 130, uiBitmaps.btn_update.width, uiBitmaps.btn_update.height));
-  _update->setBitmap(&uiBitmaps.btn_update);
-  _update->setDelegate(this);
-  addView(_update);
+  _light = new BitmapButton(Rect(102,130,uiBitmaps.btn_update.width,uiBitmaps.btn_light.height));
+  _light->setBitmap(&uiBitmaps.btn_light);
+  _light->setDelegate(this);
+  addView(_light);
 
   _password = new BitmapButton(Rect(182, 130, uiBitmaps.btn_password.width, uiBitmaps.btn_password.height));
   _password->setBitmap(&uiBitmaps.btn_password);
@@ -108,25 +109,24 @@ void SettingsScene::onSidebarButtonTouchUp() {
 
 void SettingsScene::buttonPressed(void *button) {
   if (button == _filament) {
-	SelectFilamentAction *scene = new SelectFilamentAction();
-	Application.pushScene(scene);
+  	SelectFilamentAction *scene = new SelectFilamentAction();
+  	Application.pushScene(scene);
   } else if (button == _calibrate) {
-	CalibrateScene *scene = new CalibrateScene();
-	Application.pushScene(scene);
+  	CalibrateScene *scene = new CalibrateScene();
+  	Application.pushScene(scene);
   } else if (button == _materials) {
-	MaterialsScene *scene = new MaterialsScene();
-	Application.pushScene(scene);
-  } else if (button == _update) {
-	Application.getESPStack()->requestTask(TaskID::StartFirmwareUpdate);
-  } else if (button == _calibrate) {
-
+  	MaterialsScene *scene = new MaterialsScene();
+  	Application.pushScene(scene);
+  } else if (button == _light) {
+    LightScene * scene = new LightScene();
+    Application.pushScene(scene);
   } else if (button == _password) {
-	SetPasswordHandler *handler = new SetPasswordHandler();
-	VirtualKeyboardSceneController *scene = new VirtualKeyboardSceneController(handler, "Password:");
-	Application.pushScene(scene);
+  	SetPasswordHandler *handler = new SetPasswordHandler();
+  	VirtualKeyboardSceneController *scene = new VirtualKeyboardSceneController(handler, "Password:");
+  	Application.pushScene(scene);
   } else if (button == _wifi) {
-	SystemInfoScene *scene = new SystemInfoScene();
-	Application.pushScene(scene);
+	  SystemInfoScene *scene = new SystemInfoScene();
+	  Application.pushScene(scene);
   }
   SidebarSceneController::buttonPressed(button);
 }

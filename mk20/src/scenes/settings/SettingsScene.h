@@ -56,7 +56,7 @@ class SettingsScene : public SidebarSceneController {
   BitmapButton *_filament;
   BitmapButton *_wifi;
   BitmapButton *_calibrate;
-  BitmapButton *_update;
+  BitmapButton *_light;
   BitmapButton *_password;
 };
 
