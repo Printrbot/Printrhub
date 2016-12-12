@@ -107,6 +107,12 @@ class Printr {
   bool queryCurrentLine(Stream *stream, int lineNumber = 0);
   void handlePBCode(const char *pbcode);
 
+  void turnLightOn();
+  void turnLightOff();
+  void setLightColor(int colorId);
+  bool isLightOn() { return _lightOn; };
+  int getLightColor() { return _lightColor; };
+
  private:
   void programEnd(bool success);
   void parseResponse();
@@ -153,6 +159,9 @@ class Printr {
   bool _waiting;
   unsigned long _waitStart;
   int _waitDuration;
+
+  bool _lightOn;
+  int _lightColor;
 
 };
 

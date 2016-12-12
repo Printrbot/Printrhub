@@ -50,7 +50,9 @@ Printr::Printr() :
 	_homeZ(false),
 	_progress(0.0),
 	_processedProgramLine(0),
-	_currentAction(0) {
+	_currentAction(0),
+	_lightOn(true),
+	_lightColor(4) {
   _setupCode = new MemoryStream(64);
   _waiting = false;
   _waitStart = 0;
@@ -123,6 +125,23 @@ void Printr::loop() {
 	//Any other status is considered an error
 
   }
+}
+
+void Printr::turnLightOn() {
+  this->setLightColor(this->_lightColor);
+  this->_lightOn = true;
+}
+
+void Printr::turnLightOff() {
+  sendLine("{_leds:0}");
+  this->_lightOn = false;
+}
+
+void Printr::setLightColor(int colorId) {
+  String lc = "{_leds:";
+  lc += String(colorId);
+  lc += "}";
+  sendLine(lc.c_str());
 }
 
 bool Printr::queryCurrentLine(Stream *stream, int lineNumber) {
@@ -346,8 +365,8 @@ void Printr::runJobStartGCode() {
   // we will use 1620 as 100% maximum extruder speed
   char speedCmd[20];
   int aJm = 1620 * (float) (_selectedMaterial->speed / 100.0);
-  sprintf(speedCmd, "M100({afr:%d})", aJm);
-  sendLine(speedCmd);
+  //sprintf(speedCmd, "M100({afr:%d})", aJm);
+  //sendLine(speedCmd);
 
   sendLine("G92.1 X0 Y0 Z0 A0 B0");
   _printing = true;
