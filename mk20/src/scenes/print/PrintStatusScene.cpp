@@ -97,14 +97,6 @@ void PrintStatusScene::onWillAppear() {
   _nameLayer->setForegroundColor(ILI9341_BLACK);
   Display.addLayer(_nameLayer);
 
-  // print time
-  _printTime = new TransparentTextLayer(Rect(10, 100, Display.getLayoutWidth() - 30, 60));
-  _printTime->setTextAlign(TEXTALIGN_LEFT);
-  _printTime->setFont(&LiberationSans_12);
-  _printTime->setText(String("Print Time: ") + printr.getPrintTime());
-  _printTime->setForegroundColor(ILI9341_BLACK);
-  Display.addLayer(_printTime);
-
   // Resolution
   _resolution = new TransparentTextLayer(Rect(10, 120, Display.getLayoutWidth() - 30, 60));
   _resolution->setTextAlign(TEXTALIGN_LEFT);

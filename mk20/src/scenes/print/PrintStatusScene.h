@@ -72,7 +72,6 @@ class PrintStatusScene : public SidebarSceneController, public ButtonDelegate, p
   int _totalJobLines;
 
   TextLayer *_nameLayer;
-  TextLayer *_printTime;
   TextLayer *_resolution;
   TextLayer *_infill;
   TextLayer *_support;
