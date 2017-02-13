@@ -98,26 +98,35 @@ Project *IndexDb::getProjectAt(uint16_t idx) {
 }
 
 void IndexDb::addProjectFile(String fileName) {
-  // increment totalProjectFiles
-  MemoryStream *m = new MemoryStream(9);
-  m->write((uint8_t) _iDBInfo->rev);
-  m->write((uint8_t) _iDBInfo->totalProjectFiles + 1);
+  // check if project already exists, and if yes skip adding it to index
+  for (uint8_t i=0; i<_iDBInfo->totalProjectFiles; i++) {
+    _indexFile.seek((i * 9)+2);
+    char pn[9];
+    _indexFile.read(&pn, 9);
+    String pns = String(pn);
+    if (pns.equals(fileName))
+      return;
+  }
+
+  MemoryStream * m = new MemoryStream(9);
+  m->write((uint8_t)_iDBInfo->rev);
+  m->write((uint8_t)_iDBInfo->totalProjectFiles+1);
   m->print(fileName);
   m->print('\0');
 
-  for (uint8_t i = 0; i < _iDBInfo->totalProjectFiles; i++) {
-	_indexFile.seek((i * 9) + 2);
-	char pn[9];
-	_indexFile.read(&pn, 9);
-	m->print(pn);
-	m->print('\0');
+  for (uint8_t i=0; i<_iDBInfo->totalProjectFiles; i++) {
+    _indexFile.seek((i * 9)+2);
+    char pn[9];
+    _indexFile.read(&pn, 9);
+    m->print(pn);
+    m->print('\0');
   }
   _indexFile.close();
   SD.remove(indexFileName);
   _indexFile = SD.open(indexFileName, FILE_WRITE);
   while (m->available()) {
-	byte b = m->read();
-	_indexFile.write(b);
+    byte b = m->read();
+    _indexFile.write(b);
   }
   delete m;
 }
