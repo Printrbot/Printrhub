@@ -320,7 +320,7 @@ int Printr::startJob(String filePath) {
   if (i[0] == ';' && i[1] == '{') {
 	// found json string in header, parse it now
 	_printFile.seek(1);
-	String js = _printFile.readStringUntil('\n');
+	String js = _printFile.readStringUntil('\n', 200);
 
 	StaticJsonBuffer<512> jb;
 	JsonObject &h = jb.parseObject(js);
