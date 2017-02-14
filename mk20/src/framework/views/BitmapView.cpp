@@ -36,7 +36,8 @@ BitmapView::BitmapView(Rect frame) :
 	View(frame.x, frame.y, frame.width, frame.height),
 	_bitmap(NULL),
 	_bitmapLayer(NULL),
-	_sdbitmapLayer(NULL) {
+	_sdbitmapLayer(NULL),
+  _originalFrame(frame) {
 
 }
 
@@ -50,6 +51,15 @@ void BitmapView::setBitmap(UIBitmap *bitmap) {
   if (_sdbitmapLayer != NULL) {
 	_sdbitmapLayer->setBitmap("ui.min", bitmap->width, bitmap->height, bitmap->offset);
   }
+}
+
+void BitmapView::setFrame(Rect frame, bool updateLayout) {
+  if (_frame == frame) return;
+
+  View::setFrame(frame, updateLayout);
+  _originalFrame = frame;
+
+  _layers.at(0)->setFrame(frame, updateLayout);
 }
 
 void BitmapView::display() {

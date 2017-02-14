@@ -44,10 +44,11 @@ class BitmapView : public View {
   BitmapView(Rect frame);
   virtual String getDescription() override;
   virtual void setBitmap(UIBitmap *bitmap);
-
+  virtual void setFrame(Rect frame, bool updateLayout = true) override;
   virtual void display() override;
 
  private:
+  Rect _originalFrame;
   BitmapLayer *_bitmapLayer;
   SDBitmapLayer *_sdbitmapLayer;
   UIBitmap *_bitmap;
