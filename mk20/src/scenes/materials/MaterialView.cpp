@@ -64,16 +64,6 @@ void MaterialView::display() {
   _typeLayer->setForegroundColor(ILI9341_BLACK);
   addLayer(_typeLayer);
 
-  /*
-  _brandLayer = new TransparentTextLayer(Rect(_frame.x+5,_frame.y+40,Display.getLayoutWidth()-15,230));
-  _brandLayer->setTextAlign(TEXTALIGN_CENTERED);
-  _brandLayer->setFont(&LiberationSans_12);
-  _l = "Brand: ";
-  _l = _l + _material.brand;
-  _brandLayer->setText(_l.c_str());
-  _brandLayer->setForegroundColor(ILI9341_BLACK);
-  addLayer(_brandLayer);
-*/
   _temperatureLayer = new TransparentTextLayer(Rect(_frame.x + 5, 150, Display.getLayoutWidth() - 5, 14));
   _temperatureLayer->setTextAlign(TEXTALIGN_CENTERED);
   _temperatureLayer->setFont(&LiberationSans_12);

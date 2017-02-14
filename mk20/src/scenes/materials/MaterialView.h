@@ -60,7 +60,6 @@ class MaterialView : public View {
   uint32_t _offset;
   TextLayer *_titleLayer;
   TextLayer *_typeLayer;
-  TextLayer *_brandLayer;
   TextLayer *_temperatureLayer;
   TextLayer *_speedLayer;
 };
