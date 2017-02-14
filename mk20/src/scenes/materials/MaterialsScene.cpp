@@ -38,6 +38,8 @@
 #include "scenes/settings/SettingsScene.h"
 #include "MaterialView.h"
 #include "scenes/settings/DataStore.h"
+#include "framework/layers/TransparentTextLayer.h"
+#include "font_LiberationSans.h"
 
 extern DataStore dataStore;
 extern UIBitmaps uiBitmaps;
@@ -53,6 +55,10 @@ MaterialsScene::~MaterialsScene() {
 	free(_materials);
 	_materials = NULL;
   }
+}
+
+uint16_t MaterialsScene::getBackgroundColor() {
+  return Application.getTheme()->getColor(BackgroundColor);
 }
 
 String MaterialsScene::getName() {
@@ -88,30 +94,45 @@ void MaterialsScene::onWillAppear() {
 	materialView = new MaterialView(_materials[cnt], cnt);
 	addView(materialView);
   }
-
   _selectedMaterial = _materials[0];
-
+  _savedMaterial = dataStore.getLoadedMaterial();
   _file.close();
+
+
   _selectButton = new BitmapButton(Rect(18, 178, uiBitmaps.btn_select.width, uiBitmaps.btn_select.height));
   _selectButton->setBitmap(&uiBitmaps.btn_select);
-  _selectButton->setVisible(true);
+  _selectButton->setVisible(false);
   _selectButton->setDelegate(this);
   addView(_selectButton);
+
+  _selectedMsg = new BitmapView(Rect(18, 178, uiBitmaps.selected_msg.width, uiBitmaps.selected_msg.height));
+  _selectedMsg->setBitmap(&uiBitmaps.selected_msg);
+  _selectedMsg->setVisible(false);
+  addView(_selectedMsg);
+
+  updateButtons();
 
   SidebarSceneController::onWillAppear();
 }
 
 void MaterialsScene::onDidAppear() {
 
-  // TODO: read the selected material from eeprom and jump to it
-  updateButtons();
 }
 
 void MaterialsScene::updateButtons() {
   float x = Display.getLayoutWidth() * getPageIndex();
-  _selectButton->setFrame(Rect(x + 18, 178, uiBitmaps.btn_select.width, uiBitmaps.btn_select.height));
-  _selectButton->setVisible(true);
-  _selectButton->setDelegate(this);
+
+  if (strcmp(_savedMaterial->name, _selectedMaterial.name) == 0) {
+    _selectButton->setVisible(false);
+    _selectedMsg->setVisible(true);
+    _selectedMsg->setFrame(Rect(x + 18, 178, uiBitmaps.selected_msg.width, uiBitmaps.selected_msg.height));
+  } else {
+    _selectedMsg->setVisible(false);
+    _selectButton->setFrame(Rect(x + 18, 178, uiBitmaps.btn_select.width, uiBitmaps.btn_select.height));
+    _selectButton->setVisible(true);
+    _selectButton->setDelegate(this);
+  }
+
 }
 
 void MaterialsScene::handleTouchMoved(TS_Point point, TS_Point oldPoint) {
@@ -130,12 +151,15 @@ void MaterialsScene::onSidebarButtonTouchUp() {
 }
 
 void MaterialsScene::buttonPressed(void *button) {
+
   if (button == _selectButton) {
 	dataStore.setLoadedMaterial(_selectedMaterial);
 	dataStore.save();
+    _savedMaterial = dataStore.getLoadedMaterial();
+	//SettingsScene *scene = new SettingsScene();
+	//Application.pushScene(scene, true);
+    updateButtons();
 
-	SettingsScene *scene = new SettingsScene();
-	Application.pushScene(scene, true);
 	return;
   }
 

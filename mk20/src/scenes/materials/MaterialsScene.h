@@ -51,6 +51,7 @@ class MaterialsScene : public SidebarSceneController {
   virtual void onSidebarButtonTouchUp() override;
   virtual UIBitmap *getSidebarBitmap() override;
   virtual UIBitmap *getSidebarIcon() override;
+  virtual uint16_t getBackgroundColor() override;
 
  private:
   virtual void onWillAppear() override;
@@ -59,6 +60,8 @@ class MaterialsScene : public SidebarSceneController {
   virtual void buttonPressed(void *button) override;
   Material *_materials;
   Material _selectedMaterial;
+  Material *_savedMaterial;
+  BitmapView *_selectedMsg;
   void updateButtons();
 
  protected:
