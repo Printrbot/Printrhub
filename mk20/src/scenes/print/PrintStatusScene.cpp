@@ -40,10 +40,13 @@
 #include "FinishPrint.h";
 
 #include "scenes/print/PrintStatusScene.h"
+#include "scenes/materials/MaterialView.h"
+#include "scenes/settings/DataStore.h"
 
 extern UIBitmaps uiBitmaps;
 extern Printr printr;
 extern int lastJobIndex;
+extern DataStore dataStore;
 
 PrintStatusScene::PrintStatusScene(String jobFilePath, Project project, Job job) :
 	SidebarSceneController::SidebarSceneController(),
@@ -77,9 +80,9 @@ void PrintStatusScene::onWillAppear() {
 
   // start the print only if not running already (in case we are returning from CancelPrint scene)
   if (!printr.isPrinting()) {
-	_totalJobLines = printr.startJob(_jobFilePath);
+	  _totalJobLines = printr.startJob(_jobFilePath);
   } else {
-	_totalJobLines = printr.getTotalJobLines();
+	  _totalJobLines = printr.getTotalJobLines();
   }
 
   // display job image
@@ -96,6 +99,15 @@ void PrintStatusScene::onWillAppear() {
   _nameLayer->setText(String(_job.title));
   _nameLayer->setForegroundColor(ILI9341_BLACK);
   Display.addLayer(_nameLayer);
+
+  // loaded material
+  Material *_selectedMaterial = dataStore.getLoadedMaterial();
+  _material = new TransparentTextLayer(Rect(10, 100, Display.getLayoutWidth() - 30, 60));
+  _material->setTextAlign(TEXTALIGN_LEFT);
+  _material->setFont(&LiberationSans_12);
+  _material->setText(String("Material: ") + _selectedMaterial->name);
+  _material->setForegroundColor(ILI9341_BLACK);
+  Display.addLayer(_material);
 
   // Resolution
   _resolution = new TransparentTextLayer(Rect(10, 120, Display.getLayoutWidth() - 30, 60));
