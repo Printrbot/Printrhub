@@ -164,7 +164,7 @@ bool SystemInfoScene::handlesTask(TaskID taskID) {
 }
 
 bool SystemInfoScene::isModal() {
-  return true;
+  return false;
 }
 
 bool SystemInfoScene::runTask(CommHeader &header, const uint8_t *data, size_t dataSize, uint8_t *responseData, uint16_t *responseDataSize, bool *sendResponse, bool *success) {
