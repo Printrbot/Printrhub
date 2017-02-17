@@ -36,7 +36,11 @@
 
 #include "DownloadURL.h"
 
-#define FIRMWAREUPDATE_URL "http://static.printrbot.cloud/firmware/simple/firmware.json"
+#ifdef BETA
+  #define FIRMWAREUPDATE_URL "http://static.printrbot.cloud/firmware-beta/simple/firmware.json"
+#else
+  #define FIRMWAREUPDATE_URL "http://static.printrbot.cloud/firmware/simple/firmware.json"
+#endif
 
 class CheckForFirmwareUpdates : public DownloadURL {
  public:

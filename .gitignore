@@ -10,3 +10,6 @@ mk20/.idea/*
 CMakeLists.txt
 CMakeListsPrivate.txt
 *.bin
+mk20/FlashMK20.jlink
+
+mk20/FlashMK20.jlink
