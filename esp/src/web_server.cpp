@@ -45,6 +45,7 @@
 #include "Application.h"
 #include "AsyncJson.h"
 #include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
 
 AsyncWebServer server(80);
 AsyncEventSource events("/events");
@@ -118,10 +119,11 @@ void WebServer::begin() {
   });
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-	char html[] = "<html>\
+	  //String html =
+	String html = "<html>\
 		  <head>\
 		    <title>printrbot</title>\
-				<style>body {font-family:Helvetica, Arial;} input {margin: 2px; padding: 4px 9px;border: 1px solid #ccc;font-size: smaller;background-color: #f7f7f7;color: black;}</style>\
+				<style>body {font-family:Helvetica, Arial;} input,p {margin: 2px; padding: 4px 9px;border: 1px solid #ccc;font-size: smaller;background-color: #f7f7f7;color: black;}</style>\
 		  </head>\
 		  <body>\
 				<form method=\"post\" action=\"/wifi\">\
@@ -129,10 +131,11 @@ void WebServer::begin() {
 			    <div><input name=\"ssid\" type=\"text\" placeholder=\"wifi ssid\" value=\"\"/></div>\
 					<div><input name=\"wifipassword\" type=\"password\" placeholder=\"wifi password\" value=\"\"/></div>\
 					<div><input type=\"submit\" value=\"Save\"/></div>\
-				</form>\
-		  </body>\
-		</html>";
-	request->send(200, "text/html", html);
+				</form>";
+	  html = html + "<p>Mac-Address: ";
+	  html = html + WiFi.macAddress();
+	  html = html + "</p></body></html>";
+	request->send(200, "text/html", html.c_str());
   });
 
   webserver.addOptionsRequest("/update_esp");
