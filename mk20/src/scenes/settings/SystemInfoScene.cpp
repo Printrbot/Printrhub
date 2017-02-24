@@ -105,6 +105,14 @@ void SystemInfoScene::onWillAppear() {
   configureLabelView(_ipaddress);
   y += labelHeight + yGap;
 
+    //IPAddress
+  _macAddressLabel = new LabelView("Mac:", Rect(xLabel, y, labelWidth, labelHeight));
+  _macAddress = new LabelView("Loading Info", Rect(
+      xLabel + labelWidth + 10, y, 270 - (xLabel + labelWidth + 10 + 10), labelHeight));
+  configureLabelView(_macAddressLabel);
+  configureLabelView(_macAddress);
+  y += labelHeight + yGap;
+
   //SSID
   _ssidLabel = new LabelView("SSID:", Rect(xLabel, y, labelWidth, labelHeight));
   _ssid = new LabelView("Loading Info", Rect(
@@ -195,6 +203,7 @@ bool SystemInfoScene::runTask(CommHeader &header, const uint8_t *data, size_t da
 		_networkMode->setText("Local network");
 	  }
 	  _ipaddress->setText(_systemInfo.ipaddress);
+      _macAddress->setText(_systemInfo.macAddress);
 	  _ssid->setText(_systemInfo.SSID);
 	  _serialNumber->setText(_systemInfo.serialNumber);
 	  _firmwareVersion->setText(_systemInfo.firmwareVersion);

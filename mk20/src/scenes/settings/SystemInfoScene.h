@@ -66,6 +66,8 @@ class SystemInfoScene : public SidebarSceneController {
   LabelView *_printerName;
   LabelView *_ipaddressLabel;
   LabelView *_ipaddress;
+  LabelView *_macAddressLabel;
+  LabelView *_macAddress;
   LabelView *_ssidLabel;
   LabelView *_ssid;
   LabelView *_serialNumberLabel;

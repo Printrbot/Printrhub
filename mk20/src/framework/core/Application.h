@@ -77,6 +77,7 @@ struct SystemInfo {
   char printerName[16];
   char serialNumber[37];
   char firmwareVersion[5];
+  char macAddress[18];
   int16_t buildNr;
   bool hasPassword;
 };

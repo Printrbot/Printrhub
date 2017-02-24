@@ -162,6 +162,8 @@ void ManageWifi::connectWifiStation() {
 	strcpy(Application.getSystemInfo()->ipaddress, _ipAddress.toString().c_str());
 	strcpy(Application.getSystemInfo()->SSID, config.data.wifiSsid);
 	strcpy(Application.getSystemInfo()->printerName, config.data.name);
+	strcpy(Application.getSystemInfo()->macAddress, WiFi.macAddress().c_str());
+
   }
 }
 
@@ -182,6 +184,7 @@ void ManageWifi::createAP() {
   strcpy(Application.getSystemInfo()->ipaddress, _ipAddress.toString().c_str());
   strcpy(Application.getSystemInfo()->SSID, WiFi.BSSIDstr().c_str());
   strcpy(Application.getSystemInfo()->printerName, config.data.name);
+  strcpy(Application.getSystemInfo()->macAddress, WiFi.macAddress().c_str());
 
   if (strlen(config.data.apPassword) > 0) {
 	Application.getSystemInfo()->hasPassword = true;
