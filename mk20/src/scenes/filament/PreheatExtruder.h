@@ -1,5 +1,5 @@
 /*
- * Sets nozzle temperature of printer to 200 degree and captures temp feedback
+ * Sets nozzle temperature of printer to 230 degree and captures temp feedback
  * from printer to show a progress bar. Either pushes Load or Unload filament
  * scenes after temperature has reached.
  *

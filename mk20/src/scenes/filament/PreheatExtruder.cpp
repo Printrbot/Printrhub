@@ -1,5 +1,5 @@
 /*
- * Sets nozzle temperature of printer to 200 degree and captures temp feedback
+ * Sets nozzle temperature of printer to 230 degree and captures temp feedback
  * from printer to show a progress bar. Either pushes Load or Unload filament
  * scenes after temperature has reached.
  *
@@ -102,7 +102,7 @@ void PreheatExtruder::onDidAppear() {
   // start listening for temperature
   printr.startListening();
   printr.sendWaitCommand(500);
-  printr.sendLine("M100({he1st:200})");
+  printr.sendLine("M100({he1st:230})");
   printr.sendLine("M100({_leds:2})"); // red
   printr.sendLine("M101({he1at:t})");
 
@@ -119,10 +119,10 @@ void PreheatExtruder::onDidAppear() {
 }
 
 void PreheatExtruder::onNewNozzleTemperature(float temp) {
-  float v = temp / 200.0f;
+  float v = temp / 230.0f;
   _progressBar->setValue(v);
 
-  if (temp >= 200.0f) {
+  if (temp >= 230.0f) {
 	if (_nextScene == 1) {
 	  UnloadFilament *scene = new UnloadFilament();
 	  Application.pushScene(scene);
