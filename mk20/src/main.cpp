@@ -163,8 +163,6 @@ void setup(void)
     LOG("Starting MainMenu");
     //mainController = new MainSceneController();
     //Application.pushScene(mainController);
-    //idleScene = new IdleSceneController();
-    //Application.pushScene(idleScene);
     //wifiController = new WiFiSetupSceneController();
     //Application.pushScene(wifiController);
 
