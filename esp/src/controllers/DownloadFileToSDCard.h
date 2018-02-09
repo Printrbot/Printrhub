@@ -35,7 +35,6 @@
 
 #include "core/Mode.h"
 #include <HttpClient.h>
-#include "../core/FasterWiFiClient.h"
 #include "../errors.h"
 #include "DownloadURL.h"
 
