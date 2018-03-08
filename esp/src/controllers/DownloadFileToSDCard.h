@@ -34,7 +34,6 @@
 #define ESP8266_ARM_SWD_DOWNLOADFILETOSDCARD_H
 
 #include "core/Mode.h"
-#include "../core/FasterWiFiClient.h"
 #include "../errors.h"
 #include "DownloadURL.h"
 

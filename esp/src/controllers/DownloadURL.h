@@ -36,7 +36,6 @@
 
 #include "core/Mode.h"
 #include <ESP8266HTTPClient.h>
-#include "../core/FasterWiFiClient.h"
 #include "../errors.h"
 
 //This is the size of the download buffer. Typically this buffer is filled before onDataReceived is called (but not necessarily)

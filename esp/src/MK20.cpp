@@ -31,7 +31,7 @@
  */
 
 #include "MK20.h"
-#include "application.h"
+#include "Application.h"
 #include "arm_kinetis_debug.h"
 #include <ArduinoJson.h>
 

@@ -31,7 +31,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "application.h"
+#include "Application.h"
 #include "core/Mode.h"
 #include "hal.h"
 #include "config.h"

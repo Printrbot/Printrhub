@@ -30,7 +30,7 @@
  */
 
 #include "ManageWifi.h"
-#include "../core/Commstack.h"
+#include "../core/CommStack.h"
 #include <ESP8266WiFi.h>
 #include "../config.h"
 #include <ESP8266mDNS.h>

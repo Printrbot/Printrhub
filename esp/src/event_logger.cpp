@@ -31,7 +31,7 @@
 #include <ESPAsyncWebServer.h>
 #include <Arduino.h>
 #include "core/CommStack.h"
-#include "application.h"
+#include "Application.h"
 
 extern AsyncEventSource events;
 

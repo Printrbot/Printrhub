@@ -31,7 +31,7 @@
  */
 
 #include <SPI.h>
-#include "application.h"
+#include "Application.h"
 
 extern "C" {
   #include "user_interface.h"
